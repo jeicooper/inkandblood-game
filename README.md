@@ -1,6 +1,6 @@
 # INK AND BLOOD
 
-A 2D pixel roleplaying game about the life of Dr. Jose Rizal
+A 2D pixel roleplaying game about the life of Dr. Jose Rizal. Currently a work in progress
 
 
 Assets:
