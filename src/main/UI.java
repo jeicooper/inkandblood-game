@@ -70,7 +70,6 @@ public class UI {
 
         //TITLE SCREEN
         if (gp.gameState == gp.titleState){
-
             drawTitleScreen();
         }
 
@@ -144,7 +143,7 @@ public class UI {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD,97F));
             String text = "Ink & Blood: Rizal's Adventure";
             int x = getXforCenter(text);
-            int y = gp.tileSize*3;
+            int y = gp.tileSize*2;
 
             //SHADOW
             g2.setColor(new Color(0,0,0, 150));
@@ -186,11 +185,19 @@ public class UI {
                 g2.drawString(">", (int) (x-(gp.tileSize*1.5)), y);
             }
 
-            text = "QUIT";
+            text = "OPTIONS";
             x = getXforCenter(text);
             y += gp.tileSize;
             g2.drawString(text, x, y);
             if (commandNum == 3){
+                g2.drawString(">", (int) (x-(gp.tileSize*1.5)), y);
+            }
+
+            text = "QUIT";
+            x = getXforCenter(text);
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+            if (commandNum == 4){
                 g2.drawString(">", x-(gp.tileSize*2), y);
             }
         }
@@ -198,8 +205,11 @@ public class UI {
         //CUTSCENE SCREEN
         else if (titleScreenState == 1) {
 
-            g2.setColor(Color.white);
-            g2.setFont(g2.getFont().deriveFont(42f));
+            g2.setColor(new Color(194, 166, 140));
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+            g2.setColor(new Color(123, 84, 47));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
 
             String text = "This is a story about a great hero in \nthe Philippines";
             int x = getXforCenter(text);
@@ -227,30 +237,34 @@ public class UI {
         //CREDIT SCREEN
         else if (titleScreenState == 2) {
 
-            g2.setColor(Color.white);
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42F));
+
+            g2.setColor(new Color(194, 166, 140));
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+            g2.setColor(new Color(123, 84, 47));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
 
             String text = "CREDITS";
             int x = getXforCenter(text);
             int y = gp.tileSize*3;
             g2.drawString(text, x, y);
 
-            text = "Lead Programmer - Joyce Orog";
+            text = "Lead Programmer -- Joyce Orog";
             x = getXforCenter(text);
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
-            text = "Story Director - Miko Lamoste";
+            text = "Story Director -- Miko Lamoste";
             x = getXforCenter(text);
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
-            text = "Music & Sound Director - Shella Dizon";
+            text = "Music & Sound Director -- Shella Dizon";
             x = getXforCenter(text);
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
-            text = "Story Consultant - Ms.Alyssa Repuya";
+            text = "Story Consultant -- Ms.Alyssa Repuya";
             x = getXforCenter(text);
             y += gp.tileSize;
             g2.drawString(text, x, y);
@@ -263,7 +277,6 @@ public class UI {
                 g2.drawString(">", x-gp.tileSize, y);
             }
         }
-
 
     }
 
