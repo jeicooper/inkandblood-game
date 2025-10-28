@@ -5,7 +5,6 @@ import main.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +26,7 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/maps/Map_calamba.txt");
+        loadMap("/maps/Map_calamba2.txt");
     }
 
     public void getTileImage(){
@@ -66,7 +65,7 @@ public class TileManager {
             setup(26, "stonegrass", true);
             setup(27, "brickwall", true);
 
-            setup(28, "water", false);
+            setup(28, "water", true);
             setup(29, "halfwater_down", true);
             setup(30, "halfwater_up", true);
             setup(31, "halfwater_left", true);
@@ -88,6 +87,39 @@ public class TileManager {
             setup(43, "rock00", true);
             setup(44, "rock01", true);
 
+            setup(45, "sand", false);
+
+            setup(46, "sand_top", true);
+            setup(47, "sand_bottom", true);
+            setup(48, "sand_left", true);
+            setup(49, "sand_right", true);
+
+            setup(50, "sand_topleft", true);
+            setup(51, "sand_topright", true);
+
+            setup(52, "sand_bottomleft", true);
+            setup(53, "sand_bottomright", true);
+
+            setup(54, "sand_middle1", false);
+            setup(55, "sand_middle2", false);
+            setup(56, "sand_middle3", false);
+            setup(57, "sand_middle4", false);
+
+            setup(58, "sand_grass_top", false);
+            setup(59, "sand_grass_bottom", false);
+            setup(60, "sand_grass_left", false);
+            setup(61, "sand_grass_right", false);
+
+            setup(62, "sand_grass_topleft", false);
+            setup(63, "sand_grass_topright", false);
+
+            setup(64, "sand_grass_bottomleft", false);
+            setup(65, "sand_grass_bottomright", false);
+
+            setup(66, "sand_grass_middle1", false);
+            setup(67, "sand_grass_middle2", false);
+            setup(68, "sand_grass_middle3", false);
+            setup(69, "sand_grass_middle4", false);
     }
 
     public void setup(int index, String imagePath, boolean collision){
@@ -106,41 +138,36 @@ public class TileManager {
     }
 
     //GENERATES THE TILE MAP
-    public void loadMap (String filePath){
-
+    public void loadMap(String filePath) {
         try {
             InputStream is = getClass().getResourceAsStream(filePath);
+            if (is == null) {
+                System.out.println("Map file not found: " + filePath);
+                return;
+            }
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-
-            int col = 0;
+            String line;
             int row = 0;
-
-            while (col < gp.maxWorldCol && row < gp.maxWorldRow){
-
-                String line = br.readLine();
-
-                while(col < gp.maxWorldCol){
-
-                    String numbers[] = line.split(" ");
-
-                    int num = Integer.parseInt(numbers[col]);
-
-                    mapTileNum[col][row] = num;
-                    col++;
+            while ((line = br.readLine()) != null && row < gp.maxWorldRow) {
+                String[] numbers = line.trim().split("\\s+");
+                for (int col = 0; col < numbers.length && col < gp.maxWorldCol; col++) {
+                    try {
+                        mapTileNum[col][row] = Integer.parseInt(numbers[col]);
+                    } catch (NumberFormatException nfe) {
+                        System.out.println("Invalid number at row " + row + " col " + col + ": '" + numbers[col] + "'");
+                        mapTileNum[col][row] = 0; // fallback
+                    }
                 }
-                if (col == gp.maxWorldCol){
-                    col = 0;
-                    row++;
-                }
+                row++;
             }
             br.close();
-
-        }catch (Exception e) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
     }
+
+
+
     public void draw(Graphics2D g2){
 
         int worldCol = 0;
@@ -156,7 +183,10 @@ public class TileManager {
             int screenX = worldX - gp.player.worldX + gp.player.screenX;
             int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-            if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY ){
+            if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+                worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+                worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+                worldY - gp.tileSize < gp.player.worldY + gp.player.screenY ){
 
                 g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 
