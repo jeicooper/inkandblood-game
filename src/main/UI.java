@@ -4,6 +4,7 @@ import object.OBJ_Heart;
 import object.OBJ_Quil;
 import object.SuperObject;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -26,7 +27,9 @@ public class UI {
     public int commandNum = 0;
     public int titleScreenState = 0;
 
+    public BufferedImage titleBackground;
 
+    public BufferedImage cutsceneBG;
 
     public UI (GamePanel gp){
         this.gp = gp;
@@ -40,6 +43,19 @@ public class UI {
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            titleBackground = ImageIO.read(getClass().getResource("/images/introduction.png"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try{
+            cutsceneBG = ImageIO.read(getClass().getResourceAsStream("/images/cutscenebg.png"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -99,7 +115,7 @@ public class UI {
     }
     public void drawPlayerLife(){
 
-        gp.player.life = 8;
+        gp.player.life = 10;
 
         int x = gp.tileSize/2;
         int y = gp.tileSize/2;
@@ -136,8 +152,7 @@ public class UI {
 
         if (titleScreenState == 0) {
 
-            g2.setColor(new Color(194, 166, 140));
-            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+            g2.drawImage(titleBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
             //TITLENAME
             g2.setFont(g2.getFont().deriveFont(Font.BOLD,97F));
@@ -150,7 +165,7 @@ public class UI {
             g2.drawString(text, x+4, y+5);
 
             //TEXT COLOR
-            g2.setColor(new Color(123, 84, 47));
+            g2.setColor(new Color(0,0,0));
             g2.drawString(text, x, y);
 
             //IMAGE
@@ -205,8 +220,7 @@ public class UI {
         //CUTSCENE SCREEN
         else if (titleScreenState == 1) {
 
-            g2.setColor(new Color(194, 166, 140));
-            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+            g2.drawImage(cutsceneBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
             g2.setColor(new Color(123, 84, 47));
             g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
@@ -237,9 +251,7 @@ public class UI {
         //CREDIT SCREEN
         else if (titleScreenState == 2) {
 
-
-            g2.setColor(new Color(194, 166, 140));
-            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+            g2.drawImage(cutsceneBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
             g2.setColor(new Color(123, 84, 47));
             g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));

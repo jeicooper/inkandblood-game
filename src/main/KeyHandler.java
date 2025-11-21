@@ -138,6 +138,7 @@ public class KeyHandler implements KeyListener {
             //press P to pause game
             if(code == KeyEvent.VK_P){
                 gp.gameState = gp.pauseState;
+                return;
             }
             //press F to speak to NPC
             if(code == KeyEvent.VK_F){
@@ -160,6 +161,7 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.pauseState) {
             if(code == KeyEvent.VK_P){
                 gp.gameState = gp.playState;
+                return;
             }
         }
 
