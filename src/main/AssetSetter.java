@@ -31,8 +31,8 @@ public class AssetSetter {
     public void setNPC() {
 
         gp.npc[0] = new NPC_Teodora(gp);
-        gp.npc[0].worldX = 25 * gp.tileSize;
-        gp.npc[0].worldY = 20 * gp.tileSize;
+        gp.npc[0].worldX = 75 * gp.tileSize;
+        gp.npc[0].worldY = 24 * gp.tileSize;
 
     }
 }

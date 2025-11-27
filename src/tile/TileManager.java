@@ -54,7 +54,7 @@ public class TileManager {
         setup(117, "brickwall", true);
 
 
-        setup(118, "water", false);
+        setup(118, "water", true);
         setup(119, "well_0", true);
         setup(120, "well_1", true);
         setup(121, "well_2", true);

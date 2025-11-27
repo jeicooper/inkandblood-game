@@ -7,7 +7,7 @@ public class KeyHandler implements KeyListener {
 
     GamePanel gp;
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, enterPressed;
 
     //DEBUGGING
     boolean checkDrawTime = false;
@@ -46,6 +46,10 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.characterState) {
             characterState(code);
         }
+        //OPTION STATE
+        else if (gp.gameState == gp.optionState) {
+            optionState(code);
+        }
     }
 
     public void titleState(int code){
@@ -57,30 +61,35 @@ public class KeyHandler implements KeyListener {
             if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
                 gp.ui.commandNum--;
                 if (gp.ui.commandNum < 0) {
-                    gp.ui.commandNum = 4;
+                    gp.ui.commandNum = 3;
                 }
 
             }
             if(code == KeyEvent.VK_S  || code == KeyEvent.VK_DOWN){
                 gp.ui.commandNum++;
-                if (gp.ui.commandNum > 4) {
+                if (gp.ui.commandNum > 3) {
                     gp.ui.commandNum = 0;
                 }
             }
 
             if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+
+                //new game
                 if (gp.ui.commandNum == 0) {
                     gp.ui.titleScreenState = 1;
                 }
+
+                //load game
                 if (gp.ui.commandNum == 1){
                     //load game
                 }
+
+                //credits
                 if (gp.ui.commandNum == 2){
                     gp.ui.titleScreenState = 2;
-
-
                 }
-                if (gp.ui.commandNum == 4){
+
+                if (gp.ui.commandNum == 3){
                     System.exit((0));
                 }
             }
@@ -172,8 +181,7 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_ESCAPE){
 
             gp.stopMusic();
-            gp.gameState = gp.titleState;
-            gp.ui.titleScreenState = 0;
+            gp.gameState = gp.optionState;
         }
 
         //Debugging
@@ -209,6 +217,81 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_C) {
             gp.gameState = gp.playState;
         }
+    }
+    public void optionState(int code){
+
+        if (code == KeyEvent.VK_ESCAPE) {
+
+            gp.playMusic(0);
+            gp.gameState = gp.playState;
+        }
+        if (code == KeyEvent.VK_ENTER) {
+            enterPressed = true;
+        }
+
+        int maxCmdNum = 0;
+        switch (gp.ui.optionSubState){
+            case 0:
+                maxCmdNum = 5;
+                break;
+            case 3:
+                maxCmdNum = 2;
+                break;
+        }
+
+        if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
+            gp.ui.commandNum--;
+            //gp.playSE(index here);
+            if (gp.ui.commandNum < 0) {
+                gp.ui.commandNum = maxCmdNum;
+            }
+
+        }
+        if(code == KeyEvent.VK_S  || code == KeyEvent.VK_DOWN){
+            gp.ui.commandNum++;
+            //gp.playSE(index here);
+            if (gp.ui.commandNum > maxCmdNum) {
+                gp.ui.commandNum = 0;
+            }
+        }
+
+        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT){
+            if (gp.ui.optionSubState == 0){
+
+                //MUSIC
+                if (gp.ui.commandNum == 1 && gp.music.volumeScale > 0){
+                    gp.music.volumeScale--;
+                    gp.music.checkVolume();
+                }
+            }
+
+            if (gp.ui.optionSubState == 0){
+
+                //SOUND EFFECTS
+                if (gp.ui.commandNum == 2 && gp.sound.volumeScale > 0){
+                    gp.sound.volumeScale--;
+                }
+            }
+        }
+        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT){
+            if (gp.ui.optionSubState == 0){
+
+                //MUSIC
+                if (gp.ui.commandNum == 1 && gp.music.volumeScale < 5){
+                    gp.music.volumeScale++;
+                    gp.music.checkVolume();
+                }
+            }
+
+            if (gp.ui.optionSubState == 0){
+
+                //SOUND EFFECTS
+                if (gp.ui.commandNum == 2 && gp.sound.volumeScale > 0){
+                    gp.sound.volumeScale++;
+                }
+            }
+        }
+
     }
 
 
