@@ -44,14 +44,22 @@ public class Player extends  Entity{
     public void setDefaultValues(){
 
         //player position in the map
-        worldX = gp.tileSize * 23;
-        worldY = gp.tileSize * 21;
+        worldX = gp.tileSize * 74;
+        worldY = gp.tileSize * 28;
         speed = 3;
         direction = "down";
 
         // PLAYER STATS
         maxLife = 10; // 1 = half heart
         life = maxLife;
+
+        intellect = 1;
+        creativity = 1;
+        perception = 1;
+        charisma = 1;
+
+
+
     }
     public void getPlayerImage(){
 

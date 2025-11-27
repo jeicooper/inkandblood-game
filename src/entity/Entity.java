@@ -30,6 +30,10 @@ public class Entity {
     //CHARACTER STATS
     public int maxLife;
     public int life;
+    public int intellect;
+    public int creativity;
+    public int perception;
+    public int charisma;
 
     public Entity(GamePanel gp){
         this.gp = gp;
