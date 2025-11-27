@@ -155,10 +155,10 @@ public class UI {
             g2.drawImage(titleBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
             //TITLENAME
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,97F));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,80F));
             String text = "Ink & Blood: Rizal's Adventure";
             int x = getXforCenter(text);
-            int y = gp.tileSize*2;
+            int y = gp.tileSize*3;
 
             //SHADOW
             g2.setColor(new Color(0,0,0, 150));
@@ -306,12 +306,12 @@ public class UI {
 
         //Window
         int x = gp.tileSize * 2;
-        int y = gp.tileSize * 6;
+        int y = gp.tileSize * 8;
         int width = gp.screenWidth - (gp.tileSize*4);
-        int height = gp.tileSize*4;
+        int height = gp.tileSize*3;
         drawSubWindow(x, y, width, height);
 
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,35F));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,20F));
         x += gp.tileSize;
         y += gp.tileSize;
 
