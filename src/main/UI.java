@@ -1,6 +1,6 @@
 package main;
 import entity.Entity;
-import object.OBJ_Heart;
+import object.OBJ_EXP;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class UI {
 
     //BUFFERED IMAGES FOR OBJECT
     //  BufferedImage quilImage;
-    BufferedImage heart_full, heart_half, heart_blank;
+    BufferedImage full_exp, half_exp, empty_exp;
 
     public boolean messageOn = false;
     public String message = "";
@@ -60,10 +60,10 @@ public class UI {
 //        OBJ_Quil quill = new OBJ_Quil(gp);
 //        quilImage = quill.image;
 
-        Entity heart = new OBJ_Heart(gp);
-        heart_full = heart.image;
-        heart_half = heart.image2;
-        heart_blank = heart.image3;
+        Entity exp = new OBJ_EXP(gp);
+            empty_exp = exp.image;
+            half_exp = exp.image2;
+            full_exp = exp.image3;
 
 
 
@@ -89,20 +89,20 @@ public class UI {
         //PLAY STATE
         if (gp.gameState == gp.playState){
 
-            drawPlayerLife();
+            drawPlayerExp();
         }
 
         //PAUSE STATE
         if (gp.gameState == gp.pauseState ){
 
-            drawPlayerLife();
+            drawPlayerExp();
             drawPauseScreen();
         }
 
         //DIAOGUE STATE
         if (gp.gameState == gp.dialogueState) {
 
-            drawPlayerLife();
+            drawPlayerExp();
             drawDialogueScreen();
         }
 
@@ -120,20 +120,22 @@ public class UI {
 //        g2.drawString("x "+ gp.player.hasQuil, 100, 65);
 
     }
-    public void drawPlayerLife(){
+    public void drawPlayerExp(){
 
-        gp.player.life = 10;
+        gp.player.exp = 1;
 
         int x = gp.tileSize/2;
         int y = gp.tileSize/2;
         int i = 0;
 
-        //BLANK HEART
-        while (i < gp.player.maxLife/2){
+        int spacing = gp.tileSize + 6;
 
-            g2.drawImage(heart_blank, x, y, null);
+        //BLANK EXP
+        while (i < gp.player.maxExp/2){
+
+            g2.drawImage(empty_exp, x, y, null);
             i++;
-            x += gp.tileSize;
+            x += spacing;
 
         }
 
@@ -142,16 +144,16 @@ public class UI {
         y = gp.tileSize/2;
         i = 0;
 
-        //CURRENT HEART
-        while (i < gp.player.life){
-            g2.drawImage(heart_half, x, y, null);
+        //CURRENT EXP
+        while (i < gp.player.exp){
+            g2.drawImage(half_exp, x, y, null);
             i++;
 
-            if (i < gp.player.life){
-                g2.drawImage(heart_full, x, y, null);
+            if (i < gp.player.exp){
+                g2.drawImage(full_exp, x, y, null);
             }
             i++;
-            x += gp.tileSize;
+            x += spacing;
         }
     }
     public void drawTitleScreen(){
@@ -219,19 +221,64 @@ public class UI {
         else if (titleScreenState == 1) {
 
             g2.drawImage(cutsceneBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
+            int tailX = gp.tileSize*18;
 
             g2.setColor(new Color(123, 84, 47));
             g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
 
-            String text = "This is a story about a great hero in \nthe Philippines";
+            String text = "This is a story about a great hero in the Philippines";
             int x = getXforCenter(text);
-            int y = gp.tileSize*4;
+            int y = gp.tileSize*3;
             g2.drawString(text, x, y);
 
+            g2.setColor(Color.darkGray);
+            text = "--------------------------------------------------------";
+            x = getXforCenter(text);
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
 
+            g2.setColor(new Color(152, 112, 44));
+
+            text = "Movement: W A S D";
+            x = gp.tileSize;
+            y = gp.tileSize*5;
+            g2.drawString(text, x, y);
+
+            text = "Options: ESC";
+            x = gp.tileSize;
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            text = "Interact: F";
+            x = gp.tileSize;
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            text = "Pause: P";
+            x = getXforAlignToRight(text,tailX);
+            y = gp.tileSize*5;
+            g2.drawString(text, x, y);
+
+            text = "Stats/Inventory: C";
+            x = getXforAlignToRight(text, tailX);
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            text = "Confirm: Enter";
+            x = getXforAlignToRight(text, tailX);
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            g2.setColor(Color.darkGray);
+            text = "--------------------------------------------------------";
+            x = getXforCenter(text);
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            g2.setColor(new Color(123, 84, 47));
             text = "Enter Game";
             x = getXforCenter(text);
-            y += gp.tileSize*3;
+            y += gp.tileSize;
             g2.drawString(text, x, y);
             if (commandNum == 0){
                 g2.drawString(">", x-gp.tileSize, y);
@@ -525,9 +572,9 @@ public class UI {
         }
 
         textY = frameY + gp.tileSize * 9;
-        g2.drawString("Back", textX, textY);
+        g2.drawString("Back", textX + (gp.tileSize*2), textY);
         if (commandNum == 0){
-            g2.drawString(">", textX-25, textY);
+            g2.drawString(">", textX-25+(gp.tileSize*2), textY);
             if (gp.keyP.enterPressed == true){
                 optionSubState = 0;
             }
@@ -548,6 +595,7 @@ public class UI {
         int leftY = frameY + gp.tileSize*2;
         g2.drawString("Move", leftX, leftY); leftY += gp.tileSize;
         g2.drawString("Confirm", leftX, leftY); leftY += gp.tileSize;
+        g2.drawString("Interact", leftX, leftY); leftY += gp.tileSize;
         g2.drawString("Stats/Inventory", leftX, leftY); leftY += gp.tileSize;
         g2.drawString("Pause", leftX, leftY); leftY += gp.tileSize;
         g2.drawString("Options", leftX, leftY); leftY += gp.tileSize;
@@ -557,6 +605,7 @@ public class UI {
         int rightY = frameY + gp.tileSize*2;
         g2.drawString("WASD", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("Enter", rightX, rightY); rightY += gp.tileSize;
+        g2.drawString("F", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("C", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("P", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("ESC", rightX, rightY); rightY += gp.tileSize;

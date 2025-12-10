@@ -28,13 +28,13 @@ public class Entity {
     String dialogues[] = new String[20];
     int dialogueIndex = 0;
 
-    public BufferedImage image, image2, image3;
+    public BufferedImage image, image2, image3, image4;
     public String name;
     public boolean collision = false;
 
     //CHARACTER STATS
-    public int maxLife;
-    public int life;
+    public int maxExp;
+    public int exp;
     public int intellect;
     public int creativity;
     public int perception;
