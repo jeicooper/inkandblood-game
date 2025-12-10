@@ -59,6 +59,7 @@ public class CollisionChecker {
                 }
 
                 break;
+
             case "right":
                 entityRightCol = (entityRightWorldX + entity.speed) / gp.tileSize;
 

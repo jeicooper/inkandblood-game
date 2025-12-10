@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="inkandblood:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/inkandblood_jar</output-path>
+    <output-path>$PROJECT_DIR$/../../InkAndBloodGAME</output-path>
     <root id="archive" name="inkandblood.jar">
       <element id="module-output" name="inkandblood" />
     </root>

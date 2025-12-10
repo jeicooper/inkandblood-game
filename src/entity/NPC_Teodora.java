@@ -8,6 +8,7 @@ public class NPC_Teodora extends Entity{
     public NPC_Teodora(GamePanel gp){
         super(gp);
 
+        setHitbox();
         direction = "down";
         speed = 1;
 

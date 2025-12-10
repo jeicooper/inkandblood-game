@@ -36,7 +36,7 @@ public class TileManager {
         setup(103, "bench1", true);
         setup(104, "bench2", true);
         setup(105, "bonfire", true);
-        setup(106, "wowoConcha_grave", true);
+//        setup(106, "wowoConcha_grave", true);
 
         setup(107, "path_1", false);
         setup(108, "path_2", false);
@@ -61,16 +61,16 @@ public class TileManager {
         setup(122, "well_3", true);
         setup(123, "well_4", true);
         setup(124, "well_5", true);
-        setup(125, "wowoplot", true);
+        setup(125, "wowoplot", false);
         setup(126, "log_4", true);
 
 
         setup(127, "bush_0", true);
         setup(128, "wowobush2", true);
-//        setup(129, "", true);
-//        setup(130, "", true);
-//        setup(131, "", true);
-//        setup(132, "", true);
+        //setup(129, "", true);
+        //setup(130, "", true);
+        //setup(131, "", true);
+        //setup(132, "", true);
 
         setup(133, "rock00", true);
         setup(134, "rock01", true);
@@ -78,21 +78,21 @@ public class TileManager {
 
         setup(135, "sand", false);
 
-        setup(136, "sand_top", false);
-        setup(137, "sand_bottom", false);
-        setup(138, "sand_left", false);
-        setup(139, "sand_right", false);
+        setup(136, "sand_top", true);
+        setup(137, "sand_bottom", true);
+        setup(138, "sand_left", true);
+        setup(139, "sand_right", true);
 
 
-        setup(140, "sand_topleft", false);
-        setup(141, "sand_topright", false);
-        setup(142, "sand_bottomleft", false);
-        setup(143, "sand_bottomright", false);
+        setup(140, "sand_topleft", true);
+        setup(141, "sand_topright", true);
+        setup(142, "sand_bottomleft", true);
+        setup(143, "sand_bottomright", true);
 
-        setup(144, "sand_middle1", false);
-        setup(145, "sand_middle2", false);
-        setup(146, "sand_middle3", false);
-        setup(147, "sand_middle4", false);
+        setup(144, "sand_middle1", true);
+        setup(145, "sand_middle2", true);
+        setup(146, "sand_middle3", true);
+        setup(147, "sand_middle4", true);
 
         setup(148, "sand_grass_top", false);
         setup(149, "sand_grass_bottom", false);
@@ -130,25 +130,25 @@ public class TileManager {
 
         setup(176, "floor_house", false);
 
-        setup(177, "pillartopright_1", false);
-        setup(178, "pillartopright_2", false);
-        setup(179, "pillartopright_3", false);
+        setup(177, "pillartopright_1", true);
+        setup(178, "pillartopright_2", true);
+        setup(179, "pillartopright_3", true);
 
-        setup(180, "pillartopleft_1", false);
-        setup(181, "pillartopleft_2", false);
-        setup(182, "pillartopleft_3", false);
+        setup(180, "pillartopleft_1", true);
+        setup(181, "pillartopleft_2", true);
+        setup(182, "pillartopleft_3", true);
 
-        setup(183, "pillarbottomright_1", false);
-        setup(184, "pillarbottomright_2", false);
-        setup(185, "pillarbottomright_3", false);
+        setup(183, "pillarbottomright_1", true);
+        setup(184, "pillarbottomright_2", true);
+        setup(185, "pillarbottomright_3", true);
 
-        setup(186, "pillarbottomleft_1", false);
-        setup(187, "pillarbottomleft_2", false);
+        setup(186, "pillarbottomleft_1", true);
+        setup(187, "pillarbottomleft_2", true);
         setup(188, "pillarbottomleft_3", false);
 
-        setup(189, "pillartop_1", false);
+        setup(189, "pillartop_1", true);
         setup(190, "pillartop_2", false);
-        setup(191, "pillarbottom_1", false);
+        setup(191, "pillarbottom_1", true);
         setup(192, "pillarbottom_2", false);
         setup(193, "pillar_wall", true);
         setup(194, "pillarright", true);
@@ -156,7 +156,7 @@ public class TileManager {
 
         setup(196, "pillarmiddle_1", true);
         setup(197, "pillarmiddle_2", true);
-        setup(198, "pillarmiddle_3", true);
+        setup(198, "pillarmiddle_3", false);
 
         setup(199, "pillarmiddle_4", true);
         setup(200, "pillarmiddle_5", true);
@@ -167,11 +167,11 @@ public class TileManager {
         setup(204, "pillarmiddle_9", false);
         setup(205, "pillarmiddle_10", false);
 
-//        setup(206, "", false);
-//        setup(207, "", true);
+        //setup(206, "", false);
+        // setup(207, "", true);
 
         setup(208, "window1_1", true);
-        setup(209, "window1_2", false);
+        setup(209, "window1_2", true);
 
         setup(210, "bed1_1", true);
         setup(211, "bed1_2", false);
@@ -189,7 +189,7 @@ public class TileManager {
 
         setup(221, "pillarmiddoor_1", false);
         setup(222, "pillarmiddoor_2", true);
-        setup(223, "pillarmiddoor_3", true);
+        setup(223, "pillarmiddoor_3", false);
 
         setup(224, "grasscorner_bottomleft", false);
         setup(225, "grasscorner_bottomright", false);
@@ -205,12 +205,12 @@ public class TileManager {
         setup(234, "fence7", true);
         setup(235, "fence8", true);
 
-        setup(236, "divider_4", false);
-        setup(237, "divider_5", false);
-        setup(238, "divider_6", false);
-        setup(239, "divider_7", false);
+        setup(236, "divider_4", true);
+        setup(237, "divider_5", true);
+        setup(238, "divider_6", true);
+        setup(239, "divider_7", true);
 
-        setup(240, "shelf_1", false);
+        setup(240, "shelf_1", true);
         setup(241, "rug_1", false);
         setup(242, "rug_2", false);
         setup(243, "rug_3", false);
@@ -237,7 +237,7 @@ public class TileManager {
         setup(261, "pillarmiddoor_5", true);
         setup(262, "pillarmiddoor_6", false);
 
-        setup(263, "pond", false);
+        setup(263, "pond", true);
 
         setup(264, "table1_1", false);
         setup(265, "table1_2", false);
@@ -261,50 +261,49 @@ public class TileManager {
         setup(282, "fountain14", true);
         setup(283, "fountain15", true);
 
-//        setup(284, "", false);
-//        setup(285, "", false);
-//        setup(286, "", false);
-//        setup(287, "", false);
-//        setup(288, "", false);
-//        setup(289, "", false);
-//        setup(290, "", false);
-//        setup(291, "", false);
-//        setup(292, "", false);
-//        setup(293, "", false);
-//        setup(294, "", false);
-//        setup(295, "", false);
-//        setup(296, "", false);
-//        setup(297, "", false);
-//        setup(298, "", false);
-//        setup(299, "", false);
-//        setup(300, "", false);
-//        setup(301, "", false);
+        //setup(284, "", false);
+        //setup(285, "", false);
+        //setup(286, "", false);
+        //setup(287, "", false);
+        //setup(288, "", false);
+        //setup(289, "", false);
+        //setup(290, "", false);
+        //setup(291, "", false);
+        //setup(292, "", false);
+        //setup(293, "", false);
+        //setup(294, "", false);
+        //setup(295, "", false);
+        //setup(296, "", false);
+        //setup(297, "", false);
+        //setup(298, "", false);
+        //setup(299, "", false);
+        //setup(300, "", false);
+        //setup(301, "", false);
 
         setup(302, "pillarbotcorner_1", false);
         setup(303, "pillarbotcorner_2", false);
         setup(304, "pillarbotcorner_3", false);
 
-//        setup(305, "", false);
-//        setup(306, "", true);
-//        setup(307, "", true);
-//        setup(308, "", true);
-//        setup(309, "", true);
-//        setup(310, "", true);
-//        setup(311, "", true);
-//        setup(312, "", true);
-//        setup(313, "", true);
-//        setup(314, "", true);
-//        setup(315, "", true);
-//        setup(316, "", true);
-//        setup(317, "", true);
-//        setup(318, "", true);
-//        setup(319, "", true);
-//        setup(320, "", true);
-//        setup(321, "", true);
-//        setup(322, "", true);
-//        setup(323, "", true);
-
-        setup(324, "wowo10", true);
+        //setup(305, "", false);
+        //setup(306, "", true);
+        //setup(307, "", true);
+        //setup(308, "", true);
+        //setup(309, "", true);
+        //setup(310, "", true);
+        //setup(311, "", true);
+        //setup(312, "", true);
+        //setup(313, "", true);
+        //setup(314, "", true);
+        //setup(315, "", true);
+        //setup(316, "", true);
+        //setup(317, "", true);
+        //setup(318, "", true);
+        //setup(319, "", true);
+        //setup(320, "", true);
+        //setup(321, "", true);
+        //setup(322, "", true);
+        //setup(323, "", true);
+        //setup(324, "", true);
 
         setup(325, "house300", true);
         setup(326, "house301", true);
@@ -497,21 +496,21 @@ public class TileManager {
         setup(493, "rug9_8", false);
         setup(494, "rug9_9", false);
 
-        setup(495, "sofa_00", false);
-        setup(496, "sofa_01", false);
-        setup(497, "sofa_02", false);
-        setup(498, "sofa_03", false);
-        setup(499, "sofa_04", false);
+        setup(495, "sofa_00", true);
+        setup(496, "sofa_01", true);
+        setup(497, "sofa_02", true);
+        setup(498, "sofa_03", true);
+        setup(499, "sofa_04", true);
         setup(500, "sofa_05", false);
-        setup(501, "sofa_06", false);
-        setup(502, "sofa_07", false);
+        setup(501, "sofa_06", true);
+        setup(502, "sofa_07", true);
         setup(503, "sofa_08", false);
-        setup(504, "sofa_09", false);
+        setup(504, "sofa_09", true);
         setup(505, "sofa_10", false);
-        setup(506, "sofa_11", false);
-        setup(507, "sofa_12", false);
+        setup(506, "sofa_11", true);
+        setup(507, "sofa_12", true);
         setup(508, "sofa_13", false);
-        setup(509, "sofa_14", false);
+        setup(509, "sofa_14", true);
         setup(510, "sofa_15", false);
         setup(511, "sofa_16", false);
         setup(512, "sofa_17", false);
@@ -525,11 +524,11 @@ public class TileManager {
         setup(519, "pillarside_stair_1", false);
         setup(520, "pillarside_stair_2", false);
 
-        setup(521, "study_room_00", false);
-        setup(522, "study_room_01", false);
-        setup(523, "study_room_02", false);
-        setup(524, "study_room_03", false);
-        setup(525, "study_room_04", false);
+        setup(521, "study_room_00", true);
+        setup(522, "study_room_01", true);
+        setup(523, "study_room_02", true);
+        setup(524, "study_room_03", true);
+        setup(525, "study_room_04", true);
 
         setup(526, "study_room_05", false);
         setup(527, "study_room_06", false);
@@ -540,20 +539,20 @@ public class TileManager {
         setup(531, "study_room_10", false);
         setup(532, "study_room_11", false);
         setup(533, "study_room_12", false);
-        setup(534, "study_room_13", false);
+        setup(534, "study_room_13", true);
 
         setup(535, "study_room_14", false);
         setup(536, "study_room_15", false);
         setup(537, "study_room_16", false);
-        setup(538, "study_room_17", false);
-        setup(539, "study_room_18", false);
-        setup(540, "study_room_19", false);
+        setup(538, "study_room_17", true);
+        setup(539, "study_room_18", true);
+        setup(540, "study_room_19", true);
 
         setup(541, "study_room_20", false);
         setup(542, "study_room_21", false);
-        setup(543, "study_room_22", false);
-        setup(544, "study_room_23", false);
-        setup(545, "study_room_24", false);
+        setup(543, "study_room_22", true);
+        setup(544, "study_room_23", true);
+        setup(545, "study_room_24", true);
 
         setup(546, "npc_house100", false);
         setup(547, "npc_house101", false);

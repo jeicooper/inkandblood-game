@@ -1,8 +1,6 @@
 package main;
-import object.OBJ_Book;
+import entity.Entity;
 import object.OBJ_Heart;
-import object.OBJ_Quil;
-import object.SuperObject;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -62,7 +60,7 @@ public class UI {
 //        OBJ_Quil quill = new OBJ_Quil(gp);
 //        quilImage = quill.image;
 
-        SuperObject heart = new OBJ_Heart(gp);
+        Entity heart = new OBJ_Heart(gp);
         heart_full = heart.image;
         heart_half = heart.image2;
         heart_blank = heart.image3;
@@ -512,6 +510,8 @@ public class UI {
         g2.drawRect(textX, textY, 120, 24);
         volumeWidth = 23 * gp.sound.volumeScale;
         g2.fillRect(textX+3, textY+3, volumeWidth, 18);
+
+        gp.config.saveConfig();
     }
     public void options_notif(int frameX, int frameY){
         int textX = frameX + gp.tileSize;

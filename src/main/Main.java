@@ -12,10 +12,14 @@ public class Main {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Ink And Blood: Rizal's Adventure");
-        window.setUndecorated(true);
 
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
+
+        gamePanel.config.loadConfig();
+        if (gamePanel.fullscreenOn){
+            window.setUndecorated(true);
+        }
 
         window.pack();
         window.setLocationRelativeTo(null);

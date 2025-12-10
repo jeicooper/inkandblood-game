@@ -1,26 +1,23 @@
 package object;
 
+import entity.Entity;
 import main.GamePanel;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
+public class OBJ_Book extends Entity {
 
-public class OBJ_Book extends SuperObject{
-
-    GamePanel gp;
     public OBJ_Book(GamePanel gp){
-
-        this.gp = gp;
+        super(gp);
 
         name = "Book";
-
-        try {
-            image = ImageIO.read(getClass().getResourceAsStream("/objects/book.png"));
-
-            uTool.scaleImage(image, gp.tileSize, gp.tileSize);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        down1 = setup("/objects/book.png");
         collision = true;
+
+        solidArea.x = 0;
+        solidArea.y = 16;
+        solidArea.width = 16;
+        solidArea.height = 16;
+
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
     }
 }
