@@ -33,7 +33,7 @@ public class NPC_Teodora extends Entity{
 
     public void setDialogue(){
 
-        dialogues[0] = "Good morning pepe. Have you seen your siblings? Go fetch them for me will you? \nIt's time to eat breakfast";
+        dialogues[0] = "Good morning pepe. Have you seen your siblings? Go fetch them \nfor me will you? It's time to eat breakfast";
     }
 
     public void setAction(){

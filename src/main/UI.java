@@ -14,14 +14,16 @@ public class UI {
     Font maruMonica;
 
     //BUFFERED IMAGES FOR OBJECT
-    //  BufferedImage quilImage;
+//  BufferedImage quilImage;
     BufferedImage full_exp, half_exp, empty_exp;
 
     public boolean messageOn = false;
-    public String message = "";
-    int msgCounter = 0;
     public boolean gameFinished = false;
+
+    public String message = "";
     public String currentDialogue = "";
+
+    int msgCounter = 0;
     public int commandNum = 0;
     public int titleScreenState = 0;
     public int optionSubState = 0;
@@ -297,33 +299,132 @@ public class UI {
         else if (titleScreenState == 2) {
 
             g2.drawImage(cutsceneBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
+            int tailX = gp.tileSize*18;
 
             g2.setColor(new Color(123, 84, 47));
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,48f));
 
-            String text = "CREDITS";
+            String text = "INK AND BLOOD";
             int x = getXforCenter(text);
-            int y = gp.tileSize*3;
+            int y = gp.tileSize*2;
             g2.drawString(text, x, y);
 
-            text = "Lead Programmer -- Joyce Orog";
+            g2.setColor(Color.darkGray);
+            text = "----------------------------------------------------";
             x = getXforCenter(text);
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
-            text = "Story Director -- Miko Lamoste";
+            //LEFT SIDE
+            g2.setColor(new Color(123, 84, 47));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,35f));
+            text = "SCRIPT DIRECTOR";
+            x = gp.tileSize*2;
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            text = "ART AND GRAPHICS";
+            x = gp.tileSize*2;
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            text = "SOUND DESIGNER";
+            x = gp.tileSize*2;
+            y += gp.tileSize*2;
+            g2.drawString(text, x, y);
+
+            text = "MUSIC COMPOSER";
+            x = gp.tileSize*2;
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+
+            //RIGHT SIDE
+            text = "Miko Lamoste";
+            x = getXforAlignToRight(text,tailX);
+            y = gp.tileSize*4;
+            g2.drawString(text, x, y);
+
+            text = "Shella Dizon";
+            x = getXforAlignToRight(text, tailX);
+            y += gp.tileSize*3;
+            g2.drawString(text, x, y);
+
+            text = "Next Page";
+            x = getXforCenter(text);
+            y += gp.tileSize*3;
+            g2.drawString(text, x, y);
+            if (commandNum == 1){
+                g2.drawString(">", x-gp.tileSize, y);
+            }
+
+            text = "Go Back";
+            x = getXforCenter(text);
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+            if (commandNum == 0){
+                g2.drawString(">", x-gp.tileSize, y);
+            }
+
+
+        }
+
+        //CREDITS NEXT PAGE
+        else if (titleScreenState == 3) {
+            g2.drawImage(cutsceneBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
+            int tailX = gp.tileSize*18;
+
+            g2.setColor(new Color(123, 84, 47));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,48f));
+
+            String text = "INK AND BLOOD";
+            int x = getXforCenter(text);
+            int y = gp.tileSize*2;
+            g2.drawString(text, x, y);
+
+            g2.setColor(Color.darkGray);
+            text = "----------------------------------------------------";
             x = getXforCenter(text);
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
-            text = "Music & Sound Director -- Shella Dizon";
-            x = getXforCenter(text);
+            //LEFT SIDE
+            g2.setColor(new Color(123, 84, 47));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,35f));
+            text = "GAME DIRECTOR";
+            x = gp.tileSize*2;
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
-            text = "Story Consultant -- Ms.Alyssa Repuya";
-            x = getXforCenter(text);
+            text = "PROGRAM DEVELOPMENT";
+            x = gp.tileSize*2;
             y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            text = "STORY CONSULTANT";
+            x = gp.tileSize*2;
+            y += gp.tileSize*2;
+            g2.drawString(text, x, y);
+
+            text = "DEVELOPMENT CONSULTANT";
+            x = gp.tileSize*2;
+            y += gp.tileSize*2;
+            g2.drawString(text, x, y);
+
+            //RIGHT SIDE
+            text = "Joyce Orog";
+            x = getXforAlignToRight(text,tailX);
+            y = gp.tileSize*4;
+            g2.drawString(text, x, y);
+
+            text = "Alyssa Repuya";
+            x = getXforAlignToRight(text, tailX);
+            y += gp.tileSize*3;
+            g2.drawString(text, x, y);
+
+            text = "Joshua Penaranda";
+            x = getXforAlignToRight(text, tailX);
+            y += gp.tileSize*2;
             g2.drawString(text, x, y);
 
             text = "Go Back";
@@ -354,7 +455,7 @@ public class UI {
         int height = gp.tileSize*3;
         drawSubWindow(x, y, width, height);
 
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,20F));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,25F));
         x += gp.tileSize;
         y += gp.tileSize;
 

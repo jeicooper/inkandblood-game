@@ -130,20 +130,50 @@ public class KeyHandler implements KeyListener {
             if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
                 gp.ui.commandNum--;
                 if (gp.ui.commandNum < 0) {
-                    gp.ui.commandNum = 0;
+                    gp.ui.commandNum = 1;
                 }
 
             }
             if(code == KeyEvent.VK_S  || code == KeyEvent.VK_DOWN){
                 gp.ui.commandNum++;
-                if (gp.ui.commandNum > 0) {
+                if (gp.ui.commandNum > 1) {
                     gp.ui.commandNum = 0;
                 }
             }
 
             if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+                //GO BACK
                 if (gp.ui.commandNum == 0){
                     gp.ui.titleScreenState = 0;
+                }
+                //NEXT PAGE
+                if (gp.ui.commandNum == 1){
+                    gp.ui.titleScreenState = 3;
+                }
+            }
+        }
+
+        //CREDITS SCREEN SECOND PAGE
+        else if (gp.ui.titleScreenState == 3){
+
+            if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
+                gp.ui.commandNum--;
+                if (gp.ui.commandNum < 0) {
+                    gp.ui.commandNum = 1;
+                }
+
+            }
+            if(code == KeyEvent.VK_S  || code == KeyEvent.VK_DOWN){
+                gp.ui.commandNum++;
+                if (gp.ui.commandNum > 1) {
+                    gp.ui.commandNum = 0;
+                }
+            }
+
+            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+                //GO BACK
+                if (gp.ui.commandNum == 0){
+                    gp.ui.titleScreenState = 2;
                 }
             }
         }
