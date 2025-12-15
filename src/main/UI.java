@@ -18,7 +18,7 @@ public class UI {
     BufferedImage full_exp, half_exp, empty_exp;
 
     public boolean messageOn = false;
-    public boolean gameFinished = false;
+//  public boolean gameFinished = false;
 
     public String message = "";
     public String currentDialogue = "";
@@ -116,6 +116,11 @@ public class UI {
         //OPTION STATE
         if (gp.gameState == gp.optionState) {
             drawOptionScreen();
+        }
+
+        //QUEST STATE
+        if (gp.gameState == gp.questState) {
+            drawQuestScreen();
         }
 
 //        g2.drawImage(quilImage, gp.tileSize/3, gp.tileSize/3, gp.tileSize, gp.tileSize, null);
@@ -439,7 +444,7 @@ public class UI {
     }
     public void drawPauseScreen(){
 
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN,80F));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,80F));
         String text = "PAUSED";
         int x = getXforCenter(text);
         int y = gp.tileSize*6;
@@ -552,6 +557,55 @@ public class UI {
         }
 
         gp.keyP.enterPressed = false;
+    }
+    public void drawQuestScreen(){
+        //FRAME
+        final int frameX = gp.tileSize;
+        final int frameY = gp.tileSize;
+        final int frameWidth = gp.tileSize*18 ;
+        final int frameHeight = gp.tileSize*10;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(32f));
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
+        String text = "Quests";
+        int x = getXforCenter(text);
+        int y = frameY + gp.tileSize;
+        g2.drawString(text, x, y);
+
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
+        text = "“Familya Rizal” - Help Pepe find his 10 siblings.";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize;
+        g2.drawString(text, x, y);
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN ,32f));
+        text = " -Saturnina                -Maria";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize/2;
+        g2.drawString(text, x, y);
+
+        text = " -Paciano                 -Josefa";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize/2;
+        g2.drawString(text, x, y);
+
+        text = " -Narcisa                -Trinidad";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize/2;
+        g2.drawString(text, x, y);
+
+        text = " -Olimpia                 -Solidad";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize/2;
+        g2.drawString(text, x, y);
+
+        text = " -Lucia                       -???";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize/2;
+        g2.drawString(text, x, y);
     }
 
     public void options_top(int frameX, int frameY){

@@ -7,7 +7,7 @@ public class KeyHandler implements KeyListener {
 
     GamePanel gp;
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, enterPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, ePressed, enterPressed;
 
     //DEBUGGING
     boolean checkDrawTime = false;
@@ -49,6 +49,10 @@ public class KeyHandler implements KeyListener {
         //OPTION STATE
         else if (gp.gameState == gp.optionState) {
             optionState(code);
+        }
+        //QUEST STATE
+        else if (gp.gameState == gp.questState) {
+            questState(code);
         }
     }
 
@@ -207,6 +211,10 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.characterState;
             cPressed = true;
         }
+        if (code == KeyEvent.VK_E){
+            gp.gameState = gp.questState;
+            ePressed = true;
+        }
 
         if (code == KeyEvent.VK_ESCAPE){
 
@@ -248,6 +256,12 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.playState;
         }
     }
+    public void questState(int code){
+        if (code == KeyEvent.VK_E) {
+            gp.gameState =gp.playState;
+        }
+    }
+
     public void optionState(int code){
 
         if (code == KeyEvent.VK_ESCAPE) {
@@ -323,7 +337,6 @@ public class KeyHandler implements KeyListener {
         }
 
     }
-
 
 
 
