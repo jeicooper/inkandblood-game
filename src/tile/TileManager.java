@@ -525,7 +525,6 @@ public class TileManager {
 
         setup(519, "pillarside_stair_1", false);
         setup(520, "pillarside_stair_2", false);
-
         setup(521, "study_room_00", true);
         setup(522, "study_room_01", true);
         setup(523, "study_room_02", true);

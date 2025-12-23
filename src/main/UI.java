@@ -276,6 +276,11 @@ public class UI {
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
+            text = "Quest Panel: E";
+            x = getXforCenter(text);
+            y += gp.tileSize;
+            g2.drawString(text, x,y);
+
             g2.setColor(Color.darkGray);
             text = "--------------------------------------------------------";
             x = getXforCenter(text);
@@ -753,6 +758,7 @@ public class UI {
         g2.drawString("Interact", leftX, leftY); leftY += gp.tileSize;
         g2.drawString("Stats/Inventory", leftX, leftY); leftY += gp.tileSize;
         g2.drawString("Pause", leftX, leftY); leftY += gp.tileSize;
+        g2.drawString("Quests", leftX, leftY); leftY += gp.tileSize;
         g2.drawString("Options", leftX, leftY); leftY += gp.tileSize;
 
         //Right Side
@@ -763,6 +769,7 @@ public class UI {
         g2.drawString("F", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("C", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("P", rightX, rightY); rightY += gp.tileSize;
+        g2.drawString("E", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("ESC", rightX, rightY); rightY += gp.tileSize;
 
         textX = getXforCenter("Back");
