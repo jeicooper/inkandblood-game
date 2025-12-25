@@ -27,6 +27,7 @@ public class UI {
     public int commandNum = 0;
     public int titleScreenState = 0;
     public int optionSubState = 0;
+    public int questSubState = 0;
 
     public BufferedImage titleBackground;
     public BufferedImage cutsceneBG;
@@ -566,76 +567,129 @@ public class UI {
 
     public void drawQuestScreen(){
         //FRAME
-        final int frameX = gp.tileSize;
-        final int frameY = gp.tileSize;
-        final int frameWidth = gp.tileSize*18 ;
-        final int frameHeight = gp.tileSize*10;
+        int frameX = gp.tileSize;
+        int frameY = gp.tileSize;
+        int frameWidth = gp.tileSize*18 ;
+        int frameHeight = gp.tileSize*10;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
-        g2.setColor(Color.white);
-        g2.setFont(g2.getFont().deriveFont(32f));
+        if (questSubState == 0){
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(32f));
 
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
-        String text = "Quests";
-        int x = getXforCenter(text);
-        int y = frameY + gp.tileSize;
-        g2.drawString(text, x, y);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
+            String text = "Quests";
+            int x = getXforCenter(text);
+            int y = frameY + gp.tileSize;
+            g2.drawString(text, x, y);
 
-        //1ST QUEST
-        g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
-        text = "“Familya Rizal” - Help Pepe find his 10 siblings.";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize;
-        g2.drawString(text, x, y);
+            //1ST QUEST
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
+            text = "“Familya Rizal” - Help Pepe find his 10 siblings.";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
 
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN ,32f));
-        text = " -Saturnina                -Maria";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize/2;
-        g2.drawString(text, x, y);
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN ,32f));
+            text = " -Saturnina                -Maria";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
 
-        text = " -Paciano                 -Josefa";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize/2;
-        g2.drawString(text, x, y);
+            text = " -Paciano                 -Josefa";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
 
-        text = " -Narcisa                -Trinidad";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize/2;
-        g2.drawString(text, x, y);
+            text = " -Narcisa                -Trinidad";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
 
-        text = " -Olimpia                 -Solidad";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize/2;
-        g2.drawString(text, x, y);
+            text = " -Olimpia                 -Solidad";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
 
-        text = " -Lucia                       -???";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize/2;
-        g2.drawString(text, x, y);
+            text = " -Lucia                       -???";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
 
-        //2ND QUEST
-        g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
-        text = "“Pangako para sa Pamilya”: Assist Mother in preparing flowers";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize;
-        g2.drawString(text, x, y);
 
-        text = "for the Virgin of Antipolo offering.";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize/2;
-        g2.drawString(text, x, y);
+            //2ND QUEST
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
+            text = "“Pangako para sa Pamilya”: Assist Mother in preparing flowers";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
 
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN,32f));
-        text = "- Gather 8 flowers from the family garden.";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize/2;
-        g2.drawString(text, x, y);
+            text = "for the Virgin of Antipolo offering.";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
 
-        text = "- Offer the flowers for the Virgin of Antipolo.";
-        x = frameX + gp.tileSize;
-        y += gp.tileSize/2;
-        g2.drawString(text, x, y);
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN,32f));
+            text = " -Gather 8 flowers from the family garden.";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
+
+            text = " -Offer the flowers for the Virgin of Antipolo.";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
+
+            text = "Next";
+            x = getXforCenter(text);
+            y += gp.tileSize * 2;
+            g2.drawString(text, x, y);
+            if (commandNum == 0){
+                g2.drawString(">", x-gp.tileSize, y);
+            }
+        }
+
+
+        if (questSubState == 1){
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(32f));
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
+            String text = "Quests";
+            int x = getXforCenter(text);
+            int y = frameY + gp.tileSize;
+            g2.drawString(text, x, y);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
+            text = "“Pangangaral ng mga Tiyo”: Talk with your Uncle to learn lessons.";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize;
+            g2.drawString(text, x, y);
+
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN ,32f));
+            text = " -Join Uncle Jose Alberto";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
+
+            text = " -Train with Uncle Manuel";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
+
+            text = " -Study with Uncle Gregorio";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
+            g2.drawString(text, x, y);
+
+            text = "Back";
+            x = getXforCenter(text);
+            y += gp.tileSize * 5.5;
+            g2.drawString(text, x, y);
+            if (commandNum == 0){
+                g2.drawString(">", x-gp.tileSize, y);
+            }
+        }
 
     }
 
