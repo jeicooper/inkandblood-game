@@ -563,6 +563,7 @@ public class UI {
 
         gp.keyP.enterPressed = false;
     }
+
     public void drawQuestScreen(){
         //FRAME
         final int frameX = gp.tileSize;
@@ -580,6 +581,7 @@ public class UI {
         int y = frameY + gp.tileSize;
         g2.drawString(text, x, y);
 
+        //1ST QUEST
         g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
         text = "“Familya Rizal” - Help Pepe find his 10 siblings.";
         x = frameX + gp.tileSize;
@@ -611,6 +613,30 @@ public class UI {
         x = frameX + gp.tileSize;
         y += gp.tileSize/2;
         g2.drawString(text, x, y);
+
+        //2ND QUEST
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
+        text = "“Pangako para sa Pamilya”: Assist Mother in preparing flowers";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize;
+        g2.drawString(text, x, y);
+
+        text = "for the Virgin of Antipolo offering.";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize/2;
+        g2.drawString(text, x, y);
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN,32f));
+        text = "- Gather 8 flowers from the family garden.";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize/2;
+        g2.drawString(text, x, y);
+
+        text = "- Offer the flowers for the Virgin of Antipolo.";
+        x = frameX + gp.tileSize;
+        y += gp.tileSize/2;
+        g2.drawString(text, x, y);
+
     }
 
     public void options_top(int frameX, int frameY){
