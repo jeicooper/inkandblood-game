@@ -7,7 +7,7 @@ public class KeyHandler implements KeyListener {
 
     GamePanel gp;
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, ePressed, enterPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, ePressed, iPressed,enterPressed;
 
     //DEBUGGING
     boolean checkDrawTime = false;
@@ -53,6 +53,10 @@ public class KeyHandler implements KeyListener {
         //QUEST STATE
         else if (gp.gameState == gp.questState) {
             questState(code);
+        }
+        //INVENTORY STATE
+        else if (gp.gameState == gp.inventoryState) {
+            inventoryState(code);
         }
     }
 
@@ -211,9 +215,14 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.characterState;
             cPressed = true;
         }
+        //press E to view quest
         if (code == KeyEvent.VK_E){
             gp.gameState = gp.questState;
             ePressed = true;
+        }
+        if (code == KeyEvent.VK_I){
+            gp.gameState = gp.inventoryState;
+            iPressed = true;
         }
 
         if (code == KeyEvent.VK_ESCAPE){
@@ -256,6 +265,12 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.playState;
         }
     }
+    public void inventoryState(int code){
+        if (code == KeyEvent.VK_I){
+            gp.gameState = gp.playState;
+        }
+    }
+
     public void questState(int code){
         if (code == KeyEvent.VK_E) {
             gp.gameState = gp.playState;

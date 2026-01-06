@@ -124,6 +124,11 @@ public class UI {
             drawQuestScreen();
         }
 
+        //INVENTORY STATE
+        if (gp.gameState == gp.inventoryState) {
+            drawInventoryScreen();
+        }
+
 //        g2.drawImage(quilImage, gp.tileSize/3, gp.tileSize/3, gp.tileSize, gp.tileSize, null);
 //        g2.drawString("x "+ gp.player.hasQuil, 100, 65);
 
@@ -563,6 +568,22 @@ public class UI {
         }
 
         gp.keyP.enterPressed = false;
+    }
+    public void drawInventoryScreen(){
+
+        int frameX = gp.tileSize*2;
+        int frameY = gp.tileSize*2;
+        int frameWidth = gp.tileSize*16 ;
+        int frameHeight = gp.tileSize*8;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(32f));
+
+        String text = "INVENTORY";
+        int x = getXforCenter(text);
+        int y = frameY + gp.tileSize;
+        g2.drawString(text,x, y);
     }
 
     public void drawQuestScreen(){
