@@ -29,6 +29,9 @@ public class UI {
     public int optionSubState = 0;
     public int questSubState = 0;
 
+    public int slotCol = 0;
+    public int slotRow = 0;
+
     public BufferedImage titleBackground;
     public BufferedImage cutsceneBG;
 
@@ -112,6 +115,7 @@ public class UI {
         //CHARACTER STATE
         if (gp.gameState == gp.characterState) {
             drawCharacterScreen();
+            drawInventory();
         }
 
         //OPTION STATE
@@ -124,10 +128,6 @@ public class UI {
             drawQuestScreen();
         }
 
-        //INVENTORY STATE
-        if (gp.gameState == gp.inventoryState) {
-            drawInventoryScreen();
-        }
 
 //        g2.drawImage(quilImage, gp.tileSize/3, gp.tileSize/3, gp.tileSize, gp.tileSize, null);
 //        g2.drawString("x "+ gp.player.hasQuil, 100, 65);
@@ -541,6 +541,30 @@ public class UI {
         g2.drawString(value, textX,textY);
         textY += lineHeight;
     }
+    public void drawInventory(){
+
+        int frameX = gp.tileSize * 13;
+        int frameY = gp.tileSize;
+        int frameWidth = gp.tileSize * 6;
+        int frameHeight = gp.tileSize * 5;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        //SLOTS
+        final int slotXstart = frameX + 20;
+        final int slotYstart = frameY + 20;
+        int slotX = slotXstart;
+        int slotY = slotYstart;
+
+        //CURSOR
+        int cursorX = slotXstart + slotCol;
+        int cursorY = slotYstart + slotRow;
+        int cursorWidth = gp.tileSize;
+        int cursorHeight = gp.tileSize;
+
+        g2.setColor(Color.white);
+        g2.setStroke(new BasicStroke(3));
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10 );
+    }
     public void drawOptionScreen(){
         g2.setColor(Color.white);
         g2.setFont(g2.getFont().deriveFont(32F));
@@ -568,22 +592,6 @@ public class UI {
         }
 
         gp.keyP.enterPressed = false;
-    }
-    public void drawInventoryScreen(){
-
-        int frameX = gp.tileSize*2;
-        int frameY = gp.tileSize*2;
-        int frameWidth = gp.tileSize*16 ;
-        int frameHeight = gp.tileSize*8;
-        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
-
-        g2.setColor(Color.white);
-        g2.setFont(g2.getFont().deriveFont(32f));
-
-        String text = "INVENTORY";
-        int x = getXforCenter(text);
-        int y = frameY + gp.tileSize;
-        g2.drawString(text,x, y);
     }
 
     public void drawQuestScreen(){

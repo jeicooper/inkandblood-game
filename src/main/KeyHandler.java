@@ -54,10 +54,6 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.questState) {
             questState(code);
         }
-        //INVENTORY STATE
-        else if (gp.gameState == gp.inventoryState) {
-            inventoryState(code);
-        }
     }
 
     public void titleState(int code){
@@ -220,10 +216,6 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.questState;
             ePressed = true;
         }
-        if (code == KeyEvent.VK_I){
-            gp.gameState = gp.inventoryState;
-            iPressed = true;
-        }
 
         if (code == KeyEvent.VK_ESCAPE){
 
@@ -262,11 +254,6 @@ public class KeyHandler implements KeyListener {
     }
     public void characterState(int code){
         if (code == KeyEvent.VK_C) {
-            gp.gameState = gp.playState;
-        }
-    }
-    public void inventoryState(int code){
-        if (code == KeyEvent.VK_I){
             gp.gameState = gp.playState;
         }
     }
