@@ -3,11 +3,13 @@ package entity;
 import main.GamePanel;
 import main.KeyHandler;
 import main.UtilityTool;
+import object.OBJ_Quil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Player extends  Entity{
 
@@ -15,9 +17,8 @@ public class Player extends  Entity{
 
     public final int screenX;
     public final int screenY;
-
-    //INVENTORY
-    public int hasQuil = 0;
+    public ArrayList<Entity> inventory = new ArrayList<>();
+    public final int maxInventorySize = 20;
 
     public Player(GamePanel gp, KeyHandler keyP){
 
@@ -39,6 +40,8 @@ public class Player extends  Entity{
 
         setDefaultValues();
         getPlayerImage();
+
+        setItems();
     }
 
     public void setDefaultValues(){
@@ -58,9 +61,18 @@ public class Player extends  Entity{
         perception = 1;
         charisma = 1;
 
-
+        //itemName = new OBJ_itemName(gp);
 
     }
+
+    public void setItems (){
+        //inventory.add(itemName);
+        inventory.add(new OBJ_Quil(gp));
+        inventory.add(new OBJ_Quil(gp));
+        inventory.add(new OBJ_Quil(gp));
+
+    }
+
     public void getPlayerImage(){
 
             up1 = setup("/player/boy_up_1");

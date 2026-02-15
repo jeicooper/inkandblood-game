@@ -40,6 +40,9 @@ public class Entity {
     public int perception;
     public int charisma;
 
+    //ITEMS
+    public String description = "";
+
     public Entity(GamePanel gp){
         this.gp = gp;
     }
