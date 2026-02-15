@@ -543,6 +543,7 @@ public class UI {
     }
     public void drawInventory(){
 
+        //FRAME
         int frameX = gp.tileSize * 13;
         int frameY = gp.tileSize;
         int frameWidth = gp.tileSize * 6;
@@ -550,20 +551,63 @@ public class UI {
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
         //SLOTS
-        final int slotXstart = frameX + 20;
-        final int slotYstart = frameY + 20;
+        int totalGridWidth = gp.tileSize * 5;
+        int totalGridHeight = gp.tileSize * 4;
+
+        final int slotXstart = frameX + (frameWidth - totalGridWidth) / 2;
+        final int slotYstart = frameY + (frameHeight - totalGridHeight) / 2;
         int slotX = slotXstart;
         int slotY = slotYstart;
 
+
+        // DRAW PLAYER ITEM
+        for (int i = 0; i < gp.player.inventory.size(); i++) {
+
+            g2.drawImage(gp.player.inventory.get(i).image, slotX, slotY, gp.tileSize, gp.tileSize, null);
+
+            slotX += gp.tileSize;
+
+            if (i == 4 || i  == 9 || i ==14 ){
+                slotX = slotXstart;
+                slotY += gp.tileSize;
+            }
+        }
+
         //CURSOR
-        int cursorX = slotXstart + slotCol;
-        int cursorY = slotYstart + slotRow;
+        int cursorX = slotXstart + (gp.tileSize * slotCol);
+        int cursorY = slotYstart + (gp.tileSize * slotRow);
         int cursorWidth = gp.tileSize;
         int cursorHeight = gp.tileSize;
 
         g2.setColor(Color.white);
         g2.setStroke(new BasicStroke(3));
         g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10 );
+
+        //DESC FRAME
+        int dFrameX = frameX;
+        int dFrameY = frameY + frameHeight;
+        int dFrameWidth = frameWidth;
+        int dFrameHeight =  gp.tileSize*3;
+
+        drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
+
+        int textX = dFrameX + 20;
+        int textY = dFrameY + gp.tileSize;
+        g2.setFont(g2.getFont().deriveFont(28F));
+
+        int itemIndex = getItemIndexOnSlot();
+
+        if (itemIndex < gp.player.inventory.size()){
+
+            for (String line: gp.player.inventory.get(itemIndex).description.split("\n")){
+
+                g2.drawString(line, textX, textY);
+                textY += 32;
+            }
+
+
+        }
+
     }
     public void drawOptionScreen(){
         g2.setColor(Color.white);
@@ -939,6 +983,10 @@ public class UI {
             }
         }
 
+    }
+    public int getItemIndexOnSlot(){
+        int itemIndex = slotCol + (slotRow*5);
+        return itemIndex;
     }
 
     public void drawSubWindow(int x, int y, int width, int height){
