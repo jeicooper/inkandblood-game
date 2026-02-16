@@ -7,7 +7,7 @@ public class KeyHandler implements KeyListener {
 
     GamePanel gp;
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, ePressed, iPressed,enterPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, qPressed, enterPressed;
 
     //DEBUGGING
     boolean checkDrawTime = false;
@@ -211,10 +211,10 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.characterState;
             cPressed = true;
         }
-        //press E to view quest
-        if (code == KeyEvent.VK_E){
+        //press Q to view quest
+        if (code == KeyEvent.VK_Q){
             gp.gameState = gp.questState;
-            ePressed = true;
+            qPressed = true;
         }
 
         if (code == KeyEvent.VK_ESCAPE){
@@ -284,7 +284,7 @@ public class KeyHandler implements KeyListener {
     }
 
     public void questState(int code){
-        if (code == KeyEvent.VK_E) {
+        if (code == KeyEvent.VK_Q) {
             gp.gameState = gp.playState;
         }
 

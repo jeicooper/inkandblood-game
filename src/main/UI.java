@@ -96,6 +96,7 @@ public class UI {
         if (gp.gameState == gp.playState){
 
             drawPlayerExp();
+            drawHints();
         }
 
         //PAUSE STATE
@@ -169,6 +170,31 @@ public class UI {
             x += spacing;
         }
     }
+    public void drawHints(){
+
+        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 25f));
+
+        //LEFT
+        int hintLeftX = gp.tileSize/2;
+        int hintLeftY = gp.tileSize*10;
+
+        g2.drawString("[ W A S D ]     to move", hintLeftX, hintLeftY); hintLeftY += gp.tileSize/2;
+        g2.drawString("[ ENTER ]    to confirm", hintLeftX, hintLeftY); hintLeftY += gp.tileSize/2;
+        g2.drawString("[ ESC ]     for options", hintLeftX, hintLeftY); hintLeftY += gp.tileSize/2;
+        g2.drawString("[ C ] to view inventory", hintLeftX, hintLeftY); hintLeftY += gp.tileSize/2;
+
+        //RIGHT
+        int hintRightX = gp.tileSize * 15;
+        int hintRightY = gp.tileSize * 10;
+
+        g2.drawString("[ F ]       to interact", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
+        g2.drawString("[ Q ]   to view quests", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
+        g2.drawString("[ P ]          to pause", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
+
+
+    }
+
     public void drawTitleScreen(){
 
         if (titleScreenState == 0) {
@@ -922,7 +948,7 @@ public class UI {
         g2.drawString("F", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("C", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("P", rightX, rightY); rightY += gp.tileSize;
-        g2.drawString("E", rightX, rightY); rightY += gp.tileSize;
+        g2.drawString("Q", rightX, rightY); rightY += gp.tileSize;
         g2.drawString("ESC", rightX, rightY); rightY += gp.tileSize;
 
         textX = getXforCenter("Back");
@@ -984,6 +1010,7 @@ public class UI {
         }
 
     }
+
     public int getItemIndexOnSlot(){
         int itemIndex = slotCol + (slotRow*5);
         return itemIndex;
