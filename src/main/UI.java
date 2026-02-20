@@ -615,8 +615,6 @@ public class UI {
         int dFrameWidth = frameWidth;
         int dFrameHeight =  gp.tileSize*3;
 
-        drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
-
         int textX = dFrameX + 20;
         int textY = dFrameY + gp.tileSize;
         g2.setFont(g2.getFont().deriveFont(28F));
@@ -625,11 +623,17 @@ public class UI {
 
         if (itemIndex < gp.player.inventory.size()){
 
-            for (String line: gp.player.inventory.get(itemIndex).description.split("\n")){
+            if (itemIndex < gp.player.inventory.size()){
 
-                g2.drawString(line, textX, textY);
-                textY += 32;
+                drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
+
+                for (String line: gp.player.inventory.get(itemIndex).description.split("\n")){
+
+                    g2.drawString(line, textX, textY);
+                    textY += 32;
+                }
             }
+
 
 
         }
