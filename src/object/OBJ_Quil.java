@@ -12,5 +12,7 @@ public class OBJ_Quil extends Entity {
         image = setup("/objects/quil");
 
         description = "[" + name + "]\nIt is used for writing.";
+
+        setHitbox();
     }
 }

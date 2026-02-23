@@ -183,9 +183,23 @@ public class Player extends  Entity{
 
         if (i != 999){
 
-            String objectName = gp.obj[i].name;
+            if (inventory.size() != maxInventorySize){
 
-            switch (objectName){
+                String objectName = gp.obj[i].name;
+                inventory.add(gp.obj[i]);
+                gp.obj[i] = null;
+            //  gp.playSE(1);
+                gp.ui.showMessage("Got a " + objectName + "!");
+            }
+            else {
+                gp.ui.showMessage("Your inventory is full!");
+            }
+
+
+
+//            String objectName = gp.obj[i].name;
+//
+//            switch (objectName){
 //                case "Quil":
 //                    gp.playSE(1);
 //                    hasQuil++;
@@ -203,7 +217,6 @@ public class Player extends  Entity{
 //                        gp.ui.showMessage("You need a Quill!");
 //                    }
 //                    break;
-            }
         }
     }
 

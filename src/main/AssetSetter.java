@@ -2,6 +2,7 @@ package main;
 
 import entity.NPC_Concha;
 import entity.NPC_Teodora;
+import object.OBJ_Quil;
 
 public class AssetSetter {
 
@@ -13,9 +14,23 @@ public class AssetSetter {
 
     public void setObject(){
 
-//          gp.obj[0] = new OBJ_Grave(gp);
-//          gp.obj[0].worldX = 58 * gp.tileSize;
-//          gp.obj[0].worldY = 19 * gp.tileSize;
+        int i = 0;
+        gp.obj[i] = new OBJ_Quil(gp);
+        gp.obj[i].worldX = 57 * gp.tileSize;
+        gp.obj[i].worldY = 19 * gp.tileSize;
+        i++;
+
+
+
+        gp.obj[i] = new OBJ_Quil(gp);
+        gp.obj[i].worldX = 65 * gp.tileSize;
+        gp.obj[i].worldY = 14 * gp.tileSize;
+        i++;
+
+        gp.obj[i] = new OBJ_Quil(gp);
+        gp.obj[i].worldX = 23 * gp.tileSize;
+        gp.obj[i].worldY = 9 * gp.tileSize;
+        i++;
     }
 
     public void setNPC() {

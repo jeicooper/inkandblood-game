@@ -97,6 +97,18 @@ public class UI {
 
             drawPlayerExp();
             drawHints();
+
+            if (messageOn){
+                g2.setFont(g2.getFont().deriveFont(Font.BOLD, 35F));
+                g2.setColor(Color.white);
+                int x = getXforCenter(message);
+                g2.drawString(message, x, gp.tileSize * 8);
+                msgCounter++;
+                if (msgCounter > 120){   // show for ~3 seconds at 60fps
+                    messageOn = false;
+                    msgCounter = 0;
+                }
+            }
         }
 
         //PAUSE STATE
