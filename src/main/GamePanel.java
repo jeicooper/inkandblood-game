@@ -50,6 +50,7 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetSetter aSetter = new AssetSetter(this);
     public UI ui = new UI(this);
     Config config = new Config(this);
+    public QuestManager questManager = new QuestManager(this);
     Thread gameThread;
 
 
@@ -71,8 +72,6 @@ public class GamePanel extends JPanel implements Runnable {
     public final int questState = 6;
 
 
-
-
     public GamePanel(){
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -87,6 +86,8 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setObject();
         aSetter.setNPC();
 //      playMusic(0);
+
+        questManager.init();
 
         gameState = titleState;
 
@@ -169,7 +170,8 @@ public class GamePanel extends JPanel implements Runnable {
                     npc[i].update();
                 }
             }
-            
+
+            questManager.update();
         }
         if (gameState == pauseState){
             //
@@ -179,12 +181,12 @@ public class GamePanel extends JPanel implements Runnable {
     public void drawToTempScreen() {
         //DEBUG
         long drawStart = 0;
-        if (keyP.checkDrawTime == true){
+        if (keyP.checkDrawTime == true) {
             drawStart = System.nanoTime();
         }
 
         //TITLE SCREEN
-        if (gameState == titleState){
+        if (gameState == titleState) {
             ui.draw(g2);
 
         }
@@ -197,14 +199,14 @@ public class GamePanel extends JPanel implements Runnable {
 
             //ADD ENTITIES
             entityList.add(player);
-            for (int i =0; i < npc.length; i++){
-                if (npc[i] != null){
+            for (int i = 0; i < npc.length; i++) {
+                if (npc[i] != null) {
                     entityList.add(npc[i]);
                 }
             }
 
-            for(int i = 0; i < obj.length; i ++){
-                if (obj[i] != null){
+            for (int i = 0; i < obj.length; i++) {
+                if (obj[i] != null) {
                     entityList.add(obj[i]);
                 }
             }
@@ -220,26 +222,51 @@ public class GamePanel extends JPanel implements Runnable {
             });
 
             //DRAW ENTITIES
-            for (int i = 0; i < entityList.size(); i++){
+            for (int i = 0; i < entityList.size(); i++) {
                 entityList.get(i).draw(g2);
             }
 
             //EMPTY ENTITY LIST
             entityList.clear();
 
-            //UI
-            ui.draw(g2);
-        }
+            if (questManager.isQuestActive(QuestManager.QUEST_CHAP1_1)) {
+                drawDeliveryZone(g2);
 
-        //DEBUGGING
-        if (keyP.checkDrawTime == true){
+                //UI
+                ui.draw(g2);
+            }
 
-            long drawEnd = System.nanoTime();
-            long passed = drawEnd - drawStart;
-            g2.setColor(Color.white);
-            g2.drawString("Draw Time: " + passed, 10, 400);
-            System.out.println("Draw Time: " + passed);
+            //DEBUGGING
+            if (keyP.checkDrawTime == true) {
+
+                long drawEnd = System.nanoTime();
+                long passed = drawEnd - drawStart;
+                g2.setColor(Color.white);
+                g2.drawString("Draw Time: " + passed, 10, 400);
+                System.out.println("Draw Time: " + passed);
+            }
         }
+    }
+
+    private void drawDeliveryZone(Graphics2D g2) {
+
+        int screenX = questManager.deliveryWorldX - player.worldX + player.screenX;
+        int screenY = questManager.deliveryWorldY - player.worldY + player.screenY;
+        int r       = questManager.deliveryRadius;
+
+        // Only draw if on screen
+        if (screenX + r < 0 || screenX - r > screenWidth ||
+                screenY + r < 0 || screenY - r > screenHeight) return;
+
+        Composite old = g2.getComposite();
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
+        g2.setColor(new Color(255, 220, 50));
+        g2.fillOval(screenX - r, screenY - r, r * 2, r * 2);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+        g2.setColor(new Color(255, 200, 0));
+        g2.setStroke(new BasicStroke(3));
+        g2.drawOval(screenX - r, screenY - r, r * 2, r * 2);
+        g2.setComposite(old);
     }
 
     public void drawToScreen(){

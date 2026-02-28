@@ -5,6 +5,8 @@ import java.util.Random;
 
 public class NPC_Concha extends Entity{
 
+    public boolean visited = false;
+
     public NPC_Concha (GamePanel gp){
         super(gp);
 
@@ -36,8 +38,12 @@ public class NPC_Concha extends Entity{
         dialogues[1] = "Born: 1862, Died: 1865. We will miss you forever.";
     }
 
-    public void speak(){
-
+    @Override
+    public void speak() {
         super.speak();
+        if (!visited) {
+            visited = true;
+            gp.questManager.conchaVisited = true;
+        }
     }
 }

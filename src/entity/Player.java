@@ -179,6 +179,24 @@ public class Player extends  Entity{
 
     }
 
+    public void interactNPC(int i){
+
+        if (i != 999) {
+
+            if (gp.keyP.fPressed == true){
+
+                gp.gameState = gp.dialogueState;
+                gp.npc[i].speak();
+
+                rebuildCongoLine();
+            }
+
+        }
+
+        gp.keyP.fPressed = false;
+    }
+
+
     public void pickUpObject(int i){
 
         if (i != 999){
@@ -220,19 +238,21 @@ public class Player extends  Entity{
         }
     }
 
-    public void interactNPC(int i){
+    public void rebuildCongoLine() {
+        Entity leader = this;
+        int count = 0;
 
-        if (i != 999) {
-
-            if (gp.keyP.fPressed == true){
-
-                gp.gameState = gp.dialogueState;
-                gp.npc[i].speak();
+        for (int i = 0; i < gp.npc.length; i++) {
+            if (gp.npc[i] instanceof NPC_Sibling) {
+                NPC_Sibling s = (NPC_Sibling) gp.npc[i];
+                if (s.isFollowing && !s.delivered) {
+                    s.followTarget = leader;
+                    leader = s;
+                    count++;
+                }
             }
-
         }
-
-        gp.keyP.fPressed = false;
+        System.out.println("Congo line rebuilt: " + count + " siblings following");
     }
 
 

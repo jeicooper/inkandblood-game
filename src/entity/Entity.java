@@ -145,18 +145,15 @@ public class Entity {
     }
 
     public BufferedImage setup(String imagePath){
-
         UtilityTool uTool = new UtilityTool();
         BufferedImage image = null;
 
-
         try {
-
-            image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+            var stream = getClass().getResourceAsStream(imagePath + ".png");
+            if (stream == null) return null;   // ← add this line
+            image = ImageIO.read(stream);
             image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
-
-
-        }catch (IOException e){
+        } catch (IOException e){
             e.printStackTrace();
         }
         return image;

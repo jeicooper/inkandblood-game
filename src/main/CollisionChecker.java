@@ -120,6 +120,10 @@ public class CollisionChecker {
         for (int i = 0; i < target.length; i++) {
             if (target[i] != null) {
 
+                if (target[i] instanceof entity.NPC_Sibling) {
+                    if (((entity.NPC_Sibling) target[i]).isFollowing) continue;
+                }
+
                 Rectangle entityRect = new Rectangle(
                         entity.worldX + entity.solidAreaDefaultX,
                         entity.worldY + entity.solidAreaDefaultY,

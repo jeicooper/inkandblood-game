@@ -97,6 +97,7 @@ public class UI {
 
             drawPlayerExp();
             drawHints();
+            drawQuestHUD();
 
             if (messageOn){
                 g2.setFont(g2.getFont().deriveFont(Font.BOLD, 35F));
@@ -122,6 +123,7 @@ public class UI {
         if (gp.gameState == gp.dialogueState) {
 
             drawPlayerExp();
+            drawQuestHUD();
             drawDialogueScreen();
         }
 
@@ -1030,6 +1032,49 @@ public class UI {
     public int getItemIndexOnSlot(){
         int itemIndex = slotCol + (slotRow*5);
         return itemIndex;
+    }
+
+    public void drawQuestHUD() {
+        if (gp.questManager == null) return;
+
+        int currentQ = gp.questManager.currentQuest;
+        if (gp.questManager.isQuestCompleted(currentQ) &&
+                currentQ == QuestManager.QUEST_CHAP1_1) return;
+
+        int panelW = gp.tileSize * 7;
+        int panelH = gp.tileSize * 2;
+        int panelX = gp.screenWidth - panelW - (gp.tileSize / 2);
+        int panelY = gp.tileSize / 2;
+
+        drawSubWindow(panelX, panelY, panelW, panelH);
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+
+        if (currentQ == main.QuestManager.QUEST_CHAP1_1 &&
+                gp.questManager.isQuestActive(main.QuestManager.QUEST_CHAP1_1)) {
+
+            int found    = gp.questManager.siblingsFound;
+            int required = gp.questManager.SIBLINGS_REQUIRED;
+
+            g2.setColor(new Color(255, 220, 80));
+            g2.drawString("Familya Rizal", panelX + 12, panelY + 28);
+
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(20F));
+            g2.drawString("Siblings found: " + found + " / " + required,
+                    panelX + 12, panelY + 52);
+
+            if (found >= required) {
+                g2.setColor(new Color(100, 255, 100));
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.drawString("Go to the golden circle!", panelX + 12, panelY + 72);
+            }
+        }
+
+        else if (currentQ == QuestManager.QUEST_CHAP1_2 &&
+                gp.questManager.isQuestActive(QuestManager.QUEST_CHAP1_2)) {
+
+        }
     }
 
     public void drawSubWindow(int x, int y, int width, int height){
