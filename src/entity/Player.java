@@ -53,8 +53,8 @@ public class Player extends  Entity{
         direction = "down";
 
         // PLAYER STATS
-        maxExp = 20; // 1 = halfexp
-        exp = maxExp;
+        maxExp = 10; // 1 = halfexp
+        exp = 0;
 
         intellect = 1;
         creativity = 1;
@@ -181,16 +181,10 @@ public class Player extends  Entity{
 
     public void interactNPC(int i){
 
-        if (i != 999) {
-
-            if (gp.keyP.fPressed == true){
+        if (i != 999 && gp.keyP.fPressed == true){
 
                 gp.gameState = gp.dialogueState;
                 gp.npc[i].speak();
-
-                rebuildCongoLine();
-            }
-
         }
 
         gp.keyP.fPressed = false;
@@ -252,7 +246,6 @@ public class Player extends  Entity{
                 }
             }
         }
-        System.out.println("Congo line rebuilt: " + count + " siblings following");
     }
 
 

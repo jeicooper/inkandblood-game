@@ -41,8 +41,8 @@ public class QuestManager {
     // Call this after tileSize is ready
     public void init() {
         // Delivery zone: Teodora's house area – adjust tile coords to match your map
-        deliveryWorldX = 75 * gp.tileSize;
-        deliveryWorldY = 22 * gp.tileSize;
+        deliveryWorldX = 74 * gp.tileSize;
+        deliveryWorldY = 26 * gp.tileSize;
         deliveryRadius = gp.tileSize * 2;
     }
 
@@ -53,6 +53,7 @@ public class QuestManager {
         }
     }
 
+    private int debugTimer = 0;
     private void updateQuest0() {
         int following = 0;
         for (int i = 0; i < gp.npc.length; i++) {
@@ -63,7 +64,15 @@ public class QuestManager {
         }
         siblingsFound = following + (conchaVisited ? 1 : 0);
 
-        // only the 9 living siblings need to be delivered
+        gp.player.rebuildCongoLine();
+
+        // print every 60 frames so console isn't flooded
+        debugTimer++;
+        if (debugTimer >= 60) {
+            System.out.println("following: " + following + " | conchaVisited: " + conchaVisited + " | inZone: " + playerInDeliveryZone());
+            debugTimer = 0;
+        }
+
         if (following >= SIBLINGS_REQUIRED && conchaVisited && playerInDeliveryZone()) {
             completeQuest0();
         }
@@ -77,21 +86,17 @@ public class QuestManager {
 
     private void completeQuest0() {
         questState[QUEST_CHAP1_1] = STATE_COMPLETED;
-        quest0JustCompleted = true;
-        gp.ui.showMessage("Quest Complete: Familya Rizal!");
+        gp.ui.showMessage("Quest 1: Done!");
 
-        // Unfollow all siblings now that they're delivered
+        gp.player.exp += 1;
+        System.out.println("Quest done. Player exp = " + gp.player.exp);
+
+        // remove all siblings from the NPC array
         for (int i = 0; i < gp.npc.length; i++) {
             if (gp.npc[i] instanceof entity.NPC_Sibling) {
-                ((entity.NPC_Sibling) gp.npc[i]).isFollowing = false;
-                ((entity.NPC_Sibling) gp.npc[i]).delivered   = true;
+                gp.npc[i] = null;
             }
         }
-
-        // Unlock next quest
-
-
-
     }
 
     public boolean isQuestActive(int quest) {

@@ -60,12 +60,7 @@ public class NPC_Sibling extends Entity {
 
     // ── Dialogue ──────────────────────────────────────────────
     private void buildDialogue() {
-        greetDialogue[0]  = "Pepe! There you are. \nI've been looking for you everywhere!";
-        greetDialogue[1]  = "Ate/Kuya " + siblingName + " will follow you now. \nLet's head back home to Nanay.";
-
-        followDialogue[0] = "I'm right behind you, Pepe!";
-        followDialogue[1] = "Don't walk too fast, Pepe!";
-        followDialogue[2] = "Are we almost there?";
+        greetDialogue[0]  = "What is it Pepe?. \nOh! is it time to eat?";
 
         dialogues = greetDialogue; // expose via Entity field (re-assign for speak())
     }
@@ -113,10 +108,8 @@ public class NPC_Sibling extends Entity {
 
     // ── Congo-line following logic ─────────────────────────────
     private void followUpdate() {
-        // Record target's current position into history
         posHistory.addLast(new int[]{followTarget.worldX, followTarget.worldY});
 
-        // Only move once we have enough history (creates the lag / gap)
         if (posHistory.size() > HISTORY_DELAY) {
             int[] targetPos = posHistory.removeFirst();
             int destX = targetPos[0];
@@ -127,17 +120,37 @@ public class NPC_Sibling extends Entity {
             double dist = Math.sqrt(dx * dx + dy * dy);
 
             if (dist > speed) {
-                // Move toward recorded position
-                double stepX = (dx / dist) * speed;
-                double stepY = (dy / dist) * speed;
-                worldX += (int) stepX;
-                worldY += (int) stepY;
-
-                // Update facing direction
+                // figure out direction first
                 if (Math.abs(dx) > Math.abs(dy)) {
                     direction = (dx > 0) ? "right" : "left";
                 } else {
                     direction = (dy > 0) ? "down" : "up";
+                }
+
+                // check tile collision before moving
+                collisionOn = false;
+                gp.cChecker.checkTile(this);
+                gp.cChecker.checkObject(this, false);
+
+                if (!collisionOn) {
+                    double stepX = (dx / dist) * speed;
+                    double stepY = (dy / dist) * speed;
+                    worldX += (int) stepX;
+                    worldY += (int) stepY;
+                } else {
+                    // blocked — try moving on just one axis
+                    collisionOn = false;
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        // try vertical instead
+                        direction = (dy > 0) ? "down" : "up";
+                        gp.cChecker.checkTile(this);
+                        if (!collisionOn) worldY += (dy > 0) ? speed : -speed;
+                    } else {
+                        // try horizontal instead
+                        direction = (dx > 0) ? "right" : "left";
+                        gp.cChecker.checkTile(this);
+                        if (!collisionOn) worldX += (dx > 0) ? speed : -speed;
+                    }
                 }
             }
         }

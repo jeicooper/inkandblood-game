@@ -149,39 +149,21 @@ public class UI {
 //        g2.drawString("x "+ gp.player.hasQuil, 100, 65);
 
     }
-    public void drawPlayerExp(){
-
-        gp.player.exp = 1;
-
-        int x = gp.tileSize/2;
-        int y = gp.tileSize/2;
-        int i = 0;
-
+    public void drawPlayerExp() {
+        int x = gp.tileSize / 2;
+        int y = gp.tileSize / 2;
         int spacing = gp.tileSize + 6;
 
-        //BLANK EXP
-        while (i < gp.player.maxExp/2){
-
+        // draw all slots as empty first
+        for (int i = 0; i < gp.player.maxExp; i++) {
             g2.drawImage(empty_exp, x, y, null);
-            i++;
             x += spacing;
-
         }
 
-        // RESET
-        x = gp.tileSize/2;
-        y = gp.tileSize/2;
-        i = 0;
-
-        //CURRENT EXP
-        while (i < gp.player.exp){
-            g2.drawImage(half_exp, x, y, null);
-            i++;
-
-            if (i < gp.player.exp){
-                g2.drawImage(full_exp, x, y, null);
-            }
-            i++;
+        // reset and draw filled exp on top
+        x = gp.tileSize / 2;
+        for (int i = 0; i < gp.player.exp; i++) {
+            g2.drawImage(full_exp, x, y, null);
             x += spacing;
         }
     }
@@ -513,9 +495,21 @@ public class UI {
         drawSubWindow(x, y, width, height);
 
         if (currentSpeakerName != null && !currentSpeakerName.isEmpty()) {
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 35F));
+
+            int nameX = x + gp.tileSize;
+            int nameY = y - 15;
+
+            // WHITE OUTLINE
+            g2.setColor(Color.black);
+            g2.drawString(currentSpeakerName, nameX - 1, nameY - 1);
+            g2.drawString(currentSpeakerName, nameX + 1, nameY - 1);
+            g2.drawString(currentSpeakerName, nameX - 1, nameY + 1);
+            g2.drawString(currentSpeakerName, nameX + 1, nameY + 1);
+
+            // GOLD TEXT ON TOP
             g2.setColor(new Color(255, 220, 80));
-            g2.drawString(currentSpeakerName, x + gp.tileSize, y - 10);
+            g2.drawString(currentSpeakerName, nameX, nameY);
         }
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,25F));
@@ -710,12 +704,14 @@ public class UI {
 
             //1ST QUEST
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
-            text = "“Familya Rizal” - Help Pepe find his 10 siblings.";
+            g2.setColor(new Color(255, 220, 80));
+            text = "QUEST 1: “Familya Rizal” - Help Pepe find his 10 siblings.";
             x = frameX + gp.tileSize;
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN ,32f));
+            g2.setColor(Color.white);
             text = " -Saturnina                -Maria";
             x = frameX + gp.tileSize;
             y += gp.tileSize/2;
@@ -744,54 +740,21 @@ public class UI {
 
             //2ND QUEST
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
-            text = "“Pangako para sa Pamilya”: Assist Mother in preparing flowers";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize;
-            g2.drawString(text, x, y);
-
-            text = "for the Virgin of Antipolo offering.";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
-
-            g2.setFont(g2.getFont().deriveFont(Font.PLAIN,32f));
-            text = " -Gather 8 flowers from the family garden.";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
-
-            text = " -Offer the flowers for the Virgin of Antipolo.";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
-
-            text = "Next";
-            x = getXforCenter(text);
-            y += gp.tileSize * 2;
-            g2.drawString(text, x, y);
-            if (commandNum == 0){
-                g2.drawString(">", x-gp.tileSize, y);
-            }
-        }
-
-
-        if (questSubState == 1){
-            g2.setColor(Color.white);
-            g2.setFont(g2.getFont().deriveFont(32f));
-
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
-            String text = "Quests";
-            int x = getXforCenter(text);
-            int y = frameY + gp.tileSize;
-            g2.drawString(text, x, y);
+            g2.setColor(new Color(255, 220, 80));
 
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
-            text = "“Pangangaral ng mga Tiyo”: Talk with your Uncle to learn lessons.";
+            text = "“QUEST 2: Pangangaral ng mga Tiyo”: Talk with your uncles to";
             x = frameX + gp.tileSize;
-            y += gp.tileSize;
+            y += gp.tileSize*2;
+            g2.drawString(text, x, y);
+
+            text="learn valuable lessons.";
+            x = frameX + gp.tileSize;
+            y += gp.tileSize/2;
             g2.drawString(text, x, y);
 
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN ,32f));
+            g2.setColor(Color.white);
             text = " -Join Uncle Jose Alberto";
             x = frameX + gp.tileSize;
             y += gp.tileSize/2;
@@ -806,16 +769,7 @@ public class UI {
             x = frameX + gp.tileSize;
             y += gp.tileSize/2;
             g2.drawString(text, x, y);
-
-            text = "Back";
-            x = getXforCenter(text);
-            y += gp.tileSize * 5.5;
-            g2.drawString(text, x, y);
-            if (commandNum == 0){
-                g2.drawString(">", x-gp.tileSize, y);
-            }
         }
-
     }
 
     public void options_top(int frameX, int frameY){

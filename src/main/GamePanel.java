@@ -231,10 +231,10 @@ public class GamePanel extends JPanel implements Runnable {
 
             if (questManager.isQuestActive(QuestManager.QUEST_CHAP1_1)) {
                 drawDeliveryZone(g2);
-
-                //UI
-                ui.draw(g2);
             }
+
+            //UI
+            ui.draw(g2);
 
             //DEBUGGING
             if (keyP.checkDrawTime == true) {
