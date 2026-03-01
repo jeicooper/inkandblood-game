@@ -40,6 +40,7 @@ public class NPC_Concha extends Entity{
 
     @Override
     public void speak() {
+
         super.speak();
         if (!visited) {
             visited = true;

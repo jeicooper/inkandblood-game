@@ -65,6 +65,7 @@ public class NPC_Teodora extends Entity{
 
     public void speak(){
 
+        gp.ui.currentSpeakerName = "Teodora Alonso Realonda";
         super.speak();
     }
 }

@@ -73,13 +73,12 @@ public class NPC_Sibling extends Entity {
     // ── Entity.speak() override ───────────────────────────────
     @Override
     public void speak() {
+        gp.ui.currentSpeakerName = siblingName;
         if (!isFollowing) {
-            // First interaction – greet and start following
             dialogues = greetDialogue;
             super.speak();
             startFollowing();
         } else {
-            // Already following – give a follow line
             dialogues = followDialogue;
             super.speak();
         }

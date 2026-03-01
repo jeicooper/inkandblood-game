@@ -89,6 +89,9 @@ public class QuestManager {
         }
 
         // Unlock next quest
+
+
+
     }
 
     public boolean isQuestActive(int quest) {

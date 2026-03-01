@@ -22,6 +22,7 @@ public class UI {
 
     public String message = "";
     public String currentDialogue = "";
+    public String currentSpeakerName = "";
 
     int msgCounter = 0;
     public int commandNum = 0;
@@ -511,7 +512,14 @@ public class UI {
         int height = gp.tileSize*3;
         drawSubWindow(x, y, width, height);
 
+        if (currentSpeakerName != null && !currentSpeakerName.isEmpty()) {
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
+            g2.setColor(new Color(255, 220, 80));
+            g2.drawString(currentSpeakerName, x + gp.tileSize, y - 10);
+        }
+
         g2.setFont(g2.getFont().deriveFont(Font.BOLD,25F));
+        g2.setColor(Color.white);
         x += gp.tileSize;
         y += gp.tileSize;
 
@@ -1076,6 +1084,7 @@ public class UI {
 
         }
     }
+
 
     public void drawSubWindow(int x, int y, int width, int height){
 

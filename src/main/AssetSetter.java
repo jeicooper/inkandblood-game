@@ -44,22 +44,23 @@ public class AssetSetter {
         gp.npc[1].worldX = 58 * gp.tileSize;
         gp.npc[1].worldY = 19 * gp.tileSize;
 
-        placeSibling(2,  "Saturnina",  "/npc/saturnina/saturnina",  70, 35);
-        placeSibling(3,  "Paciano",    "/npc/paciano/paciano",      71, 35);
-        placeSibling(4,  "Narcisa",    "/npc/narcisa/narcisa",      72, 35);
-        placeSibling(5,  "Olimpia",    "/npc/olimpia/olimpia",      73, 35);
-        placeSibling(6,  "Lucia",      "/npc/lucia/lucia",          69, 35);
-        placeSibling(7,  "Maria",      "/npc/maria/maria",          66, 35);
-        placeSibling(8,  "Josefa",     "/npc/josefa/josefa",        68, 35);
-        placeSibling(9,  "Trinidad",   "/npc/trinidad/trinidad",    67, 35);
-        placeSibling(10, "Soledad",    "/npc/soledad/soledad",      80, 35);
-        placeSibling(11, "Concepcion", "/npc/grave",78, 35);
+        placeSibling(2,  "Saturnina 'Neneng' Rizal",  "/npc/saturnina/saturnina",  24, 53);
+        placeSibling(3,  "Paciano 'Ute' Rizal ",    "/npc/paciano/paciano",      38, 23);
+        placeSibling(4,  "Narcisa 'Sisa' Rizal",    "/npc/narcisa/narcisa",      32, 36);
+        placeSibling(5,  "Olimpia 'Ypia' Rizal",    "/npc/olimpia/olimpia",      29, 41);
+        placeSibling(6,  "Lucia 'Lucing' Rizal",      "/npc/lucia/lucia",          39, 53);
+        placeSibling(7,  "Maria 'Biang' Rizal",      "/npc/maria/maria",          37, 25);
+        placeSibling(8,  "Josefa 'Panggoy' Rizal",     "/npc/josefa/josefa",        22, 50);
+        placeSibling(9,  "Trinidad 'Trining' Rizal",   "/npc/trinidad/trinidad",    49, 54);
+        placeSibling(10, "Soledad 'Choleng' Rizal",    "/npc/soledad/soledad",      20, 38);
+        placeSibling(11, "Concepcion 'Concha' Rizal", "/npc/grave",78, 35);
     }
 
-    private void placeSibling(int index, String name, String spritePath, int tileX, int tileY) {
+    private NPC_Sibling placeSibling(int index, String name, String spritePath, int tileX, int tileY) {
         NPC_Sibling s = new NPC_Sibling(gp, name, spritePath);
         s.worldX = tileX * gp.tileSize;
         s.worldY = tileY * gp.tileSize;
         gp.npc[index] = s;
+        return s;
     }
 }
