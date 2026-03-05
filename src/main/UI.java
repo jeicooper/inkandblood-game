@@ -1001,7 +1001,7 @@ public class UI {
 
         int currentQ = gp.questManager.currentQuest;
         if (gp.questManager.isQuestCompleted(currentQ) &&
-                currentQ == QuestManager.QUEST_CHAP1_1) return;
+                currentQ == QuestManager.QUEST1) return;
 
         int panelW = gp.tileSize * 7;
         int panelH = gp.tileSize * 2;
@@ -1012,8 +1012,8 @@ public class UI {
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
 
-        if (currentQ == main.QuestManager.QUEST_CHAP1_1 &&
-                gp.questManager.isQuestActive(main.QuestManager.QUEST_CHAP1_1)) {
+        if (currentQ == main.QuestManager.QUEST1 &&
+                gp.questManager.isQuestActive(main.QuestManager.QUEST1)) {
 
             int found    = gp.questManager.siblingsFound;
             int required = gp.questManager.SIBLINGS_REQUIRED;
@@ -1033,9 +1033,43 @@ public class UI {
             }
         }
 
-        else if (currentQ == QuestManager.QUEST_CHAP1_2 &&
-                gp.questManager.isQuestActive(QuestManager.QUEST_CHAP1_2)) {
+        else if (currentQ == QuestManager.QUEST2 &&
+                gp.questManager.isQuestActive(QuestManager.QUEST2)) {
 
+            g2.setColor(new Color(255, 220, 80));
+            g2.drawString("Pangangaral ng mga Tiyo", panelX + 12, panelY + 28);
+
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(20F));
+
+            int stage = gp.questManager.quest2Stage;
+
+            if (stage == QuestManager.JOSE_INACTIVE) {
+                g2.drawString("Find Uncle Jose Alberto.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.JOSE_WAITING) {
+                int b = gp.questManager.countItem("Paint Bucket");
+                int p = gp.questManager.countItem("Paintbrush");
+                int c = gp.questManager.countItem("Canvas");
+                g2.drawString("Buckets: " + b + "/6  Brush: " + p + "/1  Canvas: " + c + "/1", panelX + 12, panelY + 52);
+                g2.drawString("Return to Uncle Jose.", panelX + 12, panelY + 72);
+
+            } else if (stage == QuestManager.JOSE_DONE) {
+                g2.drawString("Find Uncle Manuel.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.MANUEL_RUNNING) {
+                int hit   = gp.questManager.checkpointsHit;
+                int total = gp.questManager.TOTAL_CHECKPOINTS;
+                g2.drawString("Checkpoints: " + hit + " / " + total, panelX + 12, panelY + 52);
+                if (gp.questManager.courseCompleted) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.drawString("Return to Uncle Manuel!", panelX + 12, panelY + 72);
+                }
+
+            } else if (stage == QuestManager.MANUEL_DONE) {
+                g2.drawString("Training complete!", panelX + 12, panelY + 52);
+            }
         }
     }
 

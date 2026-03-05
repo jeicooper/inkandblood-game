@@ -229,8 +229,13 @@ public class GamePanel extends JPanel implements Runnable {
             //EMPTY ENTITY LIST
             entityList.clear();
 
-            if (questManager.isQuestActive(QuestManager.QUEST_CHAP1_1)) {
+            if (questManager.isQuestActive(QuestManager.QUEST1)) {
                 drawDeliveryZone(g2);
+            }
+
+            if (questManager.isQuestActive(QuestManager.QUEST2) &&
+                    questManager.quest2Stage == QuestManager.MANUEL_RUNNING) {
+                drawCheckpoints(g2);
             }
 
             //UI
@@ -267,6 +272,39 @@ public class GamePanel extends JPanel implements Runnable {
         g2.setStroke(new BasicStroke(3));
         g2.drawOval(screenX - r, screenY - r, r * 2, r * 2);
         g2.setComposite(old);
+    }
+
+    private void drawCheckpoints(Graphics2D g2) {
+        if (questManager.checkpoints == null) return;
+
+        for (int i = 0; i < questManager.TOTAL_CHECKPOINTS; i++) {
+            if (questManager.checkpointHit[i]) continue;
+
+            int screenX = questManager.checkpoints[i][0] - player.worldX + player.screenX;
+            int screenY = questManager.checkpoints[i][1] - player.worldY + player.screenY;
+            int r       = questManager.CHECKPOINT_RADIUS;
+
+            if (screenX + r < 0 || screenX - r > screenWidth ||
+                    screenY + r < 0 || screenY - r > screenHeight) continue;
+
+            Composite old = g2.getComposite();
+
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
+            g2.setColor(new Color(50, 200, 255));
+            g2.fillOval(screenX - r, screenY - r, r * 2, r * 2);
+
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+            g2.setColor(new Color(0, 180, 255));
+            g2.setStroke(new BasicStroke(3));
+            g2.drawOval(screenX - r, screenY - r, r * 2, r * 2);
+
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+            g2.setColor(Color.white);
+            g2.setFont(new Font("Arial", Font.BOLD, 20));
+            g2.drawString(String.valueOf(i + 1), screenX - 6, screenY + 7);
+
+            g2.setComposite(old);
+        }
     }
 
     public void drawToScreen(){

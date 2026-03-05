@@ -34,13 +34,13 @@ public class NPC_Concha extends Entity{
 
     public void setDialogue(){
 
-        dialogues[0] = "This is the grave of Conception Alonso 'Concha' Rizal y Mercado. \nShe Died at only 3 years of age.  ...";
-        dialogues[1] = "Born: 1862, Died: 1865. We will miss you forever.";
+        dialogues[0] = "Born: 1862, Died: 1865. We will miss you forever.";
     }
 
     @Override
     public void speak() {
 
+        gp.ui.currentSpeakerName = "Concepcion 'Concha' Rizal";
         super.speak();
         if (!visited) {
             visited = true;

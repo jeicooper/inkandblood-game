@@ -17,6 +17,9 @@ public class Player extends  Entity{
 
     public final int screenX;
     public final int screenY;
+    private int lastTileX = -1;
+    private int lastTileY = -1;
+
     public ArrayList<Entity> inventory = new ArrayList<>();
     public final int maxInventorySize = 20;
 
@@ -49,7 +52,7 @@ public class Player extends  Entity{
         //player position in the map
         worldX = gp.tileSize * 74;
         worldY = gp.tileSize * 28;
-        speed = 3;
+        speed = 5;
         direction = "down";
 
         // PLAYER STATS
@@ -67,9 +70,6 @@ public class Player extends  Entity{
 
     public void setItems (){
         //inventory.add(itemName);
-        inventory.add(new OBJ_Quil(gp));
-        inventory.add(new OBJ_Quil(gp));
-        inventory.add(new OBJ_Quil(gp));
 
     }
 
@@ -110,38 +110,14 @@ public class Player extends  Entity{
 
     public void update(){
 
-        if (keyP.upPressed == true || keyP.downPressed == true || keyP.leftPressed == true || keyP.rightPressed == true ){
+        if (keyP.upPressed || keyP.downPressed || keyP.leftPressed || keyP.rightPressed){
 
-            if (keyP.upPressed == true){
-                direction = "up";
-                if (!collisionOn){
-                    worldY -= speed;
-                }
+            if (keyP.upPressed)         direction = "up";
+            else if (keyP.downPressed)  direction = "down";
+            else if (keyP.leftPressed)  direction = "left";
+            else if (keyP.rightPressed) direction = "right";
 
-            }
-            else if (keyP.downPressed == true){
-                direction = "down";
-                if (!collisionOn){
-                    worldY += speed;
-                }
-
-            }
-            else if (keyP.leftPressed == true){
-                direction = "left";
-                if (!collisionOn){
-                    worldX -= speed;
-                }
-
-            }
-            else if (keyP.rightPressed == true){
-                direction = "right";
-                if (!collisionOn){
-                    worldX += speed;
-                }
-
-            }
-
-            //  CHECK TILE COLLISION
+            // CHECK TILE COLLISION
             collisionOn = false;
             gp.cChecker.checkTile(this);
 
@@ -149,34 +125,34 @@ public class Player extends  Entity{
             int objIndex = gp.cChecker.checkObject(this, true);
             pickUpObject(objIndex);
 
-            //CHECK NPC COLLISION
+            // CHECK NPC COLLISION
             int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
             interactNPC(npcIndex);
 
-            // IF COLLISION IS FALSE, PLAYER CAN MOVE
+            // MOVE ONLY ONCE AFTER COLLISION CHECK
             if (!collisionOn){
-
                 switch (direction){
-                    case "up": worldY -= speed; break;
-                    case "down": worldY += speed; break;
-                    case "left": worldX -= speed; break;
+                    case "up":    worldY -= speed; break;
+                    case "down":  worldY += speed; break;
+                    case "left":  worldX -= speed; break;
                     case "right": worldX += speed; break;
                 }
             }
 
             spriteCounter++;
             if (spriteCounter > 12){
-                if (spriteNum == 1){
-                    spriteNum = 2;
-                }
-                else if (spriteNum == 2) {
-                    spriteNum = 1;
-                }
+                spriteNum = (spriteNum == 1) ? 2 : 1;
                 spriteCounter = 0;
             }
+
+            int tileX = worldX / gp.tileSize;
+            int tileY = worldY / gp.tileSize;
+            if (tileX != lastTileX || tileY != lastTileY) {
+                System.out.println("Tile X: " + tileX + " | Tile Y: " + tileY);
+                lastTileX = tileX;
+                lastTileY = tileY;
+            }
         }
-
-
     }
 
     public void interactNPC(int i){
@@ -206,29 +182,6 @@ public class Player extends  Entity{
             else {
                 gp.ui.showMessage("Your inventory is full!");
             }
-
-
-
-//            String objectName = gp.obj[i].name;
-//
-//            switch (objectName){
-//                case "Quil":
-//                    gp.playSE(1);
-//                    hasQuil++;
-//                    gp.obj[i] = null;
-//                    gp.ui.showMessage("You found a quil!");
-//                    break;
-//
-//                case "Book":
-//                    if (hasQuil > 0) {
-//                        gp.playSE(1);
-//                        gp.obj[i] = null;
-//                        hasQuil--;
-//                        gp.ui.showMessage("You wrote on the book!");
-//                    } else{
-//                        gp.ui.showMessage("You need a Quill!");
-//                    }
-//                    break;
         }
     }
 
