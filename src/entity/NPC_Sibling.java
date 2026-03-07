@@ -1,6 +1,7 @@
 package entity;
 
 import main.GamePanel;
+import main.QuestManager;
 
 import java.util.LinkedList;
 
@@ -60,7 +61,7 @@ public class NPC_Sibling extends Entity {
 
     // ── Dialogue ──────────────────────────────────────────────
     private void buildDialogue() {
-        greetDialogue[0]  = "What is it Pepe?. \nOh! is it time to eat?";
+        greetDialogue[0]  = "What is it Pepe?. Oh! is it time to eat?";
 
         dialogues = greetDialogue; // expose via Entity field (re-assign for speak())
     }
@@ -69,6 +70,20 @@ public class NPC_Sibling extends Entity {
     @Override
     public void speak() {
         gp.ui.currentSpeakerName = siblingName;
+
+        if (gp.questManager.quest1Stage == QuestManager.QUEST1_NOT_STARTED) {
+            gp.ui.currentDialogue = "...";
+            dialogueIndex = 0;
+
+            switch (gp.player.direction){
+                case "up":    direction = "down";  break;
+                case "down":  direction = "up";    break;
+                case "left":  direction = "right"; break;
+                case "right": direction = "left";  break;
+            }
+            return;
+        }
+
         if (!isFollowing) {
             dialogues = greetDialogue;
             super.speak();

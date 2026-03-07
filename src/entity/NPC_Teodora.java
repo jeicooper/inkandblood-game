@@ -1,10 +1,12 @@
 package entity;
 import main.GamePanel;
+import main.QuestManager;
 
 import java.util.Random;
 
 public class NPC_Teodora extends Entity{
 
+    public boolean spoke = false;
     public NPC_Teodora(GamePanel gp){
         super(gp);
 
@@ -45,18 +47,11 @@ public class NPC_Teodora extends Entity{
             Random random = new Random();
             int i = random.nextInt(100)+1;
 
-            if (i <= 25){
+            if (i <= 50){
                 direction = "up";
             }
-            if (i > 25){
+            if (i > 50){
                 direction = "down";
-            }
-
-            if (i > 50 && i <= 75){
-                direction = "left";
-            }
-            if (i > 75 && i <= 100){
-                direction = "right";
             }
 
             actionLockCounter = 0;
@@ -66,6 +61,28 @@ public class NPC_Teodora extends Entity{
     public void speak(){
 
         gp.ui.currentSpeakerName = "Teodora Alonso Realonda";
+
+        if (!spoke) {
+            dialogues[0] = "Pepe! Thank goodness you are here.";
+            dialogues[1] = "Your siblings are scattered all around the town.";
+            dialogues[2] = "Please find them and bring them all back home safely.";
+            dialogues[3] = "Now go, Pepe!";
+            dialogues[4] = null;
+            dialogueIndex = 0;
+            spoke = true;
+            gp.questManager.quest1Stage = QuestManager.QUEST1_STARTED;
+
+            for (int i = 0; i < gp.npc.length; i++) {
+                if (gp.npc[i] instanceof NPC_Sibling) {
+                    gp.npc[i].dialogueIndex = 0;
+                }
+            }
+        } else {
+            dialogues[0] = "Please hurry and find your siblings, Pepe.";
+            dialogues[1] = null;
+            dialogueIndex = 0;
+        }
+
         super.speak();
     }
 }

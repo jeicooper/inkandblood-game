@@ -494,6 +494,21 @@ public class UI {
         int height = gp.tileSize*3;
         drawSubWindow(x, y, width, height);
 
+        if (gp.keyP.enterPressed) {
+            gp.keyP.enterPressed = false;
+            // find current NPC and advance
+            for (int i = 0; i < gp.npc.length; i++) {
+                if (gp.npc[i] != null) {
+                    int dx = Math.abs(gp.npc[i].worldX - gp.player.worldX);
+                    int dy = Math.abs(gp.npc[i].worldY - gp.player.worldY);
+                    if (dx < gp.tileSize * 2 && dy < gp.tileSize * 2) {
+                        gp.npc[i].speak();
+                        break;
+                    }
+                }
+            }
+        }
+
         if (currentSpeakerName != null && !currentSpeakerName.isEmpty()) {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 35F));
 
@@ -521,6 +536,12 @@ public class UI {
             g2.drawString(line, x, y);
             y += 40;
         }
+
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+        g2.setColor(new Color(200, 200, 200));
+        int promptX = (gp.tileSize * 2) + (gp.screenWidth - (gp.tileSize*4)) - gp.tileSize;
+        int promptY = (gp.tileSize * 8) + (gp.tileSize * 3) - 15;
+        g2.drawString("[ ENTER ]", promptX - 60, promptY);
     }
     public void drawCharacterScreen(){
         //FRAME
@@ -1015,21 +1036,24 @@ public class UI {
         if (currentQ == main.QuestManager.QUEST1 &&
                 gp.questManager.isQuestActive(main.QuestManager.QUEST1)) {
 
-            int found    = gp.questManager.siblingsFound;
-            int required = gp.questManager.SIBLINGS_REQUIRED;
-
             g2.setColor(new Color(255, 220, 80));
             g2.drawString("Familya Rizal", panelX + 12, panelY + 28);
-
             g2.setColor(Color.white);
             g2.setFont(g2.getFont().deriveFont(20F));
-            g2.drawString("Siblings found: " + found + " / " + required,
-                    panelX + 12, panelY + 52);
 
-            if (found >= required) {
-                g2.setColor(new Color(100, 255, 100));
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.drawString("Go to the golden circle!", panelX + 12, panelY + 72);
+            if (gp.questManager.quest1Stage == main.QuestManager.QUEST1_NOT_STARTED) {
+                g2.drawString("Talk to Nanay Teodora.", panelX + 12, panelY + 52);
+
+            } else {
+                int found    = gp.questManager.siblingsFound;
+                int required = gp.questManager.SIBLINGS_REQUIRED + 1;
+                g2.drawString("Siblings: " + found + " / " + required, panelX + 12, panelY + 52);
+
+                if (found >= required) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.drawString("Go to the golden circle!", panelX + 12, panelY + 72);
+                }
             }
         }
 

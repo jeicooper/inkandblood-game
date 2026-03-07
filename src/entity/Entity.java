@@ -64,11 +64,15 @@ public class Entity {
     }
 
     public void speak(){
-        if (dialogues[dialogueIndex] == null){
-            dialogueIndex = 0;
+        if (dialogues[dialogueIndex] != null){
+            gp.ui.currentDialogue = dialogues[dialogueIndex];
+            dialogueIndex++;
         }
-        gp.ui.currentDialogue = dialogues[dialogueIndex];
-        dialogueIndex++;
+        else {
+            dialogueIndex = 0;
+            gp.gameState = gp.playState;
+        }
+
 
         switch (gp.player.direction){
             case "up":

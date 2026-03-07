@@ -63,10 +63,10 @@ public class NPC_Jose extends Entity {
         } else if (dialogueStage == 1) {
             // check if player has all items
             if (gp.questManager.hasAllArtSupplies()) {
-                dialogues[0] = "Excellent, Pepe! You have gathered\neverything we need.";
+                dialogues[0] = "Excellent, Pepe! You have gathered everything we need.";
                 dialogues[1] = "Let me take those from you.";
-                dialogues[2] = "You have learned the basics of colors.\nWell done!";
-                dialogues[3] = "Now go find your Uncle Manuel.\nHe will train your body.";
+                dialogues[2] = "You have learned the basics of colors. Well done!";
+                dialogues[3] = "Now go find your Uncle Manuel. He will train your body.";
                 dialogues[4] = null;
                 dialogueIndex = 0;
                 dialogueStage = 2;
@@ -84,7 +84,7 @@ public class NPC_Jose extends Entity {
             }
 
         } else if (dialogueStage == 2) {
-            dialogues[0] = "Go find Uncle Manuel, Pepe.\nHe is waiting for you.";
+            dialogues[0] = "Go find Uncle Manuel, Pepe. He is waiting for you.";
             dialogues[1] = null;
             dialogueIndex = 0;
         }

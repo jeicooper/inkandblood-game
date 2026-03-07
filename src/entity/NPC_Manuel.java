@@ -6,9 +6,6 @@ import main.QuestManager;
 public class NPC_Manuel extends Entity {
 
     public int dialogueStage = 0;
-    // 0 = first meeting, give boots and instructions
-    // 1 = waiting for course completion
-    // 2 = course done, congratulate
 
     public NPC_Manuel(GamePanel gp) {
         super(gp);
@@ -47,7 +44,7 @@ public class NPC_Manuel extends Entity {
         gp.ui.currentSpeakerName = "Uncle Manuel";
         // only accessible after Jose's part is done
         if (gp.questManager.quest2Stage < QuestManager.JOSE_DONE) {
-            dialogues[0] = "Hello Pepe. Go see your\nUncle Jose Alberto first.";
+            dialogues[0] = "Hello Pepe. Go see your Uncle Jose Alberto first.";
             dialogues[1] = null;
             dialogueIndex = 0;
             super.speak();
@@ -55,10 +52,10 @@ public class NPC_Manuel extends Entity {
         }
 
         if (dialogueStage == 0) {
-            dialogues[0] = "Pepe! Jose tells me you have learned\nthe basics of colors. Good.";
-            dialogues[1] = "Now it is time to train your body.\nA healthy mind needs a healthy body.";
-            dialogues[2] = "Take these boots. They will make\nyou run faster than the wind.";
-            dialogues[3] = "Run the course around the town.\nI will be watching.";
+            dialogues[0] = "Pepe! Jose tells me you have learned the basics of colors. Good.";
+            dialogues[1] = "Now it is time to train your body. A healthy mind needs a healthy body.";
+            dialogues[2] = "Take these boots. They will make you run faster than the wind.";
+            dialogues[3] = "Run the course around the town. I will be watching.";
             dialogues[4] = null;
             dialogueIndex = 0;
             dialogueStage = 1;
@@ -68,8 +65,8 @@ public class NPC_Manuel extends Entity {
         } else if (dialogueStage == 1) {
             if (gp.questManager.courseCompleted) {
                 dialogues[0] = "You did it, Pepe! Incredible speed!";
-                dialogues[1] = "Your physical training is complete.\nYou have made me proud.";
-                dialogues[2] = "The boots have served their purpose.\nYou will not need them anymore.";
+                dialogues[1] = "Your physical training is complete. You have made me proud.";
+                dialogues[2] = "The boots have served their purpose. You will not need them anymore.";
                 dialogues[3] = null;
                 dialogueIndex = 0;
                 dialogueStage = 2;
@@ -86,7 +83,7 @@ public class NPC_Manuel extends Entity {
             }
 
         } else if (dialogueStage == 2) {
-            dialogues[0] = "You have completed your training, Pepe.\nI am proud of you.";
+            dialogues[0] = "You have completed your training, Pepe. I am proud of you.";
             dialogues[1] = null;
             dialogueIndex = 0;
         }

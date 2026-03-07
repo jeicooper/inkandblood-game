@@ -251,6 +251,9 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_F) {
             gp.gameState = gp.playState;
         }
+        if (code == KeyEvent.VK_ENTER) {
+            enterPressed = true;
+        }
     }
     public void characterState(int code){
         if (code == KeyEvent.VK_C) {
