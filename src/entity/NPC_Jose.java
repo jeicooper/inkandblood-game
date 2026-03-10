@@ -50,46 +50,53 @@ public class NPC_Jose extends Entity {
         gp.ui.currentSpeakerName = "Uncle Jose";
 
         if (dialogueStage == 0) {
-            // first meeting - give instructions
             dialogues[0] = "Pepe! I have been waiting for you.";
-            dialogues[1] = "To learn the basics of colors, you\nwill need to gather some supplies.";
-            dialogues[2] = "Find 6 paint buckets, 1 paintbrush,\nand 1 blank canvas.";
-            dialogues[3] = "Bring them back to me when you\nhave collected them all.";
+            dialogues[1] = "To learn the basics of colors, you will need to gather some supplies.";
+            dialogues[2] = "Find 6 paint buckets, 1 paintbrush, and 1 blank canvas.";
+            dialogues[3] = "Bring them back to me when you have collected them all.";
             dialogues[4] = null;
-            dialogueIndex = 0;
-            dialogueStage = 1;
-            gp.questManager.quest2Stage = QuestManager.JOSE_WAITING;
+
+            super.speak();
+
+            // only trigger after last line
+            if (dialogueIndex == 0) {
+                dialogueStage = 1;
+                gp.questManager.quest2Stage = QuestManager.JOSE_WAITING;
+            }
 
         } else if (dialogueStage == 1) {
-            // check if player has all items
             if (gp.questManager.hasAllArtSupplies()) {
                 dialogues[0] = "Excellent, Pepe! You have gathered everything we need.";
                 dialogues[1] = "Let me take those from you.";
                 dialogues[2] = "You have learned the basics of colors. Well done!";
                 dialogues[3] = "Now go find your Uncle Manuel. He will train your body.";
                 dialogues[4] = null;
-                dialogueIndex = 0;
-                dialogueStage = 2;
-                gp.questManager.quest2Stage = QuestManager.JOSE_DONE;
-                gp.questManager.removeArtSupplies();
+
+                super.speak();
+
+                // only trigger after last line
+                if (dialogueIndex == 0) {
+                    dialogueStage = 2;
+                    gp.questManager.quest2Stage = QuestManager.JOSE_DONE;
+                    gp.questManager.removeArtSupplies();
+                }
             } else {
-                // not all items yet
-                int buckets   = gp.questManager.countItem("Paint Bucket");
-                int brush     = gp.questManager.countItem("Paintbrush");
-                int canvas    = gp.questManager.countItem("Canvas");
+                int buckets = gp.questManager.countItem("Paint Bucket");
+                int brush   = gp.questManager.countItem("Paintbrush");
+                int canvas  = gp.questManager.countItem("Canvas");
                 dialogues[0] = "You still need more supplies, Pepe.";
                 dialogues[1] = "Paint Buckets: " + buckets + "/6\nPaintbrush: " + brush + "/1\nCanvas: " + canvas + "/1";
                 dialogues[2] = null;
                 dialogueIndex = 0;
+                super.speak();
             }
 
         } else if (dialogueStage == 2) {
             dialogues[0] = "Go find Uncle Manuel, Pepe. He is waiting for you.";
             dialogues[1] = null;
             dialogueIndex = 0;
+            super.speak();
         }
-
-        super.speak();
     }
 
     @Override

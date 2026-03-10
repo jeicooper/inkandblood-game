@@ -59,7 +59,6 @@ public class NPC_Teodora extends Entity{
     }
 
     public void speak(){
-
         gp.ui.currentSpeakerName = "Teodora Alonso Realonda";
 
         if (!spoke) {
@@ -68,21 +67,24 @@ public class NPC_Teodora extends Entity{
             dialogues[2] = "Please find them and bring them all back home safely.";
             dialogues[3] = "Now go, Pepe!";
             dialogues[4] = null;
-            dialogueIndex = 0;
-            spoke = true;
-            gp.questManager.quest1Stage = QuestManager.QUEST1_STARTED;
 
-            for (int i = 0; i < gp.npc.length; i++) {
-                if (gp.npc[i] instanceof NPC_Sibling) {
-                    gp.npc[i].dialogueIndex = 0;
+            super.speak();
+
+            // only trigger after last line
+            if (dialogueIndex == 0) {
+                spoke = true;
+                gp.questManager.quest1Stage = QuestManager.QUEST1_STARTED;
+                for (int i = 0; i < gp.npc.length; i++) {
+                    if (gp.npc[i] instanceof NPC_Sibling) {
+                        gp.npc[i].dialogueIndex = 0;
+                    }
                 }
             }
         } else {
             dialogues[0] = "Please hurry and find your siblings, Pepe.";
             dialogues[1] = null;
             dialogueIndex = 0;
+            super.speak();
         }
-
-        super.speak();
     }
 }

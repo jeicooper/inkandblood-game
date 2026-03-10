@@ -63,7 +63,7 @@ public class NPC_Sibling extends Entity {
     private void buildDialogue() {
         greetDialogue[0]  = "What is it Pepe?. Oh! is it time to eat?";
 
-        dialogues = greetDialogue; // expose via Entity field (re-assign for speak())
+        dialogues = greetDialogue;
     }
 
     // ── Entity.speak() override ───────────────────────────────

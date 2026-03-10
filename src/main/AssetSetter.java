@@ -71,8 +71,8 @@ public class AssetSetter {
         gp.npc[12].worldY = 36 * gp.tileSize;
 
         gp.npc[13] = new NPC_Manuel(gp);
-        gp.npc[13].worldX = 67 * gp.tileSize;
-        gp.npc[13].worldY = 7 * gp.tileSize;
+        gp.npc[13].worldX = 81 * gp.tileSize;
+        gp.npc[13].worldY = 50 * gp.tileSize;
 
         // Art supplies
         int i = 0;

@@ -39,10 +39,9 @@ public class NPC_Manuel extends Entity {
         // stands still
     }
 
-    @Override
     public void speak() {
         gp.ui.currentSpeakerName = "Uncle Manuel";
-        // only accessible after Jose's part is done
+
         if (gp.questManager.quest2Stage < QuestManager.JOSE_DONE) {
             dialogues[0] = "Hello Pepe. Go see your Uncle Jose Alberto first.";
             dialogues[1] = null;
@@ -57,10 +56,15 @@ public class NPC_Manuel extends Entity {
             dialogues[2] = "Take these boots. They will make you run faster than the wind.";
             dialogues[3] = "Run the course around the town. I will be watching.";
             dialogues[4] = null;
-            dialogueIndex = 0;
-            dialogueStage = 1;
-            gp.questManager.quest2Stage = QuestManager.MANUEL_RUNNING;
-            gp.questManager.giveBoots();
+
+            super.speak();
+
+            // only trigger after last line
+            if (dialogueIndex == 0) {
+                dialogueStage = 1;
+                gp.questManager.quest2Stage = QuestManager.MANUEL_RUNNING;
+                gp.questManager.giveBoots();
+            }
 
         } else if (dialogueStage == 1) {
             if (gp.questManager.courseCompleted) {
@@ -68,27 +72,32 @@ public class NPC_Manuel extends Entity {
                 dialogues[1] = "Your physical training is complete. You have made me proud.";
                 dialogues[2] = "The boots have served their purpose. You will not need them anymore.";
                 dialogues[3] = null;
-                dialogueIndex = 0;
-                dialogueStage = 2;
-                gp.questManager.quest2Stage = QuestManager.MANUEL_DONE;
-                gp.questManager.removeBoots();
-                gp.questManager.completeQuest2();
+
+                super.speak();
+
+                // only trigger after last line
+                if (dialogueIndex == 0) {
+                    dialogueStage = 2;
+                    gp.questManager.quest2Stage = QuestManager.MANUEL_DONE;
+                    gp.questManager.removeBoots();
+                    gp.questManager.completeQuest2();
+                }
             } else {
-                int hit = gp.questManager.checkpointsHit;
+                int hit   = gp.questManager.checkpointsHit;
                 int total = gp.questManager.TOTAL_CHECKPOINTS;
                 dialogues[0] = "You have not finished the course yet!";
                 dialogues[1] = "Checkpoints reached: " + hit + "/" + total;
                 dialogues[2] = null;
                 dialogueIndex = 0;
+                super.speak();
             }
 
         } else if (dialogueStage == 2) {
             dialogues[0] = "You have completed your training, Pepe. I am proud of you.";
             dialogues[1] = null;
             dialogueIndex = 0;
+            super.speak();
         }
-
-        super.speak();
     }
 
 
