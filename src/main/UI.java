@@ -1076,11 +1076,12 @@ public class UI {
                 g2.drawString("Find Uncle Jose Alberto.", panelX + 12, panelY + 52);
 
             } else if (stage == QuestManager.JOSE_WAITING) {
-                int b = gp.questManager.countItem("Paint Bucket");
-                int p = gp.questManager.countItem("Paintbrush");
-                int c = gp.questManager.countItem("Canvas");
-                g2.drawString("Buckets: " + b + "/6  Brush: " + p + "/1  Canvas: " + c + "/1", panelX + 12, panelY + 52);
-                g2.drawString("Return to Uncle Jose.", panelX + 12, panelY + 72);
+                g2.drawString("Buckets: 6  Brush: 1  Canvas: 1", panelX + 12, panelY + 52);
+                if (gp.questManager.hasAllArtSupplies()) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.drawString("Return to Uncle Jose!", panelX + 12, panelY + 72);
+                }
 
             } else if (stage == QuestManager.JOSE_DONE) {
                 g2.drawString("Find Uncle Manuel.", panelX + 12, panelY + 52);
@@ -1096,17 +1097,26 @@ public class UI {
                 }
 
             } else if (stage == QuestManager.MANUEL_DONE) {
-                g2.drawString("Training complete!", panelX + 12, panelY + 52);
+                g2.drawString("Find Uncle Gregorio.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.GREGORIO_WAITING) {
+                g2.drawString("Quill: 1  Notebook: 1", panelX + 12, panelY + 52);
+                if (gp.questManager.hasWritingSupplies()) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.drawString("Return to Uncle Gregorio!", panelX + 12, panelY + 72);
+                }
+
+            } else if (stage == QuestManager.GREGORIO_DONE) {
+                g2.drawString("Quest 2 Complete!", panelX + 12, panelY + 52);
             }
         }
     }
     public void drawPoemPanel() {
-        // dim background
         g2.setColor(new Color(0, 0, 0, 180));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
-        // panel
-        int panelW = gp.tileSize * 14;
+        int panelW = gp.tileSize * 18;
         int panelH = gp.tileSize * 10;
         int panelX = gp.screenWidth / 2 - panelW / 2;
         int panelY = gp.screenHeight / 2 - panelH / 2;
@@ -1117,16 +1127,14 @@ public class UI {
         g2.setColor(new Color(255, 220, 80));
         String title = "Sa Aking Mga Kabata";
         int titleX = getXforCenter(title);
-        g2.drawString(title, titleX, panelY + 50);
+        g2.drawString(title, titleX, panelY + 45);
 
         g2.setColor(Color.darkGray);
-        g2.drawString("- - - - - - - - - - - - - - - - - - - -", panelX + 20, panelY + 70);
+        g2.setFont(g2.getFont().deriveFont(25F));
+        g2.drawString("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", panelX + 20, panelY + 62);
 
-        // poem
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
-        g2.setColor(Color.white);
-
-        String[] poem = {
+        // LEFT column — stanzas 1 and 2
+        String[] left = {
                 "Kapagka ang baya'y sadyang umiibig",
                 "sa kanyang salitang kaloob ng langit,",
                 "sanlang kalayaan nasa ring masapit",
@@ -1141,7 +1149,10 @@ public class UI {
                 "mahigit sa hayop at malansang isda,",
                 "kaya ang marapat pagyamaning kusa",
                 "na tulad sa isang tunay na nagpala.",
-                "",
+        };
+
+        // RIGHT column — stanzas 3 and 4
+        String[] right = {
                 "Ang wikang Tagalog tulad din sa Latin,",
                 "sa Ingles, Kastila at salitang anghel,",
                 "sapagka't ang Poong maalam tumingin",
@@ -1153,18 +1164,31 @@ public class UI {
                 "ang lunday sa lawa noong dakong una.",
         };
 
-        int lineY = panelY + 100;
-        for (String line : poem) {
-            g2.drawString(line, panelX + 30, lineY);
-            lineY += 26;
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 18F));
+        g2.setColor(Color.white);
+
+        int leftX  = panelX + 25;
+        int rightX = panelX + panelW / 2 + 10;
+        int startY = panelY + 85;
+        int lineH  = 24;
+
+        for (String line : left) {
+            g2.drawString(line, leftX, startY);
+            startY += lineH;
         }
 
-        // close prompt
+        startY = panelY + 85;
+        for (String line : right) {
+            g2.drawString(line, rightX, startY);
+            startY += lineH;
+        }
+
+        // prompt
         g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
         g2.setColor(new Color(200, 200, 200));
-        g2.drawString("[ ENTER ] to continue", panelX + panelW - 220, panelY + panelH - 20);
+        g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
 
-        // close on Enter
+        // close
         if (gp.keyP.enterPressed) {
             gp.keyP.enterPressed = false;
             showPoemPanel = false;

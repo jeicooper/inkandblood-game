@@ -88,7 +88,6 @@ public class GamePanel extends JPanel implements Runnable {
 //      playMusic(0);
 
         questManager.init();
-
         gameState = titleState;
 
         temporaryScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);

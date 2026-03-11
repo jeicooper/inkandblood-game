@@ -100,9 +100,9 @@ public class NPC_Gregorio extends Entity {
             }
 
         } else if (dialogueStage == 2) {
-            dialogues[0] = "This is a poem about our language,\nPepe. Never forget it.";
-            dialogues[1] = "You have done well today.\nYour education has begun.";
-            dialogues[2] = "Chapter 1 complete, Pepe.\nYour journey continues.";
+            dialogues[0] = "This is a poem about our language, Pepe. Never forget it.";
+            dialogues[1] = "You have done well today. Your education has begun.";
+            dialogues[2] = "Chapter 1 complete, Pepe. Your journey continues.";
             dialogues[3] = null;
 
             super.speak();
@@ -112,7 +112,7 @@ public class NPC_Gregorio extends Entity {
                 gp.questManager.completeQuest2();
             }
         } else if (dialogueStage == 3) {
-            dialogues[0] = "Remember the poem, Pepe.\nIt will guide you always.";
+            dialogues[0] = "Remember the poem, Pepe. It will guide you always.";
             dialogues[1] = null;
             dialogueIndex = 0;
             super.speak();

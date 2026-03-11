@@ -206,6 +206,9 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_F){
             fPressed = true;
         }
+        if (code == KeyEvent.VK_ENTER) {
+            enterPressed = true;
+        }
         //press C to view character stats
         if (code == KeyEvent.VK_C){
             gp.gameState = gp.characterState;

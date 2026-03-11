@@ -9,7 +9,7 @@ public class OBJ_Quil extends Entity {
         super(gp);
         name = "Quill";
         image = setup("/objects/quill");
-        description = "A fine quill pen.\nBelongs to Uncle Gregorio.";
+        description = "A fine quill pen.";
         collision = false;
         solidArea.x = 0;
         solidArea.y = 0;

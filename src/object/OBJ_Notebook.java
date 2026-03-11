@@ -7,17 +7,13 @@ public class OBJ_Notebook extends Entity {
 
     public OBJ_Notebook(GamePanel gp){
         super(gp);
-
-        name = "Book";
-        down1 = setup("/objects/book.png");
-        collision = true;
-
+        name = "Notebook";
+        image = setup("/objects/book");
+        description = "A blank notebook.";
+        collision = false;
         solidArea.x = 0;
-        solidArea.y = 16;
-        solidArea.width = 16;
-        solidArea.height = 16;
-
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
+        solidArea.y = 0;
+        solidArea.width = gp.tileSize;
+        solidArea.height = gp.tileSize;
     }
 }
