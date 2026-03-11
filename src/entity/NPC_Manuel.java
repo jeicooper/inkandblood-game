@@ -75,13 +75,13 @@ public class NPC_Manuel extends Entity {
 
                 super.speak();
 
-                // only trigger after last line
                 if (dialogueIndex == 0) {
                     dialogueStage = 2;
                     gp.questManager.quest2Stage = QuestManager.MANUEL_DONE;
                     gp.questManager.removeBoots();
-                    gp.questManager.completeQuest2();
+                    gp.aSetter.activateGregorio();
                 }
+
             } else {
                 int hit   = gp.questManager.checkpointsHit;
                 int total = gp.questManager.TOTAL_CHECKPOINTS;

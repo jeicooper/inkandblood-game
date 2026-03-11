@@ -74,6 +74,11 @@ public class AssetSetter {
         gp.npc[13].worldX = 81 * gp.tileSize;
         gp.npc[13].worldY = 50 * gp.tileSize;
 
+        gp.npc[14] = new NPC_Gregorio(gp);
+        gp.npc[14].worldX = 60 * gp.tileSize;
+        gp.npc[14].worldY = 39 * gp.tileSize;
+
+
         // Art supplies
         int i = 0;
         gp.obj[i] = new OBJ_PaintBucket(gp, "/objects/black_paint");
@@ -114,5 +119,16 @@ public class AssetSetter {
         gp.obj[i] = new OBJ_Canvas(gp);
         gp.obj[i].worldX = 73 * gp.tileSize;
         gp.obj[i].worldY = 78 * gp.tileSize;
+    }
+
+    public void activateGregorio() {
+        int i = 9;
+        gp.obj[i] = new OBJ_Quil(gp);
+        gp.obj[i].worldX = 62 * gp.tileSize; // calibrate to Gregorio's house
+        gp.obj[i].worldY = 37 * gp.tileSize;
+        i++;
+        gp.obj[i] = new OBJ_Notebook(gp);
+        gp.obj[i].worldX = 60 * gp.tileSize;
+        gp.obj[i].worldY = 37 * gp.tileSize;
     }
 }

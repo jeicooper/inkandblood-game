@@ -3,9 +3,9 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
-public class OBJ_Book extends Entity {
+public class OBJ_Notebook extends Entity {
 
-    public OBJ_Book(GamePanel gp){
+    public OBJ_Notebook(GamePanel gp){
         super(gp);
 
         name = "Book";

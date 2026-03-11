@@ -18,7 +18,7 @@ public class UI {
     BufferedImage full_exp, half_exp, empty_exp;
 
     public boolean messageOn = false;
-//  public boolean gameFinished = false;
+    public boolean showPoemPanel = false;
 
     public String message = "";
     public String currentDialogue = "";
@@ -110,6 +110,10 @@ public class UI {
                     messageOn = false;
                     msgCounter = 0;
                 }
+            }
+
+            if (showPoemPanel) {
+                drawPoemPanel();
             }
         }
 
@@ -1094,6 +1098,76 @@ public class UI {
             } else if (stage == QuestManager.MANUEL_DONE) {
                 g2.drawString("Training complete!", panelX + 12, panelY + 52);
             }
+        }
+    }
+    public void drawPoemPanel() {
+        // dim background
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        // panel
+        int panelW = gp.tileSize * 14;
+        int panelH = gp.tileSize * 10;
+        int panelX = gp.screenWidth / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        drawSubWindow(panelX, panelY, panelW, panelH);
+
+        // title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28F));
+        g2.setColor(new Color(255, 220, 80));
+        String title = "Sa Aking Mga Kabata";
+        int titleX = getXforCenter(title);
+        g2.drawString(title, titleX, panelY + 50);
+
+        g2.setColor(Color.darkGray);
+        g2.drawString("- - - - - - - - - - - - - - - - - - - -", panelX + 20, panelY + 70);
+
+        // poem
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+        g2.setColor(Color.white);
+
+        String[] poem = {
+                "Kapagka ang baya'y sadyang umiibig",
+                "sa kanyang salitang kaloob ng langit,",
+                "sanlang kalayaan nasa ring masapit",
+                "katulad ng ibong nasa himpapawid.",
+                "",
+                "Pagkat ang salita'y isang kahatulan",
+                "sa bayan, sa nayon't mga kaharian,",
+                "at ang isang tao'y katulad, kabagay",
+                "ng alin mang likha noong kalayaan.",
+                "",
+                "Ang hindi magmahal sa kanyang salita",
+                "mahigit sa hayop at malansang isda,",
+                "kaya ang marapat pagyamaning kusa",
+                "na tulad sa isang tunay na nagpala.",
+                "",
+                "Ang wikang Tagalog tulad din sa Latin,",
+                "sa Ingles, Kastila at salitang anghel,",
+                "sapagka't ang Poong maalam tumingin",
+                "ang siyang naggawad, nagbigay sa atin.",
+                "",
+                "Ang salita nati'y huwad din sa iba",
+                "na may alpabeto at sariling letra,",
+                "na kaya nawala'y dinatnan ng sigwa",
+                "ang lunday sa lawa noong dakong una.",
+        };
+
+        int lineY = panelY + 100;
+        for (String line : poem) {
+            g2.drawString(line, panelX + 30, lineY);
+            lineY += 26;
+        }
+
+        // close prompt
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+        g2.setColor(new Color(200, 200, 200));
+        g2.drawString("[ ENTER ] to continue", panelX + panelW - 220, panelY + panelH - 20);
+
+        // close on Enter
+        if (gp.keyP.enterPressed) {
+            gp.keyP.enterPressed = false;
+            showPoemPanel = false;
         }
     }
 

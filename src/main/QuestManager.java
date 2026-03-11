@@ -43,12 +43,16 @@ public class QuestManager {
     public static final int JOSE_DONE      = 2;
     public static final int MANUEL_RUNNING = 3;
     public static final int MANUEL_DONE    = 4;
+    public static final int GREGORIO_WAITING = 5;
+    public static final int GREGORIO_DONE    = 6;
 
     public int quest2Stage = JOSE_INACTIVE;
 
     public final int PAINT_BUCKETS_REQUIRED = 6;
     public final int PAINTBRUSH_REQUIRED    = 1;
     public final int CANVAS_REQUIRED        = 1;
+    public final int QUILL_REQUIRED    = 1;
+    public final int NOTEBOOK_REQUIRED = 1;
 
     public int checkpointsHit          = 0;
     public final int TOTAL_CHECKPOINTS = 6;
@@ -194,6 +198,16 @@ public class QuestManager {
         removeItems("Canvas",       CANVAS_REQUIRED);
     }
 
+    public boolean hasWritingSupplies() {
+        return countItem("Quill")    >= QUILL_REQUIRED &&
+                countItem("Notebook") >= NOTEBOOK_REQUIRED;
+    }
+
+    public void removeWritingSupplies() {
+        removeItems("Quill",    QUILL_REQUIRED);
+        removeItems("Notebook", NOTEBOOK_REQUIRED);
+    }
+
     private void removeItems(String itemName, int amount) {
         int removed = 0;
         for (int i = 0; i < gp.player.inventory.size() && removed < amount; i++) {
@@ -220,7 +234,14 @@ public class QuestManager {
         bootsActive = false;
     }
 
+    public void onManuelDone() {
+        quest2Stage = MANUEL_DONE;
+        gp.questManager.removeBoots();
+        gp.aSetter.activateGregorio();
+    }
+
     public void completeQuest2() {
+        quest2Stage = GREGORIO_DONE;
         questState[QUEST2] = STATE_COMPLETED;
         gp.ui.showMessage("Quest 2: Done!");
         gp.player.exp += 1;
