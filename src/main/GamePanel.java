@@ -162,7 +162,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameState == playState){
             //PLAYER
             player.update();
-            
+
             //NPC
             for (int i = 0; i < npc.length; i++) {
                 if (npc[i] != null){
@@ -237,6 +237,9 @@ public class GamePanel extends JPanel implements Runnable {
                 drawCheckpoints(g2);
             }
 
+            //QUEST ARROW
+            drawQuestArrow(g2);
+
             //UI
             ui.draw(g2);
 
@@ -304,6 +307,62 @@ public class GamePanel extends JPanel implements Runnable {
 
             g2.setComposite(old);
         }
+    }
+
+    private void drawQuestArrow(Graphics2D g2) {
+        java.util.List<entity.Entity> targets = getQuestTargets();
+        if (targets.isEmpty()) return;
+
+        g2.setFont(new Font("Arial", Font.BOLD, 22));
+        FontMetrics fm = g2.getFontMetrics();
+        int bob = (int)(Math.sin(System.currentTimeMillis() / 300.0) * 4);
+
+        for (entity.Entity target : targets) {
+            int aw = fm.stringWidth("v");
+            int ah = fm.getAscent();
+            int screenX = target.worldX - player.worldX + player.screenX + (tileSize / 2) - (aw / 2);
+            int screenY = target.worldY - player.worldY + player.screenY - ah +10;
+
+            if (screenX < 0 || screenX > screenWidth || screenY < 0 || screenY > screenHeight) continue;
+
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.drawString("v", screenX + 1, screenY + bob + 1);
+            g2.setColor(new Color(255, 220, 0));
+            g2.drawString("v", screenX, screenY + bob);
+        }
+    }
+
+    private java.util.List<entity.Entity> getQuestTargets() {
+        java.util.List<entity.Entity> targets = new java.util.ArrayList<>();
+
+        // Quest 1
+        if (questManager.isQuestActive(QuestManager.QUEST1)) {
+            if (questManager.quest1Stage == QuestManager.QUEST1_NOT_STARTED) {
+                if (npc[0] != null) targets.add(npc[0]); // Teodora
+            } else {
+                // all siblings not yet following
+                for (int i = 0; i < npc.length; i++) {
+                    if (npc[i] instanceof entity.NPC_Sibling) {
+                        entity.NPC_Sibling s = (entity.NPC_Sibling) npc[i];
+                        if (!s.isFollowing) targets.add(s);
+                    }
+                }
+            }
+        }
+
+        // Quest 2
+        if (questManager.isQuestActive(QuestManager.QUEST2)) {
+            int stage = questManager.quest2Stage;
+            if (stage == QuestManager.JOSE_INACTIVE || stage == QuestManager.JOSE_WAITING) {
+                if (npc[12] != null) targets.add(npc[12]); // Uncle Jose
+            } else if (stage == QuestManager.JOSE_DONE || stage == QuestManager.MANUEL_RUNNING) {
+                if (npc[13] != null) targets.add(npc[13]); // Uncle Manuel
+            } else if (stage == QuestManager.MANUEL_DONE || stage == QuestManager.GREGORIO_WAITING) {
+                if (npc[14] != null) targets.add(npc[14]); // Uncle Gregorio
+            }
+        }
+
+        return targets;
     }
 
     public void drawToScreen(){

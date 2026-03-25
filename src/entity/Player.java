@@ -176,7 +176,7 @@ public class Player extends  Entity{
                 String objectName = gp.obj[i].name;
                 inventory.add(gp.obj[i]);
                 gp.obj[i] = null;
-            //  gp.playSE(1);
+                gp.playSE(1);
                 gp.ui.showMessage("Got a " + objectName + "!");
             }
             else {

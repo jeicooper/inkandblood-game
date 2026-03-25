@@ -294,52 +294,14 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.playState;
         }
 
-        if (gp.ui.questSubState == 0){
-            if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
-                gp.ui.commandNum--;
-                if (gp.ui.commandNum < 0) {
-                    gp.ui.commandNum = 0;
-                }
-
-            }
-            if(code == KeyEvent.VK_S  || code == KeyEvent.VK_DOWN){
-                gp.ui.commandNum++;
-                if (gp.ui.commandNum > 0) {
-                    gp.ui.commandNum = 0;
-                }
-            }
-
-            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
-
-                if (gp.ui.commandNum == 0) {
-                    gp.ui.questSubState = 1;
-                }
-            }
+        // A / LEFT  → previous quest page
+        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+            if (gp.ui.questPageNum > 0) gp.ui.questPageNum--;
         }
 
-        else if (gp.ui.questSubState == 1) {
-
-            if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
-                gp.ui.commandNum--;
-                if (gp.ui.commandNum < 0) {
-                    gp.ui.commandNum = 0;
-                }
-
-            }
-            if(code == KeyEvent.VK_S  || code == KeyEvent.VK_DOWN){
-                gp.ui.commandNum++;
-                if (gp.ui.commandNum > 0) {
-                    gp.ui.commandNum = 0;
-                }
-            }
-
-            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
-
-                if (gp.ui.commandNum == 0) {
-                    gp.ui.questSubState = 0;
-                }
-            }
-
+        // D / RIGHT → next quest page
+        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+            if (gp.ui.questPageNum < 1) gp.ui.questPageNum++;
         }
 
 
@@ -413,7 +375,7 @@ public class KeyHandler implements KeyListener {
             if (gp.ui.optionSubState == 0){
 
                 //SOUND EFFECTS
-                if (gp.ui.commandNum == 2 && gp.sound.volumeScale > 0){
+                if (gp.ui.commandNum == 2 && gp.sound.volumeScale < 5){
                     gp.sound.volumeScale++;
                 }
             }
@@ -439,6 +401,9 @@ public class KeyHandler implements KeyListener {
         }
         if(code == KeyEvent.VK_D){
             rightPressed = false;
+        }
+        if(code == KeyEvent.VK_ENTER){
+            enterPressed = false;
         }
     }
 }

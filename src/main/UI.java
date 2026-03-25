@@ -28,10 +28,11 @@ public class UI {
     public int commandNum = 0;
     public int titleScreenState = 0;
     public int optionSubState = 0;
-    public int questSubState = 0;
 
     public int slotCol = 0;
     public int slotRow = 0;
+
+    public int questPageNum = 0;
 
     public BufferedImage titleBackground;
     public BufferedImage cutsceneBG;
@@ -68,9 +69,9 @@ public class UI {
 //        quilImage = quill.image;
 
         Entity exp = new OBJ_EXP(gp);
-            empty_exp = exp.image;
-            half_exp = exp.image2;
-            full_exp = exp.image3;
+        empty_exp = exp.image;
+        half_exp = exp.image2;
+        full_exp = exp.image3;
 
 
 
@@ -309,7 +310,7 @@ public class UI {
             y += gp.tileSize;
             g2.drawString(text, x, y);
 
-            text = "Quest Panel: E";
+            text = "Quest Panel: Q";
             x = getXforCenter(text);
             y += gp.tileSize;
             g2.drawString(text, x,y);
@@ -694,107 +695,203 @@ public class UI {
         switch (optionSubState) {
             case 0:
                 options_top(frameX, frameY);
-            break;
+                break;
             case 1:
                 options_notif(frameX, frameY);
-            break;
+                break;
             case 2:
                 options_control(frameX, frameY);
-            break;
+                break;
             case 3:
                 option_endGame(frameX, frameY);
-            break;
+                break;
         }
 
         gp.keyP.enterPressed = false;
     }
 
     public void drawQuestScreen(){
-        //FRAME
         int frameX = gp.tileSize;
-        int frameY = gp.tileSize;
-        int frameWidth = gp.tileSize*18 ;
-        int frameHeight = gp.tileSize*10;
+        int frameY = gp.tileSize/2;
+        int frameWidth  = gp.tileSize * 18;
+        int frameHeight = gp.tileSize * 11;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
-        if (questSubState == 0){
-            g2.setColor(Color.white);
-            g2.setFont(g2.getFont().deriveFont(32f));
+        // page header
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 39f));
+        g2.setColor(Color.white);
+        String header = "Quests  [Chapter: " + (questPageNum + 1) + "/4]";
+        int x = getXforCenter(header);
+        int y = frameY + gp.tileSize;
+        g2.drawString(header, x, y);
 
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
-            String text = "Quests";
-            int x = getXforCenter(text);
-            int y = frameY + gp.tileSize;
-            g2.drawString(text, x, y);
+        // ===== Quest 1 page =====
+        if (questPageNum == 0) {
+            boolean q1done = gp.questManager.isQuestCompleted(QuestManager.QUEST1);
 
-            //1ST QUEST
-            g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
-            g2.setColor(new Color(255, 220, 80));
-            text = "QUEST 1: “Familya Rizal” - Help Pepe find his 10 siblings.";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize;
-            g2.drawString(text, x, y);
+            //QUEST 1
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, 27f));
+            g2.setColor(q1done ? new Color(100, 230, 100) : new Color(255, 220, 80));
+            g2.drawString("Quest 1: \"Familya Rizal\"" + (q1done ? "    COMPLETE" : ""), frameX + gp.tileSize, y += gp.tileSize);
 
-            g2.setFont(g2.getFont().deriveFont(Font.PLAIN ,32f));
-            g2.setColor(Color.white);
-            text = " -Saturnina                -Maria";
-            x = frameX + gp.tileSize;
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 27f));
+            g2.setColor(Color.lightGray);
+            y += 28;
+            g2.drawString("Find all of Pepe's siblings and bring them home.", frameX + gp.tileSize, y);
             y += gp.tileSize/2;
-            g2.drawString(text, x, y);
 
-            text = " -Paciano                 -Josefa";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
+            String[] siblingNames = {
+                    "Saturnina",
+                    "Paciano",
+                    "Narcisa",
+                    "Olimpia",
+                    "Lucia",
+                    "Maria",
+                    "Josefa",
+                    "Trinidad",
+                    "Soledad",
+                    "Concepcion"
+            };
 
-            text = " -Narcisa                -Trinidad";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
+            boolean[] sibFound = new boolean[10];
+            for (int i = 0; i < gp.npc.length; i++) {
+                if (gp.npc[i] instanceof entity.NPC_Sibling) {
+                    entity.NPC_Sibling s = (entity.NPC_Sibling) gp.npc[i];
+                    int slot = i - 2;
+                    if (slot >= 0 && slot < 9) {
+                        sibFound[slot] = s.isFollowing;
+                    }
+                }
+            }
+            sibFound[9] = !q1done && gp.questManager.conchaVisited;
 
-            text = " -Olimpia                 -Solidad";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
+            int col1X = frameX + gp.tileSize;
+            int col2X = frameX + (frameWidth / 2) + 10;
+            int rowY  = y;
+            int lineH = 30;
 
-            text = " -Lucia                       -???";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 26f));
+            for (int i = 0; i < 10; i++) {
+                boolean found = sibFound[i];
+                g2.setColor(found ? new Color(80, 220, 80) : Color.white);
+                String label = (found ? "- " : "- ") + siblingNames[i];
+                int cx = (i % 2 == 0) ? col1X : col2X;
+                g2.drawString(label, cx, rowY);
+                if (i % 2 == 1) rowY += lineH;
+            }
+            y = rowY;
 
+            //QUEST 2
+            boolean q2active    = gp.questManager.isQuestActive(QuestManager.QUEST2);
+            boolean q2completed = gp.questManager.isQuestCompleted(QuestManager.QUEST2);
+            int stage = gp.questManager.quest2Stage;
 
-            //2ND QUEST
-            g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
-            g2.setColor(new Color(255, 220, 80));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, 27f));
+            Color titleColor = q2completed ? new Color(100, 230, 100)
+                    : (q2active   ? new Color(255, 220, 80)
+                    : Color.gray);
+            g2.setColor(titleColor);
+            g2.drawString("Quest 2: \"Pangangaral ng mga Tiyo\"" + (q2completed ? "    COMPLETE" : ""), frameX + gp.tileSize, y);
 
-            g2.setFont(g2.getFont().deriveFont(Font.ITALIC ,32f));
-            text = "“QUEST 2: Pangangaral ng mga Tiyo”: Talk with your uncles to";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize*2;
-            g2.drawString(text, x, y);
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 27f));
+            g2.setColor(q2active || q2completed ? Color.lightGray : Color.gray);
+            y += 28;
+            g2.drawString("Learn valuable lessons from your uncles.", frameX + gp.tileSize, y);
+            lineH = 24;
+            y += lineH;
 
-            text="learn valuable lessons.";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
+            if (!q2active && !q2completed) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 27f));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Quest 1 to unlock]", frameX + gp.tileSize*6, y);
+            } else {
+                lineH = 24;
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 27f));
 
-            g2.setFont(g2.getFont().deriveFont(Font.PLAIN ,32f));
-            g2.setColor(Color.white);
-            text = " -Join Uncle Jose Alberto";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
+                // Uncle Jose
+                boolean joseDone = q2completed || stage >= QuestManager.JOSE_DONE;
+                g2.setColor(joseDone ? new Color(80, 220, 80) : Color.white);
+                g2.drawString((joseDone ? "- " : "- ") + "Meet Uncle Jose Alberto", frameX + gp.tileSize, y);
+                if (!joseDone && stage == QuestManager.JOSE_WAITING) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 25f));
+                    g2.setColor(new Color(200, 200, 100));
+                    y += 24;
+                    g2.drawString("  Paint Buckets: " + gp.questManager.countItem("Paint Bucket") + "/6"
+                                    + "   Brush: " + gp.questManager.countItem("Paintbrush") + "/1"
+                                    + "   Canvas: " + gp.questManager.countItem("Canvas") + "/1",
+                            frameX + gp.tileSize, y);
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 27f));
+                }
+                y += lineH;
 
-            text = " -Train with Uncle Manuel";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
+                // Uncle Manuel
+                boolean manuelDone = q2completed || stage >= QuestManager.MANUEL_DONE;
+                g2.setColor(manuelDone ? new Color(80, 220, 80)
+                        : stage >= QuestManager.JOSE_DONE ? Color.white : Color.gray);
+                g2.drawString((manuelDone ? "- " : "- ") + "Train with Uncle Manuel", frameX + gp.tileSize, y);
+                if (stage == QuestManager.MANUEL_RUNNING) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 25f));
+                    g2.setColor(new Color(200, 200, 100));
+                    y += 24;
+                    g2.drawString("  Checkpoints: " + gp.questManager.checkpointsHit + "/" + gp.questManager.TOTAL_CHECKPOINTS,
+                            frameX + gp.tileSize, y);
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 27f));
+                }
+                y += lineH;
 
-            text = " -Study with Uncle Gregorio";
-            x = frameX + gp.tileSize;
-            y += gp.tileSize/2;
-            g2.drawString(text, x, y);
+                // Uncle Gregorio
+                boolean gregorioDone = q2completed || stage >= QuestManager.GREGORIO_DONE;
+                g2.setColor(gregorioDone ? new Color(80, 220, 80)
+                        : stage >= QuestManager.MANUEL_DONE ? Color.white : Color.gray);
+                g2.drawString((gregorioDone ? "- " : "- ") + "Study with Uncle Gregorio", frameX + gp.tileSize, y);
+                if (stage == QuestManager.GREGORIO_WAITING) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 25f));
+                    g2.setColor(new Color(200, 200, 100));
+                    y += 24;
+                    g2.drawString("  Quill: " + gp.questManager.countItem("Quill") + "/1"
+                                    + "   Notebook: " + gp.questManager.countItem("Notebook") + "/1",
+                            frameX + gp.tileSize, y);
+                }
+            }
         }
+
+        // ===== Chapter 2 page =====
+        else if (questPageNum == 1) {
+
+        }
+
+        // ===== Chapter 3 page =====
+        else if (questPageNum == 2) {
+
+        }
+
+        // ===== Chapter 4 page =====
+        else if (questPageNum == 3) {
+
+        }
+
+        // PREV / NEXT buttons
+        int btnY = frameY + frameHeight - 28;
+
+        if (questPageNum > 0) {
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
+            g2.setColor(new Color(255, 220, 80));
+            g2.drawString("< PREV  [A]", frameX + gp.tileSize, btnY);
+        }
+
+        if (questPageNum < 1) {
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
+            g2.setColor(new Color(255, 220, 80));
+            String next = "NEXT >  [D]";
+            int nx = frameX + frameWidth - gp.tileSize
+                    - (int) g2.getFontMetrics().getStringBounds(next, g2).getWidth();
+            g2.drawString(next, nx, btnY);
+        }
+
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 20f));
+        g2.setColor(new Color(180, 180, 180));
+        String close = "[ Q ] Close";
+        g2.drawString(close, getXforCenter(close), btnY);
     }
 
     public void options_top(int frameX, int frameY){
