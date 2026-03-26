@@ -51,9 +51,9 @@ public class NPC_Manuel extends Entity {
         }
 
         if (dialogueStage == 0) {
-            dialogues[0] = "Pepe! Jose tells me you have learned the basics of colors. Good.";
-            dialogues[1] = "Now it is time to train your body. A healthy mind needs a healthy body.";
-            dialogues[2] = "Take these boots. They will make you run faster than the wind.";
+            dialogues[0] = "Pepe! Jose tells me you have learned the basics of \ncolors. Good.";
+            dialogues[1] = "Now it is time to train your body. A healthy mind\n needs a healthy body.";
+            dialogues[2] = "Take these boots. They will make you run faster\nthan the wind.";
             dialogues[3] = "Run the course around the town. I will be watching.";
             dialogues[4] = null;
 
@@ -69,8 +69,8 @@ public class NPC_Manuel extends Entity {
         } else if (dialogueStage == 1) {
             if (gp.questManager.courseCompleted) {
                 dialogues[0] = "You did it, Pepe! Incredible speed!";
-                dialogues[1] = "Your physical training is complete. You have made me proud.";
-                dialogues[2] = "The boots have served their purpose. You will not need them anymore.";
+                dialogues[1] = "Your physical training is complete. You have made me\nproud.";
+                dialogues[2] = "The boots have served their purpose. You will not need them\nanymore.";
                 dialogues[3] = null;
 
                 super.speak();

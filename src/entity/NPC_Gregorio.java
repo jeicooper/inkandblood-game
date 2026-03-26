@@ -64,9 +64,9 @@ public class NPC_Gregorio extends Entity {
 
         if (dialogueStage == 0) {
             dialogues[0] = "Pepe! I have been expecting you.";
-            dialogues[1] = "It is time to learn the power\nof words and writing.";
-            dialogues[2] = "Go to my house and find\nmy quill and notebook.";
-            dialogues[3] = "Bring them back to me\nwhen you have found them.";
+            dialogues[1] = "It is time to learn the power of words and writing.";
+            dialogues[2] = "Go to my house and find my quill and notebook.";
+            dialogues[3] = "Bring them back to me when you have found them.";
             dialogues[4] = null;
 
             super.speak();
@@ -79,7 +79,7 @@ public class NPC_Gregorio extends Entity {
         } else if (dialogueStage == 1) {
             if (gp.questManager.hasWritingSupplies()) {
                 dialogues[0] = "Excellent! You found them, Pepe.";
-                dialogues[1] = "Let me show you something\nvery important.";
+                dialogues[1] = "Let me show you something very important.";
                 dialogues[2] = null;
 
                 super.speak();

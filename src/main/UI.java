@@ -7,11 +7,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class UI {
     GamePanel gp;
     Graphics2D g2;
-    Font maruMonica;
+    public Font maruMonica;
 
     //BUFFERED IMAGES FOR OBJECT
 //  BufferedImage quilImage;
@@ -1213,22 +1214,21 @@ public class UI {
         g2.setColor(new Color(0, 0, 0, 180));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
-        int panelW = gp.tileSize * 18;
+        int panelW = gp.tileSize * 15;
         int panelH = gp.tileSize * 10;
         int panelX = gp.screenWidth / 2 - panelW / 2;
         int panelY = gp.screenHeight / 2 - panelH / 2;
         drawSubWindow(panelX, panelY, panelW, panelH);
 
+        int tailX = panelX + gp.tileSize;
+
         // title
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28F));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
         g2.setColor(new Color(255, 220, 80));
         String title = "Sa Aking Mga Kabata";
         int titleX = getXforCenter(title);
         g2.drawString(title, titleX, panelY + 45);
 
-        g2.setColor(Color.darkGray);
-        g2.setFont(g2.getFont().deriveFont(25F));
-        g2.drawString("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", panelX + 20, panelY + 62);
 
         // LEFT column — stanzas 1 and 2
         String[] left = {
@@ -1261,7 +1261,7 @@ public class UI {
                 "ang lunday sa lawa noong dakong una.",
         };
 
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 18F));
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 24F));
         g2.setColor(Color.white);
 
         int leftX  = panelX + 25;

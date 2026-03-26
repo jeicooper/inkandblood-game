@@ -46,11 +46,14 @@ public class GamePanel extends JPanel implements Runnable {
     public KeyHandler keyP = new KeyHandler(this);
     Sound music = new Sound();
     Sound sound = new Sound();
+
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public UI ui = new UI(this);
     Config config = new Config(this);
     public QuestManager questManager = new QuestManager(this);
+    public CutsceneManager cutsceneManager = new CutsceneManager(this);
+
     Thread gameThread;
 
 
@@ -70,6 +73,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int characterState = 4;
     public final int optionState = 5;
     public final int questState = 6;
+    public final int cutsceneState = 7;
 
 
     public GamePanel(){
@@ -175,6 +179,9 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameState == pauseState){
             //
         }
+        if (gameState == cutsceneState){
+            cutsceneManager.update();
+        }
 
     }
     public void drawToTempScreen() {
@@ -184,10 +191,11 @@ public class GamePanel extends JPanel implements Runnable {
             drawStart = System.nanoTime();
         }
 
-        //TITLE SCREEN
         if (gameState == titleState) {
             ui.draw(g2);
-
+        }
+        else if (gameState == cutsceneState) {
+            cutsceneManager.draw(g2);
         }
 
         //OTHERS

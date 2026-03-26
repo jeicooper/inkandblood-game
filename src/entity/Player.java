@@ -52,7 +52,7 @@ public class Player extends  Entity{
         //player position in the map
         worldX = gp.tileSize * 73;
         worldY = gp.tileSize * 28;
-        speed = 10;
+        speed = 5;
         direction = "down";
 
         // PLAYER STATS
@@ -89,6 +89,17 @@ public class Player extends  Entity{
 
             down3 = setup("/player/pepe_down_1");
 
+    }
+
+    public void loadSprite(String folder){
+        up1    = setup("/player/" + folder + "ateneo_up_1");
+        up2    = setup("/player/" + folder + "ateneo_up_2");
+        down1  = setup("/player/" + folder + "ateneo_down_1");
+        down2  = setup("/player/" + folder + "ateneo_down_2");
+        left1  = setup("/player/" + folder + "ateneo_left_1");
+        left2  = setup("/player/" + folder + "ateneo_left_2");
+        right1 = setup("/player/" + folder + "ateneo_right_1");
+        right2 = setup("/player/" + folder + "ateneo_right_2");
     }
 
     public BufferedImage setup(String imageName){

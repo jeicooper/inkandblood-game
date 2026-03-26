@@ -9,7 +9,7 @@ public class OBJ_PaintBucket extends Entity {
         super(gp);
         name = "Paint Bucket";
         image = setup(spritePath);
-        description = "A bucket of colorful paint.\nNeeded for art lessons.";
+        description = "A bucket of paint.\nNeeded for art lessons.";
         collision = false;
     }
 }

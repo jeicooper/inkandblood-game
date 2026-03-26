@@ -42,6 +42,12 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.dialogueState) {
             dialogueState(code);
         }
+        //CUTSCENE STATE
+        else if (gp.gameState == gp.cutsceneState) {
+            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+                gp.cutsceneManager.advance();
+            }
+        }
         //CHARACTER STATE
         else if (gp.gameState == gp.characterState) {
             characterState(code);

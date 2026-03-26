@@ -173,7 +173,7 @@ public class QuestManager {
 
         if (checkpointsHit >= TOTAL_CHECKPOINTS && !courseCompleted) {
             courseCompleted = true;
-            gp.ui.showMessage("Course complete! Go back to Uncle Manuel!");
+            gp.ui.showMessage("Course complete!");
         }
     }
 
@@ -245,7 +245,8 @@ public class QuestManager {
         questState[QUEST2] = STATE_COMPLETED;
         gp.ui.showMessage("Quest 2: Done!");
         gp.player.exp += 1;
-        System.out.println("Quest 2 done. Player exp = " + gp.player.exp);
+        System.out.println("Quest 2 done!" + gp.player.exp);
+        gp.cutsceneManager.startChapter2();
     }
 
     public boolean isQuestActive(int quest) {
