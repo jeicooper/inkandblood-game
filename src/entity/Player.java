@@ -92,14 +92,14 @@ public class Player extends  Entity{
     }
 
     public void loadSprite(String folder){
-        up1    = setup("/player/" + folder + "ateneo_up_1");
-        up2    = setup("/player/" + folder + "ateneo_up_2");
-        down1  = setup("/player/" + folder + "ateneo_down_1");
-        down2  = setup("/player/" + folder + "ateneo_down_2");
-        left1  = setup("/player/" + folder + "ateneo_left_1");
-        left2  = setup("/player/" + folder + "ateneo_left_2");
-        right1 = setup("/player/" + folder + "ateneo_right_1");
-        right2 = setup("/player/" + folder + "ateneo_right_2");
+        up1    = setup("/player/ateneo_up_1");
+        up2    = setup("/player/ateneo_up_2");
+        down1  = setup("/player/ateneo_down_1");
+        down2  = setup("/player/ateneo_down_2");
+        left1  = setup("/player/ateneo_left_1");
+        left2  = setup("/player/ateneo_left_2");
+        right1 = setup("/player/ateneo_right_1");
+        right2 = setup("/player/ateneo_right_2");
     }
 
     public BufferedImage setup(String imageName){

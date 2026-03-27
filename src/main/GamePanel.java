@@ -63,6 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity npc [] = new Entity[50];
 
     ArrayList<Entity> entityList = new ArrayList<>();
+    private final Comparator<Entity> entitySorter = Comparator.comparingInt(e -> e.worldY);
 
     //GAME STATE
     public int gameState;
@@ -134,10 +135,8 @@ public class GamePanel extends JPanel implements Runnable {
         while(gameThread != null){
 
             currentTime = System.nanoTime();
-
             delta += (currentTime - lastTime)/ drawInterval;
             timer += (currentTime - lastTime);
-
             lastTime = currentTime;
 
 
@@ -150,8 +149,17 @@ public class GamePanel extends JPanel implements Runnable {
                 drawCount++;
             }
 
+            else {
+                try {
+                    long remaining = (long)((1 - delta) * drawInterval / 1000000);
+                    if (remaining > 1) Thread.sleep(remaining - 1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             if (timer >= 1000000000){
-//                System.out.println("FPS: " + drawCount);
+                System.out.println("FPS: " + drawCount);
                 drawCount = 0;
                 timer = 0;
             }
@@ -219,14 +227,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             //SORT ENTITIES
-            Collections.sort(entityList, new Comparator<Entity>() {
-                @Override
-                public int compare(Entity e1, Entity e2) {
-
-                    int result = Integer.compare(e1.worldY, e2.worldY);
-                    return result;
-                }
-            });
+            Collections.sort(entityList, entitySorter);
 
             //DRAW ENTITIES
             for (int i = 0; i < entityList.size(); i++) {

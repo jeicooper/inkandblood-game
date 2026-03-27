@@ -75,8 +75,6 @@ public class UI {
         full_exp = exp.image3;
 
 
-
-
     }
 
     public void showMessage(String text) {

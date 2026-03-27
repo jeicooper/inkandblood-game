@@ -7,9 +7,6 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    // ── Narration lines ───────────────────────────────────────
-    // Each entry is one "page" the player advances through with ENTER.
-    // Edit these freely to write your Chapter 2 narration.
     private String[][] chapter2Lines = {
             { "Several years have passed..." },
             { "Pepe has grown. The boy who once chased", "his siblings through the streets of Calamba..." },
@@ -33,8 +30,8 @@ public class CutsceneManager {
     // Sprite folder name under /player/ for the older Pepe
     private static final String CHAPTER2_SPRITE = "pepe_older";
     // Where to spawn the player on the new map (in tiles)
-    private static final int SPAWN_TILE_X = 10;
-    private static final int SPAWN_TILE_Y = 10;
+    private static final int SPAWN_TILE_X = 38;
+    private static final int SPAWN_TILE_Y = 23;
 
     public CutsceneManager(GamePanel gp) {
         this.gp = gp;
