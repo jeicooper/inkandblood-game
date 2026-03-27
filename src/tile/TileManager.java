@@ -27,18 +27,17 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/maps/Calamba.txt");
+        loadMap("/maps/Chapter1.txt");
     }
 
-    public void getTileImage() {
-        // keep using UtilityTool where appropriate, but use our nearest-neighbor scaler below to prevent bleeding
+    public void getTileImage(){
         setup(101, "grass", false);
         setup(102, "pathway", false);
 
         setup(103, "bench1", true);
         setup(104, "bench2", true);
-        setup(105, "bonfire", true);
-//        setup(106, "wowoConcha_grave", true);
+        setup(105, "road", false);
+        setup(106, "road1", false);
 
         setup(107, "path_1", false);
         setup(108, "path_2", false);
@@ -56,7 +55,7 @@ public class TileManager {
         setup(117, "brickwall", true);
 
 
-        setup(118, "water", true);
+        setup(118, "water", false);
         setup(119, "well_0", true);
         setup(120, "well_1", true);
         setup(121, "well_2", true);
@@ -69,14 +68,13 @@ public class TileManager {
 
         setup(127, "bush_0", true);
         setup(128, "wowobush2", true);
-        //setup(129, "", true);
-        //setup(130, "", true);
-        //setup(131, "", true);
-        //setup(132, "", true);
+        setup(129, "road2", false);
+        setup(130, "road3", false);
+        setup(131, "road4", false);
+        setup(132, "road5", false);
 
         setup(133, "rock00", true);
         setup(134, "rock01", true);
-
 
         setup(135, "sand", false);
 
@@ -263,49 +261,55 @@ public class TileManager {
         setup(282, "fountain14", true);
         setup(283, "fountain15", true);
 
-        //setup(284, "", false);
-        //setup(285, "", false);
-        //setup(286, "", false);
-        //setup(287, "", false);
-        //setup(288, "", false);
-        //setup(289, "", false);
-        //setup(290, "", false);
-        //setup(291, "", false);
-        //setup(292, "", false);
-        //setup(293, "", false);
-        //setup(294, "", false);
-        //setup(295, "", false);
-        //setup(296, "", false);
-        //setup(297, "", false);
-        //setup(298, "", false);
-        //setup(299, "", false);
-        //setup(300, "", false);
-        //setup(301, "", false);
+        setup(284, "wooden_port_00", true);
+        setup(285, "wooden_port_01", false);
+        setup(286, "wooden_port_02", false);
+        setup(287, "wooden_port_03", true);
+
+        setup(288, "wooden_port_04", true);
+        setup(289, "wooden_port_05", false);
+        setup(290, "wooden_port_06", false);
+        setup(291, "wooden_port_07", true);
+
+        setup(292, "wooden_port_08", false);
+        setup(293, "wooden_port_09", true);
+        setup(294, "wooden_port_10", true);
+        setup(295, "wooden_port_11", true);
+        setup(296, "wooden_port_12", false);
+        setup(297, "wooden_port_13", true);
+        setup(298, "wooden_port_14", false);
+        setup(299, "wooden_port_15", false);
+        setup(300, "wooden_port_16", true);
+        setup(301, "wooden_port_17", true);
+        setup(324, "wooden_port_18", true);
+        setup(206, "wooden_port_19", true);
+
 
         setup(302, "pillarbotcorner_1", true);
         setup(303, "pillarbotcorner_2", true);
         setup(304, "pillarbotcorner_3", true);
 
-        //setup(305, "", false);
-        //setup(306, "", true);
-        //setup(307, "", true);
-        //setup(308, "", true);
-        //setup(309, "", true);
-        //setup(310, "", true);
-        //setup(311, "", true);
-        //setup(312, "", true);
-        //setup(313, "", true);
-        //setup(314, "", true);
-        //setup(315, "", true);
-        //setup(316, "", true);
-        //setup(317, "", true);
-        //setup(318, "", true);
-        //setup(319, "", true);
-        //setup(320, "", true);
-        //setup(321, "", true);
-        //setup(322, "", true);
-        //setup(323, "", true);
-        //setup(324, "", true);
+        setup(305, "edge00", false);
+        setup(306, "edge01", true);
+        setup(307, "edge02", true);
+        setup(308, "edge03", true);
+        setup(309, "edge04", true);
+        setup(310, "edge05", true);
+        setup(311, "edge06", true);
+        setup(312, "edge07", true);
+        setup(313, "edge08", true);
+        setup(314, "edge09", true);
+        setup(315, "edge10", true);
+        setup(316, "edge11", true);
+        setup(317, "edge12", true);
+        setup(318, "edge13", true);
+        setup(319, "edge14", true);
+
+        setup(320, "circ_table0", true);
+        setup(321, "circ_table1", true);
+        setup(322, "circ_table2", true);
+        setup(323, "circ_table3", true);
+
 
         setup(325, "house300", true);
         setup(326, "house301", true);
@@ -585,6 +589,102 @@ public class TileManager {
         setup(568, "npc_house122", false);
         setup(569, "npc_house123", false);
         setup(570, "npc_house124", false);
+
+        setup(571, "ateneo_floor", false);
+        setup(572, "ateneo_window_1", true);
+        setup(573, "ateneo_window_2", true);
+        setup(574, "ateneo_window_3", true);
+        setup(575, "ateneo_window_4",true);
+        setup(576, "ateneo_walledge_1", true);
+        setup(577, "ateneo_walledge_2", true);
+        setup(578, "ateneo_wallcorner_1", true);
+        setup(579, "ateneo_wallcorner_2", true);
+        setup(580, "ateneo_wall_left", true);
+        setup(581, "ateneo_wall_right", true);
+        setup(582, "ateneo_wall_bottom", true);
+        setup(583, "ateneo_wall_top", true);
+
+        setup(584, "road_0", true);
+        setup(585, "road_1", true);
+        setup(586, "road_2", true);
+        setup(587, "road_3", false);
+        setup(588, "road_4", false);
+        setup(589, "road_5", false);
+        setup(590, "road_6", false);
+        setup(591, "road_7", false);
+        setup(592, "road_8", false);
+
+        setup(592, "BRIDGE00", true);
+        setup(593, "BRIDGE01", true);
+        setup(594, "BRIDGE02", true);
+
+        setup(595, "BRIDGE03", false);
+        setup(596, "BRIDGE04", false);
+        setup(597, "BRIDGE05", false);
+
+        setup(598, "BRIDGE06", true);
+        setup(599, "BRIDGE07", true);
+        setup(600, "BRIDGE08", true);
+
+        setup(601, "ateneo_bs1", true);
+        setup(602, "ateneo_bs2", true);
+        setup(603, "ateneo_bs3", true);
+        setup(604, "ateneo_bs4", true);
+
+        setup(605, "ateneo_plant1_1", true);
+        setup(606, "ateneo_plant1_2", true);
+        setup(607, "ateneo_plant2_1", true);
+        setup(608, "ateneo_plant2_2", true);
+        setup(609, "ateneo_plant3_1", true);
+        setup(610, "ateneo_plant3_2", true);
+        setup(611, "ateneo_plant4_1", true);
+        setup(612, "ateneo_plant4_2", true);
+
+        setup(613, "ateneo_painting1", true);
+
+        setup(614, "ateneo_table1", true);
+        setup(615, "ateneo_table2", true);
+        setup(616, "ateneo_teacher1", true);
+        setup(617, "ateneo_teacher2", true);
+
+        setup(618, "mat_b0", false);
+        setup(619, "mat_b1", false);
+        setup(620, "mat_b2", false);
+        setup(621, "mat_b3", false);
+        setup(622, "mat_b4", false);
+        setup(623, "mat_b5", false);
+
+        setup(624, "mat2_b0", false);
+        setup(625, "mat2_b1", false);
+        setup(626, "mat2_b2", false);
+        setup(627, "mat2_b3", false);
+        setup(628, "mat2_b4", false);
+        setup(629, "mat2_b5", false);
+        setup(630, "mat2_b6", false);
+        setup(631, "mat2_b7", false);
+        setup(632, "mat2_b8", false);
+
+        setup(633, "BRIDGE2_0", true);
+        setup(634, "BRIDGE2_1", false);
+        setup(635, "BRIDGE2_2", true);
+        setup(636, "BRIDGE2_3", true);
+        setup(637, "BRIDGE2_4", false);
+        setup(638, "BRIDGE2_5", true);
+        setup(639, "BRIDGE2_6", true);
+        setup(640, "BRIDGE2_7", false);
+        setup(641, "BRIDGE2_8", true);
+
+        //setup(642, "", true);
+        //setup(643, "", true);
+        //setup(644, "", true);
+        //setup(645, "", true);
+        //setup(646, "", true);
+        //setup(647, "", true);
+        //setup(648, "", true);
+        //setup(649, "", true);
+        //setup(650, "", true);
+        //setup(651, "", true);
+
     }
 
     public void setup(int index, String imagePath, boolean collision){
@@ -650,38 +750,25 @@ public class TileManager {
 
 
     public void draw(Graphics2D g2){
+        int playerScreenX = gp.player.screenX;
+        int playerScreenY = gp.player.screenY;
+        int playerWorldX  = gp.player.worldX;
+        int playerWorldY  = gp.player.worldY;
 
-        // Draw using nested loops for clarity and correctness
-        for (int worldRow = 0; worldRow < gp.maxWorldRow; worldRow++) {
-            for (int worldCol = 0; worldCol < gp.maxWorldCol; worldCol++) {
+        // Calculate the range of tiles visible on screen
+        int startCol = Math.max(0, (playerWorldX - playerScreenX) / gp.tileSize);
+        int endCol   = Math.min(gp.maxWorldCol - 1, startCol + gp.maxScreenCol + 1);
+        int startRow = Math.max(0, (playerWorldY - playerScreenY) / gp.tileSize);
+        int endRow   = Math.min(gp.maxWorldRow - 1, startRow + gp.maxScreenRow + 1);
 
-                int tileNum = mapTileNum[worldCol][worldRow];
+        for (int row = startRow; row <= endRow; row++) {
+            for (int col = startCol; col <= endCol; col++) {
+                int tileNum = mapTileNum[col][row];
+                if (tileNum < 0 || tileNum >= tile.length || tile[tileNum] == null) continue;
 
-                // bounds check
-                if (tileNum < 0 || tileNum >= tile.length) {
-                    continue;
-                }
-
-                int worldX = worldCol * gp.tileSize;
-                int worldY = worldRow * gp.tileSize;
-                int screenX = worldX - gp.player.worldX + gp.player.screenX;
-                int screenY = worldY - gp.player.worldY + gp.player.screenY;
-
-                // only draw tiles in the view rectangle (same logic as before)
-                if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-                        worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-                        worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-                        worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-
-                    if (tile[tileNum] != null && tile[tileNum].image != null) {
-                        // draw at integer coordinates; image already scaled to tileSize
-                        g2.drawImage(tile[tileNum].image, screenX, screenY, null);
-                    } else {
-                        // optional: draw nothing or a fallback; don't crash if image missing
-                        // g2.setColor(Color.MAGENTA);
-                        // g2.fillRect(screenX, screenY, gp.tileSize, gp.tileSize);
-                    }
-                }
+                int screenX = (col * gp.tileSize) - playerWorldX + playerScreenX;
+                int screenY = (row * gp.tileSize) - playerWorldY + playerScreenY;
+                g2.drawImage(tile[tileNum].image, screenX, screenY, null);
             }
         }
     }
