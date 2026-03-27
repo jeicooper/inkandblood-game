@@ -8,8 +8,11 @@ A 2D top-down RPG adventure game built in Java, following the childhood of Phili
 
 You play as young **Jose 'Pepe' Rizal**, navigating the different historical locations he's been on. Guided by the 
 Quest panel you 
-embark on a journey of family, art, physical training, and literary discovery — mirroring the real-lifec formative 
-experiences that shaped one of history's greatest heroes.
+embark on a journey of his childhood, literary discovery, his academic experiences, up to his eventual martyrdom in 
+Bagumbayan  — mirroring the 
+real-life 
+formative 
+experiences that shaped one of the Philippine history's greatest heroes.
 
 ---
 
