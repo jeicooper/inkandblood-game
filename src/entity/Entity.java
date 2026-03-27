@@ -15,6 +15,7 @@ public class Entity {
     public int speed;
 
     public BufferedImage up1, up2, down1, down2, down3, left1, left2, right1, right2;
+    public BufferedImage image, image2, image3, image4, image5, image6, image7, image8, image9;
     public String direction = "down";
 
     public int spriteCounter = 0;
@@ -28,7 +29,6 @@ public class Entity {
     String dialogues[] = new String[20];
     int dialogueIndex = 0;
 
-    public BufferedImage image, image2, image3, image4;
     public String name;
     public boolean collision = false;
 

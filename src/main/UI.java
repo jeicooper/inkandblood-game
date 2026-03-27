@@ -15,8 +15,9 @@ public class UI {
     public Font maruMonica;
 
     //BUFFERED IMAGES FOR OBJECT
-//  BufferedImage quilImage;
-    BufferedImage full_exp, half_exp, empty_exp;
+    BufferedImage full_exp_start, half_exp_start, empty_exp_start;
+    BufferedImage full_exp_mid,   half_exp_mid,   empty_exp_mid;
+    BufferedImage full_exp_end,   half_exp_end,   empty_exp_end;
 
     public boolean messageOn = false;
     public boolean showPoemPanel = false;
@@ -69,10 +70,20 @@ public class UI {
 //        OBJ_Quil quill = new OBJ_Quil(gp);
 //        quilImage = quill.image;
 
+        // replace the existing exp loading block
         Entity exp = new OBJ_EXP(gp);
-        empty_exp = exp.image;
-        half_exp = exp.image2;
-        full_exp = exp.image3;
+        full_exp_start = exp.image;
+        full_exp_mid = exp.image2;
+        full_exp_end = exp.image3;
+
+        half_exp_start  = exp.image4;
+        half_exp_mid = exp.image5;
+        half_exp_end = exp.image6;
+
+        empty_exp_start = exp.image7;
+        empty_exp_mid = exp.image8;
+        empty_exp_end = exp.image9;
+
 
 
     }
@@ -156,21 +167,44 @@ public class UI {
     public void drawPlayerExp() {
         int x = gp.tileSize / 2;
         int y = gp.tileSize / 2;
-        int spacing = gp.tileSize + 6;
+        int spacing = gp.tileSize - 2;
+        int totalSlots = gp.player.maxExp / 2;
 
-        // draw all slots as empty first
-        for (int i = 0; i < gp.player.maxExp; i++) {
-            g2.drawImage(empty_exp, x, y, null);
-            x += spacing;
-        }
+        int fullSlots = gp.player.exp / 2;
+        boolean hasHalf = (gp.player.exp % 2) == 1;
 
-        // reset and draw filled exp on top
-        x = gp.tileSize / 2;
-        for (int i = 0; i < gp.player.exp; i++) {
-            g2.drawImage(full_exp, x, y, null);
+        for (int i = 0; i < totalSlots; i++) {
+            // pick position type
+            BufferedImage emptyImg, fullImg, halfImg;
+            if (i == 0) {
+                emptyImg = empty_exp_start;
+                fullImg  = full_exp_start;
+                halfImg  = half_exp_start;
+            } else if (i == totalSlots - 1) {
+                emptyImg = empty_exp_end;
+                fullImg  = full_exp_end;
+                halfImg  = half_exp_end;
+            } else {
+                emptyImg = empty_exp_mid;
+                fullImg  = full_exp_mid;
+                halfImg  = half_exp_mid;
+            }
+
+            // pick fill state
+            BufferedImage toDraw;
+            if (i < fullSlots) {
+                toDraw = fullImg;
+            } else if (i == fullSlots && hasHalf) {
+                toDraw = halfImg;
+            } else {
+                toDraw = emptyImg;
+            }
+
+            g2.drawImage(toDraw, x, y, null);
             x += spacing;
         }
     }
+
     public void drawHints(){
 
         g2.setColor(Color.white);
