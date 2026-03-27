@@ -1,12 +1,61 @@
-# INK AND BLOOD
+# 🖋️ Ink & Blood: Rizal's Adventure
 
-A 2D pixel roleplaying game about the life of Dr. Jose Rizal. Currently a work in progress. Made with native Java (no frameworks)
+A 2D top-down RPG adventure game built in Java, following the childhood of Philippine national hero **José Rizal (Pepe)** in the town of Calamba. Players explore a richly tiled open world, complete quests, interact with historical NPCs, and learn about Rizal's early life through gameplay.
 
-Follows ryisnow's game tutorial project.
+---
 
-Assets:
-Pixel Art Asset Pack by Anokolisa (https://anokolisa.itch.io/free-pixel-art-asset-pack-topdown-tileset-rpg-16x16-sprites)
+## 📖 Story
 
-Piskel - Pixel Editor Tool; Sprite Fusion - Tile Editor; Beep Box - BG Music Editor Tool
+You play as young **Jose 'Pepe' Rizal**, navigating the different historical locations he's been on. Guided by the 
+Quest panel you 
+embark on a journey of family, art, physical training, and literary discovery — mirroring the real-lifec formative 
+experiences that shaped one of history's greatest heroes.
 
-Began on August 2025 as a capstone project for the completion of our 4th year project as a BS Information Technology student.
+---
+
+## 🎮 Controls
+
+| Key | Action |
+|-----|--------|
+| `W A S D` | Move |
+| `F` | Interact with NPCs |
+| `Enter` | Confirm / advance dialogue |
+| `C` | Open inventory & character stats |
+| `Q` | View quest log |
+| `P` | Pause |
+| `ESC` | Options menu |
+
+---
+
+## 🧩 Features
+
+- **Dialogue system** with named speaker labels and multi-line support
+- **Quest tracking HUD** with live objective updates
+- **Inventory system** with item descriptions and a grid-based UI
+- **Character stats** — Intellect, Creativity, Perception, Charisma
+- **EXP system** displayed as a heart/bar HUD
+- **Full-screen toggle**, music & sound effect volume controls
+- **Title screen**, cutscene intro, and credits
+
+---
+
+## 🛠️ Tech Stack
+
+- **Language:** Java
+- **Rendering:** Java AWT / Swing (`JPanel`, `Graphics2D`)
+- **Audio:** `javax.sound.sampled`
+- **Architecture:** Custom game loop with fixed 60 FPS using nanosecond timing
+- **Map format:** Plain-text tile maps (`.txt`)
+- **Assets:** PNG spritesheets, WAV audio files
+
+---
+
+## 🚀 Running the Game
+
+**AVAILABLE SOON**
+
+---
+
+## 📜 License
+
+This project was created for educational purposes, inspired by the life of **Dr. José Protasio Rizal Mercado y Alonso Realonda** — Philippine national hero, novelist, poet, and polymath.
