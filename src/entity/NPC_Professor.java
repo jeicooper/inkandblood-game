@@ -42,7 +42,7 @@ public class NPC_Professor extends Entity {
 
     @Override
     public void speak() {
-        gp.ui.currentSpeakerName = "Professor";   // replace with actual name
+        gp.ui.currentSpeakerName = "Professor";
 
         if (dialogueStage == 0) {
             dialogues[0] = "Ah — you must be the new student.";
@@ -51,19 +51,10 @@ public class NPC_Professor extends Entity {
             dialogues[3] = "Go speak with her — she is just over there.";
             dialogues[4] = null;
 
+            dialogueStage = 1;
             super.speak();
 
-            if (dialogueIndex == 0) {
-                dialogueStage = 1;
-
-                if (gp.questManager.quest3Stage == QuestManager.TALK_PROFESSOR) {
-                    gp.questManager.onProfessorDone();
-                }
-            }
-        }
-
-        // Idle repeat
-        else {
+        } else {
             dialogues[0] = "Go speak with your classmate. She is waiting for you.";
             dialogues[1] = null;
             super.speak();
@@ -72,6 +63,14 @@ public class NPC_Professor extends Entity {
 
     @Override
     public void update() {
+        direction = "down";
+
+        if (dialogueStage == 1
+                && gp.gameState == gp.playState
+                && gp.questManager.quest3Stage == QuestManager.TALK_PROFESSOR) {
+            dialogueStage = 2;   // prevent firing more than once
+            gp.questManager.onProfessorDone();
+        }
     }
 
     private void facePlayer() {

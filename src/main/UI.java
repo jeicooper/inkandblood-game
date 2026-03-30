@@ -1331,7 +1331,8 @@ public class UI {
                 gp.questManager.isQuestActive(QuestManager.QUEST3)) {
 
             g2.setColor(new Color(255, 220, 80));
-            g2.drawString("Enrollment", panelX + 12, panelY + 28);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+            g2.drawString("Ang Bagong Simula", panelX + 12, panelY + 28);
 
             g2.setColor(Color.white);
             g2.setFont(g2.getFont().deriveFont(20F));
@@ -1341,8 +1342,23 @@ public class UI {
             if (stage == QuestManager.TALK_FERRANDO) {
                 g2.drawString("Talk to Fr. Ferrando.", panelX + 12, panelY + 52);
 
-            }else if (stage == QuestManager.TALK_BURGOS) {
-                g2.drawString("Find Uncle Manuel.", panelX + 12, panelY + 52);
+            } else if (stage == QuestManager.TALK_BURGOS) {
+                g2.drawString("Talk to Senor Burgos.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.CUTSCENE_DONE
+                    || stage == QuestManager.TALK_PROFESSOR) {
+                g2.drawString("Find your professor.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.TALK_STUDENT) {
+                g2.drawString("Talk to your classmate.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.QUIZ_FAILED) {
+                g2.setColor(new Color(230, 100, 100));
+                g2.drawString("Try the quiz again!", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.QUEST3_DONE) {
+                g2.setColor(new Color(100, 230, 100));
+                g2.drawString("Quest 3 Complete!", panelX + 12, panelY + 52);
             }
         }
     }

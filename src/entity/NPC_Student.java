@@ -48,7 +48,7 @@ public class NPC_Student extends Entity {
 
         if (stage == QuestManager.TALK_PROFESSOR || stage < QuestManager.TALK_STUDENT) {
             dialogues[0] = "Oh! Hi there. You look new.";
-            dialogues[1] = "The professor will introduce you properly.\nGo talk to him first!";
+            dialogues[1] = "The professor will introduce you properly. Go talk to him first!";
             dialogues[2] = null;
             super.speak();
             return;

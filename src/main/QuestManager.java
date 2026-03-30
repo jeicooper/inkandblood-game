@@ -148,8 +148,6 @@ public class QuestManager {
         gp.ui.showMessage("Quest 1: Done!");
 
         gp.player.exp += 1;
-        System.out.println("Quest done. Player exp = " + gp.player.exp);
-
         for (int i = 0; i < gp.npc.length; i++) {
             if (gp.npc[i] instanceof entity.NPC_Sibling) {
                 gp.npc[i] = null;
@@ -159,7 +157,6 @@ public class QuestManager {
         currentQuest = QUEST2;
         questState[QUEST2] = STATE_ACTIVE;
         quest2Stage = JOSE_INACTIVE;
-        System.out.println("Quest 2 started. currentQuest = " + currentQuest + " stage = " + quest2Stage);
 
         gp.aSetter.activateQuest2();
     }
@@ -294,7 +291,7 @@ public class QuestManager {
         if (score >= 5) {
             quest3Stage = QUEST3_DONE;
             questState[QUEST3] = STATE_COMPLETED;
-            gp.ui.showMessage("Quest 3: Done! Perfect score!");
+            gp.ui.showMessage("Quest 3: Done!");
             gp.player.exp += 1;
         } else {
             quest3Stage = QUIZ_FAILED;

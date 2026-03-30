@@ -159,75 +159,126 @@ public class QuizPanel {
     // ── Question screen ───────────────────────────────────────────────────
     private void drawQuestionScreen(Graphics2D g2, int px, int py, int pw, int ph) {
 
+        // Safety guard
         if (currentQuestion >= QUESTIONS.length) {
-            showResult =true;
+            showResult = true;
             return;
         }
-        int pad = gp.tileSize;
 
-        // Progress indicator
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
+        int pad    = gp.tileSize;
+        int innerW = pw - pad * 2;   // usable width inside the panel
+
+        // ── Progress indicator ────────────────────────────────────────────
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 20f));
         g2.setColor(new Color(180, 180, 180));
-        String progress = "Question " + (currentQuestion + 1) + " / " + QUESTIONS.length;
-        g2.drawString(progress, px + pad, py + 30);
+        g2.drawString("Question " + (currentQuestion + 1) + " / " + QUESTIONS.length,
+                px + pad, py + 35);
 
-        // Question text
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 26f));
+        // ── Question text (word-wrapped) ──────────────────────────────────
+        // Measure how many lines the question needs, then position choices below
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
         g2.setColor(Color.white);
-        String q = QUESTIONS[currentQuestion];
-        drawWrapped(g2, q, px + pad, py + 70, pw - pad * 2, 30);
 
-        // Choices
+        int questionLineH = 30;
+        int questionStartY = py + 70;
+
+        // Count lines first so we know where choices start
+        int questionLines = countWrappedLines(g2,
+                QUESTIONS[currentQuestion], innerW);
+
+        // Draw the question
+        drawWrapped(g2, QUESTIONS[currentQuestion],
+                px + pad, questionStartY, innerW, questionLineH);
+
+        // ── Choices ───────────────────────────────────────────────────────
+        // Start choices with a fixed gap below the last question line
+        int choiceGap  = 20;   // gap between question block and first choice
+        int choiceH    = gp.tileSize;       // height of each choice row
+        int choiceGapH = 8;                 // gap between choice rows
+
+        int choiceStartY = questionStartY
+                + (questionLines * questionLineH)
+                + choiceGap;
+
         String[] labels = { "A", "B", "C" };
-        int choiceY = py + gp.tileSize * 3;
-        int lineH   = gp.tileSize - 4;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < CHOICES[currentQuestion].length; i++) {
             boolean isSelected = (i == selectedChoice);
             boolean isCorrect  = (i == CORRECT[currentQuestion]);
 
+            // Background highlight
             Color bg;
             if (answerConfirmed) {
-                if (isCorrect)                          bg = new Color(50, 180, 50, 180);
-                else if (isSelected && !isCorrect)      bg = new Color(200, 50, 50, 180);
-                else                                    bg = new Color(40, 40, 40, 120);
+                if (isCorrect)                     bg = new Color(50, 180, 50, 180);
+                else if (isSelected)               bg = new Color(200, 50, 50, 180);
+                else                               bg = new Color(40, 40, 40, 120);
             } else {
-                bg = isSelected ? new Color(80, 80, 180, 200) : new Color(40, 40, 40, 120);
+                bg = isSelected
+                        ? new Color(80, 80, 180, 200)
+                        : new Color(40, 40, 40, 120);
             }
 
-            g2.setColor(bg);
-            g2.fillRoundRect(px + pad - 6, choiceY - 22, pw - pad * 2 + 12, lineH, 10, 10);
+            int rowY = choiceStartY + i * (choiceH + choiceGapH);
 
-            // Cursor arrow for selected
-            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
+            g2.setColor(bg);
+            g2.fillRoundRect(px + pad - 6, rowY - 22,
+                    innerW + 12, choiceH, 10, 10);
+
+            // Cursor arrow
+            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
             if (isSelected && !answerConfirmed) {
                 g2.setColor(new Color(255, 220, 80));
-                g2.drawString(">", px + pad - 4, choiceY);
+                g2.drawString(">", px + pad - 4, rowY);
             }
 
             g2.setColor(Color.white);
             g2.drawString("[" + labels[i] + "]  " + CHOICES[currentQuestion][i],
-                    px + pad + 20, choiceY);
-
-            choiceY += lineH + 6;
+                    px + pad + 20, rowY);
         }
 
-        // Prompt
+        // ── Bottom prompt ─────────────────────────────────────────────────
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 20f));
         g2.setColor(new Color(180, 180, 180));
+
         if (!answerConfirmed) {
-            g2.drawString("[ W / S ] Navigate    [ ENTER ] Confirm",
-                    px + pad, py + ph - 20);
+            String nav = "[ W / S ] Navigate    [ ENTER ] Confirm";
+            int navW = g2.getFontMetrics().stringWidth(nav);
+            g2.drawString(nav, px + pw / 2 - navW / 2, py + ph - 20);
         } else {
             boolean wasCorrect = (selectedChoice == CORRECT[currentQuestion]);
+
             g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
             g2.setColor(wasCorrect ? new Color(100, 230, 100) : new Color(230, 80, 80));
-            g2.drawString(wasCorrect ? "Correct!" : "Incorrect!", px + pad, py + ph - 40);
+
+            String feedback = wasCorrect ? "Correct!" : "Incorrect!";
+            int fbW = g2.getFontMetrics().stringWidth(feedback);
+            g2.drawString(feedback, px + pw / 2 - fbW / 2, py + ph - 44);
+
             g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 20f));
             g2.setColor(new Color(180, 180, 180));
-            g2.drawString("[ ENTER ] Next", px + pad, py + ph - 16);
+            String next = "[ ENTER ] Next";
+            int nextW = g2.getFontMetrics().stringWidth(next);
+            g2.drawString(next, px + pw / 2 - nextW / 2, py + ph - 18);
         }
     }
+
+    // ── Counts how many lines drawWrapped would produce ───────────────────
+    private int countWrappedLines(Graphics2D g2, String text, int maxW) {
+        String[] words = text.split(" ");
+        StringBuilder line = new StringBuilder();
+        int lines = 1;
+        for (String word : words) {
+            String test = line.isEmpty() ? word : line + " " + word;
+            if (g2.getFontMetrics().stringWidth(test) > maxW) {
+                lines++;
+                line = new StringBuilder(word);
+            } else {
+                line = new StringBuilder(test);
+            }
+        }
+        return lines;
+    }
+
 
     // ── Result screen ─────────────────────────────────────────────────────
     private void drawResultScreen(Graphics2D g2, int px, int py, int pw, int ph) {
@@ -248,20 +299,23 @@ public class QuizPanel {
 
         // Per-question breakdown
         int itemY = py + pad + 90;
-        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 22f));
+
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 30f));
         for (int i = 0; i < QUESTIONS.length; i++) {
+
             g2.setColor(correct[i] ? new Color(80, 220, 80) : new Color(220, 80, 80));
-            g2.drawString((correct[i] ? "/ " : "X ") + "Q" + (i + 1) + ": "
-                    + QUESTIONS[i], px + pad, itemY);
-            itemY += 28;
+            String mark   = correct[i] ? "/" : "X";
+            String answer = correct[i] ? "Correct" : "Incorrect";
+            g2.drawString(mark + "  Q" + (i + 1) + ":  " + answer, px + pad, itemY);
+            itemY += 32;
         }
 
         // Closing prompt
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 20f));
         g2.setColor(new Color(180, 180, 180));
-        g2.drawString(passed ? "[ ENTER ] Continue"
-                        : "[ ENTER ] Try Again",
-                px + pad, py + ph - 16);
+        String closing = passed ? "[ ENTER ] Continue" : "[ ENTER ] Try Again";
+        int closingW = g2.getFontMetrics().stringWidth(closing);
+        g2.drawString(closing, px + pw / 2 - closingW / 2, py + ph - 16);
     }
 
     // ── Utility: word-wrap text ────────────────────────────────────────────
