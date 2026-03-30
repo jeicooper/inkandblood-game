@@ -45,11 +45,6 @@ public class NPC_Gregorio extends Entity {
     public void setAction() {}
 
     @Override
-    public void update() {
-        facePlayer();
-    }
-
-    @Override
     public void speak() {
         gp.ui.currentSpeakerName = "Uncle Gregorio";
 
@@ -119,6 +114,10 @@ public class NPC_Gregorio extends Entity {
         }
     }
 
+    @Override
+    public void update() {
+    }
+
     private void facePlayer() {
         int dx = gp.player.worldX - worldX;
         int dy = gp.player.worldY - worldY;
@@ -128,4 +127,5 @@ public class NPC_Gregorio extends Entity {
             direction = (dy > 0) ? "down" : "up";
         }
     }
+
 }

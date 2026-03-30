@@ -22,6 +22,9 @@ public class UI {
     public boolean messageOn = false;
     public boolean showPoemPanel = false;
 
+    public QuizPanel quizPanel;
+    public boolean   quizPanelOpen = false;
+
     public String message = "";
     public String currentDialogue = "";
     public String currentSpeakerName = "";
@@ -84,6 +87,7 @@ public class UI {
         empty_exp_mid = exp.image8;
         empty_exp_end = exp.image9;
 
+        quizPanel = new QuizPanel(gp, this);
 
 
     }
@@ -92,6 +96,11 @@ public class UI {
         message = text;
         messageOn = true;
     }
+
+    public void openQuizPanel() {
+        quizPanel.open();
+    }
+
     public void draw(Graphics2D g2){
 
         this.g2 = g2;
@@ -125,6 +134,10 @@ public class UI {
 
             if (showPoemPanel) {
                 drawPoemPanel();
+            }
+
+            if (quizPanelOpen) {
+                quizPanel.draw(g2);
             }
         }
 
@@ -890,7 +903,76 @@ public class UI {
 
         // ===== Chapter 2 page =====
         else if (questPageNum == 1) {
+            boolean q3done   = gp.questManager.isQuestCompleted(QuestManager.QUEST3);
+            boolean q3active = gp.questManager.isQuestActive(QuestManager.QUEST3);
+            int     stage    = gp.questManager.quest3Stage;
 
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, 27f));
+            Color q3color = q3done   ? new Color(100, 230, 100)
+                    : q3active ? new Color(255, 220, 80)
+                    : Color.gray;
+            g2.setColor(q3color);
+            g2.drawString("Quest 3: \"Ang Bagong Simula\""
+                            + (q3done ? "    COMPLETE" : ""),
+                    frameX + gp.tileSize, y += gp.tileSize);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 27f));
+            g2.setColor(q3active || q3done ? Color.lightGray : Color.gray);
+            y += 28;
+            g2.drawString("Enroll at Ateneo Municipal de Manila.",
+                    frameX + gp.tileSize, y);
+
+            if (!q3active && !q3done) {
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Chapter 1 to unlock]",
+                        frameX + gp.tileSize * 4, y += gp.tileSize / 2);
+            } else {
+                int lineH = 32;
+                y += lineH;
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 26f));
+
+                // Step 1 — Talk to Ferrando
+                boolean s1 = q3done || stage > QuestManager.TALK_FERRANDO;
+                g2.setColor(s1 ? new Color(80, 220, 80) : Color.white);
+                g2.drawString("- Talk to Fr. Magin Ferrando", frameX + gp.tileSize, y);
+                y += lineH;
+
+                // Step 2 — Talk to Burgos
+                boolean s2done = q3done || stage > QuestManager.TALK_BURGOS;
+                g2.setColor(s2done ? new Color(80, 220, 80)
+                        : stage == QuestManager.TALK_BURGOS ? Color.white : Color.gray);
+                g2.drawString("- Talk to Senor Burgos", frameX + gp.tileSize, y);
+                y += lineH;
+
+                // Step 3 — Get enrolled (cutscene, automatic)
+                boolean s3done = q3done || stage > QuestManager.CUTSCENE_DONE;
+                g2.setColor(s3done ? new Color(80, 220, 80) : Color.gray);
+                g2.drawString("- Get enrolled", frameX + gp.tileSize, y);
+                y += lineH;
+
+                // Step 4 — Meet professor
+                boolean s4done = q3done || stage > QuestManager.TALK_PROFESSOR;
+                g2.setColor(s4done ? new Color(80, 220, 80)
+                        : stage == QuestManager.TALK_PROFESSOR ? Color.white : Color.gray);
+                g2.drawString("- Meet your professor", frameX + gp.tileSize, y);
+                y += lineH;
+
+                // Step 5 — Pass the quiz
+                boolean s5active = stage == QuestManager.TALK_STUDENT
+                        || stage == QuestManager.QUIZ_FAILED;
+                boolean s5done   = stage == QuestManager.QUEST3_DONE;
+                g2.setColor(s5done   ? new Color(80, 220, 80)
+                        : s5active ? Color.white : Color.gray);
+                g2.drawString("- Pass the classmate's quiz (5/5)", frameX + gp.tileSize, y);
+
+                if (stage == QuestManager.QUIZ_FAILED) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 25f));
+                    g2.setColor(new Color(230, 100, 100));
+                    y += 26;
+                    g2.drawString("  Return to your classmate and try again.",
+                            frameX + gp.tileSize, y);
+                }
+            }
         }
 
         // ===== Chapter 3 page =====
@@ -1167,6 +1249,7 @@ public class UI {
 
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
 
+        // ===== QUEST 1 =====
         if (currentQ == main.QuestManager.QUEST1 &&
                 gp.questManager.isQuestActive(main.QuestManager.QUEST1)) {
 
@@ -1191,6 +1274,7 @@ public class UI {
             }
         }
 
+        // ===== QUEST 2 =====
         else if (currentQ == QuestManager.QUEST2 &&
                 gp.questManager.isQuestActive(QuestManager.QUEST2)) {
 
@@ -1239,6 +1323,26 @@ public class UI {
 
             } else if (stage == QuestManager.GREGORIO_DONE) {
                 g2.drawString("Quest 2 Complete!", panelX + 12, panelY + 52);
+            }
+        }
+
+        // ===== QUEST 3 =====
+        else if (currentQ == QuestManager.QUEST3 &&
+                gp.questManager.isQuestActive(QuestManager.QUEST3)) {
+
+            g2.setColor(new Color(255, 220, 80));
+            g2.drawString("Enrollment", panelX + 12, panelY + 28);
+
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(20F));
+
+            int stage = gp.questManager.quest3Stage;
+
+            if (stage == QuestManager.TALK_FERRANDO) {
+                g2.drawString("Talk to Fr. Ferrando.", panelX + 12, panelY + 52);
+
+            }else if (stage == QuestManager.TALK_BURGOS) {
+                g2.drawString("Find Uncle Manuel.", panelX + 12, panelY + 52);
             }
         }
     }

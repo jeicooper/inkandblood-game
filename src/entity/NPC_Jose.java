@@ -6,9 +6,6 @@ import main.QuestManager;
 public class NPC_Jose extends Entity {
 
     public int dialogueStage = 0;
-    // 0 = first meeting, give instructions
-    // 1 = waiting for items
-    // 2 = items submitted, send to Manuel
 
     public NPC_Jose(GamePanel gp) {
         super(gp);
@@ -101,6 +98,15 @@ public class NPC_Jose extends Entity {
 
     @Override
     public void update() {
-        direction = "down";
+    }
+
+    private void facePlayer() {
+        int dx = gp.player.worldX - worldX;
+        int dy = gp.player.worldY - worldY;
+        if (Math.abs(dx) > Math.abs(dy)) {
+            direction = (dx > 0) ? "right" : "left";
+        } else {
+            direction = (dy > 0) ? "down" : "up";
+        }
     }
 }

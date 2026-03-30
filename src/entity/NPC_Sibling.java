@@ -7,26 +7,18 @@ import java.util.LinkedList;
 
 public class NPC_Sibling extends Entity {
 
-    // ── Identity ──────────────────────────────────────────────
     public String siblingName;
-    // ── Follow state ──────────────────────────────────────────
     public boolean isFollowing = false;
     public boolean delivered   = false;
 
-    // The entity this sibling is tailing (player or the sibling ahead)
     public Entity followTarget = null;
 
-    // History queue: stores past (worldX, worldY) of the target so the
-    // sibling walks exactly where the target walked, producing a smooth
-    // congo-line effect.
     private final LinkedList<int[]> posHistory = new LinkedList<>();
-    private static final int HISTORY_DELAY = 30; // frames of lag between each link
+    private static final int HISTORY_DELAY = 30;
 
-    // ── Dialogue ──────────────────────────────────────────────
     private String[] greetDialogue  = new String[3];
     private String[] followDialogue = new String[3];
 
-    // ── Constructor ───────────────────────────────────────────
     public NPC_Sibling(GamePanel gp, String siblingName, String spritePath) {
         super(gp);
         this.siblingName = siblingName;
@@ -39,10 +31,8 @@ public class NPC_Sibling extends Entity {
         buildDialogue();
     }
 
-    // ── Sprite loading ────────────────────────────────────────
     private void loadSprites(String basePath) {
-        // Fall back to a default sprite path if specific ones don't exist.
-        // All directions use the same base; swap to directional if you have them.
+
         up1    = setup(basePath + "_up_1");
         up2    = setup(basePath + "_up_2");
         down1  = setup(basePath + "_down_1");
@@ -52,21 +42,18 @@ public class NPC_Sibling extends Entity {
         right1 = setup(basePath + "_right_1");
         right2 = setup(basePath + "_right_2");
 
-        // If directional sprites failed, fall back to generic sibling sprite
         if (down1 == null) {
             String fallback = "/npc/sibling/sibling_default";
             up1 = up2 = down1 = down2 = left1 = left2 = right1 = right2 = setup(fallback);
         }
     }
 
-    // ── Dialogue ──────────────────────────────────────────────
     private void buildDialogue() {
         greetDialogue[0]  = "What is it Pepe?. Oh! is it time to eat?";
 
         dialogues = greetDialogue;
     }
 
-    // ── Entity.speak() override ───────────────────────────────
     @Override
     public void speak() {
         gp.ui.currentSpeakerName = siblingName;
@@ -99,7 +86,6 @@ public class NPC_Sibling extends Entity {
         posHistory.clear();
     }
 
-    // ── setAction / update ────────────────────────────────────
     @Override
     public void setAction() {
 
@@ -112,7 +98,6 @@ public class NPC_Sibling extends Entity {
         if (isFollowing && followTarget != null) {
             followUpdate();
 
-            // sprite animation while following
             spriteCounter++;
             if (spriteCounter > 12) {
                 spriteNum = (spriteNum == 1) ? 2 : 1;
@@ -121,7 +106,6 @@ public class NPC_Sibling extends Entity {
         }
     }
 
-    // ── Congo-line following logic ─────────────────────────────
     private void followUpdate() {
         posHistory.addLast(new int[]{followTarget.worldX, followTarget.worldY});
 
@@ -171,7 +155,6 @@ public class NPC_Sibling extends Entity {
         }
     }
 
-    // ── Helpers ───────────────────────────────────────────────
     private void facePlayer() {
         int dx = gp.player.worldX - worldX;
         int dy = gp.player.worldY - worldY;

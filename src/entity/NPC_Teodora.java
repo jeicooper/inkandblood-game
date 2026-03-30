@@ -50,7 +50,7 @@ public class NPC_Teodora extends Entity{
             if (i <= 50){
                 direction = "up";
             }
-            if (i > 50){
+            if (i >= 50){
                 direction = "down";
             }
 
@@ -70,7 +70,6 @@ public class NPC_Teodora extends Entity{
 
             super.speak();
 
-            // only trigger after last line
             if (dialogueIndex == 0) {
                 spoke = true;
                 gp.questManager.quest1Stage = QuestManager.QUEST1_STARTED;

@@ -7,9 +7,10 @@ public class QuestManager {
 
     GamePanel gp;
 
-    // QUESTS
-    public static final int QUEST1   = 0;   // find all siblings
+    // QUEST IDS
+    public static final int QUEST1   = 0;
     public static final int QUEST2   = 1;
+    public static final int QUEST3 = 2;
 
 
     //STATES
@@ -34,7 +35,6 @@ public class QuestManager {
     public int deliveryRadius;
 
     private int debugTimer = 0;
-
     public boolean quest0JustCompleted = false;
 
     // QUEST 2
@@ -66,12 +66,26 @@ public class QuestManager {
     public boolean[] checkpointHit;
     public final int CHECKPOINT_RADIUS = 60;
 
-    // ── Constructor ────────────────────────────────────────────
+    // QUEST 3
+    public static final int TALK_FERRANDO  = 0;
+    public static final int TALK_BURGOS    = 1;
+    public static final int CUTSCENE_DONE  = 2;
+    public static final int TALK_PROFESSOR = 3;
+    public static final int TALK_STUDENT   = 4;
+    public static final int QUIZ_FAILED    = 5;
+    public static final int QUEST3_DONE    = 6;
+
+    public int     quest3Stage          = TALK_FERRANDO;
+    public boolean ferrandoShooed       = false;
+
+    // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
         this.gp = gp;
         questState[QUEST1] = STATE_ACTIVE;
     }
 
+
+    //CHECKPOINTS
     public void init() {
         deliveryWorldX = 74 * gp.tileSize;
         deliveryWorldY = 26 * gp.tileSize;
@@ -98,7 +112,7 @@ public class QuestManager {
         }
     }
 
-    // QUEST 1
+    // ===== QUEST 1 =====
     private void updateQuest1() {
 
         if (quest1Stage == QUEST1_NOT_STARTED) return;
@@ -150,7 +164,7 @@ public class QuestManager {
         gp.aSetter.activateQuest2();
     }
 
-    // QUEST 2
+    // ===== QUEST 2 =====
     private void updateQuest2() {
         if (quest2Stage == MANUEL_RUNNING && bootsActive) {
             checkCourseCheckpoints();
@@ -245,15 +259,62 @@ public class QuestManager {
         questState[QUEST2] = STATE_COMPLETED;
         gp.ui.showMessage("Quest 2: Done!");
         gp.player.exp += 1;
-        System.out.println("Quest 2 done!" + gp.player.exp);
+
         gp.cutsceneManager.startChapter2();
+        currentQuest = QUEST3;
+        questState[QUEST3] = STATE_ACTIVE;
+        quest3Stage  = TALK_FERRANDO;
+        ferrandoShooed = false;
+    }
+
+    // ===== QUEST 3 =====
+    public void onFerrandoShooed() {
+        ferrandoShooed = true;
+        if (quest3Stage == TALK_FERRANDO) {
+            quest3Stage = TALK_BURGOS;
+        }
+    }
+
+    public void onBurgosDialogueDone() {
+        if (ferrandoShooed && quest3Stage == TALK_BURGOS) {
+            gp.cutsceneManager.startEnrollmentCutscene();
+        }
+    }
+
+    public void onEnrollmentCutsceneDone() {
+        quest3Stage = TALK_PROFESSOR;
+//        gp.aSetter.activateProfessorAndStudent();
+    }
+
+    public void onProfessorDone() {
+        quest3Stage = TALK_STUDENT;
+    }
+
+    public void onQuizResult(int score) {
+        if (score >= 5) {
+            quest3Stage = QUEST3_DONE;
+            questState[QUEST3] = STATE_COMPLETED;
+            gp.ui.showMessage("Quest 3: Done! Perfect score!");
+            gp.player.exp += 1;
+        } else {
+            quest3Stage = QUIZ_FAILED;
+            gp.ui.showMessage("Score: " + score + "/5. Try again!");
+        }
+    }
+
+    public void completeQuest3() {
+        quest3Stage = QUEST3_DONE;
+        questState[QUEST3] = STATE_COMPLETED;
+        gp.ui.showMessage("Quest 3: Done!");
+        gp.player.exp += 1;
     }
 
     public boolean isQuestActive(int quest) {
         return questState[quest] == STATE_ACTIVE;
     }
-
     public boolean isQuestCompleted(int quest) {
         return questState[quest] == STATE_COMPLETED;
     }
+
+
 }

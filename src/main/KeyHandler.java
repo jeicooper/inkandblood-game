@@ -190,6 +190,11 @@ public class KeyHandler implements KeyListener {
 
     }
     public void playState(int code){
+        if (gp.ui.quizPanelOpen) {
+            gp.ui.quizPanel.handleKey(code);
+            return;
+        }
+
         if(code == KeyEvent.VK_W){
             upPressed = true;
         }
@@ -307,7 +312,7 @@ public class KeyHandler implements KeyListener {
 
         // D / RIGHT → next quest page
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-            if (gp.ui.questPageNum < 1) gp.ui.questPageNum++;
+            if (gp.ui.questPageNum < 3) gp.ui.questPageNum++;
         }
 
 

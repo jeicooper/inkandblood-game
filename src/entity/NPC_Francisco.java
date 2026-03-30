@@ -44,6 +44,15 @@ public class NPC_Francisco extends Entity {
 
     @Override
     public void update() {
-        direction = "down";
+    }
+
+    private void facePlayer() {
+        int dx = gp.player.worldX - worldX;
+        int dy = gp.player.worldY - worldY;
+        if (Math.abs(dx) > Math.abs(dy)) {
+            direction = (dx > 0) ? "right" : "left";
+        } else {
+            direction = (dy > 0) ? "down" : "up";
+        }
     }
 }
