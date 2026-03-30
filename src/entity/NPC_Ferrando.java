@@ -61,7 +61,7 @@ public class NPC_Ferrando extends Entity{
         }
 
         else if (dialogueStage == 2){
-            dialogues[0] = "I told you — speak to Senor Burgos if you must.\nDo not bother me!";
+            dialogues[0] = "I told you — speak to Senor Burgos if you must. Do not bother\n me!";
             dialogues[1] = null;
             super.speak();
         }

@@ -92,12 +92,12 @@ public class QuestManager {
         deliveryRadius = gp.tileSize * 2;
 
         checkpoints = new int[][]{
-                {68 * gp.tileSize, 12 * gp.tileSize},
-                {93 * gp.tileSize, 30 * gp.tileSize},
                 {74 * gp.tileSize, 34 * gp.tileSize},
-                {40 * gp.tileSize, 34 * gp.tileSize},
-                {28 * gp.tileSize, 20 * gp.tileSize},
-                {55 * gp.tileSize, 14 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
         };
         checkpointHit = new boolean[TOTAL_CHECKPOINTS];
     }

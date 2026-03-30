@@ -47,8 +47,8 @@ public class NPC_Burgos extends Entity{
 
         if (!ferrandoDone && dialogueStage < 2) {
             dialogues[0] = "Ah, good day pepe! Are you looking to enroll?";
-            dialogues[1] = "Before I can assist you, you will need to speak\nwith Father Ferrando at the entrance first.";
-            dialogues[2] = "He handles all initial assessments.\nPlease see him and then come back to me.";
+            dialogues[1] = "Before I can assist you, you will need to speak with Father Ferrando at\nthe entrance first.";
+            dialogues[2] = "He handles all initial assessments. Please see him and then come back\nto me.";
             dialogues[3] = null;
 
             super.speak();
@@ -58,10 +58,10 @@ public class NPC_Burgos extends Entity{
         }
 
         else if (ferrandoDone && dialogueStage < 2) {
-            dialogues[0] = "Ah, you must be the young man Father Ferrando\nturned away at the gate.";
-            dialogues[1] = "Do not be discouraged. He is strict with\neveryone.";
-            dialogues[2] = "I have reviewed your record from Calamba.\nYour marks are... surprisingly impressive.";
-            dialogues[4] = "Come. Let us get you enrolled. I will speak\non your behalf.";
+            dialogues[0] = "Ah, you must be the young man Father Ferrando turned away at\nthe gate.";
+            dialogues[1] = "Do not be discouraged. He is strict with everyone.";
+            dialogues[2] = "I have reviewed your record from Calamba. Your marks are... \nsurprisingly impressive.";
+            dialogues[4] = "Come. Let us get you enrolled. I will speak on your behalf.";
             dialogues[5] = null;
 
             super.speak();

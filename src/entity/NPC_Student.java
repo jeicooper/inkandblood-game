@@ -56,7 +56,7 @@ public class NPC_Student extends Entity {
 
         // Quest already complete
         if (stage == QuestManager.QUEST3_DONE) {
-            dialogues[0] = "Great job on the quiz! We are going to be\ngood classmates, I can tell.";
+            dialogues[0] = "Great job on the quiz! We are going to be good classmates, I can tell.";
             dialogues[1] = null;
             super.speak();
             return;
@@ -64,8 +64,8 @@ public class NPC_Student extends Entity {
 
         if (dialogueStage == 0) {
             dialogues[0] = "Hey! You must be Jose. I'm your new classmate.";
-            dialogues[1] = "Professor asked me to give you a small quiz\nto see how much you already know.";
-            dialogues[2] = "You need to get all 5 questions right.\nReady? Let's go!";
+            dialogues[1] = "Professor asked me to give you a small quiz to see how much you already\nknow.";
+            dialogues[2] = "You need to get all 5 questions right. Ready? Let's go!";
             dialogues[3] = null;
         } else {
             dialogues[0] = "Don't give up! Let's try the quiz again.";

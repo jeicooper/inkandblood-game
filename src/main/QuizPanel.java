@@ -102,6 +102,11 @@ public class QuizPanel {
             return;
         }
 
+        if (currentQuestion >= QUESTIONS.length) {
+            showResult = true;
+            return;
+        }
+
         if (!answerConfirmed) {
             // Navigate choices with W/S or UP/DOWN
             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
@@ -121,10 +126,10 @@ public class QuizPanel {
         } else {
             // After seeing feedback, ENTER moves to next question
             if (code == KeyEvent.VK_ENTER) {
-                currentQuestion++;
-                if (currentQuestion >= QUESTIONS.length) {
+                if (currentQuestion >= QUESTIONS.length - 1) {
                     showResult = true;
                 } else {
+                    currentQuestion++;
                     selectedChoice  = 0;
                     answerConfirmed = false;
                 }
@@ -153,6 +158,11 @@ public class QuizPanel {
 
     // ── Question screen ───────────────────────────────────────────────────
     private void drawQuestionScreen(Graphics2D g2, int px, int py, int pw, int ph) {
+
+        if (currentQuestion >= QUESTIONS.length) {
+            showResult =true;
+            return;
+        }
         int pad = gp.tileSize;
 
         // Progress indicator

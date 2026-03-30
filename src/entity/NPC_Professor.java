@@ -47,8 +47,8 @@ public class NPC_Professor extends Entity {
         if (dialogueStage == 0) {
             dialogues[0] = "Ah — you must be the new student.";
             dialogues[1] = "Welcome to Ateneo. I am your class professor.";
-            dialogues[2] = "Before we begin, I want you to meet one of your\nclassmates. He will help you get settled in.";
-            dialogues[3] = "Go speak with him — he is just over there.";
+            dialogues[2] = "Before we begin, I want you to meet one of your classmates. She\nwill help you get settled in.";
+            dialogues[3] = "Go speak with her — she is just over there.";
             dialogues[4] = null;
 
             super.speak();
@@ -64,7 +64,7 @@ public class NPC_Professor extends Entity {
 
         // Idle repeat
         else {
-            dialogues[0] = "Go speak with your classmate.\nHe is waiting for you.";
+            dialogues[0] = "Go speak with your classmate. She is waiting for you.";
             dialogues[1] = null;
             super.speak();
         }
