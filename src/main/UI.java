@@ -693,7 +693,7 @@ public class UI {
         int dFrameX = frameX;
         int dFrameY = frameY + frameHeight;
         int dFrameWidth = frameWidth;
-        int dFrameHeight =  gp.tileSize*3;
+        int dFrameHeight =  gp.tileSize*4;
 
         int textX = dFrameX + 20;
         int textY = dFrameY + gp.tileSize;
@@ -924,10 +924,11 @@ public class UI {
                 //QUIZ
                 boolean s5active = stage == QuestManager.TALK_STUDENT
                         || stage == QuestManager.QUIZ_FAILED;
-                boolean s5done   = stage == QuestManager.QUEST3_DONE;
+                boolean s5done   = stage >= QuestManager.TALK_FERRANDO_REWARD;
                 g2.setColor(s5done   ? new Color(80, 220, 80)
                         : s5active ? Color.white : Color.gray);
                 g2.drawString("- Pass the classmate's quiz (5/5)", frameX + gp.tileSize, y);
+                y += lineH;
 
                 if (stage == QuestManager.QUIZ_FAILED) {
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 25f));
@@ -935,7 +936,15 @@ public class UI {
                     y += 26;
                     g2.drawString("  Return to your classmate and try again.",
                             frameX + gp.tileSize, y);
+                    y -= 26;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 26f));
                 }
+
+                boolean s6active = stage == QuestManager.TALK_FERRANDO_REWARD;
+                boolean s6done   = stage == QuestManager.QUEST3_DONE;
+                g2.setColor(s6done   ? new Color(80, 220, 80)
+                        : s6active ? Color.white : Color.gray);
+                g2.drawString("- Return to Fr. Ferrando", frameX + gp.tileSize, y);
             }
         }
 
@@ -1347,6 +1356,10 @@ public class UI {
             } else if (stage == QuestManager.QUIZ_FAILED) {
                 g2.setColor(new Color(230, 100, 100));
                 g2.drawString("Try the quiz again!", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.TALK_FERRANDO_REWARD) {
+                g2.setColor(new Color(255, 220, 80));
+                g2.drawString("Return to Fr. Ferrando.", panelX + 12, panelY + 52);
 
             } else if (stage == QuestManager.QUEST3_DONE) {
                 g2.setColor(new Color(100, 230, 100));

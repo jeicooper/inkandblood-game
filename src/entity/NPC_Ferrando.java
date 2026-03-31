@@ -49,7 +49,6 @@ public class NPC_Ferrando extends Entity {
             dialogues[2] = "Frankly, you look far too frail and underweight for an eleven\nyear-old.";
             dialogues[3] = "You won't survive the rigor here.";
             dialogues[4] = null;
-
             super.speak();
 
             if (dialogueIndex == 0) {
@@ -57,10 +56,26 @@ public class NPC_Ferrando extends Entity {
                 gp.questManager.onFerrandoShooed();
             }
 
-        } else {
-            dialogues[0] = "I told you — speak to Senor Burgos! Do not waste my time.";
+        } else if (dialogueStage == 1) {
+            dialogues[0] = "...";
             dialogues[1] = null;
-            dialogueIndex = 0;
+            super.speak();
+
+        } else if (dialogueStage == 2) {
+            dialogues[0] = "So... you passed. I must admit, I did not expect that.";
+            dialogues[1] = "Perhaps I was wrong about you, young Rizal.";
+            dialogues[2] = "You have earned this. Wear it with pride.";
+            dialogues[3] = null;
+            super.speak();
+
+            if (dialogueIndex == 0) {
+                dialogueStage = 3;
+                gp.questManager.onFerrandoReward();
+            }
+
+        } else if (dialogueStage == 3) {
+            dialogues[0] = "Study hard, Jose. You have a bright future ahead of you.";
+            dialogues[1] = null;
             super.speak();
         }
     }
@@ -68,5 +83,15 @@ public class NPC_Ferrando extends Entity {
     @Override
     public void update() {
         direction = "down";
+
+        int stage = gp.questManager.quest3Stage;
+
+        if (dialogueStage == 1 && stage == QuestManager.TALK_FERRANDO_REWARD) {
+            dialogueStage = 2;
+        }
+
+        if (stage == QuestManager.QUEST3_DONE && dialogueStage < 3) {
+            dialogueStage = 3;
+        }
     }
 }

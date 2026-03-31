@@ -372,6 +372,22 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        // Quest 3
+        if (questManager.isQuestActive(QuestManager.QUEST3)) {
+            int stage = questManager.quest3Stage;
+            if (stage == QuestManager.TALK_FERRANDO
+                    || stage == QuestManager.TALK_FERRANDO_REWARD) {
+                if (npc[15] != null) targets.add(npc[15]);
+            } else if (stage == QuestManager.TALK_BURGOS) {
+                if (npc[16] != null) targets.add(npc[16]);
+            } else if (stage == QuestManager.TALK_PROFESSOR) {
+                if (npc[17] != null) targets.add(npc[17]);
+            } else if (stage == QuestManager.TALK_STUDENT
+                    || stage == QuestManager.QUIZ_FAILED) {
+                if (npc[18] != null) targets.add(npc[18]);
+            }
+        }
+
         return targets;
     }
 

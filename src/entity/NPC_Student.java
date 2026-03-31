@@ -45,7 +45,6 @@ public class NPC_Student extends Entity {
 
         int stage = gp.questManager.quest3Stage;
 
-        // Player hasn't been sent here yet
         if (stage < QuestManager.TALK_STUDENT) {
             dialogues[0] = "Oh! Hi there. You look new.";
             dialogues[1] = "The professor will introduce you properly. Go talk to him first!";
@@ -55,7 +54,7 @@ public class NPC_Student extends Entity {
             return;
         }
 
-        if (stage == QuestManager.QUEST3_DONE) {
+        if (stage == QuestManager.TALK_FERRANDO_REWARD || stage == QuestManager.QUEST3_DONE) {
             dialogues[0] = "Great job on the quiz! We are going to be good classmates\nI can tell.";
             dialogues[1] = null;
             dialogueIndex = 0;

@@ -2,6 +2,7 @@ package main;
 
 import entity.Entity;
 import object.OBJ_Boots;
+import object.OBJ_SobreMedal;
 
 public class QuestManager {
 
@@ -73,7 +74,8 @@ public class QuestManager {
     public static final int TALK_PROFESSOR = 3;
     public static final int TALK_STUDENT   = 4;
     public static final int QUIZ_FAILED    = 5;
-    public static final int QUEST3_DONE    = 6;
+    public static final int TALK_FERRANDO_REWARD = 6;
+    public static final int QUEST3_DONE          = 7;
 
     public int     quest3Stage          = TALK_FERRANDO;
     public boolean ferrandoShooed       = false;
@@ -257,7 +259,6 @@ public class QuestManager {
     public void completeQuest2() {
         quest2Stage = GREGORIO_DONE;
         questState[QUEST2] = STATE_COMPLETED;
-        gp.ui.showMessage("Quest 2: Done!");
         gp.player.exp += 1;
         gp.player.age += 3;
 
@@ -293,20 +294,32 @@ public class QuestManager {
 
     public void onQuizResult(int score) {
         if (score >= 5) {
-            quest3Stage = QUEST3_DONE;
-            questState[QUEST3] = STATE_COMPLETED;
-            gp.ui.showMessage("Quest 3: Done!");
-            gp.player.exp += 1;
-            gp.player.intellect += 2;
+            quest3Stage = TALK_FERRANDO_REWARD;
         } else {
             quest3Stage = QUIZ_FAILED;
             gp.ui.showMessage("Score: " + score + "/5. Try again!");
         }
     }
 
+    public void giveMedal() {
+        OBJ_SobreMedal medal = new OBJ_SobreMedal(gp);
+        gp.player.inventory.add(medal);
+    }
+
+    public void onFerrandoReward() {
+        quest3Stage = QUEST3_DONE;
+        questState[QUEST3] = STATE_COMPLETED;
+        giveMedal();
+        gp.player.exp += 1;
+        gp.ui.showMessage("You received a medal!");
+        gp.ui.showMessage("Quest 3: Done!");
+        gp.player.intellect += 2;
+    }
+
     public void completeQuest3() {
         quest3Stage = QUEST3_DONE;
         questState[QUEST3] = STATE_COMPLETED;
+        gp.ui.showMessage("You received a medal!");
         gp.ui.showMessage("Quest 3: Done!");
         gp.player.exp += 1;
         gp.player.intellect += 2;

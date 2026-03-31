@@ -127,21 +127,21 @@ public class AssetSetter {
     }
 
     public void activateChapter2() {
-        gp.npc[14] = new NPC_Ferrando(gp);
-        gp.npc[14].worldX = 51 * gp.tileSize;
-        gp.npc[14].worldY = 43 * gp.tileSize;
+        gp.npc[15] = new NPC_Ferrando(gp);
+        gp.npc[15].worldX = 51 * gp.tileSize;
+        gp.npc[15].worldY = 43 * gp.tileSize;
 
-        gp.npc[15] = new NPC_Burgos(gp);
-        gp.npc[15].worldX = 36 * gp.tileSize;
-        gp.npc[15].worldY = 29 * gp.tileSize;
-
-        gp.npc[16] = new NPC_Professor(gp);
+        gp.npc[16] = new NPC_Burgos(gp);
         gp.npc[16].worldX = 36 * gp.tileSize;
-        gp.npc[16].worldY = 45 * gp.tileSize;
+        gp.npc[16].worldY = 29 * gp.tileSize;
 
-        gp.npc[17] = new NPC_Student(gp);
-        gp.npc[17].worldX = 40 * gp.tileSize;
-        gp.npc[17].worldY = 43 * gp.tileSize;
+        gp.npc[17] = new NPC_Professor(gp);
+        gp.npc[17].worldX = 36 * gp.tileSize;
+        gp.npc[17].worldY = 45 * gp.tileSize;
+
+        gp.npc[18] = new NPC_Student(gp);
+        gp.npc[18].worldX = 40 * gp.tileSize;
+        gp.npc[18].worldY = 43 * gp.tileSize;
 
     }
 }
