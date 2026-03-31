@@ -36,7 +36,6 @@ public class NPC_Manuel extends Entity {
 
     @Override
     public void setAction() {
-        // stands still
     }
 
     public void speak() {

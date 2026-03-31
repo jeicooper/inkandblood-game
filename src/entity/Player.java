@@ -69,7 +69,6 @@ public class Player extends  Entity{
     }
 
     public void setItems (){
-        //inventory.add(itemName);
 
     }
 

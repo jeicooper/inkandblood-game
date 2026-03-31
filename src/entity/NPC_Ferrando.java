@@ -41,6 +41,8 @@ public class NPC_Ferrando extends Entity{
 
     @Override
     public void speak(){
+
+        for (int i = 0; i < dialogues.length; i++) dialogues[i] = null;
         gp.ui.currentSpeakerName = "Fr. Magin Ferrando";
 
         if (dialogueStage == 0) {

@@ -9,7 +9,7 @@ public class CutsceneManager {
     private enum Scene { NONE, CHAPTER2, ENROLLMENT }
     private Scene activeScene = Scene.NONE;
 
-    // ── Chapter 2 transition narration ────────────────────────────────────
+    // TRANSITION TO CHAP 2
     private final String[][] chapter2Lines = {
             { "Several years have passed..." },
             { "Pepe has grown. The boy who once chased",
@@ -18,8 +18,7 @@ public class CutsceneManager {
             { "A new journey begins." }
     };
 
-    // ── Enrollment cutscene narration ─────────────────────────────────────
-    // Plays after Ferrando + Burgos dialogue, before the professor/student quest
+    // QUEST 3 TRANSITION
     private final String[][] enrollmentLines = {
             { "Against all odds, Jose Rizal was enrolled." },
             { "The gates of Ateneo Municipal de Manila opened\nbefore him for the first time." },
@@ -33,7 +32,7 @@ public class CutsceneManager {
     private static final float FADE_SPEED = 0.03f;
     private boolean applied   = false;
 
-    // ── Chapter 2 config ─────────────────────────────────────────────────
+    // CHAP 2 CONFIG
     private static final String CHAPTER2_MAP    = "/maps/Chapter2.txt";
     private static final String CHAPTER2_SPRITE = "pepe_older";
     private static final int    SPAWN_TILE_X    = 38;
@@ -42,8 +41,6 @@ public class CutsceneManager {
     public CutsceneManager(GamePanel gp) {
         this.gp = gp;
     }
-
-    // ── Public starters ───────────────────────────────────────────────────
 
     public void startChapter2() {
         activeScene  = Scene.CHAPTER2;
@@ -63,7 +60,6 @@ public class CutsceneManager {
         gp.gameState = gp.cutsceneState;
     }
 
-    // ── Update ────────────────────────────────────────────────────────────
     public void update() {
         if (fadeState == 0) {
             alpha += FADE_SPEED;
@@ -87,7 +83,6 @@ public class CutsceneManager {
         if (currentLine >= activeLines().length) fadeState = 2;
     }
 
-    // ── Draw ──────────────────────────────────────────────────────────────
     public void draw(Graphics2D g2) {
         g2.setColor(Color.black);
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
@@ -125,7 +120,6 @@ public class CutsceneManager {
         g2.setComposite(old);
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────
 
     private String[][] activeLines() {
         return (activeScene == Scene.ENROLLMENT) ? enrollmentLines : chapter2Lines;

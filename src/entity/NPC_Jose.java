@@ -39,7 +39,6 @@ public class NPC_Jose extends Entity {
 
     @Override
     public void setAction() {
-        // stands still
     }
 
     @Override
@@ -55,7 +54,6 @@ public class NPC_Jose extends Entity {
 
             super.speak();
 
-            // only trigger after last line
             if (dialogueIndex == 0) {
                 dialogueStage = 1;
                 gp.questManager.quest2Stage = QuestManager.JOSE_WAITING;
@@ -71,7 +69,6 @@ public class NPC_Jose extends Entity {
 
                 super.speak();
 
-                // only trigger after last line
                 if (dialogueIndex == 0) {
                     dialogueStage = 2;
                     gp.questManager.quest2Stage = QuestManager.JOSE_DONE;

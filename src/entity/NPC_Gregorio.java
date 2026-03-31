@@ -6,9 +6,6 @@ import main.QuestManager;
 public class NPC_Gregorio extends Entity {
 
     public int dialogueStage = 0;
-    // 0 = first meeting, send to house
-    // 1 = waiting for quill and notebook
-    // 2 = items submitted, show poem, congratulate
 
     public NPC_Gregorio(GamePanel gp) {
         super(gp);
@@ -48,7 +45,6 @@ public class NPC_Gregorio extends Entity {
     public void speak() {
         gp.ui.currentSpeakerName = "Uncle Gregorio";
 
-        // only accessible after Manuel is done
         if (gp.questManager.quest2Stage < QuestManager.MANUEL_DONE) {
             dialogues[0] = "Hello Pepe. Go see your\nUncle Manuel first.";
             dialogues[1] = null;

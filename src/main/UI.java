@@ -70,10 +70,7 @@ public class UI {
             e.printStackTrace();
         }
 
-//        OBJ_Quil quill = new OBJ_Quil(gp);
-//        quilImage = quill.image;
 
-        // replace the existing exp loading block
         Entity exp = new OBJ_EXP(gp);
         full_exp_start = exp.image;
         full_exp_mid = exp.image2;
@@ -126,7 +123,7 @@ public class UI {
                 int x = getXforCenter(message);
                 g2.drawString(message, x, gp.tileSize * 8);
                 msgCounter++;
-                if (msgCounter > 120){   // show for ~3 seconds at 60fps
+                if (msgCounter > 120){
                     messageOn = false;
                     msgCounter = 0;
                 }
@@ -172,9 +169,6 @@ public class UI {
             drawQuestScreen();
         }
 
-
-//        g2.drawImage(quilImage, gp.tileSize/3, gp.tileSize/3, gp.tileSize, gp.tileSize, null);
-//        g2.drawString("x "+ gp.player.hasQuil, 100, 65);
 
     }
     public void drawPlayerExp() {
@@ -727,35 +721,6 @@ public class UI {
         }
 
     }
-    public void drawOptionScreen(){
-        g2.setColor(Color.white);
-        g2.setFont(g2.getFont().deriveFont(32F));
-
-        //SUB WINDOW
-        final int frameX = gp.tileSize*6;
-        final int frameY = gp.tileSize;
-        final int frameWidth = gp.tileSize*8 ;
-        final int frameHeight = gp.tileSize*10;
-        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
-
-        switch (optionSubState) {
-            case 0:
-                options_top(frameX, frameY);
-                break;
-            case 1:
-                options_notif(frameX, frameY);
-                break;
-            case 2:
-                options_control(frameX, frameY);
-                break;
-            case 3:
-                option_endGame(frameX, frameY);
-                break;
-        }
-
-        gp.keyP.enterPressed = false;
-    }
-
     public void drawQuestScreen(){
         int frameX = gp.tileSize;
         int frameY = gp.tileSize/2;
@@ -837,19 +802,19 @@ public class UI {
                     : (q2active   ? new Color(255, 220, 80)
                     : Color.gray);
             g2.setColor(titleColor);
-            g2.drawString("Quest 2: \"Pangangaral ng mga Tiyo\"" + (q2completed ? "    COMPLETE" : ""), frameX + gp.tileSize, y);
+            g2.drawString("Quest 2: \"Pangangaral ng mga Tiyo\"" + (q2completed ? "    COMPLETE" : ""), frameX + gp.tileSize, y + gp.tileSize);
 
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 27f));
             g2.setColor(q2active || q2completed ? Color.lightGray : Color.gray);
             y += 28;
-            g2.drawString("Learn valuable lessons from your uncles.", frameX + gp.tileSize, y);
+            g2.drawString("Learn valuable lessons from your uncles.", frameX + gp.tileSize, y+=gp.tileSize);
             lineH = 24;
             y += lineH;
 
             if (!q2active && !q2completed) {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 27f));
                 g2.setColor(Color.gray);
-                g2.drawString("[Complete Quest 1 to unlock]", frameX + gp.tileSize*6, y);
+                g2.drawString("[Complete Quest 1 to unlock]", frameX + gp.tileSize*6, y+=gp.tileSize);
             } else {
                 lineH = 24;
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 27f));
@@ -907,6 +872,7 @@ public class UI {
             boolean q3active = gp.questManager.isQuestActive(QuestManager.QUEST3);
             int     stage    = gp.questManager.quest3Stage;
 
+            //QUEST 3
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, 27f));
             Color q3color = q3done   ? new Color(100, 230, 100)
                     : q3active ? new Color(255, 220, 80)
@@ -925,39 +891,39 @@ public class UI {
             if (!q3active && !q3done) {
                 g2.setColor(Color.gray);
                 g2.drawString("[Complete Chapter 1 to unlock]",
-                        frameX + gp.tileSize * 4, y += gp.tileSize / 2);
+                        frameX + gp.tileSize * 6, y += gp.tileSize);
             } else {
-                int lineH = 32;
-                y += lineH;
+                y += gp.tileSize / 2;
+                int lineH = 30;
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 26f));
 
-                // Step 1 — Talk to Ferrando
+                //FERRANDO
                 boolean s1 = q3done || stage > QuestManager.TALK_FERRANDO;
                 g2.setColor(s1 ? new Color(80, 220, 80) : Color.white);
                 g2.drawString("- Talk to Fr. Magin Ferrando", frameX + gp.tileSize, y);
                 y += lineH;
 
-                // Step 2 — Talk to Burgos
+                //BURGOS
                 boolean s2done = q3done || stage > QuestManager.TALK_BURGOS;
                 g2.setColor(s2done ? new Color(80, 220, 80)
                         : stage == QuestManager.TALK_BURGOS ? Color.white : Color.gray);
                 g2.drawString("- Talk to Senor Burgos", frameX + gp.tileSize, y);
                 y += lineH;
 
-                // Step 3 — Get enrolled (cutscene, automatic)
+                //CUTSCENE
                 boolean s3done = q3done || stage > QuestManager.CUTSCENE_DONE;
                 g2.setColor(s3done ? new Color(80, 220, 80) : Color.gray);
                 g2.drawString("- Get enrolled", frameX + gp.tileSize, y);
                 y += lineH;
 
-                // Step 4 — Meet professor
+                //PROFESSOR
                 boolean s4done = q3done || stage > QuestManager.TALK_PROFESSOR;
                 g2.setColor(s4done ? new Color(80, 220, 80)
                         : stage == QuestManager.TALK_PROFESSOR ? Color.white : Color.gray);
                 g2.drawString("- Meet your professor", frameX + gp.tileSize, y);
                 y += lineH;
 
-                // Step 5 — Pass the quiz
+                //QUIZ
                 boolean s5active = stage == QuestManager.TALK_STUDENT
                         || stage == QuestManager.QUIZ_FAILED;
                 boolean s5done   = stage == QuestManager.QUEST3_DONE;
@@ -1009,6 +975,34 @@ public class UI {
         g2.drawString(close, getXforCenter(close), btnY);
     }
 
+    public void drawOptionScreen(){
+        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(32F));
+
+        //SUB WINDOW
+        final int frameX = gp.tileSize*6;
+        final int frameY = gp.tileSize;
+        final int frameWidth = gp.tileSize*8 ;
+        final int frameHeight = gp.tileSize*10;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        switch (optionSubState) {
+            case 0:
+                options_top(frameX, frameY);
+                break;
+            case 1:
+                options_notif(frameX, frameY);
+                break;
+            case 2:
+                options_control(frameX, frameY);
+                break;
+            case 3:
+                option_endGame(frameX, frameY);
+                break;
+        }
+
+        gp.keyP.enterPressed = false;
+    }
     public void options_top(int frameX, int frameY){
         int textX;
         int textY;

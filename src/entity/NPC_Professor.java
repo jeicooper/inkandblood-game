@@ -42,6 +42,8 @@ public class NPC_Professor extends Entity {
 
     @Override
     public void speak() {
+
+        for (int i = 0; i < dialogues.length; i++) dialogues[i] = null;
         gp.ui.currentSpeakerName = "Professor";
 
         if (dialogueStage == 0) {
@@ -54,7 +56,7 @@ public class NPC_Professor extends Entity {
             dialogueStage = 1;
             super.speak();
 
-        } else {
+        } else if (dialogueStage == 1){
             dialogues[0] = "Go speak with your classmate. She is waiting for you.";
             dialogues[1] = null;
             super.speak();
@@ -68,7 +70,7 @@ public class NPC_Professor extends Entity {
         if (dialogueStage == 1
                 && gp.gameState == gp.playState
                 && gp.questManager.quest3Stage == QuestManager.TALK_PROFESSOR) {
-            dialogueStage = 2;   // prevent firing more than once
+            dialogueStage = 2;
             gp.questManager.onProfessorDone();
         }
     }

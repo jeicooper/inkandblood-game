@@ -188,7 +188,6 @@ public class QuestManager {
         }
     }
 
-    // ── Art supplies helpers ───────────────────────────────────
     public boolean hasAllArtSupplies() {
         return countItem("Paint Bucket") >= PAINT_BUCKETS_REQUIRED &&
                 countItem("Paintbrush")   >= PAINTBRUSH_REQUIRED    &&
@@ -280,7 +279,7 @@ public class QuestManager {
 
     public void onEnrollmentCutsceneDone() {
         quest3Stage = TALK_PROFESSOR;
-//        gp.aSetter.activateProfessorAndStudent();
+
     }
 
     public void onProfessorDone() {

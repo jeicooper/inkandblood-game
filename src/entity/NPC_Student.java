@@ -5,7 +5,6 @@ import main.QuestManager;
 
 public class NPC_Student extends Entity {
 
-    // 0 = intro  |  1 = quiz active or failed (retry)  |  2 = passed
     public int dialogueStage = 0;
 
     public NPC_Student(GamePanel gp) {
@@ -42,7 +41,8 @@ public class NPC_Student extends Entity {
 
     @Override
     public void speak() {
-        gp.ui.currentSpeakerName = "Student";   // replace with actual name
+        for (int i = 0; i < dialogues.length; i++) dialogues[i] = null;
+        gp.ui.currentSpeakerName = "Student Intermo";
 
         int stage = gp.questManager.quest3Stage;
 
@@ -54,7 +54,6 @@ public class NPC_Student extends Entity {
             return;
         }
 
-        // Quest already complete
         if (stage == QuestManager.QUEST3_DONE) {
             dialogues[0] = "Great job on the quiz! We are going to be good classmates, I can tell.";
             dialogues[1] = null;
@@ -67,13 +66,14 @@ public class NPC_Student extends Entity {
             dialogues[1] = "Professor asked me to give you a small quiz to see how much you already\nknow.";
             dialogues[2] = "You need to get all 5 questions right. Ready? Let's go!";
             dialogues[3] = null;
+            dialogueStage = 1;
         } else {
             dialogues[0] = "Don't give up! Let's try the quiz again.";
             dialogues[1] = "Remember — you need a perfect score of 5 out of 5.";
             dialogues[2] = null;
+            dialogueStage = 1;
         }
 
-        dialogueStage = 1;
         super.speak();
     }
 
@@ -81,6 +81,7 @@ public class NPC_Student extends Entity {
     public void update() {
 
         int stage = gp.questManager.quest3Stage;
+
         boolean shouldOpenQuiz = (stage == QuestManager.TALK_STUDENT
                 || stage == QuestManager.QUIZ_FAILED)
                 && dialogueStage == 1
@@ -93,7 +94,7 @@ public class NPC_Student extends Entity {
 
         if (stage == QuestManager.QUIZ_FAILED && dialogueStage == 2
                 && !gp.ui.quizPanelOpen) {
-            dialogueStage = 1;
+            dialogueStage = 0;
         }
     }
 

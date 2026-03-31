@@ -25,7 +25,7 @@ public class NPC_Sibling extends Entity {
 
         setHitbox();
         direction = "down";
-        speed = 3; // match player speed
+        speed = 5;
 
         loadSprites(spritePath);
         buildDialogue();

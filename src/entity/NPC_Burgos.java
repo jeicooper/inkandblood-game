@@ -41,14 +41,16 @@ public class NPC_Burgos extends Entity{
 
     @Override
     public void speak(){
+
+        for (int i = 0; i < dialogues.length; i++) dialogues[i] = null;
         gp.ui.currentSpeakerName = "Manuel Xerxes Burgos";
 
         boolean ferrandoDone = gp.questManager.ferrandoShooed;
 
         if (!ferrandoDone && dialogueStage < 2) {
             dialogues[0] = "Ah, good day pepe! Are you looking to enroll?";
-            dialogues[1] = "Before I can assist you, you will need to speak with Father Ferrando at\nthe entrance first.";
-            dialogues[2] = "He handles all initial assessments. Please see him and then come back\nto me.";
+            dialogues[1] = "Before I can assist you, you will need to speak with Father Ferrando\nat he entrance first.";
+            dialogues[2] = "He handles all initial assessments. Please see him and then come\nback to me.";
             dialogues[3] = null;
 
             super.speak();

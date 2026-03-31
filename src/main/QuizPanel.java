@@ -3,29 +3,6 @@ package main;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-/**
- * QuizPanel — a self-contained 5-question multiple-choice quiz.
- *
- * HOW TO INTEGRATE:
- *  1. Add a field in UI.java:
- *         public QuizPanel quizPanel;
- *         public boolean   quizPanelOpen = false;
- *
- *  2. Initialise it in the UI constructor:
- *         quizPanel = new QuizPanel(gp, this);
- *
- *  3. In UI.draw(), inside the playState block, add:
- *         if (quizPanelOpen) quizPanel.draw(g2);
- *
- *  4. In KeyHandler.playState(), add at the top:
- *         if (gp.ui.quizPanelOpen) {
- *             gp.ui.quizPanel.handleKey(code);
- *             return;
- *         }
- *
- *  5. Call gp.ui.openQuizPanel() from NPC_Student to open the quiz.
- */
-
 public class QuizPanel {
 
     private final GamePanel gp;
@@ -62,7 +39,6 @@ public class QuizPanel {
               "Perito Agrimensor"}
     };
 
-    // Index of the correct answer (0=A, 1=B, 2=C)
     private static final int[] CORRECT = { 1, 0, 2, 1, 1 };
 
     // STATE
@@ -74,13 +50,11 @@ public class QuizPanel {
     private int     score           = 0;
     private boolean[] correct;
 
-    // CONSTRUCTOR
     public QuizPanel(GamePanel gp, UI ui) {
         this.gp = gp;
         this.ui = ui;
     }
 
-    // OPEN/RESET
     public void open() {
         currentQuestion = 0;
         selectedChoice  = 0;
@@ -94,7 +68,7 @@ public class QuizPanel {
     // KEY HANDLER
     public void handleKey(int code) {
         if (showResult) {
-            // Any ENTER closes the result screen and reports score
+
             if (code == KeyEvent.VK_ENTER) {
                 ui.quizPanelOpen = false;
                 gp.questManager.onQuizResult(score);
@@ -115,7 +89,7 @@ public class QuizPanel {
             if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
                 selectedChoice = (selectedChoice + 1) % 3;
             }
-            // Confirm with ENTER
+
             if (code == KeyEvent.VK_ENTER) {
                 answerConfirmed = true;
                 if (selectedChoice == CORRECT[currentQuestion]) {
@@ -124,7 +98,7 @@ public class QuizPanel {
                 }
             }
         } else {
-            // After seeing feedback, ENTER moves to next question
+
             if (code == KeyEvent.VK_ENTER) {
                 if (currentQuestion >= QUESTIONS.length - 1) {
                     showResult = true;
@@ -137,7 +111,6 @@ public class QuizPanel {
         }
     }
 
-    // ── Draw ──────────────────────────────────────────────────────────────
     public void draw(Graphics2D g2) {
         // Dim the background
         g2.setColor(new Color(0, 0, 0, 180));
@@ -156,7 +129,6 @@ public class QuizPanel {
         }
     }
 
-    // ── Question screen ───────────────────────────────────────────────────
     private void drawQuestionScreen(Graphics2D g2, int px, int py, int pw, int ph) {
 
         // Safety guard
@@ -166,35 +138,28 @@ public class QuizPanel {
         }
 
         int pad    = gp.tileSize;
-        int innerW = pw - pad * 2;   // usable width inside the panel
+        int innerW = pw - pad * 2;
 
-        // ── Progress indicator ────────────────────────────────────────────
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 20f));
         g2.setColor(new Color(180, 180, 180));
         g2.drawString("Question " + (currentQuestion + 1) + " / " + QUESTIONS.length,
                 px + pad, py + 35);
 
-        // ── Question text (word-wrapped) ──────────────────────────────────
-        // Measure how many lines the question needs, then position choices below
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
         g2.setColor(Color.white);
 
         int questionLineH = 30;
         int questionStartY = py + 70;
 
-        // Count lines first so we know where choices start
         int questionLines = countWrappedLines(g2,
                 QUESTIONS[currentQuestion], innerW);
 
-        // Draw the question
         drawWrapped(g2, QUESTIONS[currentQuestion],
                 px + pad, questionStartY, innerW, questionLineH);
 
-        // ── Choices ───────────────────────────────────────────────────────
-        // Start choices with a fixed gap below the last question line
-        int choiceGap  = 20;   // gap between question block and first choice
-        int choiceH    = gp.tileSize;       // height of each choice row
-        int choiceGapH = 8;                 // gap between choice rows
+        int choiceGap  = 20;
+        int choiceH    = gp.tileSize;
+        int choiceGapH = 8;
 
         int choiceStartY = questionStartY
                 + (questionLines * questionLineH)
@@ -236,7 +201,7 @@ public class QuizPanel {
                     px + pad + 20, rowY);
         }
 
-        // ── Bottom prompt ─────────────────────────────────────────────────
+        // prompt
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 20f));
         g2.setColor(new Color(180, 180, 180));
 
@@ -262,7 +227,6 @@ public class QuizPanel {
         }
     }
 
-    // ── Counts how many lines drawWrapped would produce ───────────────────
     private int countWrappedLines(Graphics2D g2, String text, int maxW) {
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
@@ -280,7 +244,7 @@ public class QuizPanel {
     }
 
 
-    // ── Result screen ─────────────────────────────────────────────────────
+    // RESULTS SCREEN
     private void drawResultScreen(Graphics2D g2, int px, int py, int pw, int ph) {
         int pad = gp.tileSize;
 
@@ -318,7 +282,7 @@ public class QuizPanel {
         g2.drawString(closing, px + pw / 2 - closingW / 2, py + ph - 16);
     }
 
-    // ── Utility: word-wrap text ────────────────────────────────────────────
+    // WORD WRAP
     private void drawWrapped(Graphics2D g2, String text, int x, int y, int maxW, int lineH) {
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
