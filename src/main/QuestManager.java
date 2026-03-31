@@ -148,6 +148,7 @@ public class QuestManager {
         gp.ui.showMessage("Quest 1: Done!");
 
         gp.player.exp += 1;
+        gp.player.perception += 1;
         for (int i = 0; i < gp.npc.length; i++) {
             if (gp.npc[i] instanceof entity.NPC_Sibling) {
                 gp.npc[i] = null;
@@ -185,6 +186,7 @@ public class QuestManager {
         if (checkpointsHit >= TOTAL_CHECKPOINTS && !courseCompleted) {
             courseCompleted = true;
             gp.ui.showMessage("Course complete!");
+            gp.player.charisma += 1;
         }
     }
 
@@ -206,6 +208,7 @@ public class QuestManager {
         removeItems("Paint Bucket", PAINT_BUCKETS_REQUIRED);
         removeItems("Paintbrush",   PAINTBRUSH_REQUIRED);
         removeItems("Canvas",       CANVAS_REQUIRED);
+        gp.player.creativity = 1;
     }
 
     public boolean hasWritingSupplies() {
@@ -216,6 +219,7 @@ public class QuestManager {
     public void removeWritingSupplies() {
         removeItems("Quill",    QUILL_REQUIRED);
         removeItems("Notebook", NOTEBOOK_REQUIRED);
+        gp.player.intellect += 1;
     }
 
     private void removeItems(String itemName, int amount) {
@@ -255,6 +259,7 @@ public class QuestManager {
         questState[QUEST2] = STATE_COMPLETED;
         gp.ui.showMessage("Quest 2: Done!");
         gp.player.exp += 1;
+        gp.player.age += 3;
 
         gp.cutsceneManager.startChapter2();
         currentQuest = QUEST3;
@@ -292,6 +297,7 @@ public class QuestManager {
             questState[QUEST3] = STATE_COMPLETED;
             gp.ui.showMessage("Quest 3: Done!");
             gp.player.exp += 1;
+            gp.player.intellect += 2;
         } else {
             quest3Stage = QUIZ_FAILED;
             gp.ui.showMessage("Score: " + score + "/5. Try again!");
@@ -303,6 +309,7 @@ public class QuestManager {
         questState[QUEST3] = STATE_COMPLETED;
         gp.ui.showMessage("Quest 3: Done!");
         gp.player.exp += 1;
+        gp.player.intellect += 2;
     }
 
     public boolean isQuestActive(int quest) {

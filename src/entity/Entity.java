@@ -39,6 +39,7 @@ public class Entity {
     public int creativity;
     public int perception;
     public int charisma;
+    public int age;
 
     //ITEMS
     public String description = "";

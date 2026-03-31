@@ -59,10 +59,11 @@ public class Player extends  Entity{
         maxExp = 20; // 1 = halfexp
         exp = 0;
 
-        intellect = 1;
-        creativity = 1;
-        perception = 1;
-        charisma = 1;
+        intellect = 0;
+        creativity = 0;
+        perception = 0;
+        charisma = 0;
+        age = 8;
 
         //itemName = new OBJ_itemName(gp);
 

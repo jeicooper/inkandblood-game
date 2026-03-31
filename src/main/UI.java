@@ -599,7 +599,7 @@ public class UI {
         //NAMES
         g2.drawString("Pepe", textX, textY);
         textY += lineHeight;
-        g2.drawString("Age: 8 years old", textX, textY);
+        g2.drawString("Age:", textX, textY);
         textY += lineHeight;
         g2.drawString("--------------------", textX, textY);
         textY += lineHeight;
@@ -614,8 +614,14 @@ public class UI {
 
         //STAT VALUES
         int tailX = (frameX + frameWidth) - 30;
-        textY = frameY + gp.tileSize *3;
+        textY = frameY + gp.tileSize + lineHeight;
         String value;
+
+        // AGE
+        value = String.valueOf(gp.player.age);
+        textX = getXforAlignToRight(value, tailX);
+        g2.drawString(value, textX, textY);
+        textY += lineHeight * 2;
 
         //INTELECT STAT
         value = String.valueOf(gp.player.intellect);
