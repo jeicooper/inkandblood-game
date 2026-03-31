@@ -61,6 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this,keyP);
     public Entity obj[] = new Entity[99];
     public Entity npc [] = new Entity[50];
+    public Entity talkingTo = null;
 
     ArrayList<Entity> entityList = new ArrayList<>();
     private final Comparator<Entity> entitySorter = Comparator.comparingInt(e -> e.worldY);

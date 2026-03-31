@@ -541,16 +541,8 @@ public class UI {
 
         if (gp.keyP.enterPressed) {
             gp.keyP.enterPressed = false;
-            // find current NPC and advance
-            for (int i = 0; i < gp.npc.length; i++) {
-                if (gp.npc[i] != null) {
-                    int dx = Math.abs(gp.npc[i].worldX - gp.player.worldX);
-                    int dy = Math.abs(gp.npc[i].worldY - gp.player.worldY);
-                    if (dx < gp.tileSize * 2 && dy < gp.tileSize * 2) {
-                        gp.npc[i].speak();
-                        break;
-                    }
-                }
+            if (gp.talkingTo != null) {
+                gp.talkingTo.speak();
             }
         }
 

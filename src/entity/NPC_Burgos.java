@@ -3,21 +3,21 @@ package entity;
 import main.GamePanel;
 import main.QuestManager;
 
-public class NPC_Burgos extends Entity{
+public class NPC_Burgos extends Entity {
+
     public int dialogueStage = 0;
 
     public NPC_Burgos(GamePanel gp) {
         super(gp);
-
         direction = "down";
-        speed = 0;
+        speed     = 0;
 
-        solidArea.x = 8;
-        solidArea.y = 16;
+        solidArea.x       = 8;
+        solidArea.y       = 16;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-        solidArea.width = 32;
-        solidArea.height = 32;
+        solidArea.width   = 32;
+        solidArea.height  = 32;
 
         getImage();
         setDialogue();
@@ -40,62 +40,41 @@ public class NPC_Burgos extends Entity{
     public void setAction() {}
 
     @Override
-    public void speak(){
-
-        for (int i = 0; i < dialogues.length; i++) dialogues[i] = null;
+    public void speak() {
         gp.ui.currentSpeakerName = "Manuel Xerxes Burgos";
 
-        boolean ferrandoDone = gp.questManager.ferrandoShooed;
-
-        if (!ferrandoDone && dialogueStage < 2) {
-            dialogues[0] = "Ah, good day pepe! Are you looking to enroll?";
-            dialogues[1] = "Before I can assist you, you will need to speak with Father Ferrando\nat he entrance first.";
-            dialogues[2] = "He handles all initial assessments. Please see him and then come\nback to me.";
+        if (dialogueStage == 0 && !gp.questManager.ferrandoShooed) {
+            dialogues[0] = "Ah, good day! Are you looking to enroll?";
+            dialogues[1] = "Before I can assist you, you will need to speak with Father\nFerrando at the entrance first.";
+            dialogues[2] = "He is the school's registrar. Please see him and then come\nback to me.";
             dialogues[3] = null;
-
             super.speak();
-            if (dialogueIndex == 0) {
-                dialogueStage = 1;
-            }
-        }
 
-        else if (ferrandoDone && dialogueStage < 2) {
+        } else if (dialogueStage == 0 && gp.questManager.ferrandoShooed) {
             dialogues[0] = "Ah, you must be the young man Father Ferrando turned away at\nthe gate.";
             dialogues[1] = "Do not be discouraged. He is strict with everyone.";
-            dialogues[2] = "I have reviewed your record from Calamba. Your marks are... \nsurprisingly impressive.";
-            dialogues[4] = "Come. Let us get you enrolled. I will speak on your behalf.";
+            dialogues[2] = "I have reviewed your record from Calamba. Your marks are...\nsurprisingly impressive.";
+            dialogues[3] = "I will speak with the rector on your behalf.";
+            dialogues[4] = "Come — let us get you enrolled.";
             dialogues[5] = null;
 
             super.speak();
 
             if (dialogueIndex == 0) {
-                dialogueStage = 2;
+                dialogueStage = 1;
+                gp.questManager.onBurgosDialogueDone();
             }
-        }
 
-        else {
+        } else {
             dialogues[0] = "Welcome to Ateneo, Jose. Study hard.";
             dialogues[1] = null;
+            dialogueIndex = 0;
             super.speak();
         }
     }
 
     @Override
-    public void update(){
-
-        if (dialogueStage == 2 && gp.gameState == gp.playState) {
-            dialogueStage = 3;
-            gp.questManager.onBurgosDialogueDone();
-        }
-    }
-
-    private void facePlayer() {
-        int dx = gp.player.worldX - worldX;
-        int dy = gp.player.worldY - worldY;
-        if (Math.abs(dx) > Math.abs(dy)) {
-            direction = (dx > 0) ? "right" : "left";
-        } else {
-            direction = (dy > 0) ? "down" : "up";
-        }
+    public void update() {
+        direction = "down";
     }
 }

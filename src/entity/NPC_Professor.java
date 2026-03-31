@@ -24,7 +24,6 @@ public class NPC_Professor extends Entity {
     }
 
     public void getImage() {
-        // Replace sprite paths to match your actual asset filenames
         up1    = setup("/npc/professor/guro_up_1");
         up2    = setup("/npc/professor/guro_up_2");
         down1  = setup("/npc/professor/guro_down_1");
@@ -42,8 +41,6 @@ public class NPC_Professor extends Entity {
 
     @Override
     public void speak() {
-
-        for (int i = 0; i < dialogues.length; i++) dialogues[i] = null;
         gp.ui.currentSpeakerName = "Professor";
 
         if (dialogueStage == 0) {
@@ -53,12 +50,18 @@ public class NPC_Professor extends Entity {
             dialogues[3] = "Go speak with her — she is just over there.";
             dialogues[4] = null;
 
-            dialogueStage = 1;
             super.speak();
 
-        } else if (dialogueStage == 1){
+            // Cycle just wrapped — advance quest stage
+            if (dialogueIndex == 0) {
+                dialogueStage = 1;
+                gp.questManager.onProfessorDone();
+            }
+
+        } else {
             dialogues[0] = "Go speak with your classmate. She is waiting for you.";
             dialogues[1] = null;
+            dialogueIndex = 0;
             super.speak();
         }
     }
@@ -66,22 +69,5 @@ public class NPC_Professor extends Entity {
     @Override
     public void update() {
         direction = "down";
-
-        if (dialogueStage == 1
-                && gp.gameState == gp.playState
-                && gp.questManager.quest3Stage == QuestManager.TALK_PROFESSOR) {
-            dialogueStage = 2;
-            gp.questManager.onProfessorDone();
-        }
-    }
-
-    private void facePlayer() {
-        int dx = gp.player.worldX - worldX;
-        int dy = gp.player.worldY - worldY;
-        if (Math.abs(dx) > Math.abs(dy)) {
-            direction = (dx > 0) ? "right" : "left";
-        } else {
-            direction = (dy > 0) ? "down" : "up";
-        }
     }
 }

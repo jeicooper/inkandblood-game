@@ -41,70 +41,62 @@ public class NPC_Student extends Entity {
 
     @Override
     public void speak() {
-        for (int i = 0; i < dialogues.length; i++) dialogues[i] = null;
-        gp.ui.currentSpeakerName = "Student Intermo";
+        gp.ui.currentSpeakerName = "Student Interno";
 
         int stage = gp.questManager.quest3Stage;
 
-        if (stage == QuestManager.TALK_PROFESSOR || stage < QuestManager.TALK_STUDENT) {
+        // Player hasn't been sent here yet
+        if (stage < QuestManager.TALK_STUDENT) {
             dialogues[0] = "Oh! Hi there. You look new.";
             dialogues[1] = "The professor will introduce you properly. Go talk to him first!";
             dialogues[2] = null;
+            dialogueIndex = 0;
             super.speak();
             return;
         }
 
         if (stage == QuestManager.QUEST3_DONE) {
-            dialogues[0] = "Great job on the quiz! We are going to be good classmates, I can tell.";
+            dialogues[0] = "Great job on the quiz! We are going to be good classmates\nI can tell.";
             dialogues[1] = null;
+            dialogueIndex = 0;
             super.speak();
             return;
         }
 
         if (dialogueStage == 0) {
             dialogues[0] = "Hey! You must be Jose. I'm your new classmate.";
-            dialogues[1] = "Professor asked me to give you a small quiz to see how much you already\nknow.";
+            dialogues[1] = "Professor asked me to give you a small quiz to see how much\nyou already know.";
             dialogues[2] = "You need to get all 5 questions right. Ready? Let's go!";
             dialogues[3] = null;
-            dialogueStage = 1;
-        } else {
+
+            super.speak();
+
+            if (dialogueIndex == 0) {
+                dialogueStage = 1;
+                gp.ui.openQuizPanel();
+            }
+
+        } else if (dialogueStage == 1) {
             dialogues[0] = "Don't give up! Let's try the quiz again.";
             dialogues[1] = "Remember — you need a perfect score of 5 out of 5.";
             dialogues[2] = null;
-            dialogueStage = 1;
-        }
 
-        super.speak();
+            super.speak();
+
+            if (dialogueIndex == 0) {
+                gp.ui.openQuizPanel();
+            }
+        }
     }
 
     @Override
     public void update() {
+        direction = "down";
 
-        int stage = gp.questManager.quest3Stage;
-
-        boolean shouldOpenQuiz = (stage == QuestManager.TALK_STUDENT
-                || stage == QuestManager.QUIZ_FAILED)
-                && dialogueStage == 1
-                && gp.gameState == gp.playState;
-
-        if (shouldOpenQuiz) {
-            dialogueStage = 2;
-            gp.ui.openQuizPanel();
-        }
-
-        if (stage == QuestManager.QUIZ_FAILED && dialogueStage == 2
-                && !gp.ui.quizPanelOpen) {
-            dialogueStage = 0;
-        }
-    }
-
-    private void facePlayer() {
-        int dx = gp.player.worldX - worldX;
-        int dy = gp.player.worldY - worldY;
-        if (Math.abs(dx) > Math.abs(dy)) {
-            direction = (dx > 0) ? "right" : "left";
-        } else {
-            direction = (dy > 0) ? "down" : "up";
+        if (gp.questManager.quest3Stage == QuestManager.QUIZ_FAILED
+                && !gp.ui.quizPanelOpen
+                && dialogueStage == 1) {
+            dialogueStage = 1;
         }
     }
 }

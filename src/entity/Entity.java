@@ -71,6 +71,7 @@ public class Entity {
         else {
             dialogueIndex = 0;
             gp.gameState = gp.playState;
+            gp.talkingTo = null;
         }
 
 

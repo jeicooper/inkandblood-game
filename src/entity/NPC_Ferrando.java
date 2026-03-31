@@ -3,21 +3,21 @@ package entity;
 import main.GamePanel;
 import main.QuestManager;
 
-public class NPC_Ferrando extends Entity{
+public class NPC_Ferrando extends Entity {
+
     public int dialogueStage = 0;
 
     public NPC_Ferrando(GamePanel gp) {
         super(gp);
-
         direction = "down";
-        speed = 0;
+        speed     = 0;
 
-        solidArea.x = 8;
-        solidArea.y = 16;
+        solidArea.x       = 8;
+        solidArea.y       = 16;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-        solidArea.width = 32;
-        solidArea.height = 32;
+        solidArea.width   = 32;
+        solidArea.height  = 32;
 
         getImage();
         setDialogue();
@@ -40,47 +40,33 @@ public class NPC_Ferrando extends Entity{
     public void setAction() {}
 
     @Override
-    public void speak(){
-
-        for (int i = 0; i < dialogues.length; i++) dialogues[i] = null;
+    public void speak() {
         gp.ui.currentSpeakerName = "Fr. Magin Ferrando";
 
         if (dialogueStage == 0) {
-            dialogues[0] = "Welcome to Ateneo Municipal de Manila! How can i help you?";
-            dialogues[1] = "I’m sorry, young man. You are late for registration";
-            dialogues[2] = "Frankly, you look far too frail and underweight for an eleven-year-\nold";
+            dialogues[0] = "Stop right there!";
+            dialogues[1] = "This is Ateneo Municipal de Manila.";
+            dialogues[2] = "Frankly, you look far too frail and underweight for an eleven\nyear-old.";
             dialogues[3] = "You won't survive the rigor here.";
             dialogues[4] = null;
 
             super.speak();
-            if (dialogueIndex == 0){
+
+            if (dialogueIndex == 0) {
                 dialogueStage = 1;
-
-                if (gp.questManager.currentQuest == QuestManager.QUEST3) {
-                    gp.questManager.onFerrandoShooed();
-                }
+                gp.questManager.onFerrandoShooed();
             }
-        }
 
-        else if (dialogueStage == 2){
-            dialogues[0] = "I told you — speak to Senor Burgos if you must. Do not bother\n me!";
+        } else {
+            dialogues[0] = "I told you — speak to Senor Burgos! Do not waste my time.";
             dialogues[1] = null;
+            dialogueIndex = 0;
             super.speak();
         }
     }
 
     @Override
-    public void update(){
-    }
-
-    private void facePlayer() {
-        int dx = gp.player.worldX - worldX;
-        int dy = gp.player.worldY - worldY;
-        if (Math.abs(dx) > Math.abs(dy)) {
-            direction = (dx > 0) ? "right" : "left";
-        } else {
-            direction = (dy > 0) ? "down" : "up";
-        }
+    public void update() {
+        direction = "down";
     }
 }
-
