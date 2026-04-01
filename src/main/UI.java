@@ -946,6 +946,94 @@ public class UI {
                         : s6active ? Color.white : Color.gray);
                 g2.drawString("- Return to Fr. Ferrando", frameX + gp.tileSize, y);
             }
+
+            // QUEST 4
+            if (questPageNum == 2) {
+                boolean q4done   = gp.questManager.isQuestCompleted(QuestManager.QUEST4);
+                boolean q4active = gp.questManager.isQuestActive(QuestManager.QUEST4);
+                int     q4stage  = gp.questManager.quest4Stage;
+
+                // QUEST 4 TITLE
+                g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, 27f));
+                Color q4color = q4done   ? new Color(100, 230, 100)
+                        : q4active ? new Color(255, 220, 80)
+                        : Color.gray;
+                g2.setColor(q4color);
+                g2.drawString("Quest 4: \"Ang Kampeon ng Roma\""
+                                + (q4done ? "    COMPLETE" : ""),
+                        frameX + gp.tileSize, y += gp.tileSize);
+
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 27f));
+                g2.setColor(q4active || q4done ? Color.lightGray : Color.gray);
+                y += 28;
+                g2.drawString("Prove your excellence across all disciplines.",
+                        frameX + gp.tileSize, y);
+
+                if (!q4active && !q4done) {
+                    g2.setColor(Color.gray);
+                    g2.drawString("[Complete Quest 3 to unlock]",
+                            frameX + gp.tileSize * 4, y += gp.tileSize / 2);
+                } else {
+                    int lineH = 30;
+                    y += lineH;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 26f));
+
+                    // Professor congratulates
+                    boolean sp = q4done || q4stage > QuestManager.TALK_PROFESSOR_Q4;
+                    g2.setColor(sp ? new Color(80, 220, 80) : Color.white);
+                    g2.drawString("- Speak with your professor", frameX + gp.tileSize, y);
+                    y += lineH;
+
+                    // Mariano acknowledges defeat
+                    boolean sm = q4done || q4stage > QuestManager.TALK_MARIANO;
+                    g2.setColor(sm ? new Color(80, 220, 80)
+                            : q4stage == QuestManager.TALK_MARIANO ? Color.white : Color.gray);
+                    g2.drawString("- Speak with Mariano", frameX + gp.tileSize, y);
+                    y += lineH;
+
+                    // Rector initiates
+                    boolean sr = q4done || q4stage > QuestManager.TALK_RECTOR;
+                    g2.setColor(sr ? new Color(80, 220, 80)
+                            : q4stage == QuestManager.TALK_RECTOR ? Color.white : Color.gray);
+                    g2.drawString("- Speak with Fr. Rector", frameX + gp.tileSize, y);
+                    y += lineH;
+
+                    // Discipline medals
+                    String[] disciplineNames = {
+                            "Conduct", "Painting", "French Language", "Rhetoric", "Dedication"
+                    };
+                    for (int i = 0; i < 5; i++) {
+                        int disciplineStage = QuestManager.DISCIPLINE_CONDUCT + i;
+                        boolean done    = q4done || q4stage > disciplineStage;
+                        boolean active  = q4stage == disciplineStage;
+                        boolean earned  = gp.questManager.disciplineMedalEarned[i];
+
+                        g2.setColor(done ? new Color(80, 220, 80)
+                                : active ? Color.white : Color.gray);
+
+                        String medalMark = (done && earned) ? "✓ " : (done && !earned) ? "✗ " : "- ";
+                        g2.drawString(medalMark + disciplineNames[i], frameX + gp.tileSize * 2, y);
+                        y += lineH;
+                    }
+
+                    // Medal tally (shown while disciplines are ongoing or done)
+                    if (q4stage >= QuestManager.DISCIPLINE_CONDUCT) {
+                        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 25f));
+                        g2.setColor(new Color(200, 200, 100));
+                        g2.drawString("  Medals: " + gp.questManager.medalsEarned
+                                        + " / " + QuestManager.MEDALS_REQUIRED,
+                                frameX + gp.tileSize, y);
+                        y += lineH;
+                        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 26f));
+                    }
+
+                    // Return to rector
+                    boolean sre = q4done || q4stage == QuestManager.TALK_RECTOR_END;
+                    g2.setColor(q4done ? new Color(80, 220, 80)
+                            : sre ? Color.white : Color.gray);
+                    g2.drawString("- Return to Fr. Rector", frameX + gp.tileSize, y);
+                }
+            }
         }
 
         // ===== Chapter 3 page =====
@@ -1364,6 +1452,49 @@ public class UI {
             } else if (stage == QuestManager.QUEST3_DONE) {
                 g2.setColor(new Color(100, 230, 100));
                 g2.drawString("Quest 3 Complete!", panelX + 12, panelY + 52);
+            }
+        }
+
+        // ===== QUEST 4 =====
+        else if (currentQ == QuestManager.QUEST4 &&
+                gp.questManager.isQuestActive(QuestManager.QUEST4)) {
+
+            g2.setColor(new Color(255, 220, 80));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+            g2.drawString("Ang Kampeon ng Roma", panelX + 12, panelY + 28);
+
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(20F));
+
+            int stage = gp.questManager.quest4Stage;
+
+            if (stage == QuestManager.TALK_PROFESSOR_Q4) {
+                g2.drawString("Talk to your professor.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.TALK_MARIANO) {
+                g2.drawString("Talk to Mariano.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.TALK_RECTOR) {
+                g2.drawString("Talk to Fr. Rector.", panelX + 12, panelY + 52);
+
+            } else if (stage >= QuestManager.DISCIPLINE_CONDUCT
+                    && stage <= QuestManager.DISCIPLINE_DEDICATION) {
+                String[] names = { "Conduct", "Painting", "French", "Rhetoric", "Dedication" };
+                int idx = stage - QuestManager.DISCIPLINE_CONDUCT;
+                g2.drawString("Medals: " + gp.questManager.medalsEarned + "/5", panelX + 12, panelY + 52);
+                g2.setColor(new Color(200, 200, 100));
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.drawString("Next: " + names[idx], panelX + 12, panelY + 72);
+
+            } else if (stage == QuestManager.TALK_RECTOR_END) {
+                g2.drawString("Medals: " + gp.questManager.medalsEarned + "/5", panelX + 12, panelY + 52);
+                g2.setColor(new Color(100, 255, 100));
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.drawString("Return to Fr. Rector!", panelX + 12, panelY + 72);
+
+            } else if (stage == QuestManager.QUEST4_DONE) {
+                g2.setColor(new Color(100, 230, 100));
+                g2.drawString("Quest 4 Complete!", panelX + 12, panelY + 52);
             }
         }
     }

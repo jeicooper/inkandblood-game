@@ -10,26 +10,26 @@ public class NPC_Professor extends Entity {
     public NPC_Professor(GamePanel gp) {
         super(gp);
         direction = "down";
-        speed     = 0;
+        speed = 0;
 
-        solidArea.x       = 8;
-        solidArea.y       = 16;
+        solidArea.x = 8;
+        solidArea.y = 16;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-        solidArea.width   = 32;
-        solidArea.height  = 32;
+        solidArea.width = 32;
+        solidArea.height = 32;
 
         getImage();
         setDialogue();
     }
 
     public void getImage() {
-        up1    = setup("/npc/professor/guro_up_1");
-        up2    = setup("/npc/professor/guro_up_2");
-        down1  = setup("/npc/professor/guro_down_1");
-        down2  = setup("/npc/professor/guro_down_2");
-        left1  = setup("/npc/professor/guro_left_1");
-        left2  = setup("/npc/professor/guro_left_2");
+        up1 = setup("/npc/professor/guro_up_1");
+        up2 = setup("/npc/professor/guro_up_2");
+        down1 = setup("/npc/professor/guro_down_1");
+        down2 = setup("/npc/professor/guro_down_2");
+        left1 = setup("/npc/professor/guro_left_1");
+        left2 = setup("/npc/professor/guro_left_2");
         right1 = setup("/npc/professor/guro_right_1");
         right2 = setup("/npc/professor/guro_right_2");
     }
@@ -52,16 +52,37 @@ public class NPC_Professor extends Entity {
 
             super.speak();
 
-            // Cycle just wrapped — advance quest stage
             if (dialogueIndex == 0) {
                 dialogueStage = 1;
                 gp.questManager.onProfessorDone();
             }
 
-        } else {
+        } else if (dialogueStage == 1){
             dialogues[0] = "Go speak with your classmate. She is waiting for you.";
             dialogues[1] = null;
             dialogueIndex = 0;
+            super.speak();
+        } else if (dialogueStage == 2) {
+            dialogues[0] = "Jose! I have wonderful news.";
+            dialogues[1] = "You have been crowned Emperor of the Romans in this\nmonth's competition.";
+            dialogues[2] = "Your performance across all subjects has been nothing\nshort of extraordinary.";
+            dialogues[3] = "I am proud of you. Now go — speak with Mariano.\nHe has something to say to you as well.";
+            dialogues[4] = null;
+            super.speak();
+
+            if (dialogueIndex == 0) {
+                dialogueStage = 3;
+                gp.questManager.onProfessorQ4Done();
+            }
+
+        } else if (dialogueStage == 3) {
+            dialogues[0] = "Go speak with Mariano first.";
+            dialogues[1] = null;
+            super.speak();
+
+        } else if (dialogueStage == 4) {
+            dialogues[0] = "Keep up the excellent work, Emperor.";
+            dialogues[1] = null;
             super.speak();
         }
     }
@@ -69,5 +90,16 @@ public class NPC_Professor extends Entity {
     @Override
     public void update() {
         direction = "down";
+
+        if (dialogueStage == 1
+                && gp.questManager.isQuestActive(QuestManager.QUEST4)
+                && gp.questManager.quest4Stage == QuestManager.TALK_PROFESSOR_Q4) {
+            dialogueStage = 2;
+        }
+
+        if (gp.questManager.quest4Stage > QuestManager.TALK_PROFESSOR_Q4
+                && dialogueStage == 2) {
+            dialogueStage = 4;
+        }
     }
 }

@@ -9,7 +9,7 @@ public class QuestManager {
     GamePanel gp;
 
     private int cutsceneDelay = 0;
-    private int cutsceneDelay1 = 1;
+    private int cutsceneDelay1 = 0;
 
     private boolean pendingChapter2Cutscene = false;
     private boolean pendingQuest4Cutscene = false;
@@ -88,11 +88,21 @@ public class QuestManager {
     public boolean ferrandoShooed = false;
 
     //QUEST 4
-    public static final int QUEST4_NOT_STARTED = 0;
-    public static final int QUEST4_STARTED     = 1;
-    public static final int QUEST4_DONE        = 2;
+    public static final int TALK_PROFESSOR_Q4 = 0;
+    public static final int TALK_MARIANO = 1;
+    public static final int TALK_RECTOR = 2;
+    public static final int DISCIPLINE_CONDUCT = 3;
+    public static final int DISCIPLINE_PAINTING = 4;
+    public static final int DISCIPLINE_FRENCH = 5;
+    public static final int DISCIPLINE_RHETORIC = 6;
+    public static final int DISCIPLINE_DEDICATION = 7;
+    public static final int TALK_RECTOR_END = 8;
+    public static final int QUEST4_DONE = 9;
+    public static final int MEDALS_REQUIRED = 5;
 
-    public int quest4Stage = QUEST4_NOT_STARTED;
+    public int     quest4Stage = TALK_PROFESSOR_Q4;
+    public boolean[] disciplineMedalEarned = new boolean[5];
+    public int     medalsEarned = 0;
 
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
@@ -155,7 +165,7 @@ public class QuestManager {
 
                 currentQuest = QUEST4;
                 questState[QUEST4] = STATE_ACTIVE;
-                quest4Stage = QUEST4_STARTED;
+                quest4Stage = TALK_PROFESSOR_Q4;
 
                 gp.ui.questPageNum = 2;
             }
@@ -374,16 +384,47 @@ public class QuestManager {
     public void startQuest4() {
         currentQuest = QUEST4;
         questState[QUEST4] = STATE_ACTIVE;
-        quest4Stage = QUEST4_STARTED;
+        quest4Stage = TALK_PROFESSOR_Q4;
+        medalsEarned = 0;
+        disciplineMedalEarned = new boolean[5];
         gp.ui.questPageNum = 2;
-        // gp.aSetter.activateChapter3();  ← uncomment when ready
+        gp.aSetter.activateQuest4();
     }
 
-    public void completeQuest4() {
+    public void onProfessorQ4Done() {
+        if (quest4Stage == TALK_PROFESSOR_Q4) quest4Stage = TALK_MARIANO;
+    }
+
+    public void onMarianoDone() {
+        if (quest4Stage == TALK_MARIANO) quest4Stage = TALK_RECTOR;
+    }
+
+    public void onRectorInitiate() {
+        if (quest4Stage == TALK_RECTOR) {
+            quest4Stage = DISCIPLINE_CONDUCT;
+        }
+    }
+
+    public void onDisciplineResult(int disciplineIndex, boolean correct) {
+        if (correct) {
+            disciplineMedalEarned[disciplineIndex] = true;
+            medalsEarned++;
+        }
+
+        if (quest4Stage < DISCIPLINE_DEDICATION) {
+            quest4Stage++;
+        } else {
+            quest4Stage = TALK_RECTOR_END;
+        }
+    }
+
+    public void onRectorEnd() {
+        if (quest4Stage != TALK_RECTOR_END) return;
         quest4Stage = QUEST4_DONE;
         questState[QUEST4] = STATE_COMPLETED;
-        gp.ui.showMessage("Quest 4: Done!");
         gp.player.exp += 1;
+        gp.player.intellect += 1;
+        gp.ui.showMessage("Quest 4: Done!");
     }
 
 

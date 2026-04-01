@@ -3,33 +3,33 @@ package entity;
 import main.GamePanel;
 import main.QuestManager;
 
-public class NPC_Student extends Entity {
+public class NPC_Interno extends Entity {
 
     public int dialogueStage = 0;
 
-    public NPC_Student(GamePanel gp) {
+    public NPC_Interno(GamePanel gp) {
         super(gp);
         direction = "down";
-        speed     = 0;
+        speed = 0;
 
-        solidArea.x       = 8;
-        solidArea.y       = 16;
+        solidArea.x = 8;
+        solidArea.y = 16;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-        solidArea.width   = 32;
-        solidArea.height  = 32;
+        solidArea.width = 32;
+        solidArea.height = 32;
 
         getImage();
         setDialogue();
     }
 
     public void getImage() {
-        up1    = setup("/npc/interno/interno_up_1");
-        up2    = setup("/npc/interno/interno_up_2");
-        down1  = setup("/npc/interno/interno_down_1");
-        down2  = setup("/npc/interno/interno_down_2");
-        left1  = setup("/npc/interno/interno_left_1");
-        left2  = setup("/npc/interno/interno_left_2");
+        up1 = setup("/npc/interno/interno_up_1");
+        up2 = setup("/npc/interno/interno_up_2");
+        down1 = setup("/npc/interno/interno_down_1");
+        down2 = setup("/npc/interno/interno_down_2");
+        left1 = setup("/npc/interno/interno_left_1");
+        left2 = setup("/npc/interno/interno_left_2");
         right1 = setup("/npc/interno/interno_right_1");
         right2 = setup("/npc/interno/interno_right_2");
     }

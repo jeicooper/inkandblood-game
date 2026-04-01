@@ -82,7 +82,7 @@ public class QuizPanel {
         }
 
         if (!answerConfirmed) {
-            // Navigate choices with W/S or UP/DOWN
+
             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
                 selectedChoice = (selectedChoice - 1 + 3) % 3;
             }
@@ -109,10 +109,37 @@ public class QuizPanel {
                 }
             }
         }
+
+        if (singleMode) {
+            if (!singleConfirmed) {
+                if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+                    singleSelected = (singleSelected - 1 + singleChoices.length) % singleChoices.length;
+                }
+                if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+                    singleSelected = (singleSelected + 1) % singleChoices.length;
+                }
+                if (code == KeyEvent.VK_ENTER) {
+                    singleConfirmed = true;
+                }
+            } else {
+                if (code == KeyEvent.VK_ENTER) {
+                    boolean correct = (singleSelected == singleCorrect);
+                    singleMode       = false;
+                    ui.quizPanelOpen = false;
+                    if (singleCallback != null) singleCallback.onResult(correct);
+                }
+            }
+            return;
+        }
     }
 
     public void draw(Graphics2D g2) {
-        // Dim the background
+
+        if (singleMode) {
+            drawSingleQuestion(g2);
+            return;
+        }
+
         g2.setColor(new Color(0, 0, 0, 180));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
@@ -126,6 +153,82 @@ public class QuizPanel {
             drawResultScreen(g2, panelX, panelY, panelW, panelH);
         } else {
             drawQuestionScreen(g2, panelX, panelY, panelW, panelH);
+        }
+    }
+
+    private void drawSingleQuestion(Graphics2D g2) {
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int panelW = gp.tileSize * 16;
+        int panelH = gp.tileSize * 8;
+        int panelX = gp.screenWidth  / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        ui.drawSubWindow(panelX, panelY, panelW, panelH);
+
+        int pad    = gp.tileSize;
+        int innerW = panelW - pad * 2;
+
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 20f));
+        g2.setColor(new Color(180, 180, 180));
+        g2.drawString("Discipline Challenge", panelX + pad, panelY + 35);
+
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
+        g2.setColor(Color.white);
+        drawWrapped(g2, singleQuestion, panelX + pad, panelY + 70, innerW, 30);
+
+        int questionLines = countWrappedLines(g2, singleQuestion, innerW);
+        int choiceStartY  = panelY + 70 + questionLines * 30 + 20;
+
+        String[] labels = {"A", "B", "C"};
+        int choiceH   = gp.tileSize;
+        int choiceGap = 8;
+
+        for (int i = 0; i < singleChoices.length; i++) {
+            boolean isSelected = (i == singleSelected);
+            boolean isCorrect  = (i == singleCorrect);
+
+            Color bg;
+            if (singleConfirmed) {
+                if (isCorrect)       bg = new Color(50, 180, 50, 180);
+                else if (isSelected) bg = new Color(200, 50, 50, 180);
+                else                 bg = new Color(40, 40, 40, 120);
+            } else {
+                bg = isSelected ? new Color(80, 80, 180, 200) : new Color(40, 40, 40, 120);
+            }
+
+            int rowY = choiceStartY + i * (choiceH + choiceGap);
+            g2.setColor(bg);
+            g2.fillRoundRect(panelX + pad - 6, rowY - 22, innerW + 12, choiceH, 10, 10);
+
+            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
+            if (isSelected && !singleConfirmed) {
+                g2.setColor(new Color(255, 220, 80));
+                g2.drawString(">", panelX + pad - 4, rowY);
+            }
+            g2.setColor(Color.white);
+            g2.drawString("[" + labels[i] + "]  " + singleChoices[i], panelX + pad + 20, rowY);
+        }
+
+        g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+        g2.setColor(new Color(180, 180, 180));
+        if (!singleConfirmed) {
+            String nav = "[ W / S ] Navigate    [ ENTER ] Confirm";
+            int nw = g2.getFontMetrics().stringWidth(nav);
+            g2.drawString(nav, panelX + panelW / 2 - nw / 2, panelY + panelH - 20);
+        } else {
+            boolean wasCorrect = (singleSelected == singleCorrect);
+            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
+            g2.setColor(wasCorrect ? new Color(100, 230, 100) : new Color(230, 80, 80));
+            String fb = wasCorrect ? "Correct!" : "Incorrect!";
+            int fw = g2.getFontMetrics().stringWidth(fb);
+            g2.drawString(fb, panelX + panelW / 2 - fw / 2, panelY + panelH - 44);
+
+            g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+            g2.setColor(new Color(180, 180, 180));
+            String next = "[ ENTER ] Continue";
+            int nw = g2.getFontMetrics().stringWidth(next);
+            g2.drawString(next, panelX + panelW / 2 - nw / 2, panelY + panelH - 18);
         }
     }
 
@@ -174,9 +277,9 @@ public class QuizPanel {
             // Background highlight
             Color bg;
             if (answerConfirmed) {
-                if (isCorrect)                     bg = new Color(50, 180, 50, 180);
-                else if (isSelected)               bg = new Color(200, 50, 50, 180);
-                else                               bg = new Color(40, 40, 40, 120);
+                if (isCorrect) bg = new Color(50, 180, 50, 180);
+                else if (isSelected) bg = new Color(200, 50, 50, 180);
+                else bg = new Color(40, 40, 40, 120);
             } else {
                 bg = isSelected
                         ? new Color(80, 80, 180, 200)
@@ -261,7 +364,6 @@ public class QuizPanel {
         int sw = g2.getFontMetrics().stringWidth(scoreStr);
         g2.drawString(scoreStr, px + pw / 2 - sw / 2, py + pad + 50);
 
-        // Per-question breakdown
         int itemY = py + pad + 90;
 
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 30f));
@@ -298,5 +400,29 @@ public class QuizPanel {
             }
         }
         if (!line.isEmpty()) g2.drawString(line.toString(), x, drawY);
+    }
+
+    public interface QuizCallback {
+        void onResult(boolean correct);
+    }
+
+    private boolean singleMode = false;
+    private QuizCallback singleCallback = null;
+    private String singleQuestion;
+    private String[] singleChoices;
+    private int singleCorrect;
+    private int singleSelected = 0;
+    private boolean singleConfirmed = false;
+
+    public void openSingleQuestion(String question, String[] choices, int correctIndex, QuizCallback callback) {
+
+        singleMode = true;
+        singleCallback = callback;
+        singleQuestion = question;
+        singleChoices = choices;
+        singleCorrect = correctIndex;
+        singleSelected = 0;
+        singleConfirmed = false;
+        ui.quizPanelOpen = true;
     }
 }
