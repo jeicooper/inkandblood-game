@@ -41,7 +41,7 @@ public class NPC_Student extends Entity {
 
     @Override
     public void speak() {
-        gp.ui.currentSpeakerName = "Student Interno";
+        gp.ui.currentSpeakerName = "Student (Interno)";
 
         int stage = gp.questManager.quest3Stage;
 

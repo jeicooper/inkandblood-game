@@ -6,7 +6,7 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, CHAPTER2, ENROLLMENT }
+    private enum Scene { NONE, CHAPTER2, ENROLLMENT, QUEST4 }
     private Scene activeScene = Scene.NONE;
 
     // TRANSITION TO CHAP 2
@@ -21,13 +21,23 @@ public class CutsceneManager {
     // QUEST 3 TRANSITION
     private final String[][] enrollmentLines = {
             { "Against all odds, Jose Rizal was enrolled." },
-            { "The gates of Ateneo Municipal de Manila opened\nbefore him for the first time." },
-            { "A new chapter — not just in his life,\nbut in the history of a nation." },
+            { "The gates of Ateneo Municipal de Manila opened before him for the first time." },
+            { "A new chapter — not just in his life, but in the history of a nation." },
             { "His journey as a scholar had begun." }
     };
 
+    // QUEST 4 TRANSITION
+    private final String[][] quest4Lines = {
+            { "A month of relentless study has passed." },
+            { "The classroom is no longer just a room of desks—" },
+            {"it is a map of two clashing empires."},
+            { "The competition for this month has concluded" },
+            { "The Carthaginian Empire has fought bravely"},
+            {"But their lines have broken under the superior Latin and Greek recitation."}
+    };
+
     private int   currentLine = 0;
-    private int   fadeState   = 0;   // 0 = fading in | 1 = showing | 2 = fading out
+    private int   fadeState   = 0;
     private float alpha       = 0f;
     private static final float FADE_SPEED = 0.03f;
     private boolean applied   = false;
@@ -43,21 +53,15 @@ public class CutsceneManager {
     }
 
     public void startChapter2() {
-        activeScene  = Scene.CHAPTER2;
-        currentLine  = 0;
-        fadeState    = 0;
-        alpha        = 0f;
-        applied      = false;
-        gp.gameState = gp.cutsceneState;
+        reset(Scene.CHAPTER2);
     }
 
     public void startEnrollmentCutscene() {
-        activeScene  = Scene.ENROLLMENT;
-        currentLine  = 0;
-        fadeState    = 0;
-        alpha        = 0f;
-        applied      = false;
-        gp.gameState = gp.cutsceneState;
+        reset(Scene.ENROLLMENT);
+    }
+
+    public void startQuest4Cutscene() {
+        reset(Scene.QUEST4);
     }
 
     public void update() {
@@ -122,16 +126,36 @@ public class CutsceneManager {
 
 
     private String[][] activeLines() {
-        return (activeScene == Scene.ENROLLMENT) ? enrollmentLines : chapter2Lines;
+        switch (activeScene) {
+            case ENROLLMENT:
+                return enrollmentLines;
+            case QUEST4:
+                return quest4Lines;
+            case CHAPTER2:
+
+            default:
+                return chapter2Lines;
+        }
     }
 
     private void applyEndOfScene() {
-        if (activeScene == Scene.CHAPTER2) {
-            applyChapter2Changes();
-            gp.ui.questPageNum = 1;   // jump quest panel to Chapter 2 tab
-        } else if (activeScene == Scene.ENROLLMENT) {
-            // Tell QuestManager the cutscene is done → spawns professor + student
-            gp.questManager.onEnrollmentCutsceneDone();
+        switch (activeScene) {
+
+            case CHAPTER2:
+                applyChapter2Changes();
+                gp.ui.questPageNum = 1;
+                break;
+
+            case ENROLLMENT:
+                gp.questManager.onEnrollmentCutsceneDone();
+                break;
+
+            case QUEST4:
+                gp.questManager.startQuest4();
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -146,4 +170,12 @@ public class CutsceneManager {
 
         gp.aSetter.activateChapter2();
     }
-}
+
+    private void reset(Scene scene) {
+        activeScene = scene;
+        currentLine = 0;
+        fadeState = 0;
+        alpha = 0f;
+        applied = false;
+        gp.gameState = gp.cutsceneState;
+    }}

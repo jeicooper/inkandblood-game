@@ -8,10 +8,17 @@ public class QuestManager {
 
     GamePanel gp;
 
+    private int cutsceneDelay = 0;
+    private int cutsceneDelay1 = 1;
+
+    private boolean pendingChapter2Cutscene = false;
+    private boolean pendingQuest4Cutscene = false;
+
     // QUEST IDS
     public static final int QUEST1   = 0;
     public static final int QUEST2   = 1;
     public static final int QUEST3 = 2;
+    public static final int QUEST4 = 3;
 
 
     //STATES
@@ -77,8 +84,15 @@ public class QuestManager {
     public static final int TALK_FERRANDO_REWARD = 6;
     public static final int QUEST3_DONE          = 7;
 
-    public int     quest3Stage          = TALK_FERRANDO;
-    public boolean ferrandoShooed       = false;
+    public int quest3Stage = TALK_FERRANDO;
+    public boolean ferrandoShooed = false;
+
+    //QUEST 4
+    public static final int QUEST4_NOT_STARTED = 0;
+    public static final int QUEST4_STARTED     = 1;
+    public static final int QUEST4_DONE        = 2;
+
+    public int quest4Stage = QUEST4_NOT_STARTED;
 
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
@@ -111,6 +125,40 @@ public class QuestManager {
         }
         if (currentQuest == QUEST2 && questState[QUEST2] == STATE_ACTIVE){
             updateQuest2();
+        }
+
+        // TRANSITION TO CHAPTER 2
+        if (pendingChapter2Cutscene) {
+            cutsceneDelay--;
+
+            if (cutsceneDelay <= 0) {
+
+                pendingChapter2Cutscene = false;
+                gp.cutsceneManager.startChapter2();
+
+                currentQuest = QUEST3;
+                questState[QUEST3] = STATE_ACTIVE;
+                quest3Stage = TALK_FERRANDO;
+
+                ferrandoShooed = false;
+            }
+        }
+
+        //TRANSITION TO QUEST 4
+        if (pendingQuest4Cutscene) {
+            cutsceneDelay1--;
+
+            if (cutsceneDelay1 <= 0) {
+
+                pendingQuest4Cutscene = false;
+                gp.cutsceneManager.startQuest4Cutscene();
+
+                currentQuest = QUEST4;
+                questState[QUEST4] = STATE_ACTIVE;
+                quest4Stage = QUEST4_STARTED;
+
+                gp.ui.questPageNum = 2;
+            }
         }
     }
 
@@ -257,16 +305,16 @@ public class QuestManager {
     }
 
     public void completeQuest2() {
-        quest2Stage = GREGORIO_DONE;
+        if (questState[QUEST2] == STATE_COMPLETED) return;
         questState[QUEST2] = STATE_COMPLETED;
+
+        quest2Stage = GREGORIO_DONE;
         gp.player.exp += 1;
         gp.player.age += 3;
 
-        gp.cutsceneManager.startChapter2();
-        currentQuest = QUEST3;
-        questState[QUEST3] = STATE_ACTIVE;
-        quest3Stage  = TALK_FERRANDO;
-        ferrandoShooed = false;
+        gp.ui.showMessage("Quest 2: Done!");
+        pendingChapter2Cutscene = true;
+        cutsceneDelay = 130;
     }
 
     // ===== QUEST 3 =====
@@ -306,24 +354,38 @@ public class QuestManager {
         gp.player.inventory.add(medal);
     }
 
-    public void onFerrandoReward() {
-        quest3Stage = QUEST3_DONE;
-        questState[QUEST3] = STATE_COMPLETED;
+    public void completeQuest3() {
+        if (quest3Stage == QUEST3_DONE) return;
+
         giveMedal();
         gp.player.exp += 1;
-        gp.ui.showMessage("You received a medal!");
-        gp.ui.showMessage("Quest 3: Done!");
         gp.player.intellect += 2;
-    }
 
-    public void completeQuest3() {
+        gp.ui.showMessage("You received a Sobresaliente medal! Quest 3: Done!");
+
         quest3Stage = QUEST3_DONE;
         questState[QUEST3] = STATE_COMPLETED;
-        gp.ui.showMessage("You received a medal!");
-        gp.ui.showMessage("Quest 3: Done!");
-        gp.player.exp += 1;
-        gp.player.intellect += 2;
+
+        pendingQuest4Cutscene = true;
+        cutsceneDelay1 = 130;
     }
+
+    // ===== QUEST 4 =====
+    public void startQuest4() {
+        currentQuest = QUEST4;
+        questState[QUEST4] = STATE_ACTIVE;
+        quest4Stage = QUEST4_STARTED;
+        gp.ui.questPageNum = 2;
+        // gp.aSetter.activateChapter3();  ← uncomment when ready
+    }
+
+    public void completeQuest4() {
+        quest4Stage = QUEST4_DONE;
+        questState[QUEST4] = STATE_COMPLETED;
+        gp.ui.showMessage("Quest 4: Done!");
+        gp.player.exp += 1;
+    }
+
 
     public boolean isQuestActive(int quest) {
         return questState[quest] == STATE_ACTIVE;

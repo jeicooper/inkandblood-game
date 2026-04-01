@@ -70,7 +70,7 @@ public class NPC_Ferrando extends Entity {
 
             if (dialogueIndex == 0) {
                 dialogueStage = 3;
-                gp.questManager.onFerrandoReward();
+                gp.questManager.completeQuest3();
             }
 
         } else if (dialogueStage == 3) {
