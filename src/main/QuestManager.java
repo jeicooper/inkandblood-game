@@ -91,18 +91,16 @@ public class QuestManager {
     public static final int TALK_PROFESSOR_Q4 = 0;
     public static final int TALK_MARIANO = 1;
     public static final int TALK_RECTOR = 2;
-    public static final int DISCIPLINE_CONDUCT = 3;
-    public static final int DISCIPLINE_PAINTING = 4;
-    public static final int DISCIPLINE_FRENCH = 5;
-    public static final int DISCIPLINE_RHETORIC = 6;
-    public static final int DISCIPLINE_DEDICATION = 7;
-    public static final int TALK_RECTOR_END = 8;
-    public static final int QUEST4_DONE = 9;
+    public static final int DISCIPLINES_ACTIVE = 3;  // all 5 judges available
+    public static final int TALK_RECTOR_END    = 4;
+    public static final int QUEST4_DONE        = 5;
     public static final int MEDALS_REQUIRED = 5;
 
     public int     quest4Stage = TALK_PROFESSOR_Q4;
     public boolean[] disciplineMedalEarned = new boolean[5];
     public int     medalsEarned = 0;
+    public boolean[] disciplineAnswered = new boolean[5];
+    public int disciplinesCompleted = 0;
 
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
@@ -386,8 +384,10 @@ public class QuestManager {
         questState[QUEST4] = STATE_ACTIVE;
         quest4Stage = TALK_PROFESSOR_Q4;
         medalsEarned = 0;
+        disciplinesCompleted = 0;
         disciplineMedalEarned = new boolean[5];
-        gp.ui.questPageNum = 2;
+        disciplineAnswered = new boolean[5];
+        gp.ui.questPageNum = 1;
         gp.aSetter.activateQuest4();
     }
 
@@ -401,19 +401,28 @@ public class QuestManager {
 
     public void onRectorInitiate() {
         if (quest4Stage == TALK_RECTOR) {
-            quest4Stage = DISCIPLINE_CONDUCT;
+            quest4Stage = DISCIPLINES_ACTIVE;
+            disciplineAnswered = new boolean[5];
+            disciplinesCompleted = 0;
+            gp.ui.showMessage("Seek out the 5 discipline judges!");
         }
     }
 
     public void onDisciplineResult(int disciplineIndex, boolean correct) {
+        if (disciplineAnswered[disciplineIndex]) return; // guard against repeat
+
+        disciplineAnswered[disciplineIndex] = true;
+        disciplinesCompleted++;
+
         if (correct) {
             disciplineMedalEarned[disciplineIndex] = true;
             medalsEarned++;
+            gp.ui.showMessage("Medal earned! (" + medalsEarned + "/" + MEDALS_REQUIRED + ")");
+        } else {
+
         }
 
-        if (quest4Stage < DISCIPLINE_DEDICATION) {
-            quest4Stage++;
-        } else {
+        if (disciplinesCompleted >= 5) {
             quest4Stage = TALK_RECTOR_END;
         }
     }

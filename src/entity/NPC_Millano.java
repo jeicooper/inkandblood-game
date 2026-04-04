@@ -42,7 +42,7 @@ public class NPC_Millano extends Entity {
         gp.ui.currentSpeakerName = "Pastor Millano";
 
         if (dialogueStage == 0) {
-            dialogues[0] = "See to Brother Casimiro before you come to me.";
+            dialogues[0] = "Come back when Fr. Rector sends you.";
             dialogues[1] = null;
             super.speak();
 
@@ -84,7 +84,7 @@ public class NPC_Millano extends Entity {
 
         if (dialogueStage == 0
                 && gp.questManager.isQuestActive(QuestManager.QUEST4)
-                && gp.questManager.quest4Stage == QuestManager.DISCIPLINE_FRENCH) {
+                && gp.questManager.quest4Stage == QuestManager.DISCIPLINES_ACTIVE) {
             dialogueStage = 1;
         }
     }

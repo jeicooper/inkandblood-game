@@ -60,7 +60,7 @@ public class NPC_Rector extends Entity {
             }
 
         } else if (dialogueStage == 1) {
-            int remaining = QuestManager.DISCIPLINE_DEDICATION
+            int remaining = QuestManager.DISCIPLINES_ACTIVE
                     - gp.questManager.quest4Stage + 1;
             remaining = Math.max(0, remaining);
             dialogues[0] = remaining > 0

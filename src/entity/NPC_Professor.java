@@ -43,6 +43,14 @@ public class NPC_Professor extends Entity {
     public void speak() {
         gp.ui.currentSpeakerName = "Professor";
 
+        if (gp.questManager.quest3Stage < QuestManager.TALK_PROFESSOR
+                && !gp.questManager.isQuestActive(QuestManager.QUEST4)) {
+            dialogues[0] = "...";
+            dialogues[1] = null;
+            super.speak();
+            return;
+        }
+
         if (dialogueStage == 0) {
             dialogues[0] = "Ah — you must be the new student.";
             dialogues[1] = "Welcome to Ateneo. I am your class professor.";
@@ -91,7 +99,7 @@ public class NPC_Professor extends Entity {
     public void update() {
         direction = "down";
 
-        if (dialogueStage == 1
+        if (dialogueStage == 0
                 && gp.questManager.isQuestActive(QuestManager.QUEST4)
                 && gp.questManager.quest4Stage == QuestManager.TALK_PROFESSOR_Q4) {
             dialogueStage = 2;

@@ -388,6 +388,31 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        // Quest 4
+        if (questManager.isQuestActive(QuestManager.QUEST4)) {
+            int stage = questManager.quest4Stage;
+
+            if (stage == QuestManager.TALK_PROFESSOR_Q4) {
+                if (npc[20] != null) targets.add(npc[20]); // Professor
+
+            } else if (stage == QuestManager.TALK_MARIANO) {
+                if (npc[21] != null) targets.add(npc[21]); // Mariano
+
+            } else if (stage == QuestManager.TALK_RECTOR
+                    || stage == QuestManager.TALK_RECTOR_END) {
+                if (npc[22] != null) targets.add(npc[22]); // Rector
+
+            } else if (stage == QuestManager.DISCIPLINES_ACTIVE) {
+                // Arrow over every judge that hasn't been answered yet
+                int[] judgeSlots = { 23, 24, 25, 26, 27 };
+                for (int i = 0; i < judgeSlots.length; i++) {
+                    if (!questManager.disciplineAnswered[i] && npc[judgeSlots[i]] != null) {
+                        targets.add(npc[judgeSlots[i]]);
+                    }
+                }
+            }
+        }
+
         return targets;
     }
 

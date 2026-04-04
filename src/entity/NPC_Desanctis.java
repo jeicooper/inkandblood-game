@@ -42,7 +42,7 @@ public class NPC_Desanctis extends Entity {
         gp.ui.currentSpeakerName = "Father de Sanctis";
 
         if (dialogueStage == 0) {
-            dialogues[0] = "Complete your French examination first.";
+            dialogues[0] = "Come back when Fr. Rector sends you.";
             dialogues[1] = null;
             super.speak();
 
@@ -84,8 +84,9 @@ public class NPC_Desanctis extends Entity {
 
         if (dialogueStage == 0
                 && gp.questManager.isQuestActive(QuestManager.QUEST4)
-                && gp.questManager.quest4Stage == QuestManager.DISCIPLINE_RHETORIC) {
+                && gp.questManager.quest4Stage == QuestManager.DISCIPLINES_ACTIVE) {
             dialogueStage = 1;
         }
+
     }
 }

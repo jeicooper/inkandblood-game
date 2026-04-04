@@ -42,7 +42,7 @@ public class NPC_Casimiro extends Entity {
         gp.ui.currentSpeakerName = "Brother Casimiro";
 
         if (dialogueStage == 0) {
-            dialogues[0] = "Finish with Father Prefect first, then come to me.";
+            dialogues[0] = "Come back when Fr. Rector sends you.";
             dialogues[1] = null;
             super.speak();
 
@@ -84,8 +84,9 @@ public class NPC_Casimiro extends Entity {
 
         if (dialogueStage == 0
                 && gp.questManager.isQuestActive(QuestManager.QUEST4)
-                && gp.questManager.quest4Stage == QuestManager.DISCIPLINE_PAINTING) {
+                && gp.questManager.quest4Stage == QuestManager.DISCIPLINES_ACTIVE) {
             dialogueStage = 1;
         }
+
     }
 }

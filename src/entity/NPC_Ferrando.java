@@ -125,7 +125,7 @@ public class NPC_Ferrando extends Entity {
 
         if (dialogueStage == 3
                 && gp.questManager.isQuestActive(QuestManager.QUEST4)
-                && gp.questManager.quest4Stage == QuestManager.DISCIPLINE_DEDICATION) {
+                && gp.questManager.quest4Stage == QuestManager.DISCIPLINES_ACTIVE) {
             dialogueStage = 4;
         }
     }

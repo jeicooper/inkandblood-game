@@ -1003,21 +1003,24 @@ public class UI {
                             "Conduct", "Painting", "French Language", "Rhetoric", "Dedication"
                     };
                     for (int i = 0; i < 5; i++) {
-                        int disciplineStage = QuestManager.DISCIPLINE_CONDUCT + i;
-                        boolean done    = q4done || q4stage > disciplineStage;
-                        boolean active  = q4stage == disciplineStage;
-                        boolean earned  = gp.questManager.disciplineMedalEarned[i];
+                        boolean answered = q4done || gp.questManager.disciplineAnswered[i];
+                        boolean active   = q4stage == QuestManager.DISCIPLINES_ACTIVE && !answered;
+                        boolean earned   = gp.questManager.disciplineMedalEarned[i];
 
-                        g2.setColor(done ? new Color(80, 220, 80)
-                                : active ? Color.white : Color.gray);
+                        g2.setColor(answered && earned  ? new Color(80, 220, 80)
+                                : answered && !earned ? new Color(180, 80, 80)
+                                : active              ? Color.white
+                                :                       Color.gray);
 
-                        String medalMark = (done && earned) ? "✓ " : (done && !earned) ? "✗ " : "- ";
+                        String medalMark = answered && earned  ? "/ "
+                                : answered && !earned ? "X "
+                                : "- ";
                         g2.drawString(medalMark + disciplineNames[i], frameX + gp.tileSize * 2, y);
                         y += lineH;
                     }
 
                     // Medal tally (shown while disciplines are ongoing or done)
-                    if (q4stage >= QuestManager.DISCIPLINE_CONDUCT) {
+                    if (q4stage >= QuestManager.DISCIPLINES_ACTIVE) {
                         g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 25f));
                         g2.setColor(new Color(200, 200, 100));
                         g2.drawString("  Medals: " + gp.questManager.medalsEarned
@@ -1477,15 +1480,12 @@ public class UI {
             } else if (stage == QuestManager.TALK_RECTOR) {
                 g2.drawString("Talk to Fr. Rector.", panelX + 12, panelY + 52);
 
-            } else if (stage >= QuestManager.DISCIPLINE_CONDUCT
-                    && stage <= QuestManager.DISCIPLINE_DEDICATION) {
-                String[] names = { "Conduct", "Painting", "French", "Rhetoric", "Dedication" };
-                int idx = stage - QuestManager.DISCIPLINE_CONDUCT;
-                g2.drawString("Medals: " + gp.questManager.medalsEarned + "/5", panelX + 12, panelY + 52);
-                g2.setColor(new Color(200, 200, 100));
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.drawString("Next: " + names[idx], panelX + 12, panelY + 72);
-
+            } else if (stage == QuestManager.DISCIPLINES_ACTIVE) {
+            int done = gp.questManager.disciplinesCompleted;
+            g2.drawString("Disciplines: " + done + "/5", panelX + 12, panelY + 52);
+            g2.setColor(new Color(200, 200, 100));
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+            g2.drawString("Medals: " + gp.questManager.medalsEarned + "/5", panelX + 12, panelY + 72);
             } else if (stage == QuestManager.TALK_RECTOR_END) {
                 g2.drawString("Medals: " + gp.questManager.medalsEarned + "/5", panelX + 12, panelY + 52);
                 g2.setColor(new Color(100, 255, 100));

@@ -67,49 +67,8 @@ public class QuizPanel {
 
     // KEY HANDLER
     public void handleKey(int code) {
-        if (showResult) {
 
-            if (code == KeyEvent.VK_ENTER) {
-                ui.quizPanelOpen = false;
-                gp.questManager.onQuizResult(score);
-            }
-            return;
-        }
-
-        if (currentQuestion >= QUESTIONS.length) {
-            showResult = true;
-            return;
-        }
-
-        if (!answerConfirmed) {
-
-            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-                selectedChoice = (selectedChoice - 1 + 3) % 3;
-            }
-            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-                selectedChoice = (selectedChoice + 1) % 3;
-            }
-
-            if (code == KeyEvent.VK_ENTER) {
-                answerConfirmed = true;
-                if (selectedChoice == CORRECT[currentQuestion]) {
-                    correct[currentQuestion] = true;
-                    score++;
-                }
-            }
-        } else {
-
-            if (code == KeyEvent.VK_ENTER) {
-                if (currentQuestion >= QUESTIONS.length - 1) {
-                    showResult = true;
-                } else {
-                    currentQuestion++;
-                    selectedChoice  = 0;
-                    answerConfirmed = false;
-                }
-            }
-        }
-
+        // Single-question mode must be checked FIRST
         if (singleMode) {
             if (!singleConfirmed) {
                 if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
@@ -130,6 +89,47 @@ public class QuizPanel {
                 }
             }
             return;
+        }
+
+        // Regular 5-question quiz
+        if (showResult) {
+            if (code == KeyEvent.VK_ENTER) {
+                ui.quizPanelOpen = false;
+                gp.questManager.onQuizResult(score);
+            }
+            return;
+        }
+
+        if (currentQuestion >= QUESTIONS.length) {
+            showResult = true;
+            return;
+        }
+
+        if (!answerConfirmed) {
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+                selectedChoice = (selectedChoice - 1 + 3) % 3;
+            }
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+                selectedChoice = (selectedChoice + 1) % 3;
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                answerConfirmed = true;
+                if (selectedChoice == CORRECT[currentQuestion]) {
+                    correct[currentQuestion] = true;
+                    score++;
+                }
+            }
+        } else {
+            if (code == KeyEvent.VK_ENTER) {
+                if (currentQuestion >= QUESTIONS.length - 1) {
+                    showResult = true;
+                } else {
+                    currentQuestion++;
+                    selectedChoice  = 0;
+                    answerConfirmed = false;
+                }
+            }
+
         }
     }
 
@@ -424,5 +424,6 @@ public class QuizPanel {
         singleSelected = 0;
         singleConfirmed = false;
         ui.quizPanelOpen = true;
+        gp.gameState = gp.playState;
     }
 }

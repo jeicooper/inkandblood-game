@@ -84,8 +84,9 @@ public class NPC_Perfect extends Entity {
 
         if (dialogueStage == 0
                 && gp.questManager.isQuestActive(QuestManager.QUEST4)
-                && gp.questManager.quest4Stage == QuestManager.DISCIPLINE_CONDUCT) {
+                && gp.questManager.quest4Stage == QuestManager.DISCIPLINES_ACTIVE) {
             dialogueStage = 1;
         }
+
     }
 }
