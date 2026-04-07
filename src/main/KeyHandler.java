@@ -262,6 +262,11 @@ public class KeyHandler implements KeyListener {
         }
     }
     public void dialogueState(int code){
+        if (gp.ui.quizPanelOpen) {
+            gp.ui.quizPanel.handleKey(code);
+            return;
+        }
+
         if (code == KeyEvent.VK_F) {
             gp.gameState = gp.playState;
         }

@@ -2,15 +2,23 @@ package main;
 
 import entity.Entity;
 import object.OBJ_Boots;
+import object.OBJ_SobreMedal;
 
 public class QuestManager {
 
     GamePanel gp;
 
+    private int cutsceneDelay = 0;
+    private int cutsceneDelay1 = 0;
+
+    private boolean pendingChapter2Cutscene = false;
+    private boolean pendingQuest4Cutscene = false;
+
     // QUEST IDS
     public static final int QUEST1   = 0;
     public static final int QUEST2   = 1;
     public static final int QUEST3 = 2;
+    public static final int QUEST4 = 3;
 
 
     //STATES
@@ -73,10 +81,26 @@ public class QuestManager {
     public static final int TALK_PROFESSOR = 3;
     public static final int TALK_STUDENT   = 4;
     public static final int QUIZ_FAILED    = 5;
-    public static final int QUEST3_DONE    = 6;
+    public static final int TALK_FERRANDO_REWARD = 6;
+    public static final int QUEST3_DONE          = 7;
 
-    public int     quest3Stage          = TALK_FERRANDO;
-    public boolean ferrandoShooed       = false;
+    public int quest3Stage = TALK_FERRANDO;
+    public boolean ferrandoShooed = false;
+
+    //QUEST 4
+    public static final int TALK_PROFESSOR_Q4 = 0;
+    public static final int TALK_MARIANO = 1;
+    public static final int TALK_RECTOR = 2;
+    public static final int DISCIPLINES_ACTIVE = 3;  // all 5 judges available
+    public static final int TALK_RECTOR_END    = 4;
+    public static final int QUEST4_DONE        = 5;
+    public static final int MEDALS_REQUIRED = 5;
+
+    public int     quest4Stage = TALK_PROFESSOR_Q4;
+    public boolean[] disciplineMedalEarned = new boolean[5];
+    public int     medalsEarned = 0;
+    public boolean[] disciplineAnswered = new boolean[5];
+    public int disciplinesCompleted = 0;
 
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
@@ -92,12 +116,12 @@ public class QuestManager {
         deliveryRadius = gp.tileSize * 2;
 
         checkpoints = new int[][]{
-                {68 * gp.tileSize, 12 * gp.tileSize},
-                {93 * gp.tileSize, 30 * gp.tileSize},
                 {74 * gp.tileSize, 34 * gp.tileSize},
-                {40 * gp.tileSize, 34 * gp.tileSize},
-                {28 * gp.tileSize, 20 * gp.tileSize},
-                {55 * gp.tileSize, 14 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
+                {74 * gp.tileSize, 34 * gp.tileSize},
         };
         checkpointHit = new boolean[TOTAL_CHECKPOINTS];
     }
@@ -109,6 +133,40 @@ public class QuestManager {
         }
         if (currentQuest == QUEST2 && questState[QUEST2] == STATE_ACTIVE){
             updateQuest2();
+        }
+
+        // TRANSITION TO CHAPTER 2
+        if (pendingChapter2Cutscene) {
+            cutsceneDelay--;
+
+            if (cutsceneDelay <= 0) {
+
+                pendingChapter2Cutscene = false;
+                gp.cutsceneManager.startChapter2();
+
+                currentQuest = QUEST3;
+                questState[QUEST3] = STATE_ACTIVE;
+                quest3Stage = TALK_FERRANDO;
+
+                ferrandoShooed = false;
+            }
+        }
+
+        //TRANSITION TO QUEST 4
+        if (pendingQuest4Cutscene) {
+            cutsceneDelay1--;
+
+            if (cutsceneDelay1 <= 0) {
+
+                pendingQuest4Cutscene = false;
+                gp.cutsceneManager.startQuest4Cutscene();
+
+                currentQuest = QUEST4;
+                questState[QUEST4] = STATE_ACTIVE;
+                quest4Stage = TALK_PROFESSOR_Q4;
+
+                gp.ui.questPageNum = 2;
+            }
         }
     }
 
@@ -148,8 +206,7 @@ public class QuestManager {
         gp.ui.showMessage("Quest 1: Done!");
 
         gp.player.exp += 1;
-        System.out.println("Quest done. Player exp = " + gp.player.exp);
-
+        gp.player.perception += 1;
         for (int i = 0; i < gp.npc.length; i++) {
             if (gp.npc[i] instanceof entity.NPC_Sibling) {
                 gp.npc[i] = null;
@@ -159,7 +216,6 @@ public class QuestManager {
         currentQuest = QUEST2;
         questState[QUEST2] = STATE_ACTIVE;
         quest2Stage = JOSE_INACTIVE;
-        System.out.println("Quest 2 started. currentQuest = " + currentQuest + " stage = " + quest2Stage);
 
         gp.aSetter.activateQuest2();
     }
@@ -188,10 +244,10 @@ public class QuestManager {
         if (checkpointsHit >= TOTAL_CHECKPOINTS && !courseCompleted) {
             courseCompleted = true;
             gp.ui.showMessage("Course complete!");
+            gp.player.charisma += 1;
         }
     }
 
-    // ── Art supplies helpers ───────────────────────────────────
     public boolean hasAllArtSupplies() {
         return countItem("Paint Bucket") >= PAINT_BUCKETS_REQUIRED &&
                 countItem("Paintbrush")   >= PAINTBRUSH_REQUIRED    &&
@@ -210,6 +266,7 @@ public class QuestManager {
         removeItems("Paint Bucket", PAINT_BUCKETS_REQUIRED);
         removeItems("Paintbrush",   PAINTBRUSH_REQUIRED);
         removeItems("Canvas",       CANVAS_REQUIRED);
+        gp.player.creativity = 1;
     }
 
     public boolean hasWritingSupplies() {
@@ -220,6 +277,7 @@ public class QuestManager {
     public void removeWritingSupplies() {
         removeItems("Quill",    QUILL_REQUIRED);
         removeItems("Notebook", NOTEBOOK_REQUIRED);
+        gp.player.intellect += 1;
     }
 
     private void removeItems(String itemName, int amount) {
@@ -255,16 +313,16 @@ public class QuestManager {
     }
 
     public void completeQuest2() {
-        quest2Stage = GREGORIO_DONE;
+        if (questState[QUEST2] == STATE_COMPLETED) return;
         questState[QUEST2] = STATE_COMPLETED;
-        gp.ui.showMessage("Quest 2: Done!");
-        gp.player.exp += 1;
 
-        gp.cutsceneManager.startChapter2();
-        currentQuest = QUEST3;
-        questState[QUEST3] = STATE_ACTIVE;
-        quest3Stage  = TALK_FERRANDO;
-        ferrandoShooed = false;
+        quest2Stage = GREGORIO_DONE;
+        gp.player.exp += 1;
+        gp.player.age += 3;
+
+        gp.ui.showMessage("Quest 2: Done!");
+        pendingChapter2Cutscene = true;
+        cutsceneDelay = 130;
     }
 
     // ===== QUEST 3 =====
@@ -283,7 +341,7 @@ public class QuestManager {
 
     public void onEnrollmentCutsceneDone() {
         quest3Stage = TALK_PROFESSOR;
-//        gp.aSetter.activateProfessorAndStudent();
+
     }
 
     public void onProfessorDone() {
@@ -292,22 +350,92 @@ public class QuestManager {
 
     public void onQuizResult(int score) {
         if (score >= 5) {
-            quest3Stage = QUEST3_DONE;
-            questState[QUEST3] = STATE_COMPLETED;
-            gp.ui.showMessage("Quest 3: Done! Perfect score!");
-            gp.player.exp += 1;
+            quest3Stage = TALK_FERRANDO_REWARD;
         } else {
             quest3Stage = QUIZ_FAILED;
             gp.ui.showMessage("Score: " + score + "/5. Try again!");
         }
     }
 
+    public void giveMedal() {
+        OBJ_SobreMedal medal = new OBJ_SobreMedal(gp);
+        gp.player.inventory.add(medal);
+    }
+
     public void completeQuest3() {
+        if (quest3Stage == QUEST3_DONE) return;
+
+        giveMedal();
+        gp.player.exp += 1;
+        gp.player.intellect += 2;
+
+        gp.ui.showMessage("You received a Sobresaliente medal! Quest 3: Done!");
+
         quest3Stage = QUEST3_DONE;
         questState[QUEST3] = STATE_COMPLETED;
-        gp.ui.showMessage("Quest 3: Done!");
-        gp.player.exp += 1;
+
+        pendingQuest4Cutscene = true;
+        cutsceneDelay1 = 130;
     }
+
+    // ===== QUEST 4 =====
+    public void startQuest4() {
+        currentQuest = QUEST4;
+        questState[QUEST4] = STATE_ACTIVE;
+        quest4Stage = TALK_PROFESSOR_Q4;
+        medalsEarned = 0;
+        disciplinesCompleted = 0;
+        disciplineMedalEarned = new boolean[5];
+        disciplineAnswered = new boolean[5];
+        gp.ui.questPageNum = 1;
+        gp.aSetter.activateQuest4();
+    }
+
+    public void onProfessorQ4Done() {
+        if (quest4Stage == TALK_PROFESSOR_Q4) quest4Stage = TALK_MARIANO;
+    }
+
+    public void onMarianoDone() {
+        if (quest4Stage == TALK_MARIANO) quest4Stage = TALK_RECTOR;
+    }
+
+    public void onRectorInitiate() {
+        if (quest4Stage == TALK_RECTOR) {
+            quest4Stage = DISCIPLINES_ACTIVE;
+            disciplineAnswered = new boolean[5];
+            disciplinesCompleted = 0;
+            gp.ui.showMessage("Seek out the 5 discipline judges!");
+        }
+    }
+
+    public void onDisciplineResult(int disciplineIndex, boolean correct) {
+        if (disciplineAnswered[disciplineIndex]) return; // guard against repeat
+
+        disciplineAnswered[disciplineIndex] = true;
+        disciplinesCompleted++;
+
+        if (correct) {
+            disciplineMedalEarned[disciplineIndex] = true;
+            medalsEarned++;
+            gp.ui.showMessage("Medal earned! (" + medalsEarned + "/" + MEDALS_REQUIRED + ")");
+        } else {
+
+        }
+
+        if (disciplinesCompleted >= 5) {
+            quest4Stage = TALK_RECTOR_END;
+        }
+    }
+
+    public void onRectorEnd() {
+        if (quest4Stage != TALK_RECTOR_END) return;
+        quest4Stage = QUEST4_DONE;
+        questState[QUEST4] = STATE_COMPLETED;
+        gp.player.exp += 1;
+        gp.player.intellect += 1;
+        gp.ui.showMessage("Quest 4: Done!");
+    }
+
 
     public boolean isQuestActive(int quest) {
         return questState[quest] == STATE_ACTIVE;

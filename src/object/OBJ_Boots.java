@@ -9,7 +9,7 @@ public class OBJ_Boots extends Entity {
         super(gp);
         name = "Boots";
         image = setup("/objects/boots");
-        description = "Enchanted boots from Uncle Manuel.\nGives incredible speed!";
+        description = "Enchanted boots from\nUncle Manuel. Gives\nincredible speed!";
         collision = false;
     }
 }

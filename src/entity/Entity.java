@@ -39,6 +39,7 @@ public class Entity {
     public int creativity;
     public int perception;
     public int charisma;
+    public int age;
 
     //ITEMS
     public String description = "";
@@ -71,6 +72,7 @@ public class Entity {
         else {
             dialogueIndex = 0;
             gp.gameState = gp.playState;
+            gp.talkingTo = null;
         }
 
 
@@ -135,7 +137,6 @@ public class Entity {
             if (up1 == null && down1 == null && left1 == null && right1 == null) {
                 imgToDraw = image;
             } else {
-                // Player/NPC with directions
                 switch (direction) {
                     case "up":    imgToDraw = (spriteNum == 1 ? up1 : up2); break;
                     case "down":  imgToDraw = (spriteNum == 1 ? down1 : down2); break;

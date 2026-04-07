@@ -52,7 +52,6 @@ public class Config {
                 }
             } else {
                 // Handle the case where the file is empty/corrupt
-                // Perhaps set a default value or log an error
                 System.err.println("Configuration file is empty or corrupt. Using default settings for fullscreen.");
             }
 

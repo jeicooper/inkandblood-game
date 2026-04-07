@@ -61,6 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this,keyP);
     public Entity obj[] = new Entity[99];
     public Entity npc [] = new Entity[50];
+    public Entity talkingTo = null;
 
     ArrayList<Entity> entityList = new ArrayList<>();
     private final Comparator<Entity> entitySorter = Comparator.comparingInt(e -> e.worldY);
@@ -368,6 +369,47 @@ public class GamePanel extends JPanel implements Runnable {
                 if (npc[13] != null) targets.add(npc[13]); // Uncle Manuel
             } else if (stage == QuestManager.MANUEL_DONE || stage == QuestManager.GREGORIO_WAITING) {
                 if (npc[14] != null) targets.add(npc[14]); // Uncle Gregorio
+            }
+        }
+
+        // Quest 3
+        if (questManager.isQuestActive(QuestManager.QUEST3)) {
+            int stage = questManager.quest3Stage;
+            if (stage == QuestManager.TALK_FERRANDO
+                    || stage == QuestManager.TALK_FERRANDO_REWARD) {
+                if (npc[15] != null) targets.add(npc[15]);
+            } else if (stage == QuestManager.TALK_BURGOS) {
+                if (npc[16] != null) targets.add(npc[16]);
+            } else if (stage == QuestManager.TALK_PROFESSOR) {
+                if (npc[17] != null) targets.add(npc[17]);
+            } else if (stage == QuestManager.TALK_STUDENT
+                    || stage == QuestManager.QUIZ_FAILED) {
+                if (npc[18] != null) targets.add(npc[18]);
+            }
+        }
+
+        // Quest 4
+        if (questManager.isQuestActive(QuestManager.QUEST4)) {
+            int stage = questManager.quest4Stage;
+
+            if (stage == QuestManager.TALK_PROFESSOR_Q4) {
+                if (npc[20] != null) targets.add(npc[20]); // Professor
+
+            } else if (stage == QuestManager.TALK_MARIANO) {
+                if (npc[21] != null) targets.add(npc[21]); // Mariano
+
+            } else if (stage == QuestManager.TALK_RECTOR
+                    || stage == QuestManager.TALK_RECTOR_END) {
+                if (npc[22] != null) targets.add(npc[22]); // Rector
+
+            } else if (stage == QuestManager.DISCIPLINES_ACTIVE) {
+                // Arrow over every judge that hasn't been answered yet
+                int[] judgeSlots = { 23, 24, 25, 26, 27 };
+                for (int i = 0; i < judgeSlots.length; i++) {
+                    if (!questManager.disciplineAnswered[i] && npc[judgeSlots[i]] != null) {
+                        targets.add(npc[judgeSlots[i]]);
+                    }
+                }
             }
         }
 
