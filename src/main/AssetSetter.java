@@ -182,6 +182,52 @@ public class AssetSetter {
     }
 
     public void activateChapter3() {
-        //
+
+        //npc
+        gp.npc[0] = new NPC_Pedro(gp);
+        gp.npc[0].worldX = 13 * gp.tileSize;
+        gp.npc[0].worldY = 36 * gp.tileSize;
+
+        gp.npc[1] = new NPC_Consuelo(gp);
+        gp.npc[1].worldX = 13 * gp.tileSize;
+        gp.npc[1].worldY = 41 * gp.tileSize;
+
+        gp.npc[2] = new NPC_Maximo(gp);
+        gp.npc[2].worldX = 16 * gp.tileSize;
+        gp.npc[2].worldY = 48 * gp.tileSize;
+
+        //letter
+        gp.obj[0] = new OBJ_Draft(gp);
+        gp.obj[0].worldX = 63 * gp.tileSize;
+        gp.obj[0].worldY = 73 * gp.tileSize;
+
+        //obj
+        gp.obj[1] = new OBJ_Scalpel(gp);
+        gp.obj[1].worldX = 55 * gp.tileSize;
+        gp.obj[1].worldY = 81 * gp.tileSize;
+
+        gp.obj[2] = new OBJ_Mirror(gp);
+        gp.obj[2].worldX = 55 * gp.tileSize;
+        gp.obj[2].worldY = 72 * gp.tileSize;
+
+        gp.obj[3] = new OBJ_DriedFlower(gp);
+        gp.obj[3].worldX = 27 * gp.tileSize;
+        gp.obj[3].worldY = 38 * gp.tileSize;
+
+        gp.obj[4] = new OBJ_Rosary(gp);
+        gp.obj[4].worldX = 34 * gp.tileSize;
+        gp.obj[4].worldY = 48 * gp.tileSize;
+
+        gp.obj[5] = new OBJ_Portrait(gp);
+        gp.obj[5].worldX = 12 * gp.tileSize;
+        gp.obj[5].worldY = 48 * gp.tileSize;
+
+        gp.obj[6] = new OBJ_ScrapMetal(gp);
+        gp.obj[6].worldX = 65 * gp.tileSize;
+        gp.obj[6].worldY = 76 * gp.tileSize;
+
+        gp.obj[7] = new OBJ_EmptyPlate(gp);
+        gp.obj[7].worldX = 22 * gp.tileSize;
+        gp.obj[7].worldY = 31 * gp.tileSize;
     }
 }

@@ -2,6 +2,7 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.QuestManager;
 import main.UtilityTool;
 import object.OBJ_Quil;
 
@@ -50,8 +51,8 @@ public class Player extends  Entity{
     public void setDefaultValues(){
 
         //player position in the map
-        worldX = gp.tileSize * 60;
-        worldY = gp.tileSize * 28;
+        worldX = gp.tileSize * 73;
+        worldY = gp.tileSize * 31;
         speed = 10;
         direction = "down";
 
@@ -160,11 +161,26 @@ public class Player extends  Entity{
             }
         }
 
-        // F INTERACTION — outside movement block so it works while standing still
+        // F INTERACTION
         if (keyP.fPressed) {
             keyP.fPressed = false;
+
             int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
             interactNPC(npcIndex);
+
+            // Try all 4 directions for object interaction
+            String originalDirection = direction;
+            int fObjIndex = 999;
+
+            String[] dirs = {"up", "down", "left", "right"};
+            for (String dir : dirs) {
+                direction = dir;
+                fObjIndex = gp.cChecker.checkObject(this, true);
+                if (fObjIndex != 999) break;
+            }
+            direction = originalDirection;
+
+            interactObject(fObjIndex);
         }
     }
 
@@ -179,19 +195,82 @@ public class Player extends  Entity{
 
     public void pickUpObject(int i){
 
-        if (i != 999){
+        if (i != 999) {
 
-            if (inventory.size() != maxInventorySize){
+            String objectName = gp.obj[i].name;
 
-                String objectName = gp.obj[i].name;
+            if (getManuscriptIndex(objectName) >= 0) return;
+            if (objectName.equals("Draft of Noli Me Tangere")) return;
+
+            if (inventory.size() != maxInventorySize) {
+
+                objectName = gp.obj[i].name;
                 inventory.add(gp.obj[i]);
                 gp.obj[i] = null;
                 gp.playSE(1);
-                gp.ui.showMessage("Got a " + objectName + "!");
-            }
-            else {
+            } else {
                 gp.ui.showMessage("Your inventory is full!");
             }
+        }
+    }
+
+    public void interactObject(int i) {
+        if (i == 999) return;
+        String objectName = gp.obj[i].name;
+
+        // BERLIN LETTER
+        if (objectName.equals("Draft of Noli Me Tangere")) {
+            if (inventory.size() < maxInventorySize) {
+                inventory.add(gp.obj[i]);
+                gp.obj[i] = null;
+                gp.playSE(1);
+                gp.ui.showMessage("You found the draft!");
+                if (gp.questManager.quest5Stage == QuestManager.FIND_LETTER) {
+                    gp.questManager.onLetterFound();
+                }
+            } else {
+                gp.ui.showMessage("Your inventory is full!");
+            }
+        }
+
+        int manuscriptIndex = getManuscriptIndex(objectName);
+        if (manuscriptIndex >= 0 &&
+                gp.questManager.quest5Stage == QuestManager.COLLECT_OBJECTS) {
+            String[] messages = {
+                    "'Touch Me Not.' Our country has a cancer so sensitive\nthat the slightest touch causes agony.\n[Title and Preface finalized.]",
+                    "I see myself in Crisostomo Ibarra, the dreamer\nreturning home only to find the soil poisoned.\n[Main Character Arc defined.]",
+                    "She is the Philippines — beautiful, weeping, silenced.\n[The Idyl on the Terrace defined.]",
+                    "Father Damaso. The cross he wears\nis not for salvation, but for control.\n[The Feast added to manuscript.]",
+                    "I shall call her Sisa. The soul of the Filipino family,\ndriven to madness by cruelty.\n[Sisa added to manuscript.]",
+                    "The man of action. The mirror of what I fear\nI might become if the pen fails.\n[The Voice of the Hunted added.]",
+                    "My hunger is not just for bread, but for justice.\nEvery word is paid for with my own body.\n[Desperate Resolve added.]"
+            };
+            gp.ui.currentDialogue = messages[manuscriptIndex];
+            gp.ui.currentSpeakerName = "Jose Rizal";
+            gp.gameState = gp.dialogueState;
+            gp.obj[i] = null;
+            gp.questManager.onManuscriptPartCollected(manuscriptIndex);
+        }
+    }
+
+    private int getManuscriptIndex(String name) {
+        switch (name) {
+            case "Medical Scalpel":
+                return 0;
+            case "Mirror":
+                return 1;
+            case "Dried Flower":
+                return 2;
+            case "Rosary":
+                return 3;
+            case "Portrait":
+                return 4;
+            case "Scraped Metal":
+                return 5;
+            case "Empty Plate":
+                return 6;
+            default:
+                return -1;
         }
     }
 

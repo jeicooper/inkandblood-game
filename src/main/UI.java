@@ -28,6 +28,7 @@ public class UI {
     public String message = "";
     public String currentDialogue = "";
     public String currentSpeakerName = "";
+    public String activeLetter = "";
 
     int msgCounter = 0;
     public int commandNum = 0;
@@ -130,7 +131,11 @@ public class UI {
             }
 
             if (showPoemPanel) {
-                drawPoemPanel();
+                if (activeLetter.equals("Draft of Noli Me Tangere")) {
+                    drawLetterPanel();
+                } else {
+                    drawPoemPanel();
+                }
             }
 
             if (quizPanelOpen) {
@@ -211,7 +216,6 @@ public class UI {
             x += spacing;
         }
     }
-
     public void drawHints(){
 
         g2.setColor(Color.white);
@@ -1567,6 +1571,37 @@ public class UI {
                 g2.drawString("Quest 4 Complete!", panelX + 12, panelY + 52);
             }
         }
+
+        // ===== QUEST 5 =====
+        else if (currentQ == QuestManager.QUEST5 &&
+                gp.questManager.isQuestActive(QuestManager.QUEST5)) {
+
+            g2.setColor(new Color(255, 220, 80));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+            g2.drawString("Noli Me Tangere", panelX + 12, panelY + 28);
+
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(20F));
+
+            int stage = gp.questManager.quest5Stage;
+
+            if (stage == QuestManager.TALK_PEDRO) {
+                g2.drawString("Talk to Pedro.", panelX + 12, panelY + 52);
+            } else if (stage == QuestManager.TALK_CONSUELO) {
+                g2.drawString("Talk to Consuelo.", panelX + 12, panelY + 52);
+            } else if (stage == QuestManager.FIND_LETTER) {
+                g2.drawString("Find the letter.", panelX + 12, panelY + 52);
+            } else if (stage == QuestManager.COLLECT_OBJECTS) {
+                int done = gp.questManager.objectsCollected;
+                g2.drawString("Manuscript: " + done + "/7", panelX + 12, panelY + 52);
+            } else if (stage == QuestManager.TALK_MAXIMO) {
+                g2.setColor(new Color(100, 255, 100));
+                g2.drawString("Talk to Maximo Viola.", panelX + 12, panelY + 52);
+            } else if (stage == QuestManager.QUEST5_DONE) {
+                g2.setColor(new Color(100, 230, 100));
+                g2.drawString("Quest 5 Complete!", panelX + 12, panelY + 52);
+            }
+        }
     }
     public void drawPoemPanel() {
         g2.setColor(new Color(0, 0, 0, 180));
@@ -1635,6 +1670,80 @@ public class UI {
         startY = panelY + 85;
         for (String line : right) {
             g2.drawString(line, rightX, startY);
+            startY += lineH;
+        }
+
+        // prompt
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+        g2.setColor(new Color(200, 200, 200));
+        g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
+
+        // close
+        if (gp.keyP.enterPressed) {
+            gp.keyP.enterPressed = false;
+            showPoemPanel = false;
+        }
+    }
+    public void drawLetterPanel() {
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int panelW = gp.tileSize * 15;
+        int panelH = gp.tileSize * 10;
+        int panelX = gp.screenWidth / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        drawSubWindow(panelX, panelY, panelW, panelH);
+
+        int tailX = panelX + gp.tileSize;
+
+        // title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
+        g2.setColor(new Color(255, 220, 80));
+        String title = "Draft Page - Noli Me Tangere";
+        int titleX = getXforCenter(title);
+        g2.drawString(title, titleX, panelY + 45);
+
+        String[] lines = {
+                "I write not for fame, nor for praise, but for those whose",
+
+                "voices are buried beneath the weight of silence. Our land is beautiful",
+
+                "yet beneath its green fields and quiet towns lies a sickness no one",
+
+                "dares to name. Many pretend not to see it. Others",
+
+                "benefit from it. But the suffering of the people grows deeper each day.",
+                "",
+
+                "If a wound is hidden, it festers. If a disease is ignored",
+
+                "it spreads. Thus I must write—not to entertain, but to reveal.",
+
+                "My pen must become a mirror, reflecting the truth of our",
+
+                "society so that all who look upon it may recognize the illness within.",
+                "",
+
+                "In the towns and villages of our country live men",
+                "who preach virtue yet rule with fear. There are officials who",
+                "claim justice but serve only power. Meanwhile, the common",
+                "people endure humiliation, poverty, and the quiet loss of hope.",
+                "",
+
+                "But there are also those who begin to awaken.",
+                "This book will not written to accuse blindly, but to expose what has long been concealed.",
+                " If society refuses to confront its own reflection, then it will never heal.\n",
+                "And so I begin…"
+        };
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 22F));
+        g2.setColor(Color.white);
+        int startY = panelY + 80;
+        int lineH  = 26;
+
+        for (String line : lines) {
+            int lx = getXforCenter(line);
+            g2.drawString(line, lx, startY);
             startY += lineH;
         }
 

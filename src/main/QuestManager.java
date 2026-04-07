@@ -107,6 +107,19 @@ public class QuestManager {
     public boolean[] disciplineAnswered = new boolean[5];
     public int disciplinesCompleted = 0;
 
+    // QUEST 5
+    public static final int TALK_PEDRO         = 0;
+    public static final int TALK_CONSUELO      = 1;
+    public static final int FIND_LETTER        = 2;
+    public static final int COLLECT_OBJECTS    = 3;
+    public static final int TALK_MAXIMO        = 4;
+    public static final int QUEST5_DONE        = 5;
+    public static final int OBJECTS_REQUIRED   = 7;
+
+    public int   quest5Stage         = TALK_PEDRO;
+    public int   objectsCollected    = 0;
+    public boolean[] manuscriptParts = new boolean[7]; // tracks each of the 7 objects
+
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
         this.gp = gp;
@@ -459,7 +472,40 @@ public class QuestManager {
     }
 
     // ===== QUEST 5 =====
-    // TRANSITION TO CHAPTER 3
+    public void onPedroDone() {
+        if (quest5Stage == TALK_PEDRO) quest5Stage = TALK_CONSUELO;
+    }
+
+    public void onConsueloDone() {
+        if (quest5Stage == TALK_CONSUELO) quest5Stage = FIND_LETTER;
+    }
+
+    public void onLetterFound() {
+        if (quest5Stage == FIND_LETTER) {
+            quest5Stage = COLLECT_OBJECTS;
+            gp.ui.showMessage("Find objects around the room to write your manuscript.");
+        }
+    }
+
+    public void onManuscriptPartCollected(int index) {
+        if (manuscriptParts[index]) return;
+        manuscriptParts[index] = true;
+        objectsCollected++;
+        if (objectsCollected >= OBJECTS_REQUIRED) {
+            quest5Stage = TALK_MAXIMO;
+            gp.ui.showMessage("Manuscript complete! Find Maximo.");
+        }
+    }
+
+    public void completeQuest5() {
+        if (quest5Stage == QUEST5_DONE) return;
+        quest5Stage = QUEST5_DONE;
+        questState[QUEST5] = STATE_COMPLETED;
+        gp.player.exp += 1;
+        gp.player.intellect += 2;
+        gp.player.creativity += 2;
+        gp.ui.showMessage("Quest 5: Noli Me Tangere begins! Done!");
+    }
 
 
     public boolean isQuestActive(int quest) {

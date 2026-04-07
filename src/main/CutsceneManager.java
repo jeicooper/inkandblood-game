@@ -38,13 +38,13 @@ public class CutsceneManager {
 
     // CHAPTER 3 TRANSITION
     private final String[][] chapter3Lines = {
-            { "After earning the 5 medals throughout my years in Ateneo",
+            { "After earning the medals throughout my years in Ateneo",
                     "I moved to the University of Santo Tomas to study Philosophy and Letters",
                     "but the atmosphere was different." },
             { "At Ateneo, we were empires at play; here",
                     "the hostility of the Dominican professors is no game." },
-            { "I see it every day in the lecture halls.",
-                    "the way they look at us. Filipino students are not treated as scholars",
+            { "I see it every day in the lecture halls, the way they look at us.",
+                    "Filipino students are not treated as scholars",
                     "but as subjects to be reminded of our 'place.'" },
             { "The discrimination is a silent wall we hit",
                     "every time we raise our hands." },
@@ -54,8 +54,8 @@ public class CutsceneManager {
             {"I am a 'Sobresaliente' student, yet here,",
                     "my mind feels like it is in a cage. "
             },
-            {"If the 'Walls of Wisdom' have turned into the bars of a prison",
-                    "then I cannot stay. I must find a place where"," the sun of knowledge actually shines."}
+            {"If the 'Walls of Wisdom' have turned into the bars of",
+                    "a prison then I cannot stay. I must find a place where"," the sun of knowledge actually shines."}
     };
 
     private int   currentLine = 0;
@@ -67,8 +67,8 @@ public class CutsceneManager {
     // CHAP 2 CONFIG
     private static final String CHAPTER2_MAP    = "/maps/Chapter2.txt";
     private static final String CHAPTER2_SPRITE = "rizal_adult";
-    private static final int    SPAWN_TILE_X    = 54;
-    private static final int    SPAWN_TILE_Y    = 54;
+    private static final int    SPAWN_TILE_X    = 59;
+    private static final int    SPAWN_TILE_Y    = 25;
 
     // CHAP 3 CONFIG
     private static final String CHAPTER3_MAP    = "/maps/Chapter3.txt";

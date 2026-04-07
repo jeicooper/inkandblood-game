@@ -49,7 +49,7 @@ public class NPC_Millano extends Entity {
         } else if (dialogueStage == 1) {
             dialogues[0] = "I am Pastor Millano, judge of French Language.";
             dialogues[1] = "Language is the bridge between peoples and nations.";
-            dialogues[2] = "One question. Answer correctly for the medal.\nNo second attempts.";
+            dialogues[2] = "One question. Answer correctly for the medal. No second\nattempts.";
             dialogues[3] = "What is the correct French translation of 'I love my country'?";
             dialogues[4] = null;
             super.speak();

@@ -281,12 +281,19 @@ public class KeyHandler implements KeyListener {
 
         if (code == KeyEvent.VK_ENTER) {
             int itemIndex = gp.ui.getItemIndexOnSlot();
+
             if (itemIndex < gp.player.inventory.size()) {
                 entity.Entity item = gp.player.inventory.get(itemIndex);
                 if (item.name.equals("Sa Aking Mga Kabata")) {
                     gp.gameState = gp.playState;
                     gp.ui.showPoemPanel = true;
+                    gp.ui.activeLetter = item.name;
+                } else if (item.name.equals("Draft of Noli Me Tangere")) {
+                    gp.gameState = gp.playState;
+                    gp.ui.activeLetter = "Draft of Noli Me Tangere";
+                    gp.ui.showPoemPanel = true;
                 }
+
             }
         }
 
