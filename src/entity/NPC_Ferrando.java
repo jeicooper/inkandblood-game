@@ -81,8 +81,8 @@ public class NPC_Ferrando extends Entity {
         } else if (dialogueStage == 4) {
             dialogues[0] = "So — you have come to me last.";
             dialogues[1] = "I am judging you on Dedication. The quality that\nbrought you through these gates against all odds.";
-            dialogues[2] = "One question. Answer correctly for the medal.\nThere is no second chance.";
-            dialogues[3] = "How many languages did Rizal learn to speak\nin his lifetime?";
+            dialogues[2] = "One question. Answer correctly for the medal. There is no\nsecond chance.";
+            dialogues[3] = "How many languages did Rizal learn to speak in his\nlifetime?";
             dialogues[4] = null;
             super.speak();
 

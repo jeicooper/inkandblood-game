@@ -49,8 +49,8 @@ public class NPC_Desanctis extends Entity {
         } else if (dialogueStage == 1) {
             dialogues[0] = "I am Father de Sanctis, judge of Rhetoric.";
             dialogues[1] = "Words are the most powerful weapons ever devised by man.";
-            dialogues[2] = "One question stands between you and this medal.\nAnswer wrong and it is gone.";
-            dialogues[3] = "Which rhetorical device repeats a word at the start\nof successive clauses?";
+            dialogues[2] = "One question stands between you and this medal. Answer wrong\nand it is gone.";
+            dialogues[3] = "Which rhetorical device repeats a word at the start of\nsuccessive clauses?";
             dialogues[4] = null;
             super.speak();
 

@@ -45,8 +45,8 @@ public class NPC_Mariano extends Entity {
 
         if (dialogueStage == 0) {
             dialogues[0] = "...Jose.";
-            dialogues[1] = "I won't pretend it doesn't sting. I trained hard\nfor that title.";
-            dialogues[2] = "But you earned it. Your Latin recitation, your\ncomposure — I had no answer for it.";
+            dialogues[1] = "I won't pretend it doesn't sting. I trained hard for that title.";
+            dialogues[2] = "But you earned it. Your Latin recitation, your composure —\nI had no answer for it.";
             dialogues[3] = "I concede. You are the better student this month.";
             dialogues[4] = "Do not let it go to your head.";
             dialogues[5] = null;

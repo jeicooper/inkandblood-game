@@ -72,9 +72,9 @@ public class NPC_Professor extends Entity {
             super.speak();
         } else if (dialogueStage == 2) {
             dialogues[0] = "Jose! I have wonderful news.";
-            dialogues[1] = "You have been crowned Emperor of the Romans in this\nmonth's competition.";
-            dialogues[2] = "Your performance across all subjects has been nothing\nshort of extraordinary.";
-            dialogues[3] = "I am proud of you. Now go — speak with Mariano.\nHe has something to say to you as well.";
+            dialogues[1] = "You have been crowned Emperor of the Romans in this month's\ncompetition.";
+            dialogues[2] = "Your performance across all subjects has been nothing short\nof extraordinary.";
+            dialogues[3] = "I am proud of you. Now go — speak with Mariano. He has\nsomething to say to you as well.";
             dialogues[4] = null;
             super.speak();
 
