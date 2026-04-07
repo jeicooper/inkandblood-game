@@ -27,7 +27,7 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/maps/Chapter1.txt");
+        loadMap("/maps/Berlinandmadrid.txt");
     }
 
     public void getTileImage(){
@@ -674,16 +674,23 @@ public class TileManager {
         setup(640, "BRIDGE2_7", false);
         setup(641, "BRIDGE2_8", true);
 
-        //setup(642, "", true);
-        //setup(643, "", true);
-        //setup(644, "", true);
-        //setup(645, "", true);
-        //setup(646, "", true);
-        //setup(647, "", true);
-        //setup(648, "", true);
-        //setup(649, "", true);
-        //setup(650, "", true);
-        //setup(651, "", true);
+        setup(642, "carpet_1", false);
+        setup(643, "carpet_2", false);
+        setup(644, "carpet_3", false);
+        setup(645, "carpet_4", false);
+        setup(646, "carpet_5", false);
+        setup(647, "carpet_6", false);
+        setup(648, "carpet_7", false);
+        setup(649, "carpet_8", false);
+        setup(650, "carpet_9", false);
+        setup(651, "carpet_10", true);
+        setup(652, "carpet_11", true);
+        setup(653, "carpet_12", true);
+        setup(654, "carpet_13", true);
+        setup(655, "carpet_14", true);
+
+        setup(656,"window2_1", true);
+        setup(657,"window2_2", true);
 
     }
 
