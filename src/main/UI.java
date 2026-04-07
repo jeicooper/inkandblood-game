@@ -707,8 +707,8 @@ public class UI {
 
                 drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
 
-                for (String line: gp.player.inventory.get(itemIndex).description.split("\n")){
-
+                Entity selectedItem = gp.player.inventory.get(itemIndex);
+                for (String line : selectedItem.description.split("\n")) {
                     g2.drawString(line, textX, textY);
                     textY += 32;
                 }

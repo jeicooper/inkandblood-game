@@ -279,6 +279,17 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.playState;
         }
 
+        if (code == KeyEvent.VK_ENTER) {
+            int itemIndex = gp.ui.getItemIndexOnSlot();
+            if (itemIndex < gp.player.inventory.size()) {
+                entity.Entity item = gp.player.inventory.get(itemIndex);
+                if (item.name.equals("Sa Aking Mga Kabata")) {
+                    gp.gameState = gp.playState;
+                    gp.ui.showPoemPanel = true;
+                }
+            }
+        }
+
         if (code == KeyEvent.VK_W){
             if (gp.ui.slotRow != 0){
                 gp.ui.slotRow--;

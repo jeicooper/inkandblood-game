@@ -6,7 +6,7 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, CHAPTER2, ENROLLMENT, QUEST4 }
+    private enum Scene { NONE, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3 }
     private Scene activeScene = Scene.NONE;
 
     // TRANSITION TO CHAP 2
@@ -36,6 +36,28 @@ public class CutsceneManager {
             {"But their lines have broken under the superior Latin and Greek recitation."}
     };
 
+    // CHAPTER 3 TRANSITION
+    private final String[][] chapter3Lines = {
+            { "After earning the 5 medals throughout my years in Ateneo",
+                    "I moved to the University of Santo Tomas to study Philosophy and Letters",
+                    "but the atmosphere was different." },
+            { "At Ateneo, we were empires at play; here",
+                    "the hostility of the Dominican professors is no game." },
+            { "I see it every day in the lecture halls.",
+                    "the way they look at us. Filipino students are not treated as scholars",
+                    "but as subjects to be reminded of our 'place.'" },
+            { "The discrimination is a silent wall we hit",
+                    "every time we raise our hands." },
+            { "Even the lessons feel like they belong to a dead century.",
+                    "The instruction is obsolete, designed to repress our curiosity",
+                    "rather than set it on fire." },
+            {"I am a 'Sobresaliente' student, yet here,",
+                    "my mind feels like it is in a cage. "
+            },
+            {"If the 'Walls of Wisdom' have turned into the bars of a prison",
+                    "then I cannot stay. I must find a place where"," the sun of knowledge actually shines."}
+    };
+
     private int   currentLine = 0;
     private int   fadeState   = 0;
     private float alpha       = 0f;
@@ -44,9 +66,15 @@ public class CutsceneManager {
 
     // CHAP 2 CONFIG
     private static final String CHAPTER2_MAP    = "/maps/Chapter2.txt";
-    private static final String CHAPTER2_SPRITE = "pepe_older";
-    private static final int    SPAWN_TILE_X    = 38;
-    private static final int    SPAWN_TILE_Y    = 23;
+    private static final String CHAPTER2_SPRITE = "rizal_adult";
+    private static final int    SPAWN_TILE_X    = 54;
+    private static final int    SPAWN_TILE_Y    = 54;
+
+    // CHAP 3 CONFIG
+    private static final String CHAPTER3_MAP    = "/maps/Chapter3.txt";
+    private static final String CHAPTER3_SPRITE = "pepe_older";
+    private static final int    SPAWN_TILE_X3    = 23;
+    private static final int    SPAWN_TILE_Y3    = 35;
 
     public CutsceneManager(GamePanel gp) {
         this.gp = gp;
@@ -62,6 +90,10 @@ public class CutsceneManager {
 
     public void startQuest4Cutscene() {
         reset(Scene.QUEST4);
+    }
+
+    public void startChapter3() {
+        reset(Scene.CHAPTER3);
     }
 
     public void update() {
@@ -132,6 +164,9 @@ public class CutsceneManager {
             case QUEST4:
                 return quest4Lines;
             case CHAPTER2:
+                return chapter2Lines;
+            case CHAPTER3:
+                return chapter3Lines;
 
             default:
                 return chapter2Lines;
@@ -154,6 +189,11 @@ public class CutsceneManager {
                 gp.questManager.startQuest4();
                 break;
 
+            case CHAPTER3:
+                applyChapter3Changes();
+                gp.ui.questPageNum = 2;
+                break;
+
             default:
                 break;
         }
@@ -169,6 +209,18 @@ public class CutsceneManager {
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
 
         gp.aSetter.activateChapter2();
+    }
+
+    private void applyChapter3Changes() {
+        gp.tileM.loadMap(CHAPTER3_MAP);
+        gp.player.loadSprite(CHAPTER3_SPRITE);
+        gp.player.worldX = SPAWN_TILE_X3 * gp.tileSize;
+        gp.player.worldY = SPAWN_TILE_Y3 * gp.tileSize;
+
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        gp.aSetter.activateChapter3();
     }
 
     private void reset(Scene scene) {

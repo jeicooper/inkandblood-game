@@ -27,7 +27,7 @@ public class TileManager {
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/maps/Berlinandmadrid.txt");
+        loadMap("/maps/Chapter1.txt");
     }
 
     public void getTileImage(){

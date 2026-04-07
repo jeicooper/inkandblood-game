@@ -70,7 +70,7 @@ public class NPC_Gregorio extends Entity {
         } else if (dialogueStage == 1) {
             if (gp.questManager.hasWritingSupplies()) {
                 dialogues[0] = "Excellent! You found them, Pepe.";
-                dialogues[1] = "Let me show you something very important.";
+                dialogues[1] = "Now show me what you can do.";
                 dialogues[2] = null;
 
                 super.speak();
@@ -91,9 +91,9 @@ public class NPC_Gregorio extends Entity {
             }
 
         } else if (dialogueStage == 2) {
-            dialogues[0] = "This is a poem about our language, Pepe. Never forget it.";
-            dialogues[1] = "You have done well today. Your education has begun.";
-            dialogues[2] = "Chapter 1 complete, Pepe. Your journey continues.";
+            dialogues[0] = "Wow, im very impressed";
+            dialogues[1] = "You have managed to create a poem about our language";
+            dialogues[2] = "Well done. You should be off to school now!";
             dialogues[3] = null;
 
             super.speak();

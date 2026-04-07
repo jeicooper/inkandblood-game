@@ -180,4 +180,8 @@ public class AssetSetter {
         gp.npc[27].worldX = 31 * gp.tileSize;
         gp.npc[27].worldY = 55 * gp.tileSize;
     }
+
+    public void activateChapter3() {
+        //
+    }
 }

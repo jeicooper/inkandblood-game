@@ -10,15 +10,20 @@ public class QuestManager {
 
     private int cutsceneDelay = 0;
     private int cutsceneDelay1 = 0;
+    private int cutsceneDelay2 = 0;
 
     private boolean pendingChapter2Cutscene = false;
     private boolean pendingQuest4Cutscene = false;
+    private boolean pendingChapter3Cutscene = false;
+
 
     // QUEST IDS
     public static final int QUEST1   = 0;
     public static final int QUEST2   = 1;
     public static final int QUEST3 = 2;
     public static final int QUEST4 = 3;
+    public static final int QUEST5 = 4;
+    public static final int QUEST6 = 5;
 
 
     //STATES
@@ -165,6 +170,18 @@ public class QuestManager {
                 questState[QUEST4] = STATE_ACTIVE;
                 quest4Stage = TALK_PROFESSOR_Q4;
 
+                gp.ui.questPageNum = 2;
+            }
+        }
+
+        // TRANSITION TO CHAPTER 3
+        if (pendingChapter3Cutscene) {
+            cutsceneDelay2--;
+            if (cutsceneDelay2 <= 0) {
+                pendingChapter3Cutscene = false;
+                gp.cutsceneManager.startChapter3();
+                currentQuest = QUEST5;
+                questState[QUEST5] = STATE_ACTIVE;
                 gp.ui.questPageNum = 2;
             }
         }
@@ -317,6 +334,8 @@ public class QuestManager {
         questState[QUEST2] = STATE_COMPLETED;
 
         quest2Stage = GREGORIO_DONE;
+        // In QuestManager.completeQuest3(), after giveMedal():
+        gp.player.inventory.add(new object.OBJ_Poem(gp));
         gp.player.exp += 1;
         gp.player.age += 3;
 
@@ -434,7 +453,13 @@ public class QuestManager {
         gp.player.exp += 1;
         gp.player.intellect += 1;
         gp.ui.showMessage("Quest 4: Done!");
+
+        pendingChapter3Cutscene = true;
+        cutsceneDelay2 = 130;
     }
+
+    // ===== QUEST 5 =====
+    // TRANSITION TO CHAPTER 3
 
 
     public boolean isQuestActive(int quest) {
