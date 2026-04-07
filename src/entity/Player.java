@@ -50,7 +50,7 @@ public class Player extends  Entity{
     public void setDefaultValues(){
 
         //player position in the map
-        worldX = gp.tileSize * 73;
+        worldX = gp.tileSize * 60;
         worldY = gp.tileSize * 28;
         speed = 10;
         direction = "down";
