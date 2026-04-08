@@ -322,25 +322,23 @@ public class KeyHandler implements KeyListener {
             }
         }
     }
-
     public void questState(int code){
         if (code == KeyEvent.VK_Q) {
             gp.gameState = gp.playState;
         }
 
-        // A / LEFT  → previous quest page
+        // A / LEFT > previous quest page
         if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
             if (gp.ui.questPageNum > 0) gp.ui.questPageNum--;
         }
 
-        // D / RIGHT → next quest page
+        // D / RIGHT > next quest page
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
             if (gp.ui.questPageNum < 3) gp.ui.questPageNum++;
         }
 
 
     }
-
     public void optionState(int code){
 
         if (code == KeyEvent.VK_ESCAPE) {

@@ -11,7 +11,6 @@ public class NPC_Ferrando extends Entity {
     public NPC_Ferrando(GamePanel gp) {
         super(gp);
         direction = "down";
-        speed = 0;
 
         solidArea.x = 8;
         solidArea.y = 16;
@@ -81,7 +80,7 @@ public class NPC_Ferrando extends Entity {
         } else if (dialogueStage == 4) {
             dialogues[0] = "I am judging you on Dedication. The quality that brought\nyou through these gates against all odds.";
             dialogues[1] = "One question. Answer correctly for the medal. There is no\nsecond chance.";
-            dialogues[2] = "How many languages did Rizal learn to speak in his lifetime?";
+            dialogues[2] = "How many languages will you learn to speak in your lifetime?";
             dialogues[3] = null;
             super.speak();
 
@@ -89,7 +88,7 @@ public class NPC_Ferrando extends Entity {
                 dedicationAnswered = true;
                 dialogueStage = 5;
                 gp.ui.quizPanel.openSingleQuestion(
-                        "How many languages did Rizal learn to speak in his lifetime?",
+                        "How many languages did you learn to speak in your lifetime?",
                         new String[]{
                                 "More than 20 languages.",
                                 "Exactly 5 languages.",

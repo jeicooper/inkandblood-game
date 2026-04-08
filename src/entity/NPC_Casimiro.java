@@ -50,7 +50,7 @@ public class NPC_Casimiro extends Entity {
             dialogues[0] = "I am Brother Casimiro, judge of Painting.";
             dialogues[1] = "Art is not merely skill — it is the expression of the soul.";
             dialogues[2] = "Answer my question correctly and the medal is yours. There\nis no retry.";
-            dialogues[3] = "What technique did Rizal use to create small figures as a child?";
+            dialogues[3] = "What technique did you use to create small figures as a child?";
             dialogues[4] = null;
             super.speak();
 
@@ -58,7 +58,7 @@ public class NPC_Casimiro extends Entity {
                 paintingAnswered = true;
                 dialogueStage = 2;
                 gp.ui.quizPanel.openSingleQuestion(
-                        "What technique did Rizal use to create small figures as a child?",
+                        "What technique did you use to create small figures as a child?",
                         new String[]{
                                 "Watercolor on canvas.",
                                 "Carving from beeswax with a knife.",

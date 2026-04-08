@@ -44,11 +44,11 @@ public class NPC_Rector extends Entity {
         gp.ui.currentSpeakerName = "Fr. Rector";
 
         if (dialogueStage == 0) {
-            dialogues[0] = "Ah, young Rizal. Your victory in the monthly competition\nhas not gone unnoticed.";
-            dialogues[1] = "But a true scholar is measured across all fields, not just\none.";
-            dialogues[2] = "I am setting before you a challenge. Seek out the judges of\nfive disciplines within this school.";
+            dialogues[0] = "Ah, young Rizal. Your victory in the monthly competition has\nnot gone unnoticed.";
+            dialogues[1] = "But a true scholar is measured across all fields, not just one.";
+            dialogues[2] = "I am setting before you a challenge. Seek out the judges of five\ndisciplines within this school.";
             dialogues[3] = "Each will test you in their field: Conduct, Painting, French\nLanguage, Rhetoric, and Dedication.";
-            dialogues[4] = "Answer correctly and they will award you a medal. Miss — and\nthat chance is gone forever.";
+            dialogues[4] = "Answer correctly and they will award you a medal. Miss — and that\nchance is gone forever.";
             dialogues[5] = "Prove that your excellence is not a fluke. Begin.";
             dialogues[6] = null;
             super.speak();
@@ -77,7 +77,7 @@ public class NPC_Rector extends Entity {
                     + " out of " + QuestManager.MEDALS_REQUIRED + " medals.";
             dialogues[3] = gp.questManager.medalsEarned == QuestManager.MEDALS_REQUIRED
                     ? "A perfect score. Extraordinary, Jose. Truly extraordinary."
-                    : "Not a perfect score — but you faced each challenge\nwithout flinching. That itself is admirable.";
+                    : "Not a perfect score — but you faced each challenge without\nflinching. That itself is admirable.";
             dialogues[4] = "You have proven that your talent runs deep. Ateneo is proud to\ncall you its student.";
             dialogues[5] = null;
             super.speak();

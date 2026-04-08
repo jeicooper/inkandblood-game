@@ -70,6 +70,9 @@ public class CutsceneManager {
     private static final int    SPAWN_TILE_X    = 59;
     private static final int    SPAWN_TILE_Y    = 25;
 
+    private static final int SPAWN_TILE_X2 = 46;
+    private static final int SPAWN_TILE_Y2 = 47;
+
     // CHAP 3 CONFIG
     private static final String CHAPTER3_MAP    = "/maps/Chapter3.txt";
     private static final String CHAPTER3_SPRITE = "pepe_older";
@@ -182,6 +185,7 @@ public class CutsceneManager {
                 break;
 
             case ENROLLMENT:
+                applyEnrollment();
                 gp.questManager.onEnrollmentCutsceneDone();
                 break;
 
@@ -201,7 +205,7 @@ public class CutsceneManager {
 
     private void applyChapter2Changes() {
         gp.tileM.loadMap(CHAPTER2_MAP);
-        gp.player.loadSprite(CHAPTER2_SPRITE);
+        gp.player.loadSprite2(CHAPTER2_SPRITE);
         gp.player.worldX = SPAWN_TILE_X * gp.tileSize;
         gp.player.worldY = SPAWN_TILE_Y * gp.tileSize;
 
@@ -211,9 +215,22 @@ public class CutsceneManager {
         gp.aSetter.activateChapter2();
     }
 
+    private void applyEnrollment() {
+        gp.tileM.loadMap(CHAPTER2_MAP);
+        gp.player.loadSprite2(CHAPTER2_SPRITE);
+        gp.player.worldX = SPAWN_TILE_X2 * gp.tileSize;
+        gp.player.worldY = SPAWN_TILE_Y2 * gp.tileSize;
+        gp.player.direction = "down";
+
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        gp.aSetter.activateEnrollment();
+    }
+
     private void applyChapter3Changes() {
         gp.tileM.loadMap(CHAPTER3_MAP);
-        gp.player.loadSprite(CHAPTER3_SPRITE);
+        gp.player.loadSprite3(CHAPTER3_SPRITE);
         gp.player.worldX = SPAWN_TILE_X3 * gp.tileSize;
         gp.player.worldY = SPAWN_TILE_Y3 * gp.tileSize;
 

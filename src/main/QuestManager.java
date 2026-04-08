@@ -129,8 +129,8 @@ public class QuestManager {
 
     //CHECKPOINTS
     public void init() {
-        deliveryWorldX = 74 * gp.tileSize;
-        deliveryWorldY = 26 * gp.tileSize;
+        deliveryWorldX = 75 * gp.tileSize;
+        deliveryWorldY = 28 * gp.tileSize;
         deliveryRadius = gp.tileSize * 2;
 
         checkpoints = new int[][]{
@@ -493,7 +493,7 @@ public class QuestManager {
         objectsCollected++;
         if (objectsCollected >= OBJECTS_REQUIRED) {
             quest5Stage = TALK_MAXIMO;
-            gp.ui.showMessage("Manuscript complete! Find Maximo.");
+            gp.ui.showMessage("Manuscript complete!");
         }
     }
 
@@ -504,7 +504,7 @@ public class QuestManager {
         gp.player.exp += 1;
         gp.player.intellect += 2;
         gp.player.creativity += 2;
-        gp.ui.showMessage("Quest 5: Noli Me Tangere begins! Done!");
+        gp.ui.showMessage(" Noli Me Tangere begins! Quest 5: Done!");
     }
 
 

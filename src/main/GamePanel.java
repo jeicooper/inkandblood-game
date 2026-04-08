@@ -278,11 +278,11 @@ public class GamePanel extends JPanel implements Runnable {
         Composite old = g2.getComposite();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
         g2.setColor(new Color(255, 220, 50));
-        g2.fillOval(screenX - r, screenY - r, r * 2, r * 2);
+        g2.fillOval(screenX - r, screenY - r, r * 1, r * 1);
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
         g2.setColor(new Color(255, 200, 0));
         g2.setStroke(new BasicStroke(3));
-        g2.drawOval(screenX - r, screenY - r, r * 2, r * 2);
+        g2.drawOval(screenX - r, screenY - r, r * 1, r * 1);
         g2.setComposite(old);
     }
 
@@ -403,7 +403,6 @@ public class GamePanel extends JPanel implements Runnable {
                 if (npc[22] != null) targets.add(npc[22]); // Rector
 
             } else if (stage == QuestManager.DISCIPLINES_ACTIVE) {
-                // Arrow over every judge that hasn't been answered yet
                 int[] judgeSlots = { 23, 24, 25, 26, 27 };
                 for (int i = 0; i < judgeSlots.length; i++) {
                     if (!questManager.disciplineAnswered[i] && npc[judgeSlots[i]] != null) {
@@ -413,7 +412,53 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        // Quest 5
+        if (questManager.isQuestActive(QuestManager.QUEST5)) {
+            int stage = questManager.quest5Stage;
+
+            if (stage == QuestManager.TALK_PEDRO) {
+                if (npc[0] != null) targets.add(npc[0]); // Pedro
+
+            } else if (stage == QuestManager.TALK_CONSUELO) {
+                if (npc[1] != null) targets.add(npc[1]); // Consuelo
+
+            } else if (stage == QuestManager.FIND_LETTER) {
+                // arrow over the draft object on the ground
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && obj[i].name.equals("Draft of Noli Me Tangere")) {
+                        targets.add(obj[i]);
+                    }
+                }
+
+            } else if (stage == QuestManager.COLLECT_OBJECTS) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && isManuscriptObject(obj[i].name)) {
+                        targets.add(obj[i]);
+                    }
+                }
+
+            } else if (stage == QuestManager.TALK_MAXIMO) {
+                if (npc[2] != null) targets.add(npc[2]); // Maximo
+            }
+        }
+
+
         return targets;
+    }
+
+    private boolean isManuscriptObject(String name) {
+        switch (name) {
+            case "Scalpel":
+            case "Mirror":
+            case "Dried Flower":
+            case "Rosary":
+            case "Portrait":
+            case "Scrap Metal":
+            case "Empty Plate":
+                return true;
+            default:
+                return false;
+        }
     }
 
     public void drawToScreen(){

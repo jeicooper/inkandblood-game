@@ -44,23 +44,37 @@ public class NPC_Mariano extends Entity {
         gp.ui.currentSpeakerName = "Mariano";
 
         if (dialogueStage == 0) {
+            dialogues[0] = "...";
+            dialogues[1] = null;
+            super.speak();
+
+            if (dialogueIndex == 0) {
+                dialogueStage = 1;
+                gp.questManager.onProfessorQ4Done();
+            }
+
+        } else if (dialogueStage == 1 ) {
             dialogues[0] = "...Jose.";
             dialogues[1] = "I won't pretend it doesn't sting. I trained hard for that title.";
-            dialogues[2] = "But you earned it. Your Latin recitation, your composure —\nI had no answer for it.";
+            dialogues[2] = "But you earned it. Your Latin recitation, your composure—I had no answer for it.";
             dialogues[3] = "I concede. You are the better student this month.";
             dialogues[4] = "Do not let it go to your head.";
             dialogues[5] = null;
             super.speak();
 
-            if (dialogueIndex == 0) {
-                dialogueStage = 1;
+            if (dialogueIndex == 1) {
+                dialogueStage = 2;
                 gp.questManager.onMarianoDone();
             }
 
-        } else if (dialogueStage == 1) {
+        } else if (dialogueStage == 2) {
             dialogues[0] = "The better student won. Nothing more to say.";
             dialogues[1] = null;
             super.speak();
+
+            if (dialogueIndex == 2){
+                dialogueStage = 0;
+            }
         }
     }
 

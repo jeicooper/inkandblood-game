@@ -23,10 +23,10 @@ public class NPC_Maximo extends Entity {
     }
 
     public void setDialogue() {
-        dialogues[0] = "Jose... what you have written here\nis unlike anything I have ever read.";
-        dialogues[1] = "This is not just a novel.\nThis is a mirror held up to an empire.";
-        dialogues[2] = "I will fund the printing myself.\nThe Philippines must read this.";
-        dialogues[3] = "Noli Me Tangere will not stay\nlocked in this room much longer.";
+        dialogues[0] = "Jose... what you have written here is unlike anything I have ever \nread.";
+        dialogues[1] = "This is not just a novel. This is a mirror held up to an empire.";
+        dialogues[2] = "I will fund the printing myself. The Philippines must read this.";
+        dialogues[3] = "Noli Me Tangere will not stay locked in this room much longer.";
     }
 
     @Override

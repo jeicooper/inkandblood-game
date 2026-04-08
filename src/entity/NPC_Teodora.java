@@ -12,7 +12,6 @@ public class NPC_Teodora extends Entity{
 
         setHitbox();
         direction = "down";
-        speed = 1;
 
         getImage();
         setDialogue();
@@ -35,26 +34,6 @@ public class NPC_Teodora extends Entity{
 
     public void setDialogue(){
 
-    }
-
-    public void setAction(){
-
-
-        actionLockCounter++;
-
-        if (actionLockCounter == 180){
-            Random random = new Random();
-            int i = random.nextInt(100)+1;
-
-            if (i <= 50){
-                direction = "up";
-            }
-            if (i >= 50){
-                direction = "down";
-            }
-
-            actionLockCounter = 0;
-        }
     }
 
     public void speak(){
@@ -84,5 +63,10 @@ public class NPC_Teodora extends Entity{
             dialogueIndex = 0;
             super.speak();
         }
+    }
+
+    @Override
+    public void update() {
+        direction = "down";
     }
 }

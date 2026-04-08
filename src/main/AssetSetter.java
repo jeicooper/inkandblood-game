@@ -128,8 +128,8 @@ public class AssetSetter {
 
     public void activateChapter2() {
         gp.npc[15] = new NPC_Ferrando(gp);
-        gp.npc[15].worldX = 51 * gp.tileSize;
-        gp.npc[15].worldY = 43 * gp.tileSize;
+        gp.npc[15].worldX = 48 * gp.tileSize;
+        gp.npc[15].worldY = 45 * gp.tileSize;
 
         gp.npc[16] = new NPC_Burgos(gp);
         gp.npc[16].worldX = 36 * gp.tileSize;
@@ -142,6 +142,59 @@ public class AssetSetter {
         gp.npc[18] = new NPC_Interno(gp);
         gp.npc[18].worldX = 40 * gp.tileSize;
         gp.npc[18].worldY = 43 * gp.tileSize;
+
+        gp.npc[19] = new NPC_Mariano(gp);
+        gp.npc[19].worldX = 40 * gp.tileSize;
+        gp.npc[19].worldY = 47 * gp.tileSize;
+
+        gp.npc[20] = new NPC_Externo(gp);
+        gp.npc[20].worldX = 43 * gp.tileSize;
+        gp.npc[20].worldY = 43 * gp.tileSize;
+
+        gp.npc[21] = new NPC_Externo(gp);
+        gp.npc[21].worldX = 43 * gp.tileSize;
+        gp.npc[21].worldY = 47 * gp.tileSize;
+
+        gp.npc[22] = new NPC_Externo(gp);
+        gp.npc[22].worldX = 46 * gp.tileSize;
+        gp.npc[22].worldY = 43 * gp.tileSize;
+
+
+    }
+
+    public void activateEnrollment(){
+        gp.npc[15] = new NPC_Ferrando(gp);
+        gp.npc[15].worldX = 36 * gp.tileSize;
+        gp.npc[15].worldY = 41 * gp.tileSize;
+
+        gp.npc[16] = new NPC_Burgos(gp);
+        gp.npc[16].worldX = 36 * gp.tileSize;
+        gp.npc[16].worldY = 29 * gp.tileSize;
+
+        gp.npc[17] = new NPC_Professor(gp);
+        gp.npc[17].worldX = 36 * gp.tileSize;
+        gp.npc[17].worldY = 45 * gp.tileSize;
+
+        gp.npc[18] = new NPC_Interno(gp);
+        gp.npc[18].worldX = 40 * gp.tileSize;
+        gp.npc[18].worldY = 43 * gp.tileSize;
+
+        gp.npc[19] = new NPC_Mariano(gp);
+        gp.npc[19].worldX = 40 * gp.tileSize;
+        gp.npc[19].worldY = 47 * gp.tileSize;
+
+        gp.npc[20] = new NPC_Externo(gp);
+        gp.npc[20].worldX = 43 * gp.tileSize;
+        gp.npc[20].worldY = 43 * gp.tileSize;
+
+        gp.npc[21] = new NPC_Externo(gp);
+        gp.npc[21].worldX = 43 * gp.tileSize;
+        gp.npc[21].worldY = 47 * gp.tileSize;
+
+        gp.npc[22] = new NPC_Externo(gp);
+        gp.npc[22].worldX = 46 * gp.tileSize;
+        gp.npc[22].worldY = 43 * gp.tileSize;
+
     }
 
     public void activateQuest4() {
@@ -152,33 +205,49 @@ public class AssetSetter {
         gp.npc[20].worldX = 36 * gp.tileSize;
         gp.npc[20].worldY = 45 * gp.tileSize;
 
-        gp.npc[21] = new NPC_Mariano(gp);
-        gp.npc[21].worldX = 49 * gp.tileSize;
-        gp.npc[21].worldY = 49 * gp.tileSize;
+        gp.npc[21] = new NPC_Interno(gp);
+        gp.npc[21].worldX = 40 * gp.tileSize;
+        gp.npc[21].worldY = 43 * gp.tileSize;
 
-        gp.npc[22] = new NPC_Rector(gp);
-        gp.npc[22].worldX = 36 * gp.tileSize;
-        gp.npc[22].worldY = 49 * gp.tileSize;
+        gp.npc[22] = new NPC_Mariano(gp);
+        gp.npc[22].worldX = 40 * gp.tileSize;
+        gp.npc[22].worldY = 47 * gp.tileSize;
 
-        gp.npc[23] = new NPC_Perfect(gp);
+        gp.npc[23] = new NPC_Externo(gp);
         gp.npc[23].worldX = 43 * gp.tileSize;
-        gp.npc[23].worldY = 53 * gp.tileSize;
+        gp.npc[23].worldY = 43 * gp.tileSize;
 
-        gp.npc[24] = new NPC_Casimiro(gp);
+        gp.npc[24] = new NPC_Externo(gp);
         gp.npc[24].worldX = 43 * gp.tileSize;
-        gp.npc[24].worldY = 58 * gp.tileSize;
+        gp.npc[24].worldY = 47 * gp.tileSize;
 
-        gp.npc[25] = new NPC_Millano(gp);
-        gp.npc[25].worldX = 38 * gp.tileSize;
-        gp.npc[25].worldY = 62 * gp.tileSize;
+        gp.npc[25] = new NPC_Externo(gp);
+        gp.npc[25].worldX = 46 * gp.tileSize;
+        gp.npc[25].worldY = 43 * gp.tileSize;
 
-        gp.npc[26] = new NPC_Desanctis(gp);
-        gp.npc[26].worldX = 31 * gp.tileSize;
-        gp.npc[26].worldY = 60 * gp.tileSize;
+        gp.npc[26] = new NPC_Rector(gp);
+        gp.npc[26].worldX = 36 * gp.tileSize;
+        gp.npc[26].worldY = 49 * gp.tileSize;
 
-        gp.npc[27] = new NPC_Ferrando(gp);
-        gp.npc[27].worldX = 31 * gp.tileSize;
-        gp.npc[27].worldY = 55 * gp.tileSize;
+        gp.npc[27] = new NPC_Perfect(gp);
+        gp.npc[27].worldX = 43 * gp.tileSize;
+        gp.npc[27].worldY = 53 * gp.tileSize;
+
+        gp.npc[28] = new NPC_Casimiro(gp);
+        gp.npc[28].worldX = 43 * gp.tileSize;
+        gp.npc[28].worldY = 58 * gp.tileSize;
+
+        gp.npc[29] = new NPC_Millano(gp);
+        gp.npc[29].worldX = 38 * gp.tileSize;
+        gp.npc[29].worldY = 62 * gp.tileSize;
+
+        gp.npc[30] = new NPC_Desanctis(gp);
+        gp.npc[30].worldX = 31 * gp.tileSize;
+        gp.npc[30].worldY = 60 * gp.tileSize;
+
+        gp.npc[31] = new NPC_Ferrando(gp);
+        gp.npc[31].worldX = 31 * gp.tileSize;
+        gp.npc[31].worldY = 55 * gp.tileSize;
     }
 
     public void activateChapter3() {

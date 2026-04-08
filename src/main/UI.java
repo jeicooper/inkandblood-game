@@ -1116,6 +1116,89 @@ public class UI {
         // ===== Chapter 3 page =====
         else if (questPageNum == 2) {
 
+            boolean q5done   = gp.questManager.isQuestCompleted(QuestManager.QUEST5);
+            boolean q5active = gp.questManager.isQuestActive(QuestManager.QUEST5);
+            int     q5stage  = gp.questManager.quest5Stage;
+
+            final int PAD     = gp.tileSize;
+            final int LEFT_X  = frameX + PAD;
+            final int TITLE_SIZE = 27;
+            final int DESC_SIZE  = 27;
+            final int BODY_SIZE  = 25;
+            final int HINT_SIZE  = 21;
+            final int LINE_H     = 27;
+            final int HINT_H     = 22;
+            final int TOP_Y      = frameY + gp.tileSize * 2;
+
+            int ly = TOP_Y;
+
+            Color q5color = q5done   ? new Color(100, 230, 100)
+                    : q5active ? new Color(255, 220, 80)
+                    :            Color.gray;
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(q5color);
+            g2.drawString("Quest 5:", LEFT_X, ly);
+            ly += LINE_H - 2;
+            g2.drawString("\"Noli Me Tangere\""
+                    + (q5done ? " COMPLETE" : ""), LEFT_X, ly);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(q5active || q5done ? Color.lightGray : Color.gray);
+            ly += HINT_H + 2;
+            g2.drawString("Write the novel that will wake a nation.", LEFT_X, ly);
+
+            ly += LINE_H + 2;
+
+            if (!q5active && !q5done) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Ch.2 to unlock]", LEFT_X, ly);
+            } else {
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                boolean s3 = q5done || q5stage > QuestManager.FIND_LETTER;
+                g2.setColor(s3 ? new Color(80, 220, 80)
+                        : q5stage == QuestManager.FIND_LETTER ? Color.white : Color.gray);
+                g2.drawString("- Find the draft of Noli Me Tangere", LEFT_X, ly);
+                ly += LINE_H;
+
+                boolean s4active = q5stage == QuestManager.COLLECT_OBJECTS;
+                boolean s4done   = q5done || q5stage > QuestManager.COLLECT_OBJECTS;
+                g2.setColor(s4done   ? new Color(80, 220, 80)
+                        : s4active ? Color.white : Color.gray);
+                g2.drawString("- Collect manuscript inspirations", LEFT_X, ly);
+                ly += LINE_H;
+
+                if (s4active || s4done) {
+                    String[] parts = {
+                            "Scalpel (Title)",
+                            "Mirror (Ibarra)",
+                            "Dried Flower (Maria Clara)",
+                            "Rosary (The Friars)",
+                            "Portrait (Sisa)",
+                            "Scrap Metal (Elias)",
+                            "Empty Plate (Berlin)"
+                    };
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
+                    for (int i = 0; i < 7; i++) {
+                        boolean done = q5done || gp.questManager.manuscriptParts[i];
+                        g2.setColor(done ? new Color(80, 220, 80) : Color.white);
+                        g2.drawString((done ? "/ " : "- ") + parts[i], LEFT_X + 10, ly);
+                        ly += LINE_H - 2;
+                    }
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("  Parts: " + gp.questManager.objectsCollected + "/7", LEFT_X, ly);
+                    ly += HINT_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+                }
+
+                boolean s5 = q5done || q5stage >= QuestManager.TALK_MAXIMO;
+                g2.setColor(q5done ? new Color(80, 220, 80)
+                        : s5 ? Color.white : Color.gray);
+                g2.drawString("- Talk to Maximo Viola", LEFT_X, ly);
+            }
         }
 
         // ===== Chapter 4 page =====
@@ -1416,8 +1499,7 @@ public class UI {
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
 
         // ===== QUEST 1 =====
-        if (currentQ == main.QuestManager.QUEST1 &&
-                gp.questManager.isQuestActive(main.QuestManager.QUEST1)) {
+        if (currentQ == main.QuestManager.QUEST1 && gp.questManager.isQuestActive(main.QuestManager.QUEST1)) {
 
             g2.setColor(new Color(255, 220, 80));
             g2.drawString("Familya Rizal", panelX + 12, panelY + 28);
@@ -1441,8 +1523,7 @@ public class UI {
         }
 
         // ===== QUEST 2 =====
-        else if (currentQ == QuestManager.QUEST2 &&
-                gp.questManager.isQuestActive(QuestManager.QUEST2)) {
+        else if (currentQ == QuestManager.QUEST2 && gp.questManager.isQuestActive(QuestManager.QUEST2)) {
 
             g2.setColor(new Color(255, 220, 80));
             g2.drawString("Pangangaral ng mga Tiyo", panelX + 12, panelY + 28);
@@ -1493,8 +1574,7 @@ public class UI {
         }
 
         // ===== QUEST 3 =====
-        else if (currentQ == QuestManager.QUEST3 &&
-                gp.questManager.isQuestActive(QuestManager.QUEST3)) {
+        else if (currentQ == QuestManager.QUEST3 && gp.questManager.isQuestActive(QuestManager.QUEST3)) {
 
             g2.setColor(new Color(255, 220, 80));
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
@@ -1523,7 +1603,7 @@ public class UI {
                 g2.drawString("Try the quiz again!", panelX + 12, panelY + 52);
 
             } else if (stage == QuestManager.TALK_FERRANDO_REWARD) {
-                g2.setColor(new Color(255, 220, 80));
+                g2.setColor(Color.white);
                 g2.drawString("Return to Fr. Ferrando.", panelX + 12, panelY + 52);
 
             } else if (stage == QuestManager.QUEST3_DONE) {
@@ -1533,8 +1613,7 @@ public class UI {
         }
 
         // ===== QUEST 4 =====
-        else if (currentQ == QuestManager.QUEST4 &&
-                gp.questManager.isQuestActive(QuestManager.QUEST4)) {
+        else if (currentQ == QuestManager.QUEST4 && gp.questManager.isQuestActive(QuestManager.QUEST4)) {
 
             g2.setColor(new Color(255, 220, 80));
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
@@ -1573,8 +1652,7 @@ public class UI {
         }
 
         // ===== QUEST 5 =====
-        else if (currentQ == QuestManager.QUEST5 &&
-                gp.questManager.isQuestActive(QuestManager.QUEST5)) {
+        else if (currentQ == QuestManager.QUEST5 && gp.questManager.isQuestActive(QuestManager.QUEST5)) {
 
             g2.setColor(new Color(255, 220, 80));
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
@@ -1595,7 +1673,7 @@ public class UI {
                 int done = gp.questManager.objectsCollected;
                 g2.drawString("Manuscript: " + done + "/7", panelX + 12, panelY + 52);
             } else if (stage == QuestManager.TALK_MAXIMO) {
-                g2.setColor(new Color(100, 255, 100));
+                g2.setColor(Color.white);
                 g2.drawString("Talk to Maximo Viola.", panelX + 12, panelY + 52);
             } else if (stage == QuestManager.QUEST5_DONE) {
                 g2.setColor(new Color(100, 230, 100));
@@ -1703,47 +1781,64 @@ public class UI {
         int titleX = getXforCenter(title);
         g2.drawString(title, titleX, panelY + 45);
 
-        String[] lines = {
-                "I write not for fame, nor for praise, but for those whose",
+        String[] left = {
 
-                "voices are buried beneath the weight of silence. Our land is beautiful",
-
-                "yet beneath its green fields and quiet towns lies a sickness no one",
-
-                "dares to name. Many pretend not to see it. Others",
-
-                "benefit from it. But the suffering of the people grows deeper each day.",
+                "I write not for fame, nor for praise",
+                "but for those whose voices are buried",
+                "beneath the weight of silence. Our land",
+                "is beautiful yet beneath its green fields",
+                "and quiet towns lies a sickness no one",
+                "dares to name. Many pretend not to see",
+                "it. Others benefit from it. But the",
+                "suffering of the people grows deeper",
+                "each day.",
                 "",
 
-                "If a wound is hidden, it festers. If a disease is ignored",
-
-                "it spreads. Thus I must write—not to entertain, but to reveal.",
-
-                "My pen must become a mirror, reflecting the truth of our",
-
-                "society so that all who look upon it may recognize the illness within.",
+                "If a wound is hidden, it festers. If a",
+                "disease is ignored it spreads. Thus I",
+                "must write—not to entertain, but to",
+                "reveal.My pen must become a mirror",
+                "reflecting the truth of our society so",
+                "that all who look upon it may recognize",
                 "",
 
-                "In the towns and villages of our country live men",
-                "who preach virtue yet rule with fear. There are officials who",
-                "claim justice but serve only power. Meanwhile, the common",
-                "people endure humiliation, poverty, and the quiet loss of hope.",
-                "",
-
-                "But there are also those who begin to awaken.",
-                "This book will not written to accuse blindly, but to expose what has long been concealed.",
-                " If society refuses to confront its own reflection, then it will never heal.\n",
-                "And so I begin…"
         };
 
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 22F));
-        g2.setColor(Color.white);
-        int startY = panelY + 80;
-        int lineH  = 26;
+        String[] right = {
 
-        for (String line : lines) {
-            int lx = getXforCenter(line);
-            g2.drawString(line, lx, startY);
+                "the illness within. In the towns and", "villages of our country live men who",
+                "preach virtue yet rule with fear. There",
+                "are officials who claim justice but",
+                "serve only power. Meanwhile the common",
+                "people endure humiliation", "poverty",
+                "and the quiet loss of hope.",
+                "",
+
+                "But there are also those who begin to",
+                "awaken. This book will not written to",
+                "accuse blindly but to expose what has",
+                "long been concealed. If society refuses",
+                "to confront its own reflection, then it",
+                "will never heal. And so I begin…"
+        };
+
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+        g2.setColor(Color.white);
+
+        int leftX  = panelX + 25;
+        int rightX = panelX + panelW / 2 + 10;
+        int startY = panelY + 85;
+        int lineH  = 24;
+
+        for (String line : left) {
+            g2.drawString(line, leftX, startY);
+            startY += lineH;
+        }
+
+        startY = panelY + 85;
+        for (String line : right) {
+            g2.drawString(line, rightX, startY);
             startY += lineH;
         }
 

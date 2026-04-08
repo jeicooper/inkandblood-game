@@ -90,7 +90,7 @@ public class Player extends  Entity{
 
     }
 
-    public void loadSprite(String folder){
+    public void loadSprite2(String folder){
         up1    = setup("/player/ateneo_up_1");
         up2    = setup("/player/ateneo_up_2");
         down1  = setup("/player/ateneo_down_1");
@@ -99,6 +99,17 @@ public class Player extends  Entity{
         left2  = setup("/player/ateneo_left_2");
         right1 = setup("/player/ateneo_right_1");
         right2 = setup("/player/ateneo_right_2");
+    }
+
+    public void loadSprite3(String folder){
+        up1    = setup("/player/rizal_adult_up_1");
+        up2    = setup("/player/rizal_adult_up_2");
+        down1  = setup("/player/rizal_adult_down_1");
+        down2  = setup("/player/rizal_adult_down_2");
+        left1  = setup("/player/rizal_adult_left_1");
+        left2  = setup("/player/rizal_adult_left_2");
+        right1 = setup("/player/rizal_adult_right_1");
+        right2 = setup("/player/rizal_adult_right_2");
     }
 
     public BufferedImage setup(String imageName){
@@ -218,7 +229,7 @@ public class Player extends  Entity{
         if (i == 999) return;
         String objectName = gp.obj[i].name;
 
-        // BERLIN LETTER
+        // LETTER
         if (objectName.equals("Draft of Noli Me Tangere")) {
             if (inventory.size() < maxInventorySize) {
                 inventory.add(gp.obj[i]);
@@ -237,13 +248,13 @@ public class Player extends  Entity{
         if (manuscriptIndex >= 0 &&
                 gp.questManager.quest5Stage == QuestManager.COLLECT_OBJECTS) {
             String[] messages = {
-                    "'Touch Me Not.' Our country has a cancer so sensitive\nthat the slightest touch causes agony.\n[Title and Preface finalized.]",
-                    "I see myself in Crisostomo Ibarra, the dreamer\nreturning home only to find the soil poisoned.\n[Main Character Arc defined.]",
+                    "'Touch Me Not.' Our country has a cancer so sensitive that the\nslightest touch causes agony. [Title and Preface finalized.]",
+                    "I see myself in Crisostomo Ibarra, the dreamer returning home\nonly to find the soil poisone. [Main Character Arc defined.]",
                     "She is the Philippines — beautiful, weeping, silenced.\n[The Idyl on the Terrace defined.]",
-                    "Father Damaso. The cross he wears\nis not for salvation, but for control.\n[The Feast added to manuscript.]",
-                    "I shall call her Sisa. The soul of the Filipino family,\ndriven to madness by cruelty.\n[Sisa added to manuscript.]",
-                    "The man of action. The mirror of what I fear\nI might become if the pen fails.\n[The Voice of the Hunted added.]",
-                    "My hunger is not just for bread, but for justice.\nEvery word is paid for with my own body.\n[Desperate Resolve added.]"
+                    "Father Damaso. The cross he wears is not for salvation, but\nfor control.[The Feast added to manuscript.]",
+                    "I shall call her Sisa. The soul of the Filipino family, driven\nto madness by cruelty. [Sisa added to manuscript.]",
+                    "The man of action. The mirror of what I fear I might become if\nthe pen fails. [The Voice of the Hunted added.]",
+                    "My hunger is not just for bread, but for justice. Every word is\npaid for with my own body. [Desperate Resolve added.]"
             };
             gp.ui.currentDialogue = messages[manuscriptIndex];
             gp.ui.currentSpeakerName = "Jose Rizal";
@@ -255,7 +266,7 @@ public class Player extends  Entity{
 
     private int getManuscriptIndex(String name) {
         switch (name) {
-            case "Medical Scalpel":
+            case "Scalpel":
                 return 0;
             case "Mirror":
                 return 1;
@@ -265,7 +276,7 @@ public class Player extends  Entity{
                 return 3;
             case "Portrait":
                 return 4;
-            case "Scraped Metal":
+            case "Scrap Metal":
                 return 5;
             case "Empty Plate":
                 return 6;

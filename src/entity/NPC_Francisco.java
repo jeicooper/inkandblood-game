@@ -5,8 +5,6 @@ import java.awt.*;
 import java.util.Random;
 
 public class NPC_Francisco extends Entity {
-    public boolean spoke = false;
-
     public NPC_Francisco(GamePanel gp){
         super(gp);
 
@@ -34,6 +32,8 @@ public class NPC_Francisco extends Entity {
 
     public void setDialogue(){
 
+        gp.ui.currentSpeakerName = "Francisco Engracio Rizal Mercado";
+
         dialogues[0] = "Good morning pepe. Have you seen my coffee mug?";
     }
 
@@ -44,15 +44,7 @@ public class NPC_Francisco extends Entity {
 
     @Override
     public void update() {
+        direction = "down";
     }
 
-    private void facePlayer() {
-        int dx = gp.player.worldX - worldX;
-        int dy = gp.player.worldY - worldY;
-        if (Math.abs(dx) > Math.abs(dy)) {
-            direction = (dx > 0) ? "right" : "left";
-        } else {
-            direction = (dy > 0) ? "down" : "up";
-        }
-    }
 }
