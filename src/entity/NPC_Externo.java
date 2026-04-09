@@ -16,7 +16,6 @@ public class NPC_Externo extends Entity{
         solidArea.height = 32;
 
         getImage();
-        setDialogue();
     }
 
     public void getImage() {
@@ -30,9 +29,12 @@ public class NPC_Externo extends Entity{
         right2 = setup("/npc/externo/externo_right_2");
     }
 
-    public void setDialogue (){
+    @Override
+    public void speak() {
         gp.ui.currentSpeakerName = "Student (Externo)";
         dialogues[0]="...";
+        dialogues[1]=null  ;
+        super.speak();
     }
 
     @Override

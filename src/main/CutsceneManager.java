@@ -208,6 +208,7 @@ public class CutsceneManager {
         gp.player.loadSprite2(CHAPTER2_SPRITE);
         gp.player.worldX = SPAWN_TILE_X * gp.tileSize;
         gp.player.worldY = SPAWN_TILE_Y * gp.tileSize;
+        gp.player.direction = "down";
 
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
@@ -233,6 +234,7 @@ public class CutsceneManager {
         gp.player.loadSprite3(CHAPTER3_SPRITE);
         gp.player.worldX = SPAWN_TILE_X3 * gp.tileSize;
         gp.player.worldY = SPAWN_TILE_Y3 * gp.tileSize;
+        gp.player.direction = "down";
 
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;

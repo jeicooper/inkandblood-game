@@ -58,7 +58,7 @@ public class NPC_Teodora extends Entity{
                 }
             }
         } else {
-            dialogues[0] = "Please hurry and find your siblings, Pepe.";
+            dialogues[0] = "Have you finished your home work?";
             dialogues[1] = null;
             dialogueIndex = 0;
             super.speak();

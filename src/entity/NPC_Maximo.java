@@ -1,6 +1,7 @@
 package entity;
 
 import main.GamePanel;
+import main.QuestManager;
 
 public class NPC_Maximo extends Entity {
 
@@ -19,22 +20,35 @@ public class NPC_Maximo extends Entity {
         right1 = setup("/npc/maximo/maximo_right_1");
         right2 = setup("/npc/maximo/maximo_right_2");
         setHitbox();
-        setDialogue();
-    }
 
-    public void setDialogue() {
-        dialogues[0] = "Jose... what you have written here is unlike anything I have ever \nread.";
-        dialogues[1] = "This is not just a novel. This is a mirror held up to an empire.";
-        dialogues[2] = "I will fund the printing myself. The Philippines must read this.";
-        dialogues[3] = "Noli Me Tangere will not stay locked in this room much longer.";
     }
 
     @Override
     public void speak() {
-        gp.ui.currentSpeakerName = name;
-        super.speak();
-        if (dialogueIndex == 0) {
-            gp.questManager.completeQuest5();
+        gp.ui.currentSpeakerName = "Maximo Viola";
+
+        int stage = gp.questManager.quest5Stage;
+
+        if (stage == QuestManager.TALK_MAXIMO) {
+            dialogues[0] = "Jose... what you have written here is unlike\nanything I have ever read.";
+            dialogues[1] = "This is not just a novel.\nThis is a mirror held up to an empire.";
+            dialogues[2] = "I will fund the printing myself.\nThe Philippines must read this.";
+            dialogues[3] = "Noli Me Tangere will not stay locked\nin this room much longer.";
+            dialogues[4] = null;
+            super.speak();
+            if (dialogueIndex == 0) {
+                gp.questManager.completeQuest5();
+            }
+
+        } else if (stage < QuestManager.TALK_MAXIMO) {
+            dialogues[0] = "Jose, I am here whenever you are ready.\nTake your time.";
+            dialogues[1] = null;
+            super.speak();
+
+        } else {
+            dialogues[0] = "History will remember this room, Jose.\nAnd you.";
+            dialogues[1] = null;
+            super.speak();
         }
     }
 }

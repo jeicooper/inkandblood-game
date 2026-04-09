@@ -278,11 +278,11 @@ public class GamePanel extends JPanel implements Runnable {
         Composite old = g2.getComposite();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
         g2.setColor(new Color(255, 220, 50));
-        g2.fillOval(screenX - r, screenY - r, r * 1, r * 1);
+        g2.fillOval(screenX - r, screenY - r, (int) (r * 1.5), (int) (r * 1.5));
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
         g2.setColor(new Color(255, 200, 0));
         g2.setStroke(new BasicStroke(3));
-        g2.drawOval(screenX - r, screenY - r, r * 1, r * 1);
+        g2.drawOval(screenX - r, screenY - r, (int) (r * 1.5), (int) (r * 1.5));
         g2.setComposite(old);
     }
 
@@ -396,14 +396,14 @@ public class GamePanel extends JPanel implements Runnable {
                 if (npc[20] != null) targets.add(npc[20]); // Professor
 
             } else if (stage == QuestManager.TALK_MARIANO) {
-                if (npc[21] != null) targets.add(npc[21]); // Mariano
+                if (npc[22] != null) targets.add(npc[22]); // Mariano
 
             } else if (stage == QuestManager.TALK_RECTOR
                     || stage == QuestManager.TALK_RECTOR_END) {
-                if (npc[22] != null) targets.add(npc[22]); // Rector
+                if (npc[26] != null) targets.add(npc[26]); // Rector
 
             } else if (stage == QuestManager.DISCIPLINES_ACTIVE) {
-                int[] judgeSlots = { 23, 24, 25, 26, 27 };
+                int[] judgeSlots = { 27, 28, 29, 30, 31 }; 
                 for (int i = 0; i < judgeSlots.length; i++) {
                     if (!questManager.disciplineAnswered[i] && npc[judgeSlots[i]] != null) {
                         targets.add(npc[judgeSlots[i]]);

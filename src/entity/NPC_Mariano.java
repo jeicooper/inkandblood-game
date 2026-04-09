@@ -43,38 +43,33 @@ public class NPC_Mariano extends Entity {
     public void speak() {
         gp.ui.currentSpeakerName = "Mariano";
 
-        if (dialogueStage == 0) {
+        int q4stage = gp.questManager.quest4Stage;
+
+        // Not yet Mariano's turn
+        if (q4stage == QuestManager.TALK_PROFESSOR_Q4) {
             dialogues[0] = "...";
             dialogues[1] = null;
             super.speak();
 
-            if (dialogueIndex == 0) {
-                dialogueStage = 1;
-                gp.questManager.onProfessorQ4Done();
-            }
-
-        } else if (dialogueStage == 1 ) {
+            // Mariano's turn
+        } else if (q4stage == QuestManager.TALK_MARIANO) {
             dialogues[0] = "...Jose.";
             dialogues[1] = "I won't pretend it doesn't sting. I trained hard for that title.";
-            dialogues[2] = "But you earned it. Your Latin recitation, your composure—I had no answer for it.";
+            dialogues[2] = "But you earned it. Your Latin recitation, your composure — I had\nno answer for it.";
             dialogues[3] = "I concede. You are the better student this month.";
             dialogues[4] = "Do not let it go to your head.";
             dialogues[5] = null;
             super.speak();
-
-            if (dialogueIndex == 1) {
-                dialogueStage = 2;
+            // advance quest when all lines are exhausted (dialogueIndex wraps to 0)
+            if (dialogueIndex == 0) {
                 gp.questManager.onMarianoDone();
             }
 
-        } else if (dialogueStage == 2) {
+            // After Mariano is done
+        } else {
             dialogues[0] = "The better student won. Nothing more to say.";
             dialogues[1] = null;
             super.speak();
-
-            if (dialogueIndex == 2){
-                dialogueStage = 0;
-            }
         }
     }
 
