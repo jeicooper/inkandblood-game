@@ -1138,6 +1138,10 @@ public class UI {
             boolean q5active = gp.questManager.isQuestActive(QuestManager.QUEST5);
             int     q5stage  = gp.questManager.quest5Stage;
 
+            boolean q6active = gp.questManager.isQuestActive(QuestManager.QUEST6);
+            boolean q6done   = gp.questManager.isQuestCompleted(QuestManager.QUEST6);
+            int     q6stage  = gp.questManager.quest6Stage;
+
             final int PAD     = gp.tileSize;
             final int LEFT_X  = frameX + PAD;
             final int TITLE_SIZE = 27;
@@ -1152,6 +1156,10 @@ public class UI {
 
             Color q5color = q5done   ? new Color(100, 230, 100)
                     : q5active ? new Color(255, 220, 80)
+                    :            Color.gray;
+
+            Color q6color = q6done   ? new Color(100, 230, 100)
+                    : q6active ? new Color(255, 220, 80)
                     :            Color.gray;
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
@@ -1216,6 +1224,90 @@ public class UI {
                 g2.setColor(q5done ? new Color(80, 220, 80)
                         : s5 ? Color.white : Color.gray);
                 g2.drawString("- Talk to Maximo Viola", LEFT_X, ly);
+            }
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(q6color);
+            g2.drawString("Quest 6:", LEFT_X, ly);
+            ly += LINE_H - 2;
+            g2.drawString("\"El Filibusterismo\""
+                            + (q6done ? " COMPLETE" : ""),
+                    LEFT_X, ly);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(q6active || q6done ? Color.lightGray : Color.gray);
+            ly += HINT_H + 2;
+            g2.drawString("Inspire Rizal to finish his sequel.", LEFT_X, ly);
+
+            ly += LINE_H + 2;
+
+            if (!q6active && !q6done) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Quest 5 to unlock]", LEFT_X, ly);
+            } else {
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                // Step 1 – Talk to Paciano
+                boolean s1 = q6done || q6stage > QuestManager.TALK_PACIANO_Q6;
+                g2.setColor(s1 ? new Color(80, 220, 80) : Color.white);
+                g2.drawString("- Talk to Kuya Paciano", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 2 – Find the El Fili Draft
+                boolean s2 = q6done || q6stage > QuestManager.FIND_DRAFT;
+                g2.setColor(s2 ? new Color(80, 220, 80)
+                        : q6stage == QuestManager.FIND_DRAFT ? Color.white : Color.gray);
+                g2.drawString("- Find the El Fili Draft", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 3 – Collect GomBurza Letter  (part of COLLECT_ITEMS stage)
+                boolean s3letter = q6done || gp.questManager.countItem("GomBurza Letter") >= 1;
+                g2.setColor(s3letter ? new Color(80, 220, 80)
+                        : q6stage >= QuestManager.COLLECT_ITEMS ? Color.white : Color.gray);
+                g2.drawString("- Find the GomBurza Letter", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 4 – Collect Ink Bottle  (part of COLLECT_ITEMS stage)
+                boolean s4ink = q6done || gp.questManager.countItem("Ink Bottle") >= 1;
+                g2.setColor(s4ink ? new Color(80, 220, 80)
+                        : q6stage >= QuestManager.COLLECT_ITEMS ? Color.white : Color.gray);
+                g2.drawString("- Find the Ink Bottle", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Progress hint while collecting
+                if (q6stage == QuestManager.COLLECT_ITEMS && !q6done) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("  Letter: " + gp.questManager.countItem("GomBurza Letter") + "/1"
+                                    + "   Ink: " + gp.questManager.countItem("Ink Bottle") + "/1",
+                            LEFT_X, ly);
+                    ly += HINT_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+                }
+
+                // Step 5 – Return to Paciano
+                boolean s5 = q6done || q6stage >= QuestManager.RETURN_PACIANO;
+                g2.setColor(q6done ? new Color(80, 220, 80)
+                        : s5   ? Color.white : Color.gray);
+                g2.drawString("- Return to Kuya Paciano", LEFT_X, ly);
+                ly += LINE_H;
+
+                if (q6stage == QuestManager.RETURN_PACIANO && !q6done) {
+                    if (gp.questManager.hasAllInspirationItems()) {
+                        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                        g2.setColor(new Color(100, 255, 100));
+                        g2.drawString("  You have everything — talk to Paciano!", LEFT_X, ly);
+                        ly += HINT_H;
+                        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+                    }
+                }
+
+                if (q6done) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("El Filibusterismo — complete!", LEFT_X, ly);
+                }
             }
         }
 
@@ -1696,6 +1788,50 @@ public class UI {
             } else if (stage == QuestManager.QUEST5_DONE) {
                 g2.setColor(new Color(100, 230, 100));
                 g2.drawString("Quest 5 Complete!", panelX + 12, panelY + 52);
+            }
+        }
+
+        // ===== QUEST 6 =====
+        else if (currentQ == QuestManager.QUEST6 &&
+                gp.questManager.isQuestActive(QuestManager.QUEST6)) {
+
+            g2.setColor(new Color(255, 220, 80));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+            g2.drawString("El Filibusterismo", panelX + 12, panelY + 28);
+
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(20F));
+
+            int stage = gp.questManager.quest6Stage;
+
+            if (stage == QuestManager.TALK_PACIANO_Q6) {
+                g2.drawString("Talk to Kuya Paciano.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.FIND_DRAFT) {
+                g2.drawString("Find the El Fili Draft.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.COLLECT_ITEMS) {
+                int letter = gp.questManager.countItem("GomBurza Letter");
+                int ink    = gp.questManager.countItem("Ink Bottle");
+                g2.drawString("Letter: " + letter + "/1   Ink: " + ink + "/1",
+                        panelX + 12, panelY + 52);
+                if (gp.questManager.hasAllInspirationItems()) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.drawString("Return to Kuya Paciano!", panelX + 12, panelY + 72);
+                }
+
+            } else if (stage == QuestManager.RETURN_PACIANO) {
+                g2.drawString("Return to Kuya Paciano.", panelX + 12, panelY + 52);
+                if (gp.questManager.hasAllInspirationItems()) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.drawString("Hand in the items!", panelX + 12, panelY + 72);
+                }
+
+            } else if (stage == QuestManager.QUEST6_DONE) {
+                g2.setColor(new Color(100, 230, 100));
+                g2.drawString("Quest 6 Complete!", panelX + 12, panelY + 52);
             }
         }
     }

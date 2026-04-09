@@ -52,4 +52,9 @@ public class NPC_Consuelo extends Entity {
             super.speak();
         }
     }
+
+    @Override
+    public void update() {
+        direction = "down";
+    }
 }

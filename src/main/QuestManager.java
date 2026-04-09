@@ -11,10 +11,14 @@ public class QuestManager {
     private int cutsceneDelay = 0;
     private int cutsceneDelay1 = 0;
     private int cutsceneDelay2 = 0;
+    private int cutsceneDelay3 = 0;
+    private int cutsceneDelay4 = 0;
 
     private boolean pendingChapter2Cutscene = false;
     private boolean pendingQuest4Cutscene = false;
     private boolean pendingChapter3Cutscene = false;
+    private boolean pendingQuest6StartCutscene = false;
+    private boolean pendingQuest6EndCutscene = false;
 
 
     // QUEST IDS
@@ -118,7 +122,20 @@ public class QuestManager {
 
     public int   quest5Stage         = TALK_PEDRO;
     public int   objectsCollected    = 0;
-    public boolean[] manuscriptParts = new boolean[7]; // tracks each of the 7 objects
+    public boolean[] manuscriptParts = new boolean[7];
+
+    // QUEST 6
+    public static final int TALK_PACIANO_Q6  = 0;
+    public static final int FIND_DRAFT       = 1;
+    public static final int COLLECT_ITEMS    = 2;
+    public static final int RETURN_PACIANO   = 3;
+    public static final int QUEST6_DONE      = 4;
+
+    public static final int EL_FILI_REQUIRED      = 1;
+    public static final int GOMBURZA_REQUIRED      = 1;
+    public static final int INK_BOTTLE_REQUIRED    = 1;
+
+    public int quest6Stage = TALK_PACIANO_Q6;
 
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
@@ -196,6 +213,25 @@ public class QuestManager {
                 currentQuest = QUEST5;
                 questState[QUEST5] = STATE_ACTIVE;
                 gp.ui.questPageNum = 2;
+            }
+        }
+
+        // TRANSITION TO START QUEST 6
+        if (pendingQuest6StartCutscene) {
+            cutsceneDelay4--;
+            if (cutsceneDelay4 <= 0) {
+                pendingQuest6StartCutscene = false;
+                gp.cutsceneManager.startQuest6StartCutscene();
+            }
+        }
+
+
+        // TRANSITION TO END QUEST 6
+        if (pendingQuest6EndCutscene) {
+            cutsceneDelay3--;
+            if (cutsceneDelay3 <= 0) {
+                pendingQuest6EndCutscene = false;
+                gp.cutsceneManager.startQuest6EndCutscene();
             }
         }
     }
@@ -449,7 +485,6 @@ public class QuestManager {
             quest4Stage = DISCIPLINES_ACTIVE;
             disciplineAnswered = new boolean[5];
             disciplinesCompleted = 0;
-            gp.ui.showMessage("Seek out the 5 discipline judges!");
         }
     }
 
@@ -480,7 +515,7 @@ public class QuestManager {
         //STATS GAINED
         gp.player.exp += 1;
         gp.player.intellect += 4;
-        gp.player.age += 15;
+        gp.player.age += 12;
 
         gp.ui.showMessage("Quest 4: Done!");
 
@@ -526,8 +561,60 @@ public class QuestManager {
         gp.player.charisma +=3;
 
         gp.ui.showMessage(" Noli Me Tangere begins! Quest 5: Done!");
+
+        pendingQuest6StartCutscene = true;
+        cutsceneDelay4 = 120;
     }
 
+    // QUEST 6
+    public void startQuest6() {
+        currentQuest = QUEST6;
+        questState[QUEST6] = STATE_ACTIVE;
+        quest6Stage = TALK_PACIANO_Q6;
+        gp.ui.questPageNum = 2;
+        gp.aSetter.activateQuest6();
+    }
+
+    public void onPacianoQ6Talked() {
+        if (quest6Stage == TALK_PACIANO_Q6) {
+            quest6Stage = FIND_DRAFT;
+            gp.ui.showMessage("Find the El Fili Draft nearby!");
+        }
+    }
+
+    public void onElFiliDraftFound() {
+        if (quest6Stage == FIND_DRAFT) {
+            quest6Stage = COLLECT_ITEMS;
+            gp.ui.showMessage("Now find the GomBurza Letter and Ink Bottle!");
+        }
+    }
+
+    public boolean hasAllInspirationItems() {
+        return countItem("El Fili Draft")    >= EL_FILI_REQUIRED   &&
+                countItem("GomBurza Letter")  >= GOMBURZA_REQUIRED   &&
+                countItem("Ink Bottle")       >= INK_BOTTLE_REQUIRED;
+    }
+
+    public void onPacianoItemsReturned() {
+        if (quest6Stage != RETURN_PACIANO) return;
+        if (!hasAllInspirationItems()) {
+            gp.ui.showMessage("You still need all 3 items!");
+            return;
+        }
+        removeItems("El Fili Draft",   EL_FILI_REQUIRED);
+        removeItems("GomBurza Letter", GOMBURZA_REQUIRED);
+        removeItems("Ink Bottle",      INK_BOTTLE_REQUIRED);
+
+        gp.player.intellect  += 2;
+        gp.player.creativity += 1;
+        gp.player.exp        += 1;
+
+        quest6Stage = QUEST6_DONE;
+        questState[QUEST6] = STATE_COMPLETED;
+
+        pendingQuest6EndCutscene = true;
+        cutsceneDelay3 = 120;
+    }
 
     public boolean isQuestActive(int quest) {
         return questState[quest] == STATE_ACTIVE;

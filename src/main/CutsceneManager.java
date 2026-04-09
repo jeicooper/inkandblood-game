@@ -6,7 +6,7 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3 }
+    private enum Scene { NONE, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO, QUEST6_END}
     private Scene activeScene = Scene.NONE;
 
     // TRANSITION TO CHAP 2
@@ -58,6 +58,52 @@ public class CutsceneManager {
                     "a prison then I cannot stay. I must find a place where"," the sun of knowledge actually shines."}
     };
 
+    private final String[][] quest6IntroLines = {
+            { "The ink of the Noli Me Tangere had barely dried ",
+              "before the fires began. The celebration in Berlin",
+              "was short-lived As the first 2,000 copies left",
+              "the press, the world Jose knew began to crumble.",
+            },
+
+            { "In Manila, the ‘Comisión Permanente de Censura’ ",
+                    "convened in a panic. They did not see a novel...",
+                    "they saw a THREAT, a declaration of war. Every copy",
+                    " discovered was a death warrant for its owner."
+            },
+
+            { "But the true cost was not measured in ink or paper.",
+                    "It was measured in blood and tears..." },
+
+           { "Paciano, and his brothers-in-law were banished to Mindoro." },
+
+            { "The Dominican friars, angered by the book’s portrayal,",
+                "raised the rents in Calamba. When the townsfolk",
+                "could not pay, the military arrived. Houses were",
+                "torn down, and the Rizal was disowned by its family"
+            },
+
+
+            { "Leonor Rivera was pressured by her mother to marry an",
+                    "Englishman, believing Jose would never return alive.",
+                    "It grew frantic, then faded into a painful silence.",
+                    "And the distance between them was no longer just ocean,",
+                    "it was a shadow of a man that is branded 'Filibustero'"
+            }
+    };
+
+    private final String[][] quest6EndLines = {
+            { "Rizal sat alone with the draft,",
+                    "the letter, and the ink." },
+            { "He thought of Gomez, Burgos, and Zamora." },
+            { "He thought of every Filipino who had ever been silenced." },
+            { "And he began to write." },
+            { "Word by word, El Filibusterismo took shape —" },
+            { "not a book of hope,",
+                    "but a book of fire." },
+            { "The sequel was complete." },
+            { "Quest 6: Done!" }
+    };
+
     private int   currentLine = 0;
     private int   fadeState   = 0;
     private float alpha       = 0f;
@@ -97,6 +143,14 @@ public class CutsceneManager {
 
     public void startChapter3() {
         reset(Scene.CHAPTER3);
+    }
+
+    public void startQuest6StartCutscene() {
+        reset(Scene.QUEST6_INTRO);
+    }
+
+    public void startQuest6EndCutscene() {
+        reset(Scene.QUEST6_END);
     }
 
     public void update() {
@@ -170,6 +224,10 @@ public class CutsceneManager {
                 return chapter2Lines;
             case CHAPTER3:
                 return chapter3Lines;
+            case QUEST6_INTRO:
+                return quest6IntroLines;
+            case QUEST6_END:
+                return quest6EndLines;
 
             default:
                 return chapter2Lines;
@@ -197,6 +255,13 @@ public class CutsceneManager {
                 applyChapter3Changes();
                 gp.ui.questPageNum = 2;
                 break;
+
+            case QUEST6_INTRO:
+                gp.questManager.startQuest6();
+                break;
+
+            case QUEST6_END:
+                gp.ui.questPageNum = 2;
 
             default:
                 break;

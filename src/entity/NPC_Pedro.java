@@ -47,5 +47,10 @@ public class NPC_Pedro extends Entity {
         }
     }
 
+    @Override
+    public void update() {
+        direction = "down";
+    }
+
 
 }

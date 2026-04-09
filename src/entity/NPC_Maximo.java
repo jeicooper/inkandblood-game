@@ -30,10 +30,10 @@ public class NPC_Maximo extends Entity {
         int stage = gp.questManager.quest5Stage;
 
         if (stage == QuestManager.TALK_MAXIMO) {
-            dialogues[0] = "Jose... what you have written here is unlike anything I\nhave ever read.";
-            dialogues[1] = "This is not just a novel. This is a mirror held up to\nan empire.";
-            dialogues[2] = "I will fund the printing myself. The Philippines must\nread this.";
-            dialogues[3] = "Noli Me Tangere will not stay locked in this room much\nlonger.";
+            dialogues[0] = "Jose... what you have written here is unlike anything I have ever\nread.";
+            dialogues[1] = "This is not just a novel. This is a mirror held up to an empire.";
+            dialogues[2] = "I will fund the printing myself. The Philippines must read this.";
+            dialogues[3] = "Noli Me Tangere will not stay locked in this room much longer.";
             dialogues[4] = null;
             super.speak();
             if (dialogueIndex == 0) {
@@ -50,5 +50,10 @@ public class NPC_Maximo extends Entity {
             dialogues[1] = null;
             super.speak();
         }
+    }
+
+    @Override
+    public void update() {
+        direction = "down";
     }
 }

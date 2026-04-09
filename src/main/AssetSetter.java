@@ -299,4 +299,15 @@ public class AssetSetter {
         gp.obj[7].worldX = 22 * gp.tileSize;
         gp.obj[7].worldY = 31 * gp.tileSize;
     }
+
+    public void activateQuest6() {
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        gp.npc[32] = new NPC_Paciano(gp);
+        gp.npc[18].worldX = 40 * gp.tileSize;
+        gp.npc[54].worldY = 44 * gp.tileSize;
+
+
+    }
 }
