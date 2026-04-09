@@ -600,8 +600,26 @@ public class UI {
         int textY = frameY + gp.tileSize;
         final int lineHeight = 32;
 
+        String playerName;
+        int currentQ = gp.questManager.currentQuest;
+        boolean q1done = gp.questManager.isQuestCompleted(main.QuestManager.QUEST1);
+        boolean q2done = gp.questManager.isQuestCompleted(main.QuestManager.QUEST2);
+        boolean q3done = gp.questManager.isQuestCompleted(main.QuestManager.QUEST3);
+        boolean q4done = gp.questManager.isQuestCompleted(main.QuestManager.QUEST4);
+        boolean q5done = gp.questManager.isQuestCompleted(main.QuestManager.QUEST5);
+
+        if (q5done) {
+            playerName = "Dr. Jose P. Rizal";
+        } else if (q3done && q4done) {
+            playerName = "Dr. Jose P. Rizal";
+        } else if (q2done || q1done) {
+            playerName = "Jose P. Rizal";
+        } else {
+            playerName = "Pepe";
+        }
+
         //NAMES
-        g2.drawString("Pepe", textX, textY);
+        g2.drawString(playerName, textX, textY);
         textY += lineHeight;
         g2.drawString("Age:", textX, textY);
         textY += lineHeight;

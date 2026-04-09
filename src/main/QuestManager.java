@@ -235,8 +235,10 @@ public class QuestManager {
         questState[QUEST1] = STATE_COMPLETED;
         gp.ui.showMessage("Quest 1: Done!");
 
+        //STATS GAINED
         gp.player.exp += 1;
         gp.player.perception += 1;
+
         for (int i = 0; i < gp.npc.length; i++) {
             if (gp.npc[i] instanceof entity.NPC_Sibling) {
                 gp.npc[i] = null;
@@ -274,7 +276,9 @@ public class QuestManager {
         if (checkpointsHit >= TOTAL_CHECKPOINTS && !courseCompleted) {
             courseCompleted = true;
             gp.ui.showMessage("Course complete!");
-            gp.player.charisma += 1;
+
+            //STATS GAINED
+            gp.player.charisma += 2;
         }
     }
 
@@ -296,7 +300,9 @@ public class QuestManager {
         removeItems("Paint Bucket", PAINT_BUCKETS_REQUIRED);
         removeItems("Paintbrush",   PAINTBRUSH_REQUIRED);
         removeItems("Canvas",       CANVAS_REQUIRED);
-        gp.player.creativity = 1;
+
+        //STATS GAINED
+        gp.player.creativity = 2;
     }
 
     public boolean hasWritingSupplies() {
@@ -307,7 +313,9 @@ public class QuestManager {
     public void removeWritingSupplies() {
         removeItems("Quill",    QUILL_REQUIRED);
         removeItems("Notebook", NOTEBOOK_REQUIRED);
-        gp.player.intellect += 1;
+
+        //STATS GAINED
+        gp.player.intellect += 2;
     }
 
     private void removeItems(String itemName, int amount) {
@@ -347,14 +355,15 @@ public class QuestManager {
         questState[QUEST2] = STATE_COMPLETED;
 
         quest2Stage = GREGORIO_DONE;
-        // In QuestManager.completeQuest3(), after giveMedal():
+
+        //STATS GAINED
         gp.player.inventory.add(new object.OBJ_Poem(gp));
         gp.player.exp += 1;
         gp.player.age += 3;
 
         gp.ui.showMessage("Quest 2: Done!");
         pendingChapter2Cutscene = true;
-        cutsceneDelay = 130;
+        cutsceneDelay = 120;
     }
 
     // ===== QUEST 3 =====
@@ -398,8 +407,10 @@ public class QuestManager {
         if (quest3Stage == QUEST3_DONE) return;
 
         giveMedal();
+
+        //STATS GAINED
         gp.player.exp += 1;
-        gp.player.intellect += 2;
+        gp.player.intellect += 3;
 
         gp.ui.showMessage("You received a Sobresaliente medal! Quest 3: Done!");
 
@@ -407,7 +418,7 @@ public class QuestManager {
         questState[QUEST3] = STATE_COMPLETED;
 
         pendingQuest4Cutscene = true;
-        cutsceneDelay1 = 130;
+        cutsceneDelay1 = 120;
     }
 
     // ===== QUEST 4 =====
@@ -424,10 +435,12 @@ public class QuestManager {
     }
 
     public void onProfessorQ4Done() {
+
         if (quest4Stage == TALK_PROFESSOR_Q4) quest4Stage = TALK_MARIANO;
     }
 
     public void onMarianoDone() {
+
         if (quest4Stage == TALK_MARIANO) quest4Stage = TALK_RECTOR;
     }
 
@@ -463,12 +476,16 @@ public class QuestManager {
         if (quest4Stage != TALK_RECTOR_END) return;
         quest4Stage = QUEST4_DONE;
         questState[QUEST4] = STATE_COMPLETED;
+
+        //STATS GAINED
         gp.player.exp += 1;
-        gp.player.intellect += 1;
+        gp.player.intellect += 4;
+        gp.player.age += 15;
+
         gp.ui.showMessage("Quest 4: Done!");
 
         pendingChapter3Cutscene = true;
-        cutsceneDelay2 = 130;
+        cutsceneDelay2 = 120;
     }
 
     // ===== QUEST 5 =====
@@ -501,9 +518,13 @@ public class QuestManager {
         if (quest5Stage == QUEST5_DONE) return;
         quest5Stage = QUEST5_DONE;
         questState[QUEST5] = STATE_COMPLETED;
+
         gp.player.exp += 1;
-        gp.player.intellect += 2;
-        gp.player.creativity += 2;
+        gp.player.intellect += 1;
+        gp.player.creativity += 3;
+        gp.player.perception +=3;
+        gp.player.charisma +=3;
+
         gp.ui.showMessage(" Noli Me Tangere begins! Quest 5: Done!");
     }
 
