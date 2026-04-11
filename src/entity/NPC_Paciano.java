@@ -27,16 +27,15 @@ public class NPC_Paciano extends Entity {
     }
     @Override
     public void speak() {
-        gp.ui.currentSpeakerName = "Paciano Rizal" +
-                "";
+        gp.ui.currentSpeakerName = "Paciano Rizal";
 
         if (dialogueStage == 0) {
             dialogues[0] = "Pepe... I have terrible news.";
-            dialogues[1] = "Three priests were executed at Bagumbayan.\nGomez. Burgos. Zamora.";
-            dialogues[2] = "Hanged for a revolt they had no part in.\nThe Spanish have shown us what they think of our people.";
-            dialogues[3] = "Noli Me Tangere told the truth about our wounds.\nBut the world needs to feel the fire, not just see it.";
-            dialogues[4] = "You started a draft after Noli — a sequel.\nFind it. Let their deaths fuel your pen.";
-            dialogues[5] = "Bring me the El Fili Draft, a letter about GomBurza,\nand an ink bottle. Then we will talk.";
+            dialogues[1] = "Three priests were executed at Bagumbayan. Gomez. Burgos.\nZamora.";
+            dialogues[2] = "Hanged for a revolt they had no part in. The Spanish have shown us\nwhat they think of our people.";
+            dialogues[3] = "Noli Me Tangere told the truth about our wounds. But the world\nneeds to feel the fire, not just see it.";
+            dialogues[4] = "You started a draft after Noli — a sequel. Find it. Let their deaths\nfuel your pen.";
+            dialogues[5] = "Once you have the draft, gather what you need to write the\nmanuscript. Then come back to me.";
             dialogues[6] = null;
 
             super.speak();
@@ -47,10 +46,10 @@ public class NPC_Paciano extends Entity {
             }
 
         } else if (dialogueStage == 1) {
-            if (gp.questManager.hasAllInspirationItems()) {
-                dialogues[0] = "You have it all — the draft, the letter, and the ink.";
-                dialogues[1] = "Let the death of GomBurza be the prologue.\nLet every Filipino who suffered be a character.";
-                dialogues[2] = "Finish what you started, Pepe.\nEl Filibusterismo must see the light.";
+            if (gp.questManager.quest6Stage == QuestManager.RETURN_PACIANO) {
+                dialogues[0] = "You have everything. The draft, the memories, the fire.";
+                dialogues[1] = "Let the death of GomBurza be the prologue. Let every Filipino\nwho suffered be a character.";
+                dialogues[2] = "Finish what you started, Pepe. El Filibusterismo must see the\nlight.";
                 dialogues[3] = null;
 
                 super.speak();
@@ -60,11 +59,10 @@ public class NPC_Paciano extends Entity {
                     gp.questManager.onPacianoItemsReturned();
                 }
             } else {
-                int draft  = gp.questManager.countItem("El Fili Draft");
-                int letter = gp.questManager.countItem("GomBurza Letter");
-                int ink    = gp.questManager.countItem("Ink Bottle");
+                int collected = gp.questManager.q6ObjectsCollected;
+                int required  = QuestManager.Q6_OBJECTS_REQUIRED;
                 dialogues[0] = "You still need more, Pepe.";
-                dialogues[1] = "El Fili Draft: " + draft + "/1\nGomBurza Letter: " + letter + "/1\nInk Bottle: " + ink + "/1";
+                dialogues[1] = "Manuscript parts: " + collected + "/" + required;
                 dialogues[2] = null;
                 dialogueIndex = 0;
                 super.speak();
@@ -78,5 +76,8 @@ public class NPC_Paciano extends Entity {
         }
     }
 
-
+    @Override
+    public void update() {
+        direction = "down";
+    }
 }

@@ -11,14 +11,13 @@ public class QuestManager {
     private int cutsceneDelay = 0;
     private int cutsceneDelay1 = 0;
     private int cutsceneDelay2 = 0;
-    private int cutsceneDelay3 = 0;
+//    private int cutsceneDelay3 = 0;
     private int cutsceneDelay4 = 0;
 
     private boolean pendingChapter2Cutscene = false;
     private boolean pendingQuest4Cutscene = false;
     private boolean pendingChapter3Cutscene = false;
     private boolean pendingQuest6StartCutscene = false;
-    private boolean pendingQuest6EndCutscene = false;
 
 
     // QUEST IDS
@@ -125,24 +124,22 @@ public class QuestManager {
     public boolean[] manuscriptParts = new boolean[7];
 
     // QUEST 6
-    public static final int TALK_PACIANO_Q6  = 0;
-    public static final int FIND_DRAFT       = 1;
-    public static final int COLLECT_ITEMS    = 2;
-    public static final int RETURN_PACIANO   = 3;
-    public static final int QUEST6_DONE      = 4;
+    public static final int TALK_PACIANO_Q6    = 0;
+    public static final int FIND_DRAFT         = 1;
+    public static final int COLLECT_OBJECTS_Q6 = 2;
+    public static final int RETURN_PACIANO     = 3;
+    public static final int QUEST6_DONE        = 4;
+    public static final int Q6_OBJECTS_REQUIRED = 4;
 
-    public static final int EL_FILI_REQUIRED      = 1;
-    public static final int GOMBURZA_REQUIRED      = 1;
-    public static final int INK_BOTTLE_REQUIRED    = 1;
-
-    public int quest6Stage = TALK_PACIANO_Q6;
+    public int     quest6Stage        = TALK_PACIANO_Q6;
+    public int     q6ObjectsCollected = 0;
+    public boolean[] elFiliParts      = new boolean[5];
 
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
         this.gp = gp;
         questState[QUEST1] = STATE_ACTIVE;
     }
-
 
     //CHECKPOINTS
     public void init() {
@@ -224,16 +221,6 @@ public class QuestManager {
                 gp.cutsceneManager.startQuest6StartCutscene();
             }
         }
-
-
-        // TRANSITION TO END QUEST 6
-        if (pendingQuest6EndCutscene) {
-            cutsceneDelay3--;
-            if (cutsceneDelay3 <= 0) {
-                pendingQuest6EndCutscene = false;
-                gp.cutsceneManager.startQuest6EndCutscene();
-            }
-        }
     }
 
     // ===== QUEST 1 =====
@@ -273,7 +260,8 @@ public class QuestManager {
 
         //STATS GAINED
         gp.player.exp += 1;
-        gp.player.perception += 1;
+        gp.player.perception += 2;
+        gp.player.charisma += 2;
 
         for (int i = 0; i < gp.npc.length; i++) {
             if (gp.npc[i] instanceof entity.NPC_Sibling) {
@@ -380,11 +368,6 @@ public class QuestManager {
         bootsActive = false;
     }
 
-    public void onManuelDone() {
-        quest2Stage = MANUEL_DONE;
-        gp.questManager.removeBoots();
-        gp.aSetter.activateGregorio();
-    }
 
     public void completeQuest2() {
         if (questState[QUEST2] == STATE_COMPLETED) return;
@@ -394,12 +377,12 @@ public class QuestManager {
 
         //STATS GAINED
         gp.player.inventory.add(new object.OBJ_Poem(gp));
-        gp.player.exp += 1;
+        gp.player.exp += 3;
         gp.player.age += 3;
 
         gp.ui.showMessage("Quest 2: Done!");
         pendingChapter2Cutscene = true;
-        cutsceneDelay = 120;
+        cutsceneDelay = 60;
     }
 
     // ===== QUEST 3 =====
@@ -447,6 +430,7 @@ public class QuestManager {
         //STATS GAINED
         gp.player.exp += 1;
         gp.player.intellect += 3;
+        gp.player.age += 5;
 
         gp.ui.showMessage("You received a Sobresaliente medal! Quest 3: Done!");
 
@@ -454,7 +438,7 @@ public class QuestManager {
         questState[QUEST3] = STATE_COMPLETED;
 
         pendingQuest4Cutscene = true;
-        cutsceneDelay1 = 120;
+        cutsceneDelay1 = 60;
     }
 
     // ===== QUEST 4 =====
@@ -513,14 +497,14 @@ public class QuestManager {
         questState[QUEST4] = STATE_COMPLETED;
 
         //STATS GAINED
-        gp.player.exp += 1;
-        gp.player.intellect += 4;
-        gp.player.age += 12;
+        gp.player.exp += 2;
+        gp.player.intellect += 3;
+        gp.player.age += 7;
 
         gp.ui.showMessage("Quest 4: Done!");
 
         pendingChapter3Cutscene = true;
-        cutsceneDelay2 = 120;
+        cutsceneDelay2 = 60;
     }
 
     // ===== QUEST 5 =====
@@ -532,7 +516,7 @@ public class QuestManager {
         if (quest5Stage == TALK_CONSUELO) quest5Stage = FIND_LETTER;
     }
 
-    public void onLetterFound() {
+    public void onNoliDraftFound() {
         if (quest5Stage == FIND_LETTER) {
             quest5Stage = COLLECT_OBJECTS;
             gp.ui.showMessage("Find objects around the room to write your manuscript.");
@@ -554,16 +538,15 @@ public class QuestManager {
         quest5Stage = QUEST5_DONE;
         questState[QUEST5] = STATE_COMPLETED;
 
-        gp.player.exp += 1;
-        gp.player.intellect += 1;
-        gp.player.creativity += 3;
+        gp.player.exp += 2;
+        gp.player.intellect += 2;
         gp.player.perception +=3;
-        gp.player.charisma +=3;
+        gp.player.charisma +=2;
 
         gp.ui.showMessage(" Noli Me Tangere begins! Quest 5: Done!");
 
         pendingQuest6StartCutscene = true;
-        cutsceneDelay4 = 120;
+        cutsceneDelay4 = 60;
     }
 
     // QUEST 6
@@ -571,6 +554,8 @@ public class QuestManager {
         currentQuest = QUEST6;
         questState[QUEST6] = STATE_ACTIVE;
         quest6Stage = TALK_PACIANO_Q6;
+        q6ObjectsCollected = 0;
+        elFiliParts = new boolean[5];
         gp.ui.questPageNum = 2;
         gp.aSetter.activateQuest6();
     }
@@ -578,42 +563,55 @@ public class QuestManager {
     public void onPacianoQ6Talked() {
         if (quest6Stage == TALK_PACIANO_Q6) {
             quest6Stage = FIND_DRAFT;
-            gp.ui.showMessage("Find the El Fili Draft nearby!");
+            gp.ui.showMessage("Find the El Fili Draft!");
         }
     }
 
     public void onElFiliDraftFound() {
         if (quest6Stage == FIND_DRAFT) {
-            quest6Stage = COLLECT_ITEMS;
-            gp.ui.showMessage("Now find the GomBurza Letter and Ink Bottle!");
+            quest6Stage = COLLECT_OBJECTS_Q6;
+            gp.ui.showMessage("Find objects around the room to write your manuscript.");
         }
     }
 
-    public boolean hasAllInspirationItems() {
-        return countItem("El Fili Draft")    >= EL_FILI_REQUIRED   &&
-                countItem("GomBurza Letter")  >= GOMBURZA_REQUIRED   &&
-                countItem("Ink Bottle")       >= INK_BOTTLE_REQUIRED;
+    public void onq6ObjectsCollected (int index){
+        if (elFiliParts[index]) return;
+        elFiliParts[index] = true;
+        q6ObjectsCollected++;
+
+        if (q6ObjectsCollected >= Q6_OBJECTS_REQUIRED){
+            quest6Stage = RETURN_PACIANO;
+            gp.ui.showMessage("Manuscript Complete!");
+        }
+    }
+    public void giveElFiliBook() {
+        object.OBJ_Draft2 book = new object.OBJ_Draft2(gp);
+        gp.player.inventory.add(book);
     }
 
     public void onPacianoItemsReturned() {
-        if (quest6Stage != RETURN_PACIANO) return;
-        if (!hasAllInspirationItems()) {
-            gp.ui.showMessage("You still need all 3 items!");
-            return;
+        if (quest6Stage == RETURN_PACIANO) {
+            completeQuest6();
         }
-        removeItems("El Fili Draft",   EL_FILI_REQUIRED);
-        removeItems("GomBurza Letter", GOMBURZA_REQUIRED);
-        removeItems("Ink Bottle",      INK_BOTTLE_REQUIRED);
+    }
 
-        gp.player.intellect  += 2;
-        gp.player.creativity += 1;
-        gp.player.exp        += 1;
 
+    public void completeQuest6() {
+        if (quest6Stage == QUEST6_DONE) return;
         quest6Stage = QUEST6_DONE;
-        questState[QUEST6] = STATE_COMPLETED;
+        questState[QUEST5] = STATE_COMPLETED;
 
-        pendingQuest6EndCutscene = true;
-        cutsceneDelay3 = 120;
+        gp.player.exp += 2;
+        gp.player.age += 3;
+
+        gp.player.intellect += 1;
+        gp.player.perception += 2;
+        gp.player.creativity += 3;
+
+        gp.ui.showMessage("El Filibusterismo begins! Quest 6: Done!");
+
+        pendingQuest6StartCutscene = true;
+        cutsceneDelay4 = 60;
     }
 
     public boolean isQuestActive(int quest) {

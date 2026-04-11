@@ -6,7 +6,7 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO, QUEST6_END}
+    private enum Scene { NONE, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO}
     private Scene activeScene = Scene.NONE;
 
     // TRANSITION TO CHAP 2
@@ -91,18 +91,6 @@ public class CutsceneManager {
             }
     };
 
-    private final String[][] quest6EndLines = {
-            { "Rizal sat alone with the draft,",
-                    "the letter, and the ink." },
-            { "He thought of Gomez, Burgos, and Zamora." },
-            { "He thought of every Filipino who had ever been silenced." },
-            { "And he began to write." },
-            { "Word by word, El Filibusterismo took shape —" },
-            { "not a book of hope,",
-                    "but a book of fire." },
-            { "The sequel was complete." },
-            { "Quest 6: Done!" }
-    };
 
     private int   currentLine = 0;
     private int   fadeState   = 0;
@@ -149,9 +137,6 @@ public class CutsceneManager {
         reset(Scene.QUEST6_INTRO);
     }
 
-    public void startQuest6EndCutscene() {
-        reset(Scene.QUEST6_END);
-    }
 
     public void update() {
         if (fadeState == 0) {
@@ -226,8 +211,6 @@ public class CutsceneManager {
                 return chapter3Lines;
             case QUEST6_INTRO:
                 return quest6IntroLines;
-            case QUEST6_END:
-                return quest6EndLines;
 
             default:
                 return chapter2Lines;
@@ -259,9 +242,6 @@ public class CutsceneManager {
             case QUEST6_INTRO:
                 gp.questManager.startQuest6();
                 break;
-
-            case QUEST6_END:
-                gp.ui.questPageNum = 2;
 
             default:
                 break;

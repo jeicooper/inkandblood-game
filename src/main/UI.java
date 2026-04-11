@@ -133,6 +133,8 @@ public class UI {
             if (showPoemPanel) {
                 if (activeLetter.equals("Draft of Noli Me Tangere")) {
                     drawLetterPanel();
+                } else if (activeLetter.equals("Draft of El Filibusterismo")) {
+                    drawElFiliPanel();
                 } else {
                     drawPoemPanel();
                 }
@@ -612,8 +614,10 @@ public class UI {
             playerName = "Dr. Jose P. Rizal";
         } else if (q3done && q4done) {
             playerName = "Dr. Jose P. Rizal";
-        } else if (q2done || q1done) {
+        } else if (q3done || q4done) {
             playerName = "Jose P. Rizal";
+        } else if (q2done) {
+            playerName = "Jose Rizal";
         } else {
             playerName = "Pepe";
         }
@@ -1227,19 +1231,16 @@ public class UI {
             }
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
-            g2.setColor(q6color);
+            g2.setColor(q5color);
             g2.drawString("Quest 6:", LEFT_X, ly);
             ly += LINE_H - 2;
             g2.drawString("\"El Filibusterismo\""
-                            + (q6done ? " COMPLETE" : ""),
-                    LEFT_X, ly);
+                    + (q5done ? " COMPLETE" : ""), LEFT_X, ly);
 
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
             g2.setColor(q6active || q6done ? Color.lightGray : Color.gray);
             ly += HINT_H + 2;
-            g2.drawString("Inspire Rizal to finish his sequel.", LEFT_X, ly);
-
-            ly += LINE_H + 2;
+            g2.drawString("Become inspired to finish your sequel novel.", LEFT_X, ly);
 
             if (!q6active && !q6done) {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
@@ -1248,67 +1249,48 @@ public class UI {
             } else {
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
 
-                // Step 1 – Talk to Paciano
-                boolean s1 = q6done || q6stage > QuestManager.TALK_PACIANO_Q6;
-                g2.setColor(s1 ? new Color(80, 220, 80) : Color.white);
-                g2.drawString("- Talk to Kuya Paciano", LEFT_X, ly);
-                ly += LINE_H;
-
-                // Step 2 – Find the El Fili Draft
-                boolean s2 = q6done || q6stage > QuestManager.FIND_DRAFT;
-                g2.setColor(s2 ? new Color(80, 220, 80)
+                boolean s4 = q6done || q6stage > QuestManager.FIND_DRAFT;
+                g2.setColor(s4 ? new Color(80, 220, 80)
                         : q6stage == QuestManager.FIND_DRAFT ? Color.white : Color.gray);
-                g2.drawString("- Find the El Fili Draft", LEFT_X, ly);
+                g2.drawString("- Find the draft of El Filibusterismo", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 3 – Collect GomBurza Letter  (part of COLLECT_ITEMS stage)
-                boolean s3letter = q6done || gp.questManager.countItem("GomBurza Letter") >= 1;
-                g2.setColor(s3letter ? new Color(80, 220, 80)
-                        : q6stage >= QuestManager.COLLECT_ITEMS ? Color.white : Color.gray);
-                g2.drawString("- Find the GomBurza Letter", LEFT_X, ly);
+                boolean s6active = q6stage == QuestManager.COLLECT_OBJECTS;
+                boolean s6done   = q6done || q6stage > QuestManager.COLLECT_OBJECTS;
+                g2.setColor(s6done   ? new Color(80, 220, 80)
+                        : s6active ? Color.white : Color.gray);
+                g2.drawString("- Collect manuscript inspirations", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 4 – Collect Ink Bottle  (part of COLLECT_ITEMS stage)
-                boolean s4ink = q6done || gp.questManager.countItem("Ink Bottle") >= 1;
-                g2.setColor(s4ink ? new Color(80, 220, 80)
-                        : q6stage >= QuestManager.COLLECT_ITEMS ? Color.white : Color.gray);
-                g2.drawString("- Find the Ink Bottle", LEFT_X, ly);
-                ly += LINE_H;
+                if (s6active || s6done) {
+                    String[] parts = {
+                            "Glasses",
+                            "Newspaper",
+                            "Old Letter",
+                            "Worn Letter"
+                    };
 
-                // Progress hint while collecting
-                if (q6stage == QuestManager.COLLECT_ITEMS && !q6done) {
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
+                    for (int i = 0; i < 7; i++) {
+                        boolean done = q6done || gp.questManager.elFiliParts[i];
+                        g2.setColor(done ? new Color(80, 220, 80) : Color.white);
+                        g2.drawString((done ? "/ " : "- ") + parts[i], LEFT_X + 10, ly);
+                        ly += LINE_H - 2;
+                    }
+
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("  Letter: " + gp.questManager.countItem("GomBurza Letter") + "/1"
-                                    + "   Ink: " + gp.questManager.countItem("Ink Bottle") + "/1",
-                            LEFT_X, ly);
+                    g2.drawString("  Parts: " + gp.questManager.objectsCollected + "/4", LEFT_X, ly);
                     ly += HINT_H;
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
                 }
 
-                // Step 5 – Return to Paciano
-                boolean s5 = q6done || q6stage >= QuestManager.RETURN_PACIANO;
+                boolean s6 = q6done || q6stage >= QuestManager.TALK_PACIANO_Q6;
                 g2.setColor(q6done ? new Color(80, 220, 80)
-                        : s5   ? Color.white : Color.gray);
-                g2.drawString("- Return to Kuya Paciano", LEFT_X, ly);
-                ly += LINE_H;
-
-                if (q6stage == QuestManager.RETURN_PACIANO && !q6done) {
-                    if (gp.questManager.hasAllInspirationItems()) {
-                        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
-                        g2.setColor(new Color(100, 255, 100));
-                        g2.drawString("  You have everything — talk to Paciano!", LEFT_X, ly);
-                        ly += HINT_H;
-                        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
-                    }
-                }
-
-                if (q6done) {
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
-                    g2.setColor(new Color(100, 255, 100));
-                    g2.drawString("El Filibusterismo — complete!", LEFT_X, ly);
-                }
+                        : s6 ? Color.white : Color.gray);
+                g2.drawString("- Talk to Paciano", LEFT_X, ly);
             }
+
         }
 
         // ===== Chapter 4 page =====
@@ -1792,8 +1774,7 @@ public class UI {
         }
 
         // ===== QUEST 6 =====
-        else if (currentQ == QuestManager.QUEST6 &&
-                gp.questManager.isQuestActive(QuestManager.QUEST6)) {
+        else if (currentQ == QuestManager.QUEST6 && gp.questManager.isQuestActive(QuestManager.QUEST6)) {
 
             g2.setColor(new Color(255, 220, 80));
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
@@ -1808,26 +1789,17 @@ public class UI {
                 g2.drawString("Talk to Kuya Paciano.", panelX + 12, panelY + 52);
 
             } else if (stage == QuestManager.FIND_DRAFT) {
-                g2.drawString("Find the El Fili Draft.", panelX + 12, panelY + 52);
+                g2.drawString("Find the El Filibusterismo Draft.", panelX + 12, panelY + 52);
 
-            } else if (stage == QuestManager.COLLECT_ITEMS) {
-                int letter = gp.questManager.countItem("GomBurza Letter");
-                int ink    = gp.questManager.countItem("Ink Bottle");
-                g2.drawString("Letter: " + letter + "/1   Ink: " + ink + "/1",
-                        panelX + 12, panelY + 52);
-                if (gp.questManager.hasAllInspirationItems()) {
-                    g2.setColor(new Color(100, 255, 100));
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                    g2.drawString("Return to Kuya Paciano!", panelX + 12, panelY + 72);
-                }
+            } else if (stage == QuestManager.COLLECT_OBJECTS_Q6) {
+                int done = gp.questManager.q6ObjectsCollected;
+                g2.drawString("Manuscript: " + done + "/4", panelX + 12, panelY + 52);
 
             } else if (stage == QuestManager.RETURN_PACIANO) {
                 g2.drawString("Return to Kuya Paciano.", panelX + 12, panelY + 52);
-                if (gp.questManager.hasAllInspirationItems()) {
-                    g2.setColor(new Color(100, 255, 100));
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                    g2.drawString("Hand in the items!", panelX + 12, panelY + 72);
-                }
+                g2.setColor(new Color(100, 255, 100));
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.drawString("Manuscript complete!", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.QUEST6_DONE) {
                 g2.setColor(new Color(100, 230, 100));
@@ -1937,43 +1909,41 @@ public class UI {
 
         String[] left = {
 
-                "I write not for fame, nor for praise",
-                "but for those whose voices are buried",
-                "beneath the weight of silence. Our land",
-                "is beautiful yet beneath its green fields",
+                "I write not for fame, nor for praise but",
+                "for those whose voices are buried beneath",
+                "the weight of silence. Our land is",
+                "beautiful yet beneath its green fields",
                 "and quiet towns lies a sickness no one",
                 "dares to name. Many pretend not to see",
-                "it. Others benefit from it. But the",
-                "suffering of the people grows deeper",
-                "each day.",
+                "it. Others benefit from it. But the suffering",
+                "of the people grows deeper each day.",
                 "",
 
-                "If a wound is hidden, it festers. If a",
-                "disease is ignored it spreads. Thus I",
-                "must write—not to entertain, but to",
-                "reveal.My pen must become a mirror",
-                "reflecting the truth of our society so",
-                "that all who look upon it may recognize",
+                "If a wound is hidden, it festers. If a disease",
+                "is ignored it spreads. Thus I must write—not",
+                "to entertain, but to reveal. My pen must",
+                "become a mirror reflecting the truth of our",
+                "society so that all who look upon it may",
+                "recognize",
                 "",
 
         };
 
         String[] right = {
 
-                "the illness within. In the towns and", "villages of our country live men who",
-                "preach virtue yet rule with fear. There",
-                "are officials who claim justice but",
-                "serve only power. Meanwhile the common",
-                "people endure humiliation", "poverty",
-                "and the quiet loss of hope.",
+                "the illness within. In the towns and villages",
+                "of our country live men who preach virtue",
+                " yet rule with fear. There are officials",
+                " who claim justice but serve only power.",
+                " Meanwhile the common people endure humiliation",
+                "poverty and the quiet loss of hope.",
                 "",
 
-                "But there are also those who begin to",
-                "awaken. This book will not written to",
-                "accuse blindly but to expose what has",
-                "long been concealed. If society refuses",
-                "to confront its own reflection, then it",
-                "will never heal. And so I begin…"
+                "But there are also those who begin to awaken.",
+                "This book will not written to accuse blindly",
+                " but to expose what has long been concealed.",
+                "If society refusesto confront its own reflection,",
+                "then it will never heal. And so I begin..."
         };
 
 
@@ -2006,6 +1976,90 @@ public class UI {
             gp.keyP.enterPressed = false;
             showPoemPanel = false;
         }
+    }
+    public void drawElFiliPanel() {
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int panelW = gp.tileSize * 15;
+        int panelH = gp.tileSize * 10;
+        int panelX = gp.screenWidth / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        drawSubWindow(panelX, panelY, panelW, panelH);
+
+        // title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 30F));
+        g2.setColor(new Color(255, 220, 80));
+        String title = "Draft of El Filibusterismo";
+        int titleX = getXforCenter(title);
+        g2.drawString(title, titleX, panelY + 45);
+
+        String[] left = {
+                "The ink was no longer a medicine. It had",
+                "become gunpowder. In 1891, the first copies",
+                "were smuggled into Manila in the dark of",
+                "night. They did not arrive in the hands of",
+                "scholars but in the calloused palms of",
+                "workers and the hidden pockets of students.",
+                "",
+                "The Noli Me Tangere had taught the Filipino",
+                "people how to weep for their country. The",
+                "El Filibusterismo taught them how to fight",
+                "for it. Across the islands, the 'Social",
+                "Cancer' was no longer a metaphor.",
+                "",
+                " In the quiet of the fields, farmers",
+                " stopped praying for a harvest and started",
+                "looking at their bolos.",
+        };
+
+        // RIGHT column
+        String[] right = {
+                "In the university halls, the whispers of reform",
+                "turned into the blueprints for revolution. The",
+                "Spanish authorities did not see a story; they",
+                "saw a fuse. They did not see a protagonist;",
+                " they saw a ghost of a dreamer returned as a",
+                "jeweler of death, ready to burn the house down",
+                "to save the soul within.",
+
+                "",
+                "He did not regret a single letter. For some",
+                "truths are too heavy to carry alone. They",
+                "must be written down, passed on, and ignited.",
+                "That is what a nation is made of.",
+        };
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+        g2.setColor(Color.white);
+
+        int leftX  = panelX + 25;
+        int rightX = panelX + panelW / 2 + 10;
+        int startY = panelY + 85;
+        int lineH  = 24;
+
+        for (String line : left) {
+            g2.drawString(line, leftX, startY);
+            startY += lineH;
+        }
+
+        startY = panelY + 85;
+        for (String line : right) {
+            g2.drawString(line, rightX, startY);
+            startY += lineH;
+        }
+
+        // prompt
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+        g2.setColor(new Color(200, 200, 200));
+        g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
+
+        // close
+        if (gp.keyP.enterPressed) {
+            gp.keyP.enterPressed = false;
+            showPoemPanel = false;
+        }
+
     }
 
 

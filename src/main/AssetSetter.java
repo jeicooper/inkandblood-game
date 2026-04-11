@@ -254,50 +254,50 @@ public class AssetSetter {
 
         //npc
         gp.npc[0] = new NPC_Pedro(gp);
-        gp.npc[0].worldX = 13 * gp.tileSize;
-        gp.npc[0].worldY = 36 * gp.tileSize;
+        gp.npc[0].worldX = 28 * gp.tileSize;
+        gp.npc[0].worldY = 47 * gp.tileSize;
 
         gp.npc[1] = new NPC_Consuelo(gp);
-        gp.npc[1].worldX = 13 * gp.tileSize;
-        gp.npc[1].worldY = 41 * gp.tileSize;
+        gp.npc[1].worldX = 31 * gp.tileSize;
+        gp.npc[1].worldY = 47 * gp.tileSize;
 
         gp.npc[2] = new NPC_Maximo(gp);
-        gp.npc[2].worldX = 16 * gp.tileSize;
-        gp.npc[2].worldY = 48 * gp.tileSize;
+        gp.npc[2].worldX = 32 * gp.tileSize;
+        gp.npc[2].worldY = 34 * gp.tileSize;
 
         //letter
         gp.obj[0] = new OBJ_Draft(gp);
-        gp.obj[0].worldX = 63 * gp.tileSize;
-        gp.obj[0].worldY = 73 * gp.tileSize;
+        gp.obj[0].worldX = 17 * gp.tileSize;
+        gp.obj[0].worldY = 32 * gp.tileSize;
 
         //obj
         gp.obj[1] = new OBJ_Scalpel(gp);
-        gp.obj[1].worldX = 55 * gp.tileSize;
-        gp.obj[1].worldY = 81 * gp.tileSize;
+        gp.obj[1].worldX = 65 * gp.tileSize;
+        gp.obj[1].worldY = 82 * gp.tileSize;
 
         gp.obj[2] = new OBJ_Mirror(gp);
-        gp.obj[2].worldX = 55 * gp.tileSize;
+        gp.obj[2].worldX = 65 * gp.tileSize;
         gp.obj[2].worldY = 72 * gp.tileSize;
 
         gp.obj[3] = new OBJ_DriedFlower(gp);
-        gp.obj[3].worldX = 27 * gp.tileSize;
-        gp.obj[3].worldY = 38 * gp.tileSize;
+        gp.obj[3].worldX = 62 * gp.tileSize;
+        gp.obj[3].worldY = 73 * gp.tileSize;
 
         gp.obj[4] = new OBJ_Rosary(gp);
-        gp.obj[4].worldX = 34 * gp.tileSize;
-        gp.obj[4].worldY = 48 * gp.tileSize;
+        gp.obj[4].worldX = 57 * gp.tileSize;
+        gp.obj[4].worldY = 80 * gp.tileSize;
 
         gp.obj[5] = new OBJ_Portrait(gp);
-        gp.obj[5].worldX = 12 * gp.tileSize;
-        gp.obj[5].worldY = 48 * gp.tileSize;
+        gp.obj[5].worldX = 55 * gp.tileSize;
+        gp.obj[5].worldY = 82 * gp.tileSize;
 
         gp.obj[6] = new OBJ_ScrapMetal(gp);
-        gp.obj[6].worldX = 65 * gp.tileSize;
-        gp.obj[6].worldY = 76 * gp.tileSize;
+        gp.obj[6].worldX = 51 * gp.tileSize;
+        gp.obj[6].worldY = 70 * gp.tileSize;
 
         gp.obj[7] = new OBJ_EmptyPlate(gp);
-        gp.obj[7].worldX = 22 * gp.tileSize;
-        gp.obj[7].worldY = 31 * gp.tileSize;
+        gp.obj[7].worldX = 58 * gp.tileSize;
+        gp.obj[7].worldY = 74 * gp.tileSize;
     }
 
     public void activateQuest6() {
@@ -305,9 +305,27 @@ public class AssetSetter {
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
 
         gp.npc[32] = new NPC_Paciano(gp);
-        gp.npc[18].worldX = 40 * gp.tileSize;
-        gp.npc[54].worldY = 44 * gp.tileSize;
+        gp.npc[32].worldX = 20 * gp.tileSize;
+        gp.npc[32].worldY = 54 * gp.tileSize;
 
+        gp.obj[0] = new OBJ_OldLetter(gp);
+        gp.obj[0].worldX = 12 * gp.tileSize;
+        gp.obj[0].worldY = 32 * gp.tileSize;
 
+        gp.obj[1] = new OBJ_Newspaper(gp);
+        gp.obj[1].worldX = 21 * gp.tileSize;
+        gp.obj[1].worldY = 32 * gp.tileSize;
+
+        gp.obj[2] = new OBJ_WornLetter(gp);
+        gp.obj[2].worldX = 14 * gp.tileSize;
+        gp.obj[2].worldY = 36 * gp.tileSize;
+
+        gp.obj[3] = new OBJ_Glasses(gp);
+        gp.obj[3].worldX = 35 * gp.tileSize;
+        gp.obj[3].worldY = 48 * gp.tileSize;
+
+        gp.obj[4] = new OBJ_Draft2(gp);
+        gp.obj[4].worldX = 17 * gp.tileSize;
+        gp.obj[4].worldY = 32 * gp.tileSize;
     }
 }

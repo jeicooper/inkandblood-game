@@ -423,7 +423,6 @@ public class GamePanel extends JPanel implements Runnable {
                 if (npc[1] != null) targets.add(npc[1]); // Consuelo
 
             } else if (stage == QuestManager.FIND_LETTER) {
-                // arrow over the draft object on the ground
                 for (int i = 0; i < obj.length; i++) {
                     if (obj[i] != null && obj[i].name.equals("Draft of Noli Me Tangere")) {
                         targets.add(obj[i]);
@@ -442,6 +441,34 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        // QUEST 6
+        if (questManager.isQuestActive(QuestManager.QUEST6)) {
+            int stage = questManager.quest6Stage;
+
+            if (stage == QuestManager.TALK_PACIANO_Q6){
+                if(npc[32] != null) targets.add(npc[32]);
+
+            } else if (stage == QuestManager.FIND_DRAFT) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && obj[i].name.equals("Draft of El Filibusterismo")) {
+                        targets.add(obj[i]);
+                    }
+                }
+
+            } else if (stage == QuestManager.COLLECT_OBJECTS_Q6) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && isManuscriptObjectQ6(obj[i].name)) {
+                        targets.add(obj[i]);
+                    }
+                }
+
+            } else if (stage == QuestManager.TALK_PACIANO_Q6) {
+                if (npc[32] != null) targets.add(npc[32]);
+            }
+
+
+        }
+
 
         return targets;
     }
@@ -455,6 +482,18 @@ public class GamePanel extends JPanel implements Runnable {
             case "Portrait":
             case "Scrap Metal":
             case "Empty Plate":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private boolean isManuscriptObjectQ6(String name) {
+        switch (name) {
+            case "Glasses":
+            case "Newspaper":
+            case "Old Letter":
+            case "Worn Letter":
                 return true;
             default:
                 return false;

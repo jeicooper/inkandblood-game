@@ -41,12 +41,12 @@ public class NPC_Maximo extends Entity {
             }
 
         } else if (stage < QuestManager.TALK_MAXIMO) {
-            dialogues[0] = "Jose, I am here whenever you are ready.\nTake your time.";
+            dialogues[0] = "Jose, I am here whenever you are ready. Take your time.";
             dialogues[1] = null;
             super.speak();
 
         } else {
-            dialogues[0] = "History will remember this room, Jose.\nAnd you.";
+            dialogues[0] = "History will remember this room, Jose. And you.";
             dialogues[1] = null;
             super.speak();
         }

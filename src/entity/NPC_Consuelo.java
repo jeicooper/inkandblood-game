@@ -33,7 +33,7 @@ public class NPC_Consuelo extends Entity {
         if (stage == QuestManager.TALK_CONSUELO) {
             dialogues[0] = "So you are the famous Jose Rizal. I have heard much about you.";
             dialogues[1] = "They say you write like the angels but think like a revolutionary.";
-            dialogues[2] = "I found something left on the table. A paper with your name on it. Perhaps\nit belongs to you?";
+            dialogues[2] = "I found something left on the table. A paper with your name on it.\nPerhaps it belongs to you?";
             dialogues[3] = "Writing stuff like that, you should be careful Jose...";
             dialogues[4] = null;
             super.speak();
@@ -42,12 +42,12 @@ public class NPC_Consuelo extends Entity {
             }
 
         } else if (stage == QuestManager.FIND_LETTER) {
-            dialogues[0] = "The paper is somewhere on the table.\nDon't lose it, Jose.";
+            dialogues[0] = "The paper is somewhere on the table. Don't lose it, Jose.";
             dialogues[1] = null;
             super.speak();
 
         } else {
-            dialogues[0] = "Be careful with what you write.\nNot everyone here is a friend.";
+            dialogues[0] = "Be careful with what you write. Not everyone here is a friend.";
             dialogues[1] = null;
             super.speak();
         }

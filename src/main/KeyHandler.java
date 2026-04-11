@@ -288,9 +288,16 @@ public class KeyHandler implements KeyListener {
                     gp.gameState = gp.playState;
                     gp.ui.showPoemPanel = true;
                     gp.ui.activeLetter = item.name;
+
                 } else if (item.name.equals("Draft of Noli Me Tangere")) {
                     gp.gameState = gp.playState;
                     gp.ui.activeLetter = "Draft of Noli Me Tangere";
+                    gp.ui.showPoemPanel = true;
+
+                }
+                else if (item.name.equals("Draft of El Filibusterismo")) {
+                    gp.gameState = gp.playState;
+                    gp.ui.activeLetter = "Draft of El Filibusterismo";
                     gp.ui.showPoemPanel = true;
                 }
 

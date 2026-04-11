@@ -76,16 +76,12 @@ public class Player extends  Entity{
 
         up1 = setup("/player/boy_up_1");
         up2 = setup("/player/boy_up_2");
-
         down1 = setup("/player/boy_down_1");
         down2 = setup("/player/boy_down_2");
-
         left1 = setup("/player/boy_left_1");
         left2 = setup("/player/boy_left_2");
-
         right1 = setup("/player/boy_right_1");
         right2 = setup("/player/boy_right_2");
-
         down3 = setup("/player/pepe_down_1");
 
     }
@@ -211,7 +207,9 @@ public class Player extends  Entity{
             String objectName = gp.obj[i].name;
 
             if (getManuscriptIndex(objectName) >= 0) return;
+            if (getManuscriptIndexQ6(objectName) >= 0) return;
             if (objectName.equals("Draft of Noli Me Tangere")) return;
+            if (objectName.equals("Draft of El Filibusterismo")) return;
 
             if (inventory.size() != maxInventorySize) {
 
@@ -229,16 +227,35 @@ public class Player extends  Entity{
         if (i == 999) return;
         String objectName = gp.obj[i].name;
 
-        // LETTER
+        // NOLI DRAFT
         if (objectName.equals("Draft of Noli Me Tangere")) {
+            if (gp.questManager.quest5Stage != QuestManager.FIND_LETTER) {
+                gp.ui.showMessage("I'm not ready for this yet.");
+                return;
+            }
             if (inventory.size() < maxInventorySize) {
                 inventory.add(gp.obj[i]);
                 gp.obj[i] = null;
                 gp.playSE(1);
                 gp.ui.showMessage("You found the draft!");
-                if (gp.questManager.quest5Stage == QuestManager.FIND_LETTER) {
-                    gp.questManager.onLetterFound();
-                }
+                gp.questManager.onNoliDraftFound();
+            } else {
+                gp.ui.showMessage("Your inventory is full!");
+            }
+        }
+
+        // EL FILI DRAFT
+        if (objectName.equals("Draft of El Filibusterismo")) {
+            if (gp.questManager.quest6Stage != QuestManager.FIND_DRAFT) {
+                gp.ui.showMessage("I'm not ready for this yet.");
+                return;
+            }
+            if (inventory.size() < maxInventorySize) {
+                inventory.add(gp.obj[i]);
+                gp.obj[i] = null;
+                gp.playSE(1);
+                gp.ui.showMessage("You found the draft!");
+                gp.questManager.onElFiliDraftFound();
             } else {
                 gp.ui.showMessage("Your inventory is full!");
             }
@@ -249,11 +266,17 @@ public class Player extends  Entity{
                 gp.questManager.quest5Stage == QuestManager.COLLECT_OBJECTS) {
             String[] messages = {
                     "'Touch Me Not.' Our country has a cancer so sensitive that the\nslightest touch causes agony. [Title and Preface finalized.]",
+
                     "I see myself in Crisostomo Ibarra, the dreamer returning home\nonly to find the soil poisone. [Main Character Arc defined.]",
+
                     "She is the Philippines — beautiful, weeping, silenced.\n[The Idyl on the Terrace defined.]",
+
                     "Father Damaso. The cross he wears is not for salvation, but\nfor control.[The Feast added to manuscript.]",
+
                     "I shall call her Sisa. The soul of the Filipino family, driven\nto madness by cruelty. [Sisa added to manuscript.]",
+
                     "The man of action. The mirror of what I fear I might become if\nthe pen fails. [The Voice of the Hunted added.]",
+
                     "My hunger is not just for bread, but for justice. Every word is\npaid for with my own body. [Desperate Resolve added.]"
             };
             gp.ui.currentDialogue = messages[manuscriptIndex];
@@ -261,6 +284,27 @@ public class Player extends  Entity{
             gp.gameState = gp.dialogueState;
             gp.obj[i] = null;
             gp.questManager.onManuscriptPartCollected(manuscriptIndex);
+        }
+
+        int manuscriptIndexQ6 = getManuscriptIndexQ6(objectName);
+        if (manuscriptIndexQ6 >= 0 &&
+                gp.questManager.quest6Stage == QuestManager.COLLECT_OBJECTS_Q6) {
+            String[] messages = {
+                    "To change the world, one must sometimes walk among the corrupt.\nSimoun will wear these. He will hide his eyes so they cannot see the\nfire of his soul.",
+
+                    "So, the garden is closed. The girl who waited by the window has\nvanished into the mist of another man’s name. Ibarra...that poor,\n naive fool. He died in the lake.",
+
+                    "The friars have moved from insults to fire. They have turned\nfarmers intofugitives.I will create Cabesang Tales...not as a " +
+                            "hero\nbut as a warning of what happens when a man is pushed",
+
+                    "I can still hear the snap of the wood in the morning air of\nBagumbayan...it has been nineteen years, yet the silence they " +
+                            "left\nbehind is deafening.",
+            };
+            gp.ui.currentDialogue = messages[manuscriptIndexQ6];
+            gp.ui.currentSpeakerName = "Jose Rizal";
+            gp.gameState = gp.dialogueState;
+            gp.obj[i] = null;
+            gp.questManager.onq6ObjectsCollected(manuscriptIndexQ6);
         }
     }
 
@@ -280,6 +324,21 @@ public class Player extends  Entity{
                 return 5;
             case "Empty Plate":
                 return 6;
+            default:
+                return -1;
+        }
+    }
+
+    private int getManuscriptIndexQ6 (String name){
+        switch (name) {
+            case "Glasses":
+                return 0;
+            case "Newspaper":
+                return 1;
+            case "Old Letter":
+                return 2;
+            case "Worn Letter":
+                return 3;
             default:
                 return -1;
         }
