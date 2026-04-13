@@ -216,7 +216,7 @@ public class SaveManager {
 
             gp.aSetter.activateQuest2();
 
-            if (q2stage >= QuestManager.GREGORIO_WAITING) {
+            if (q2stage >= QuestManager.MANUEL_DONE) {
                 gp.aSetter.activateGregorio();
             }
 

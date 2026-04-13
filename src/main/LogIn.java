@@ -197,7 +197,7 @@ public class LogIn {
         g2.setColor(new Color(0,0,0));
         String title = "Ink & Blood: Rizal's Adventure";
         g2.drawString(title, cx - strW(g2, title) / 2, gp.tileSize * 3);
-        g2.setColor(new Color(0,0,0, 150));
+        g2.setColor(new Color(0,0,0, 100));
         g2.drawString(title, (cx - strW(g2, title) / 2)+4, (gp.tileSize * 3)+5);
 
 

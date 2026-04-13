@@ -16,8 +16,8 @@ public class UI {
 
     //BUFFERED IMAGES FOR OBJECT
     BufferedImage full_exp_start, half_exp_start, empty_exp_start;
-    BufferedImage full_exp_mid,   half_exp_mid,   empty_exp_mid;
-    BufferedImage full_exp_end,   half_exp_end,   empty_exp_end;
+    BufferedImage full_exp_mid, half_exp_mid, empty_exp_mid;
+    BufferedImage full_exp_end, half_exp_end, empty_exp_end;
 
     public boolean messageOn = false;
     public boolean showPoemPanel = false;
@@ -241,7 +241,7 @@ public class UI {
 
         g2.drawString("[ F ]       to interact", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
         g2.drawString("[ Q ]   to view quests", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
-        g2.drawString("[ P ]          to pause/save", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
+        g2.drawString("[ P ]   to pause/save", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
 
 
     }
@@ -253,7 +253,7 @@ public class UI {
             g2.drawImage(titleBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
             //TITLENAME
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,62F));
             String text = "Ink & Blood: Rizal's Adventure";
             int x = getXforCenter(text);
             int y = gp.tileSize*3;
@@ -272,7 +272,7 @@ public class UI {
             g2.drawImage(gp.player.down3, x, y, gp.tileSize*2, gp.tileSize*2, null);
 
             //MENU
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,48F));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,38F));
 
             text = "NEW GAME";
             x = getXforCenter(text);
@@ -286,7 +286,7 @@ public class UI {
 
             text = "LOAD GAME";
             x = getXforCenter(text);
-            y += gp.tileSize;
+            y += gp.tileSize - 10;
 
             g2.setColor(commandNum == 1 ? new Color(255, 220, 80) : new Color(0, 0, 0));
             g2.drawString(text, x, y);
@@ -296,7 +296,7 @@ public class UI {
 
             text = "CREDITS";
             x = getXforCenter(text);
-            y += gp.tileSize;
+            y += gp.tileSize - 10;
 
             g2.setColor(commandNum == 2 ? new Color(255, 220, 80) : new Color(0, 0, 0));
             g2.drawString(text, x, y);
@@ -304,13 +304,23 @@ public class UI {
                 g2.drawString(">", (int) (x-(gp.tileSize*1.5)), y);
             }
 
-            text = "QUIT";
+            text = "LOG OUT";
             x = getXforCenter(text);
-            y += gp.tileSize;
+            y += gp.tileSize - 10;
 
             g2.setColor(commandNum == 3 ? new Color(255, 220, 80) : new Color(0, 0, 0));
             g2.drawString(text, x, y);
             if (commandNum == 3){
+                g2.drawString(">", x-(gp.tileSize*2), y);
+            }
+
+            text = "QUIT";
+            x = getXforCenter(text);
+            y += gp.tileSize - 10;
+
+            g2.setColor(commandNum == 4 ? new Color(255, 220, 80) : new Color(0, 0, 0));
+            g2.drawString(text, x, y);
+            if (commandNum == 4){
                 g2.drawString(">", x-(gp.tileSize*2), y);
             }
 
@@ -1407,25 +1417,43 @@ public class UI {
             }
         }
 
-        //EXIT
+        // LOG OUT
+        textX = getXforCenter("Log Out");
+        textY += gp.tileSize;
+        g2.drawString("Log Out", textX, textY);
+        if (commandNum == 4) {
+            g2.drawString(">", textX - 25, textY);
+            if (gp.keyP.enterPressed == true) {
+                gp.keyP.enterPressed = false;
+                gp.saveManager.save();
+                gp.stopMusic();
+                gp.userManager.logout();
+                gp.loginPanel.reset();
+                gp.gameState = gp.loginState;
+                commandNum = 0;
+                optionSubState = 0;
+            }
+        }
+
+        // EXIT
         textX = getXforCenter("Exit Game");
-        textY += gp.tileSize*2;
+        textY += gp.tileSize;
         g2.drawString("Exit Game", textX, textY);
-        if (commandNum == 4){
-            g2.drawString(">", textX-25, textY);
-            if (gp.keyP.enterPressed == true){
+        if (commandNum == 5) {
+            g2.drawString(">", textX - 25, textY);
+            if (gp.keyP.enterPressed == true) {
                 optionSubState = 3;
                 commandNum = 0;
             }
         }
 
-        //BACK
+        // BACK
         textX = getXforCenter("Back");
         textY += gp.tileSize;
         g2.drawString("Back", textX, textY);
-        if (commandNum == 5){
-            g2.drawString(">", textX-25, textY);
-            if (gp.keyP.enterPressed == true){
+        if (commandNum == 6) {
+            g2.drawString(">", textX - 25, textY);
+            if (gp.keyP.enterPressed == true) {
                 gp.gameState = gp.playState;
                 commandNum = 0;
             }
