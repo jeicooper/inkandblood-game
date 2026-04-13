@@ -11,11 +11,11 @@ import java.util.Properties;
 //Passwords are salted + SHA-256 hashed
 public class UserManager {
 
-    private static final String SAVES_DIR   = "saves";
-    private static final String USERS_FILE  = SAVES_DIR + File.separator + "users.properties";
+    private static final String SAVES_DIR = "saves";
+    private static final String USERS_FILE = SAVES_DIR + File.separator + "users.properties";
 
     private final Properties users = new Properties();
-    private String currentUser     = null;
+    private String currentUser = null;
 
     public UserManager() {
         ensureSavesDir();
@@ -27,10 +27,10 @@ public class UserManager {
     public String createAccount(String username, String password) {
         username = username.trim();
 
-        if (username.isEmpty())               return "Username cannot be empty.";
-        if (password.length() < 4)            return "Password must be at least 4 characters.";
+        if (username.isEmpty()) return "Username cannot be empty.";
+        if (password.length() < 4) return "Password must be at least 4 characters.";
         if (!username.matches("[\\w]{3,16}")) return "Username: 3-16 letters/numbers/underscore only.";
-        if (users.containsKey(username))      return "Username already exists.";
+        if (users.containsKey(username)) return "Username already exists.";
 
         String salt = generateSalt();
         String hash = hash(password, salt);
@@ -50,7 +50,7 @@ public class UserManager {
 
         String salt = parts[0];
         String expectedHash = parts[1];
-        String actualHash   = hash(password, salt);
+        String actualHash = hash(password, salt);
 
         if (!expectedHash.equals(actualHash)) return "Incorrect password.";
 
@@ -100,13 +100,13 @@ public class UserManager {
         }
     }
 
-    private String generateSalt() {
+    public String generateSalt() {
         byte[] bytes = new byte[16];
         new SecureRandom().nextBytes(bytes);
         return Base64.getEncoder().encodeToString(bytes);
     }
 
-    private String hash(String password, String salt) {
+    public String hash(String password, String salt) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             String salted = salt + password;
@@ -115,5 +115,18 @@ public class UserManager {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("SHA-256 not available", e);
         }
+    }
+
+    public boolean userExists(String username) {
+        return users.containsKey(username.trim());
+    }
+
+    public void deleteAccount(String username) {
+        users.remove(username.trim());
+        saveUsers();
+
+        // also delete their save file
+        File saveFile = new File("saves" + File.separator + username.trim() + ".dat");
+        if (saveFile.exists()) saveFile.delete();
     }
 }

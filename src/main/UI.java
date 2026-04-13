@@ -556,7 +556,7 @@ public class UI {
             int nameX = x + gp.tileSize;
             int nameY = y - 15;
 
-            // WHITE OUTLINE
+            // BLACK OUTLINE
             g2.setColor(Color.black);
             g2.drawString(currentSpeakerName, nameX - 1, nameY - 1);
             g2.drawString(currentSpeakerName, nameX + 1, nameY - 1);
