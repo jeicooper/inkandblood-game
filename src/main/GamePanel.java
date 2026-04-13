@@ -54,6 +54,10 @@ public class GamePanel extends JPanel implements Runnable {
     public QuestManager questManager = new QuestManager(this);
     public CutsceneManager cutsceneManager = new CutsceneManager(this);
 
+    public UserManager userManager = new UserManager();
+    public SaveManager saveManager;
+    public LogIn  loginPanel;
+
     Thread gameThread;
 
 
@@ -76,6 +80,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int optionState = 5;
     public final int questState = 6;
     public final int cutsceneState = 7;
+    public final int loginState = 8;
 
 
     public GamePanel(){
@@ -94,7 +99,9 @@ public class GamePanel extends JPanel implements Runnable {
 //      playMusic(0);
 
         questManager.init();
-        gameState = titleState;
+        saveManager = new SaveManager(this, userManager);
+        loginPanel  = new LogIn(this, userManager, saveManager);
+        gameState   = loginState;
 
         temporaryScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D)temporaryScreen.getGraphics();
@@ -172,6 +179,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update(){
 
+        if (gameState == loginState) {
+            return;
+        }
+
         if (gameState == playState){
             //PLAYER
             player.update();
@@ -200,7 +211,10 @@ public class GamePanel extends JPanel implements Runnable {
             drawStart = System.nanoTime();
         }
 
-        if (gameState == titleState) {
+        if (gameState == loginState) {
+            loginPanel.draw(g2);
+        }
+        else if (gameState == titleState) {
             ui.draw(g2);
         }
         else if (gameState == cutsceneState) {
@@ -506,6 +520,13 @@ public class GamePanel extends JPanel implements Runnable {
         g.drawImage(temporaryScreen, 0,0,screenWidth2, screenHeight2, null);
         g.dispose();
 
+    }
+
+    public void quickSave() {
+        if (userManager.isLoggedIn()) {
+            saveManager.save();
+            ui.showMessage("Game saved!");
+        }
     }
 
     public void playMusic(int i){

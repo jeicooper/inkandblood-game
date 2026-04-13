@@ -106,6 +106,9 @@ public class UI {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(Color.white);
 
+        //LOG IN SCREEN
+        if (gp.gameState == gp.loginState) return;
+
         //TITLE SCREEN
         if (gp.gameState == gp.titleState){
             drawTitleScreen();
@@ -274,6 +277,8 @@ public class UI {
             text = "NEW GAME";
             x = getXforCenter(text);
             y += gp.tileSize*3;
+
+            g2.setColor(commandNum == 0 ? new Color(255, 220, 80) : new Color(0, 0, 0));
             g2.drawString(text, x, y);
             if (commandNum == 0){
                 g2.drawString(">", x-gp.tileSize, y);
@@ -282,6 +287,8 @@ public class UI {
             text = "LOAD GAME";
             x = getXforCenter(text);
             y += gp.tileSize;
+
+            g2.setColor(commandNum == 1 ? new Color(255, 220, 80) : new Color(0, 0, 0));
             g2.drawString(text, x, y);
             if (commandNum == 1){
                 g2.drawString(">", x-gp.tileSize, y);
@@ -290,6 +297,8 @@ public class UI {
             text = "CREDITS";
             x = getXforCenter(text);
             y += gp.tileSize;
+
+            g2.setColor(commandNum == 2 ? new Color(255, 220, 80) : new Color(0, 0, 0));
             g2.drawString(text, x, y);
             if (commandNum == 2){
                 g2.drawString(">", (int) (x-(gp.tileSize*1.5)), y);
@@ -298,79 +307,38 @@ public class UI {
             text = "QUIT";
             x = getXforCenter(text);
             y += gp.tileSize;
+
+            g2.setColor(commandNum == 3 ? new Color(255, 220, 80) : new Color(0, 0, 0));
             g2.drawString(text, x, y);
             if (commandNum == 3){
                 g2.drawString(">", x-(gp.tileSize*2), y);
             }
+
+            // Hint
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+            g2.setColor(Color.LIGHT_GRAY);
+            String hint = "[ W / S ] Navigate    [ ENTER ] Select";
+            g2.drawString(hint, getXforCenter(hint), gp.screenHeight - 20);
         }
 
         //CUTSCENE SCREEN
         else if (titleScreenState == 1) {
 
-            g2.drawImage(cutsceneBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
             int tailX = gp.tileSize*18;
 
-            g2.setColor(new Color(123, 84, 47));
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,42f));
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,38f));
 
             String text = "This is a story about a great hero in the Philippines";
             int x = getXforCenter(text);
-            int y = gp.tileSize*3;
+            int y = gp.tileSize*5;
             g2.drawString(text, x, y);
 
-            g2.setColor(Color.darkGray);
-            text = "--------------------------------------------------------";
-            x = getXforCenter(text);
-            y += gp.tileSize;
-            g2.drawString(text, x, y);
-
-            g2.setColor(new Color(152, 112, 44));
-
-            text = "Movement: W A S D";
-            x = gp.tileSize;
-            y = gp.tileSize*5;
-            g2.drawString(text, x, y);
-
-            text = "Options: ESC";
-            x = gp.tileSize;
-            y += gp.tileSize;
-            g2.drawString(text, x, y);
-
-            text = "Interact: F";
-            x = gp.tileSize;
-            y += gp.tileSize;
-            g2.drawString(text, x, y);
-
-            text = "Pause: P";
-            x = getXforAlignToRight(text,tailX);
-            y = gp.tileSize*5;
-            g2.drawString(text, x, y);
-
-            text = "Stats/Inventory: C";
-            x = getXforAlignToRight(text, tailX);
-            y += gp.tileSize;
-            g2.drawString(text, x, y);
-
-            text = "Confirm: Enter";
-            x = getXforAlignToRight(text, tailX);
-            y += gp.tileSize;
-            g2.drawString(text, x, y);
-
-            text = "Quest Panel: Q";
-            x = getXforCenter(text);
-            y += gp.tileSize;
-            g2.drawString(text, x,y);
-
-            g2.setColor(Color.darkGray);
-            text = "--------------------------------------------------------";
-            x = getXforCenter(text);
-            y += gp.tileSize;
-            g2.drawString(text, x, y);
-
-            g2.setColor(new Color(123, 84, 47));
             text = "Enter Game";
             x = getXforCenter(text);
-            y += gp.tileSize;
+            y += gp.tileSize*4;
             g2.drawString(text, x, y);
             if (commandNum == 0){
                 g2.drawString(">", x-gp.tileSize, y);
@@ -523,6 +491,37 @@ public class UI {
             g2.drawString(text, x, y);
             if (commandNum == 0){
                 g2.drawString(">", x-gp.tileSize, y);
+            }
+        }
+
+        // NO SAVE FILE SCREEN
+        else if (titleScreenState == 4) {
+
+            g2.drawImage(cutsceneBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 48f));
+            g2.setColor(new Color(230, 80, 80));
+            String text = "No Save File Found";
+            int x = getXforCenter(text);
+            int y = gp.tileSize * 4;
+            g2.drawString(text, x, y);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 30f));
+            g2.setColor(new Color(180, 180, 180));
+            String sub = "Start a New Game first to create a save.";
+            x = getXforCenter(sub);
+            y += gp.tileSize;
+            g2.drawString(sub, x, y);
+
+            // GO BACK option
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 38f));
+            g2.setColor(Color.white);
+            String back = "Go Back";
+            x = getXforCenter(back);
+            y += gp.tileSize * 2;
+            g2.drawString(back, x, y);
+            if (commandNum == 0) {
+                g2.drawString(">", x - gp.tileSize, y);
             }
         }
 
@@ -2064,16 +2063,19 @@ public class UI {
 
 
     public void drawSubWindow(int x, int y, int width, int height){
+        drawSubWindow(this.g2, x, y, width, height);
+    }
 
+    public void drawSubWindow(Graphics2D g2, int x, int y, int width, int height){
         Color c = new Color(0, 0, 0, 200);
         g2.setColor(c);
         g2.fillRoundRect(x, y, width, height, 35, 35);
-
         c = new Color(255,255,255);
         g2.setColor(c);
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x + 5, y + 5 , width - 10, height - 10, 25, 25);
     }
+
     public int getXforCenter(String text){
 
         int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();

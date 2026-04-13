@@ -1,0 +1,279 @@
+package main;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+
+
+public class LogIn {
+
+    private BufferedImage loginBG;
+
+    private final GamePanel   gp;
+    private final UserManager userManager;
+    private final SaveManager saveManager;
+
+    public int mode = 0;
+
+    private final StringBuilder usernameField = new StringBuilder();
+    private final StringBuilder passwordField = new StringBuilder();
+    private boolean focusOnUsername = true;
+
+    private String errorMessage = "";
+    private int    menuCursor   = 0;
+
+    // Colours
+    private static final Color GOLD        = new Color(255, 220, 80);
+    private static final Color LIGHT_GREY  = new Color(180, 180, 180);
+    private static final Color ERROR_RED   = new Color(230, 80,  80);
+    private static final Color OK_GREEN    = new Color(80,  220, 80);
+
+    public LogIn(GamePanel gp, UserManager userManager, SaveManager saveManager) {
+        this.gp          = gp;
+        this.userManager = userManager;
+        this.saveManager = saveManager;
+
+        try {
+            loginBG = ImageIO.read(getClass().getResourceAsStream("/images/introduction.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reset() {
+        mode = 0;
+        menuCursor = 0;
+        clearFields();
+        errorMessage = "";
+    }
+
+    private void clearFields() {
+        usernameField.setLength(0);
+        passwordField.setLength(0);
+        focusOnUsername = true;
+    }
+
+    //KEY HANDLERS
+
+    public void handleKey(int code, char keyChar) {
+        if (mode == 0) {
+            handleMenuKey(code);
+        } else {
+            handleFormKey(code, keyChar);
+        }
+    }
+
+    private void handleMenuKey(int code) {
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            menuCursor = (menuCursor - 1 + 3) % 3;
+        }
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            menuCursor = (menuCursor + 1) % 3;
+        }
+        if (code == KeyEvent.VK_ENTER) {
+            if (menuCursor == 0) { mode = 1; clearFields(); errorMessage = ""; }
+            if (menuCursor == 1) { mode = 2; clearFields(); errorMessage = ""; }
+            if (menuCursor == 2) { System.exit(0); }
+        }
+    }
+
+    private void handleFormKey(int code, char keyChar) {
+        errorMessage = "";
+
+        if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_UP) {
+            focusOnUsername = !focusOnUsername;
+            return;
+        }
+
+        if (code == KeyEvent.VK_ESCAPE) {
+            mode = 0;
+            clearFields();
+            return;
+        }
+
+        // BACKSPACE
+        if (code == KeyEvent.VK_BACK_SPACE) {
+            StringBuilder active = focusOnUsername ? usernameField : passwordField;
+            if (active.length() > 0) active.deleteCharAt(active.length() - 1);
+            return;
+        }
+
+        // ENTER = submit
+        if (code == KeyEvent.VK_ENTER) {
+            submit();
+            return;
+        }
+
+        // Printable characters (cap field lengths)
+        if (keyChar >= 32 && keyChar != 127) {
+            if (focusOnUsername && usernameField.length() < 16) {
+                usernameField.append(keyChar);
+            } else if (!focusOnUsername && passwordField.length() < 32) {
+                passwordField.append(keyChar);
+            }
+        }
+    }
+
+    private void submit() {
+        String username = usernameField.toString().trim();
+        String password = passwordField.toString();
+
+        if (mode == 1) {
+            // Sign in
+            String error = userManager.login(username, password);
+            if (error != null) {
+                errorMessage = error;
+            } else {
+                onLoginSuccess();
+            }
+        } else if (mode == 2) {
+            String error = userManager.createAccount(username, password);
+            if (error != null) {
+                errorMessage = error;
+            } else {
+                userManager.login(username, password);
+                onLoginSuccess();
+            }
+        }
+    }
+
+    private void onLoginSuccess() {
+        boolean loaded = saveManager.load();
+        if (loaded) {
+            gp.gameState = gp.playState;
+            gp.playMusic(0);
+        } else {
+            gp.gameState = gp.titleState;
+        }
+    }
+
+    public void draw(Graphics2D g2) {
+        // Background
+        g2.setColor(Color.black);
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        if (loginBG != null) {
+            g2.drawImage(loginBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        } else if (gp.ui.cutsceneBG != null) {
+            g2.drawImage(gp.ui.cutsceneBG, 0, 0, gp.screenWidth, gp.screenHeight, null);
+        }
+
+        g2.setColor(new Color(0, 0, 0, 70));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        if (mode == 0) drawMenu(g2);
+        else           drawForm(g2);
+    }
+
+    private void drawMenu(Graphics2D g2) {
+        int cx = gp.screenWidth / 2;
+
+        // Title
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 62f));
+        g2.setColor(new Color(0,0,0));
+        String title = "Ink & Blood: Rizal's Adventure";
+        g2.drawString(title, cx - strW(g2, title) / 2, gp.tileSize * 3);
+        g2.setColor(new Color(0,0,0, 150));
+        g2.drawString(title, (cx - strW(g2, title) / 2)+4, (gp.tileSize * 3)+5);
+
+
+        // Menu items
+        String[] items = { "Sign In", "Create Account", "Quit" };
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 38f));
+        int itemY = gp.tileSize * 5 + 10;
+        for (int i = 0; i < items.length; i++) {
+            boolean selected = (i == menuCursor);
+            g2.setColor(selected ? GOLD : Color.white);
+            int ix = cx - strW(g2, items[i]) / 2;
+            g2.drawString(items[i], ix, itemY);
+            if (selected) {
+                g2.drawString(">", ix - gp.tileSize, itemY);
+            }
+            itemY += gp.tileSize;
+        }
+
+        // Hint
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ W / S ] Navigate    [ ENTER ] Select";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, gp.screenHeight - 20);
+    }
+
+    private void drawForm(Graphics2D g2) {
+        int panelW = gp.tileSize * 10;
+        int panelH = gp.tileSize * 7;
+        int panelX = gp.screenWidth  / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+
+        gp.ui.drawSubWindow(g2, panelX, panelY, panelW, panelH);
+
+        int pad  = gp.tileSize;
+        int cx   = panelX + panelW / 2;
+
+        // Title
+        String formTitle = (mode == 1) ? "Sign In" : "Create Account";
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 36f));
+        g2.setColor(GOLD);
+        g2.drawString(formTitle, cx - strW(g2, formTitle) / 2, panelY + pad);
+
+        int fieldW = panelW - pad * 2;
+        int fieldX = panelX + pad;
+        int fieldY = panelY + pad + 44;
+
+        // Username field
+        drawField(g2, "Username", usernameField.toString(), false,
+                focusOnUsername, fieldX, fieldY, fieldW);
+
+        fieldY += gp.tileSize + 30;
+
+        // Password field (mask with dots)
+        String masked = "•".repeat(passwordField.length());
+        drawField(g2, "Password", masked, true,
+                !focusOnUsername, fieldX, fieldY, fieldW);
+
+        // Error / hint
+        if (!errorMessage.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 22f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(errorMessage, cx - strW(g2, errorMessage) / 2, fieldY + gp.tileSize + 10);
+        }
+
+        // Bottom hints
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+        g2.setColor(LIGHT_GREY);
+        String nav = "[ ARROW KEYS ] Switch field    [ ENTER ] Confirm    [ ESC ] Back";
+        g2.drawString(nav, cx - strW(g2, nav) / 2, panelY + panelH - 14);
+    }
+
+    private void drawField(Graphics2D g2, String label, String value, boolean isPassword, boolean focused, int x, int y, int w) {
+        int h = gp.tileSize - 4;
+
+        // Label
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 22f));
+        g2.setColor(LIGHT_GREY);
+        g2.drawString(label, x, y - 4);
+
+        // Box
+        Color boxColor = focused ? GOLD : new Color(100, 100, 100);
+        g2.setColor(new Color(20, 20, 20, 200));
+        g2.fillRoundRect(x, y, w, h, 8, 8);
+        g2.setColor(boxColor);
+        g2.setStroke(new BasicStroke(focused ? 2.5f : 1.5f));
+        g2.drawRoundRect(x, y, w, h, 8, 8);
+
+        // Value + cursor
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 26f));
+        g2.setColor(Color.white);
+        String display = value + (focused && blinkCursor() ? "|" : "");
+        g2.drawString(display, x + 10, y + h - 8);
+    }
+
+    private boolean blinkCursor() {
+        return (System.currentTimeMillis() / 500) % 2 == 0;
+    }
+
+    private int strW(Graphics2D g2, String s) {
+        return g2.getFontMetrics().stringWidth(s);
+    }
+}

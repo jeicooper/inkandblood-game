@@ -26,6 +26,12 @@ public class KeyHandler implements KeyListener {
 
         int code = e.getKeyCode();
 
+        // LOGIN STATE
+        if (gp.gameState == gp.loginState) {
+            char ch = e.getKeyChar();
+            gp.loginPanel.handleKey(code, ch);
+            return;
+        }
         //TITLE STATE
         if (gp.gameState == gp.titleState) {
             titleState(code);
@@ -91,7 +97,15 @@ public class KeyHandler implements KeyListener {
 
                 //load game
                 if (gp.ui.commandNum == 1){
-                    //load game
+                    if (gp.saveManager.hasSave()) {
+                        if (gp.saveManager.load()) {
+                            gp.gameState = gp.playState;
+                            gp.playMusic(0);
+                        }
+                    } else {
+                        gp.ui.titleScreenState = 4;
+                        gp.ui.commandNum = 0;
+                    }
                 }
 
                 //credits
@@ -188,6 +202,14 @@ public class KeyHandler implements KeyListener {
             }
         }
 
+        // NO SAVE FILE SCREEN
+        else if (gp.ui.titleScreenState == 4) {
+            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+                gp.ui.titleScreenState = 0;
+                gp.ui.commandNum = 0;
+            }
+        }
+
     }
     public void playState(int code){
         if (gp.ui.quizPanelOpen) {
@@ -249,6 +271,7 @@ public class KeyHandler implements KeyListener {
     }
     public void pauseState(int code){
         if(code == KeyEvent.VK_P){
+            gp.quickSave();
             gp.playMusic(0);
             gp.gameState = gp.playState;
             return;
