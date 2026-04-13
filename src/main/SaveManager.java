@@ -17,7 +17,6 @@ public class SaveManager {
     }
 
     // SAVE
-
     public void save() {
         if (!userManager.isLoggedIn()) return;
 
@@ -153,6 +152,8 @@ public class SaveManager {
         gp.ui.questPageNum = d.questPageNum;
 
         applyChapterState(d.spriteVersion, qm.currentQuest);
+        removeCollectedObjects();
+        removeCompletedNPCs();
 
         return true;
     }
@@ -171,33 +172,58 @@ public class SaveManager {
     }
 
     private void applyChapterState(int spriteVersion, int currentQuest) {
-        if (currentQuest >= QuestManager.QUEST5) {
+
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length;  i++) gp.obj[i]  = null;
+
+        if (currentQuest >= QuestManager.QUEST6) {
             gp.tileM.loadMap("/maps/Chapter3.txt");
             gp.player.loadSprite3("");
-            for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
-            for (int i = 0; i < gp.obj.length;  i++) gp.obj[i]  = null;
+            gp.aSetter.activateQuest6();
+
+        } else if (currentQuest == QuestManager.QUEST5) {
+            gp.tileM.loadMap("/maps/Chapter3.txt");
+            gp.player.loadSprite3("");
             gp.aSetter.activateChapter3();
 
-        } else if (currentQuest >= QuestManager.QUEST3) {
+        } else if (currentQuest == QuestManager.QUEST4) {
+            gp.tileM.loadMap("/maps/Chapter2.txt");
+            gp.player.loadSprite2("");
+            gp.aSetter.activateQuest4();
+
+        } else if (currentQuest == QuestManager.QUEST3) {
             gp.tileM.loadMap("/maps/Chapter2.txt");
             gp.player.loadSprite2("");
 
-            for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
-            for (int i = 0; i < gp.obj.length;  i++) gp.obj[i]  = null;
-
-            if (currentQuest == QuestManager.QUEST4) {
-                gp.aSetter.activateQuest4();
-            } else {
+            int q3stage = gp.questManager.quest3Stage;
+            if (q3stage >= QuestManager.TALK_PROFESSOR) {
                 gp.aSetter.activateEnrollment();
+            } else {
+                gp.aSetter.activateChapter2();
+            }
+
+        } else if (currentQuest == QuestManager.QUEST2) {
+
+            int q2stage = gp.questManager.quest2Stage;
+
+            gp.npc[0] = new entity.NPC_Teodora(gp);
+            gp.npc[0].worldX = 64 * gp.tileSize;
+            gp.npc[0].worldY = 24 * gp.tileSize;
+
+            gp.npc[11] = new entity.NPC_Francisco(gp);
+            gp.npc[11].worldX = 65 * gp.tileSize;
+            gp.npc[11].worldY = 24 * gp.tileSize;
+
+            gp.aSetter.activateQuest2();
+
+            if (q2stage >= QuestManager.GREGORIO_WAITING) {
+                gp.aSetter.activateGregorio();
             }
 
         } else {
-            if (currentQuest == QuestManager.QUEST2) {
-                gp.aSetter.activateQuest2();
-            }
+            gp.aSetter.setNPC();
         }
     }
-
     private Entity createItemByName(String name) {
         switch (name) {
             case "Sa Aking Mga Kabata":         return new OBJ_Poem(gp);
@@ -224,6 +250,140 @@ public class SaveManager {
             default:
                 System.out.println("SaveManager: unknown item '" + name + "', skipping.");
                 return null;
+        }
+    }
+
+    private void removeCollectedObjects() {
+        QuestManager qm = gp.questManager;
+
+        // QUEST 5
+        if (qm.currentQuest == QuestManager.QUEST5) {
+
+            if (qm.quest5Stage > QuestManager.FIND_LETTER) {
+                for (int i = 0; i < gp.obj.length; i++) {
+                    if (gp.obj[i] == null) continue;
+                    if (gp.obj[i].name.equals("Draft of Noli Me Tangere")) {
+                        gp.obj[i] = null;
+                    }
+                }
+            }
+
+            if (qm.quest5Stage >= QuestManager.COLLECT_OBJECTS) {
+                String[] manuscriptNames = {
+                        "Scalpel", "Mirror", "Dried Flower",
+                        "Rosary", "Portrait", "Scrap Metal", "Empty Plate"
+                };
+                for (int i = 0; i < gp.obj.length; i++) {
+                    if (gp.obj[i] == null) continue;
+                    for (int j = 0; j < manuscriptNames.length; j++) {
+                        if (gp.obj[i] == null) break;
+                        if (gp.obj[i].name.equals(manuscriptNames[j])
+                                && qm.manuscriptParts[j]) {
+                            gp.obj[i] = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        // QUEST 6
+        if (qm.currentQuest == QuestManager.QUEST6) {
+
+            if (qm.quest6Stage > QuestManager.FIND_DRAFT) {
+                for (int i = 0; i < gp.obj.length; i++) {
+                    if (gp.obj[i] == null) continue;
+                    if (gp.obj[i].name.equals("Draft of El Filibusterismo")) {
+                        gp.obj[i] = null;
+                    }
+                }
+            }
+
+            if (qm.quest6Stage >= QuestManager.COLLECT_OBJECTS_Q6) {
+                String[] elFiliNames = {
+                        "Glasses", "Newspaper", "Old Letter", "Worn Letter"
+                };
+                for (int i = 0; i < gp.obj.length; i++) {
+                    if (gp.obj[i] == null) continue;
+                    for (int j = 0; j < elFiliNames.length; j++) {
+                        if (gp.obj[i] == null) break;
+                        if (j < qm.elFiliParts.length
+                                && gp.obj[i].name.equals(elFiliNames[j])
+                                && qm.elFiliParts[j]) {
+                            gp.obj[i] = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        // QUEST 2
+        if (qm.currentQuest == QuestManager.QUEST2) {
+
+            if (qm.quest2Stage == QuestManager.JOSE_WAITING) {
+                int bucketsInInventory = gp.questManager.countItem("Paint Bucket");
+                int brushInInventory   = gp.questManager.countItem("Paintbrush");
+                int canvasInInventory  = gp.questManager.countItem("Canvas");
+                int bucketsRemoved = 0, brushRemoved = 0, canvasRemoved = 0;
+
+                for (int i = 0; i < gp.obj.length; i++) {
+                    if (gp.obj[i] == null) continue;
+                    if (gp.obj[i].name.equals("Paint Bucket") && bucketsRemoved < bucketsInInventory) {
+                        gp.obj[i] = null; bucketsRemoved++;
+                    } else if (gp.obj[i].name.equals("Paintbrush") && brushRemoved < brushInInventory) {
+                        gp.obj[i] = null; brushRemoved++;
+                    } else if (gp.obj[i].name.equals("Canvas") && canvasRemoved < canvasInInventory) {
+                        gp.obj[i] = null; canvasRemoved++;
+                    }
+                }
+            }
+
+            if (qm.quest2Stage >= QuestManager.JOSE_DONE) {
+                String[] artSupplies = { "Paint Bucket", "Paintbrush", "Canvas" };
+                for (int i = 0; i < gp.obj.length; i++) {
+                    if (gp.obj[i] == null) continue;
+                    for (String s : artSupplies) {
+                        if (gp.obj[i] == null) break;
+                        if (gp.obj[i].name.equals(s)) gp.obj[i] = null;
+                    }
+                }
+            }
+
+            if (qm.quest2Stage >= QuestManager.GREGORIO_DONE) {
+                for (int i = 0; i < gp.obj.length; i++) {
+                    if (gp.obj[i] == null) continue;
+                    if (gp.obj[i].name.equals("Quill") ||
+                            gp.obj[i].name.equals("Notebook")) {
+                        gp.obj[i] = null;
+                    }
+                }
+
+            } else if (qm.quest2Stage == QuestManager.GREGORIO_WAITING) {
+                boolean hasQuill    = gp.questManager.countItem("Quill")    >= 1;
+                boolean hasNotebook = gp.questManager.countItem("Notebook") >= 1;
+                for (int i = 0; i < gp.obj.length; i++) {
+                    if (gp.obj[i] == null) continue;
+                    if (hasQuill    && gp.obj[i].name.equals("Quill"))    gp.obj[i] = null;
+                    if (hasNotebook && gp.obj[i].name.equals("Notebook")) gp.obj[i] = null;
+                }
+            }
+        }
+    }
+
+    private void removeCompletedNPCs() {
+        QuestManager qm = gp.questManager;
+
+        if (qm.currentQuest == QuestManager.QUEST2) {
+            int stage = qm.quest2Stage;
+
+            if (stage >= QuestManager.JOSE_DONE) {
+                gp.npc[12] = null;
+            }
+            if (stage >= QuestManager.MANUEL_DONE) {
+                gp.npc[13] = null;
+            }
+            if (stage >= QuestManager.GREGORIO_DONE) {
+                gp.npc[14] = null;
+            }
         }
     }
 }

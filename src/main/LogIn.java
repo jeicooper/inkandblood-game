@@ -179,9 +179,9 @@ public class LogIn {
 
 
         // Menu items
-        String[] items = { "Sign In", "Create Account", "Quit" };
+        String[] items = { "Log In", "Sign Up", "Quit" };
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 38f));
-        int itemY = gp.tileSize * 5 + 10;
+        int itemY = gp.tileSize * 6 + 10;
         for (int i = 0; i < items.length; i++) {
             boolean selected = (i == menuCursor);
             g2.setColor(selected ? GOLD : Color.white);
@@ -212,7 +212,7 @@ public class LogIn {
         int cx   = panelX + panelW / 2;
 
         // Title
-        String formTitle = (mode == 1) ? "Sign In" : "Create Account";
+        String formTitle = (mode == 1) ? "Log In" : "Sign Up";
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 36f));
         g2.setColor(GOLD);
         g2.drawString(formTitle, cx - strW(g2, formTitle) / 2, panelY + pad);
@@ -236,7 +236,7 @@ public class LogIn {
         if (!errorMessage.isEmpty()) {
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 22f));
             g2.setColor(ERROR_RED);
-            g2.drawString(errorMessage, cx - strW(g2, errorMessage) / 2, fieldY + gp.tileSize + 10);
+            g2.drawString(errorMessage, cx - strW(g2, errorMessage) / 2, fieldY + gp.tileSize + 40);
         }
 
         // Bottom hints

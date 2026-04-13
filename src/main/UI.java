@@ -241,7 +241,7 @@ public class UI {
 
         g2.drawString("[ F ]       to interact", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
         g2.drawString("[ Q ]   to view quests", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
-        g2.drawString("[ P ]          to pause", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
+        g2.drawString("[ P ]          to pause/save", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
 
 
     }
@@ -253,7 +253,7 @@ public class UI {
             g2.drawImage(titleBackground, 0, 0, gp.screenWidth, gp.screenHeight, null);
 
             //TITLENAME
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD,80F));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD,60F));
             String text = "Ink & Blood: Rizal's Adventure";
             int x = getXforCenter(text);
             int y = gp.tileSize*3;
@@ -423,7 +423,6 @@ public class UI {
             if (commandNum == 0){
                 g2.drawString(">", x-gp.tileSize, y);
             }
-
 
         }
 
