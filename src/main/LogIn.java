@@ -139,13 +139,7 @@ public class LogIn {
     }
 
     private void onLoginSuccess() {
-        boolean loaded = saveManager.load();
-        if (loaded) {
-            gp.gameState = gp.playState;
-            gp.playMusic(0);
-        } else {
-            gp.gameState = gp.titleState;
-        }
+        gp.gameState = gp.titleState;
     }
 
     public void draw(Graphics2D g2) {
