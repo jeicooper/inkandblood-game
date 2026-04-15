@@ -25,6 +25,15 @@ public class AdminManager {
         return parts[1].equals(userManager.hash(password, parts[0]));
     }
 
+    public java.util.List<String> getAllUsernames() {
+        java.util.List<String> list = new java.util.ArrayList<>();
+        for (Object key : userManager.getAllUsernames()) {
+            list.add(key.toString());
+        }
+        java.util.Collections.sort(list);
+        return list;
+    }
+
     public String resetAccount(String username) {
         username = username.trim();
         if (!userManager.userExists(username)) {

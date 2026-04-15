@@ -279,6 +279,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+
+
     private void drawDeliveryZone(Graphics2D g2) {
 
         int screenX = questManager.deliveryWorldX - player.worldX + player.screenX;

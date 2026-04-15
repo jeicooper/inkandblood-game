@@ -22,6 +22,10 @@ public class UserManager {
         loadUsers();
     }
 
+    public java.util.Set<Object> getAllUsernames() {
+        return users.keySet();
+    }
+
     // PUBLIC API
 
     public String createAccount(String username, String password) {
