@@ -71,7 +71,7 @@ public class QuestManager {
     public final int NOTEBOOK_REQUIRED = 1;
 
     public int checkpointsHit          = 0;
-    public final int TOTAL_CHECKPOINTS = 6;
+    public final int TOTAL_CHECKPOINTS = 10;
     public boolean courseCompleted     = false;
     public boolean bootsActive         = false;
 
@@ -148,12 +148,16 @@ public class QuestManager {
         deliveryRadius = gp.tileSize * 2;
 
         checkpoints = new int[][]{
-                {74 * gp.tileSize, 34 * gp.tileSize},
-                {74 * gp.tileSize, 34 * gp.tileSize},
-                {74 * gp.tileSize, 34 * gp.tileSize},
-                {74 * gp.tileSize, 34 * gp.tileSize},
-                {74 * gp.tileSize, 34 * gp.tileSize},
-                {74 * gp.tileSize, 34 * gp.tileSize},
+                {29 * gp.tileSize, 34 * gp.tileSize},
+                {54 * gp.tileSize, 34 * gp.tileSize},
+                {53 * gp.tileSize, 48 * gp.tileSize},
+                {57 * gp.tileSize, 61 * gp.tileSize},
+                {61 * gp.tileSize, 71 * gp.tileSize},
+                {69 * gp.tileSize, 81 * gp.tileSize},
+                {80 * gp.tileSize, 76 * gp.tileSize},
+                {74 * gp.tileSize, 61 * gp.tileSize},
+                {68 * gp.tileSize, 48 * gp.tileSize},
+                {74 * gp.tileSize, 35 * gp.tileSize}
         };
         checkpointHit = new boolean[TOTAL_CHECKPOINTS];
     }
