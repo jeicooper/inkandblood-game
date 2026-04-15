@@ -279,7 +279,39 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    public void resetGame() {
+        // reset player position and stats
+        player.setDefaultValues();
+        player.getPlayerImage();
+        player.inventory.clear();
 
+        // reset quest manager
+        questManager = new QuestManager(this);
+        questManager.init();
+
+        // clear all NPCs and objects
+        for (int i = 0; i < npc.length; i++) npc[i] = null;
+        for (int i = 0; i < obj.length; i++) obj[i] = null;
+
+        // reset NPC and objects to chapter 1 defaults
+        aSetter.setNPC();
+        aSetter.setObject();
+
+        // reset UI state
+        ui.questPageNum = 0;
+        ui.commandNum = 0;
+        ui.slotCol = 0;
+        ui.slotRow = 0;
+        ui.messageOn = false;
+        ui.showPoemPanel = false;
+        ui.currentDialogue = "";
+        ui.currentSpeakerName = "";
+        ui.activeLetter = "";
+        talkingTo = null;
+
+        // reset tile map to chapter 1
+        tileM.loadMap("/maps/Chapter1.txt");
+    }
 
     private void drawDeliveryZone(Graphics2D g2) {
 

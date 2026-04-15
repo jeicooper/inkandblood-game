@@ -180,6 +180,7 @@ public class LogIn {
     }
 
     private void onLoginSuccess() {
+        gp.resetGame();
         gp.gameState = gp.titleState;
     }
 
