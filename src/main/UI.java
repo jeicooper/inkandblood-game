@@ -34,6 +34,7 @@ public class UI {
     public int commandNum = 0;
     public int titleScreenState = 0;
     public int optionSubState = 0;
+    public int newGameConfirmCursor = 0;
 
     public int slotCol = 0;
     public int slotRow = 0;
@@ -177,6 +178,11 @@ public class UI {
         //QUEST STATE
         if (gp.gameState == gp.questState) {
             drawQuestScreen();
+        }
+
+        //CONFIRMATION
+        if (gp.gameState == gp.newGameConfirmState) {
+            drawNewGameConfirm();
         }
 
 
@@ -752,6 +758,68 @@ public class UI {
 
         }
 
+    }
+    public void drawNewGameConfirm() {
+        // dim background
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int panelW = gp.tileSize * 12;
+        int panelH = gp.tileSize * 7;
+        int panelX = gp.screenWidth  / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        drawSubWindow(panelX, panelY, panelW, panelH);
+
+        int cx = panelX + panelW / 2;
+
+        // title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 32f));
+        g2.setColor(new Color(230, 80, 80));
+        String title = "Start New Game?";
+        g2.drawString(title, cx - getXWidth(title) / 2, panelY + gp.tileSize);
+
+        // warning — only shown if save exists
+        if (gp.saveManager.hasSave()) {
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
+            g2.setColor(new Color(255, 180, 60));
+            String warn1 = "You have a saved game.";
+            g2.drawString(warn1, cx - getXWidth(warn1) / 2, panelY + gp.tileSize + 40);
+
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20f));
+            g2.setColor(new Color(200, 200, 200));
+            String warn2 = "Starting a new game will permanently";
+            String warn3 = "delete your current progress.";
+            g2.drawString(warn2, cx - getXWidth(warn2) / 2, panelY + gp.tileSize + 68);
+            g2.drawString(warn3, cx - getXWidth(warn3) / 2, panelY + gp.tileSize + 92);
+        } else {
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 22f));
+            g2.setColor(new Color(200, 200, 200));
+            String msg = "Begin your adventure as Jose Rizal.";
+            g2.drawString(msg, cx - getXWidth(msg) / 2, panelY + gp.tileSize + 54);
+        }
+
+        // Yes / No options
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 34f));
+        int optY = panelY + gp.tileSize * 5;
+
+        g2.setColor(newGameConfirmCursor == 0 ? new Color(255, 220, 80) : Color.white);
+        String yes = "Yes, start new game";
+        g2.drawString(yes, cx - getXWidth(yes) / 2, optY);
+        if (newGameConfirmCursor == 0) {
+            g2.drawString(">", cx - getXWidth(yes) / 2 - gp.tileSize, optY);
+        }
+
+        g2.setColor(newGameConfirmCursor == 1 ? new Color(255, 220, 80) : Color.white);
+        String no = "Go back";
+        g2.drawString(no, cx - getXWidth(no) / 2, optY + gp.tileSize);
+        if (newGameConfirmCursor == 1) {
+            g2.drawString(">", cx - getXWidth(no) / 2 - gp.tileSize, optY + gp.tileSize);
+        }
+    }
+
+    // helper — add this small private method too:
+    private int getXWidth(String text) {
+        return (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
     }
 
     public void drawOptionScreen(){

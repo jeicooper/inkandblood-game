@@ -81,6 +81,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int questState = 6;
     public final int cutsceneState = 7;
     public final int loginState = 8;
+    public final int newGameConfirmState = 9;
+    public int inputDelay = 10;
 
 
     public GamePanel(){
@@ -182,6 +184,8 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameState == loginState) {
             return;
         }
+
+        if (inputDelay > 0) inputDelay--;
 
         if (gameState == playState){
             //PLAYER

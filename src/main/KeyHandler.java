@@ -66,6 +66,10 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.questState) {
             questState(code);
         }
+        //NEW GAME
+        else if (gp.gameState == gp.newGameConfirmState) {
+            newGameConfirmState(code);
+        }
     }
 
     public void titleState(int code){
@@ -92,9 +96,9 @@ public class KeyHandler implements KeyListener {
 
                 //new game
                 if (gp.ui.commandNum == 0) {
-                    gp.resetGame();
-                    gp.ui.titleScreenState = 1;
-                    gp.ui.commandNum = 0;
+                    gp.ui.newGameConfirmCursor = 0;
+                    gp.inputDelay = 20;
+                    gp.gameState = gp.newGameConfirmState;
                 }
 
                 //load game
@@ -150,8 +154,7 @@ public class KeyHandler implements KeyListener {
 
             if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
                 if (gp.ui.commandNum == 0) {
-                    gp.gameState = gp.playState;
-                    gp.playMusic(0);
+                    gp.cutsceneManager.startIntroCutscene();
                 }
                 if (gp.ui.commandNum == 1){
                     gp.ui.titleScreenState = 0;
@@ -455,6 +458,36 @@ public class KeyHandler implements KeyListener {
             }
         }
 
+    }
+    public void newGameConfirmState(int code) {
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            gp.ui.newGameConfirmCursor = 0;
+        }
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            gp.ui.newGameConfirmCursor = 1;
+        }
+        if (code == KeyEvent.VK_ENTER && gp.inputDelay <= 0) {
+            if (gp.ui.newGameConfirmCursor == 0) {
+
+                if (gp.saveManager.hasSave()) {
+                    gp.userManager.deleteAccount(gp.userManager.getCurrentUser());
+                    gp.userManager.createAccount(
+                            gp.userManager.getCurrentUser(),
+                            ""
+                    );
+                    java.io.File sf = gp.userManager.getSaveFile();
+                    if (sf.exists()) sf.delete();
+                }
+                gp.resetGame();
+                gp.ui.newGameConfirmCursor = 0;
+                gp.cutsceneManager.startIntroCutscene();
+            } else {
+                gp.gameState = gp.titleState;
+                gp.ui.titleScreenState = 0;
+                gp.ui.commandNum = 0;
+                gp.ui.newGameConfirmCursor = 0;
+            }
+        }
     }
 
 

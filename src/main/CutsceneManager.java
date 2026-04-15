@@ -6,8 +6,19 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO}
+    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO}
     private Scene activeScene = Scene.NONE;
+
+    // INTRO
+    private final String [][] introLine = {
+            {"June 19, 1861."},
+            {"In a mall stone house in Calamba, a boy named José was born."},
+            {"He was different from the start...",
+                    "quiet, observant, and curious."},
+            {"Raised with discipline and faith by Francisco and Teodora.. ",
+            "he was baptized three days later"},
+            {"and he was endearly called 'Pepe'."}
+    };
 
     // TRANSITION TO CHAP 2
     private final String[][] chapter2Lines = {
@@ -117,6 +128,10 @@ public class CutsceneManager {
         this.gp = gp;
     }
 
+    public void startIntroCutscene() {
+        reset(Scene.INTRO);
+    }
+
     public void startChapter2() {
         reset(Scene.CHAPTER2);
     }
@@ -201,6 +216,8 @@ public class CutsceneManager {
 
     private String[][] activeLines() {
         switch (activeScene) {
+            case INTRO:
+                return introLine;
             case ENROLLMENT:
                 return enrollmentLines;
             case QUEST4:
@@ -219,6 +236,11 @@ public class CutsceneManager {
 
     private void applyEndOfScene() {
         switch (activeScene) {
+
+            case INTRO:
+                gp.gameState = gp.playState;
+                gp.playMusic(0);
+                break;
 
             case CHAPTER2:
                 applyChapter2Changes();
