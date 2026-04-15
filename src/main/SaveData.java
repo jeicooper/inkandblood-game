@@ -13,6 +13,15 @@ public class SaveData implements Serializable {
     public int exp, maxExp;
     public int intellect, creativity, perception, charisma, age;
 
+    public boolean pendingChapter2Cutscene;
+    public boolean pendingQuest4Cutscene;
+    public boolean pendingChapter3Cutscene;
+    public boolean pendingQuest6StartCutscene;
+    public int cutsceneDelay;
+    public int cutsceneDelay1;
+    public int cutsceneDelay2;
+    public int cutsceneDelay4;
+
     //PROGRESS
     public int   currentQuest;
     public int[] questState   = new int[10];
