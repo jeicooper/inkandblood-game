@@ -144,7 +144,7 @@ public class QuizPanel {
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
         int panelW = gp.tileSize * 16;
-        int panelH = gp.tileSize * 10;
+        int panelH = gp.tileSize * 8;
         int panelX = gp.screenWidth  / 2 - panelW / 2;
         int panelY = gp.screenHeight / 2 - panelH / 2;
         ui.drawSubWindow(panelX, panelY, panelW, panelH);
@@ -194,7 +194,7 @@ public class QuizPanel {
                 else if (isSelected) bg = new Color(200, 50, 50, 180);
                 else                 bg = new Color(40, 40, 40, 120);
             } else {
-                bg = isSelected ? new Color(80, 80, 180, 200) : new Color(40, 40, 40, 120);
+                bg = isSelected ? new Color(255, 197, 0, 200) : new Color(40, 40, 40, 120);
             }
 
             int rowY = choiceStartY + i * (choiceH + choiceGap);
@@ -282,7 +282,7 @@ public class QuizPanel {
                 else bg = new Color(40, 40, 40, 120);
             } else {
                 bg = isSelected
-                        ? new Color(80, 80, 180, 200)
+                        ? new Color(255, 197, 0, 200)
                         : new Color(40, 40, 40, 120);
             }
 
