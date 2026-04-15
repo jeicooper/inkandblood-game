@@ -841,27 +841,9 @@ public class UI {
             }
         }
 
-        // LOG OUT
-        textX = getXforCenter("Log Out");
-        textY += gp.tileSize;
-        g2.drawString("Log Out", textX, textY);
-        if (commandNum == 4) {
-            g2.drawString(">", textX - 25, textY);
-            if (gp.keyP.enterPressed == true) {
-                gp.keyP.enterPressed = false;
-                gp.saveManager.save();
-                gp.stopMusic();
-                gp.userManager.logout();
-                gp.loginPanel.reset();
-                gp.gameState = gp.loginState;
-                commandNum = 0;
-                optionSubState = 0;
-            }
-        }
-
         // EXIT
         textX = getXforCenter("Exit Game");
-        textY += gp.tileSize;
+        textY += gp.tileSize*2;
         g2.drawString("Exit Game", textX, textY);
         if (commandNum == 5) {
             g2.drawString(">", textX - 25, textY);

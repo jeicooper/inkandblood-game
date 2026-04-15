@@ -94,6 +94,7 @@ public class KeyHandler implements KeyListener {
                 if (gp.ui.commandNum == 0) {
                     gp.resetGame();
                     gp.ui.titleScreenState = 1;
+                    gp.ui.commandNum = 0;
                 }
 
                 //load game
