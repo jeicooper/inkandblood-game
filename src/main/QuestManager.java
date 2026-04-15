@@ -274,6 +274,7 @@ public class QuestManager {
         quest2Stage = JOSE_INACTIVE;
 
         gp.aSetter.activateQuest2();
+        gp.saveManager.save();
     }
 
     // ===== QUEST 2 =====
@@ -383,6 +384,7 @@ public class QuestManager {
         gp.ui.showMessage("Quest 2: Done!");
         pendingChapter2Cutscene = true;
         cutsceneDelay = 60;
+        gp.saveManager.save();
     }
 
     // ===== QUEST 3 =====
@@ -439,6 +441,7 @@ public class QuestManager {
 
         pendingQuest4Cutscene = true;
         cutsceneDelay1 = 60;
+        gp.saveManager.save();
     }
 
     // ===== QUEST 4 =====
@@ -505,6 +508,7 @@ public class QuestManager {
 
         pendingChapter3Cutscene = true;
         cutsceneDelay2 = 60;
+        gp.saveManager.save();
     }
 
     // ===== QUEST 5 =====
@@ -520,6 +524,7 @@ public class QuestManager {
         if (quest5Stage == FIND_LETTER) {
             quest5Stage = COLLECT_OBJECTS;
             gp.ui.showMessage("Find objects around the room to write your manuscript.");
+            gp.saveManager.save();
         }
     }
 
@@ -530,6 +535,7 @@ public class QuestManager {
         if (objectsCollected >= OBJECTS_REQUIRED) {
             quest5Stage = TALK_MAXIMO;
             gp.ui.showMessage("Manuscript complete!");
+            gp.saveManager.save();
         }
     }
 
@@ -547,6 +553,7 @@ public class QuestManager {
 
         pendingQuest6StartCutscene = true;
         cutsceneDelay4 = 60;
+        gp.saveManager.save();
     }
 
     // QUEST 6
@@ -571,6 +578,7 @@ public class QuestManager {
         if (quest6Stage == FIND_DRAFT) {
             quest6Stage = COLLECT_OBJECTS_Q6;
             gp.ui.showMessage("Find objects around the room to write your manuscript.");
+            gp.saveManager.save();
         }
     }
 
@@ -582,6 +590,7 @@ public class QuestManager {
         if (q6ObjectsCollected >= Q6_OBJECTS_REQUIRED){
             quest6Stage = RETURN_PACIANO;
             gp.ui.showMessage("Manuscript Complete!");
+            gp.saveManager.save();
         }
     }
     public void giveElFiliBook() {
@@ -612,6 +621,7 @@ public class QuestManager {
 
         pendingQuest6StartCutscene = true;
         cutsceneDelay4 = 60;
+        gp.saveManager.save();
     }
 
     public boolean isQuestActive(int quest) {

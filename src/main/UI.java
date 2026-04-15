@@ -149,13 +149,6 @@ public class UI {
             }
         }
 
-        //PAUSE STATE
-        if (gp.gameState == gp.pauseState ){
-
-            drawPlayerExp();
-            drawPauseScreen();
-        }
-
         //DIAOGUE STATE
         if (gp.gameState == gp.dialogueState) {
 
@@ -247,7 +240,7 @@ public class UI {
 
         g2.drawString("[ F ]       to interact", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
         g2.drawString("[ Q ]   to view quests", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
-        g2.drawString("[ P ]   to pause/save", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
+        g2.drawString("[ P ]   to save progress", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
 
 
     }
@@ -540,15 +533,6 @@ public class UI {
             }
         }
 
-    }
-    public void drawPauseScreen(){
-
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,80F));
-        String text = "PAUSED";
-        int x = getXforCenter(text);
-        int y = gp.tileSize*6;
-
-        g2.drawString(text, x, y);
     }
     public void drawDialogueScreen(){
 

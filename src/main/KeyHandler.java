@@ -40,10 +40,7 @@ public class KeyHandler implements KeyListener {
         if (gp.gameState == gp.playState) {
             playState(code);
         }
-        //PAUSE STATE
-        else if (gp.gameState == gp.pauseState) {
-            pauseState(code);
-        }
+
         //DIALOGUE STATE
         else if (gp.gameState == gp.dialogueState) {
             dialogueState(code);
@@ -244,10 +241,10 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_D){
             rightPressed = true;
         }
-        //press P to pause game
+        //press P to save game
         if(code == KeyEvent.VK_P){
-            gp.stopMusic();
-            gp.gameState = gp.pauseState;
+            gp.saveManager.save();
+            gp.ui.showMessage("Game Saved!");
             return;
         }
         //press F to speak to NPC
@@ -282,21 +279,6 @@ public class KeyHandler implements KeyListener {
                 checkDrawTime = false;
             }
             return;
-        }
-    }
-    public void pauseState(int code){
-        if(code == KeyEvent.VK_P){
-            gp.quickSave();
-            gp.playMusic(0);
-            gp.gameState = gp.playState;
-            return;
-        }
-
-        if (code == KeyEvent.VK_ESCAPE){
-
-            gp.stopMusic();
-            gp.gameState = gp.titleState;
-            gp.ui.titleScreenState = 0;
         }
     }
     public void dialogueState(int code){
