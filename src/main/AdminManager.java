@@ -40,6 +40,7 @@ public class AdminManager {
             return "Account '" + username + "' not found.";
         }
         userManager.deleteAccount(username);
+        NPCDatabase.deleteForUser(username);
         return "Account '" + username + "' has been deleted. The student can create a new one.";
     }
 

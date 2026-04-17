@@ -12,6 +12,7 @@ public class NPC_Teodora extends Entity{
 
         setHitbox();
         direction = "down";
+        dexId = "teodora";
 
         getImage();
         setDialogue();

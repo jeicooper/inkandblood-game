@@ -178,6 +178,11 @@ public class UI {
             drawNewGameConfirm();
         }
 
+        //NPC DEX STATE
+        if (gp.gameState == gp.dexState) {
+            gp.npcDexUI.draw(g2);
+        }
+
 
     }
     public void drawPlayerExp() {
@@ -241,7 +246,6 @@ public class UI {
         g2.drawString("[ F ]       to interact", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
         g2.drawString("[ Q ]   to view quests", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
         g2.drawString("[ P ]   to save progress", hintRightX, hintRightY); hintRightY += gp.tileSize/2;
-
 
     }
 
@@ -801,7 +805,6 @@ public class UI {
         }
     }
 
-    // helper — add this small private method too:
     private int getXWidth(String text) {
         return (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
     }
@@ -2139,6 +2142,7 @@ public class UI {
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x + 5, y + 5 , width - 10, height - 10, 25, 25);
     }
+
     public int getXforCenter(String text){
 
         int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();

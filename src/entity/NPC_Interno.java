@@ -11,6 +11,7 @@ public class NPC_Interno extends Entity {
         super(gp);
         direction = "down";
         speed = 0;
+        dexId = "interno";
 
         solidArea.x = 8;
         solidArea.y = 16;

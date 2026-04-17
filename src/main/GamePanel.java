@@ -58,6 +58,9 @@ public class GamePanel extends JPanel implements Runnable {
     public SaveManager saveManager;
     public LogIn  loginPanel;
 
+    public NPCDatabase npcDatabase = new NPCDatabase(this, userManager);
+    public NPCDexUI    npcDexUI    = new NPCDexUI(this, ui);
+
     Thread gameThread;
 
 
@@ -83,6 +86,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int loginState = 8;
     public final int newGameConfirmState = 9;
     public int inputDelay = 10;
+    public final int dexState = 11;
 
 
     public GamePanel(){
@@ -199,6 +203,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             questManager.update();
+            npcDexUI.tick();
         }
         if (gameState == pauseState){
             //
@@ -269,6 +274,7 @@ public class GamePanel extends JPanel implements Runnable {
             drawQuestArrow(g2);
 
             //UI
+            npcDexUI.drawHUDIcon(g2);
             ui.draw(g2);
 
             //DEBUGGING
@@ -315,6 +321,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         // reset tile map to chapter 1
         tileM.loadMap("/maps/Chapter1.txt");
+
+        // reset npc dex
+        npcDatabase.reset();
     }
 
     private void drawDeliveryZone(Graphics2D g2) {

@@ -10,6 +10,7 @@ public class NPC_Consuelo extends Entity {
         name = "Consuelo Ortiga";
         direction = "down";
         speed = 0;
+        dexId = "consuelo";
 
         up1 = setup("/npc/consuelo/consuelo_up_1");
         up2 = setup("/npc/consuelo/consuelo_up_2");

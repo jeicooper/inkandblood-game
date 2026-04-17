@@ -67,6 +67,9 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.newGameConfirmState) {
             newGameConfirmState(code);
         }
+        else if (gp.gameState == gp.dexState) {
+            gp.npcDexUI.handleKey(code);
+        }
     }
 
     public void titleState(int code){
@@ -264,11 +267,15 @@ public class KeyHandler implements KeyListener {
             gp.gameState = gp.questState;
             qPressed = true;
         }
-
+        //press ESC to open options
         if (code == KeyEvent.VK_ESCAPE){
 
             gp.stopMusic();
             gp.gameState = gp.optionState;
+        }
+        //press R to open dex
+        if (code == KeyEvent.VK_R) {
+            gp.gameState = gp.dexState;
         }
 
         //Debugging

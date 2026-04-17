@@ -12,6 +12,7 @@ public class NPC_Casimiro extends Entity {
         super(gp);
         direction = "down";
         speed = 0;
+        dexId = "casimiro";
 
         solidArea.x = 8;
         solidArea.y = 16;

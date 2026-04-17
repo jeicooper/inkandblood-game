@@ -12,6 +12,7 @@ public class NPC_Concha extends Entity{
 
         setHitbox();
         direction = "down";
+        dexId = "concha";
 
         getImage();
         setDialogue();

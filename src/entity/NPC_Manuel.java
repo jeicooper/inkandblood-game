@@ -12,6 +12,7 @@ public class NPC_Manuel extends Entity {
 
         direction = "down";
         speed = 0;
+        dexId = "manuel";
 
         solidArea.x = 8;
         solidArea.y = 16;

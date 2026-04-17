@@ -12,6 +12,7 @@ public class NPC_Jose extends Entity {
 
         direction = "down";
         speed = 0;
+        dexId = "jose";
 
         solidArea.x = 8;
         solidArea.y = 16;

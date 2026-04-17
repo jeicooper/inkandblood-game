@@ -12,6 +12,7 @@ public class NPC_Millano extends Entity {
         super(gp);
         direction = "down";
         speed = 0;
+        dexId = "millano";
 
         solidArea.x = 8;
         solidArea.y = 16;

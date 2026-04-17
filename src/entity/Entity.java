@@ -31,6 +31,7 @@ public class Entity {
 
     public String name;
     public boolean collision = false;
+    public String dexId = null;
 
     //CHARACTER STATS
     public int maxExp;
@@ -65,6 +66,9 @@ public class Entity {
     }
 
     public void speak(){
+        if (gp.npcDatabase != null && dexId != null)
+            gp.npcDatabase.unlock(dexId);
+
         if (dialogues[dialogueIndex] != null){
             gp.ui.currentDialogue = dialogues[dialogueIndex];
             dialogueIndex++;

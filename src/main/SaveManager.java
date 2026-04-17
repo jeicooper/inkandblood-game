@@ -82,6 +82,8 @@ public class SaveManager {
             e.printStackTrace();
             gp.ui.showMessage("Save failed!");
         }
+
+        gp.npcDatabase.save();
     }
 
     public boolean load() {
@@ -164,6 +166,7 @@ public class SaveManager {
         removeCollectedObjects();
         removeCompletedNPCs();
 
+        gp.npcDatabase.load();
         return true;
     }
 

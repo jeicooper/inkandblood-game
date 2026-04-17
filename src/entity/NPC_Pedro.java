@@ -10,6 +10,7 @@ public class NPC_Pedro extends Entity {
         name = "Pedro Paterno";
         direction = "down";
         speed = 0;
+        dexId = "pedro";
 
         up1 = setup("/npc/pedro/pedro_up_1");
         up2 = setup("/npc/pedro/pedro_up_2");

@@ -12,6 +12,7 @@ public class NPC_Desanctis extends Entity {
         super(gp);
         direction = "down";
         speed = 0;
+        dexId = "desanctis";
 
         solidArea.x = 8;
         solidArea.y = 16;

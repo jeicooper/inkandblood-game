@@ -12,6 +12,7 @@ public class NPC_Perfect extends Entity {
         super(gp);
         direction = "down";
         speed = 0;
+        dexId = "perfect";
 
         solidArea.x = 8;
         solidArea.y = 16;

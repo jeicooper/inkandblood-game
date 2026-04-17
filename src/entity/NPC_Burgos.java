@@ -11,6 +11,7 @@ public class NPC_Burgos extends Entity {
         super(gp);
         direction = "down";
         speed     = 0;
+        dexId = "burgos";
 
         solidArea.x       = 8;
         solidArea.y       = 16;

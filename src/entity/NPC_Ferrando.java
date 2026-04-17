@@ -11,6 +11,7 @@ public class NPC_Ferrando extends Entity {
     public NPC_Ferrando(GamePanel gp) {
         super(gp);
         direction = "down";
+        dexId = "ferrando";
 
         solidArea.x = 8;
         solidArea.y = 16;

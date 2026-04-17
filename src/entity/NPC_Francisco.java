@@ -5,14 +5,16 @@ import java.awt.*;
 import java.util.Random;
 
 public class NPC_Francisco extends Entity {
+
+    private boolean spoke = false;
     public NPC_Francisco(GamePanel gp){
         super(gp);
 
         setHitbox();
         direction = "down";
+        dexId = "francisco";
 
         getImage();
-        setDialogue();
     }
 
     public void getImage() {
@@ -30,11 +32,12 @@ public class NPC_Francisco extends Entity {
 
     }
 
-    public void setDialogue(){
-
+    public void speak(){
         gp.ui.currentSpeakerName = "Francisco Engracio Rizal Mercado";
 
         dialogues[0] = "Good morning pepe. Have you seen my coffee mug?";
+        dialogues[1] = null;
+        super.speak();
     }
 
     @Override

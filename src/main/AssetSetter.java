@@ -56,7 +56,21 @@ public class AssetSetter {
         s.worldX = tileX * gp.tileSize;
         s.worldY = tileY * gp.tileSize;
         gp.npc[index] = s;
+        s.dexId = siblingDexId(name);
         return s;
+    }
+
+    private String siblingDexId(String name) {
+        if (name.contains("Saturnina")) return "saturnina";
+        if (name.contains("Paciano"))   return "paciano";
+        if (name.contains("Narcisa"))   return "narcisa";
+        if (name.contains("Olimpia"))   return "olimpia";
+        if (name.contains("Lucia"))     return "lucia";
+        if (name.contains("Maria"))     return "maria";
+        if (name.contains("Josefa"))    return "josefa";
+        if (name.contains("Trinidad"))  return "trinidad";
+        if (name.contains("Soledad"))   return "soledad";
+        return null;
     }
 
     public void activateQuest2() {

@@ -10,6 +10,7 @@ public class NPC_Maximo extends Entity {
         name = "Maximo Viola";
         speed = 0;
         direction = "down";
+        dexId = "maximo";
 
         up1 = setup("/npc/maximo/maximo_up_1");
         up2 = setup("/npc/maximo/maximo_up_2");
