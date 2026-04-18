@@ -224,7 +224,37 @@ public class UI {
             g2.drawImage(toDraw, x, y, null);
             x += spacing;
         }
+
+        drawLocationLabel();
     }
+    public void drawLocationLabel() {
+        int currentQ = gp.questManager.currentQuest;
+
+        String location;
+        String sublocation;
+
+        if (currentQ <= QuestManager.QUEST2) {
+            location    = "CALAMBA, LAGUNA";
+        } else if (currentQ <= QuestManager.QUEST4) {
+            location    = "ATENEO MUNICIPAL DE MANILA";
+        } else {
+            location    = "EUROPE";
+        }
+
+        int labelX = gp.tileSize / 2;
+        // Just below the exp bar: bar starts at tileSize/2, is tileSize tall
+        int labelY = gp.tileSize / 2 + gp.tileSize + 18;
+
+        // Shadow
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.drawString(location, labelX + 1, labelY + 1);
+
+        g2.setColor(new Color(255, 220, 80));
+        g2.drawString(location, labelX, labelY);
+
+    }
+
     public void drawHints(){
 
         g2.setColor(Color.white);
