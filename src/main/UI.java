@@ -2154,4 +2154,7 @@ public class UI {
         int x = tailX - length;
         return x;
     }
+
+    public void startScreenFadeIn() {
+    }
 }
