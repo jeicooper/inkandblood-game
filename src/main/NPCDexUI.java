@@ -99,7 +99,7 @@ public class NPCDexUI {
         int         iconSize = gp.tileSize - 6;
 
         int iconX = gp.screenWidth - (gp.tileSize * 2);
-        int iconY = (int)(gp.tileSize / 2 + gp.tileSize * 2 + 8 + bobOffset);
+        int iconY = (int)(gp.tileSize / 2 + gp.tileSize * 4 + 8 + bobOffset);
 
         // Dark pill background
         g2.setColor(new Color(0, 0, 0, 160));
