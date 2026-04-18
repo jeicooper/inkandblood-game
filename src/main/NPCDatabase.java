@@ -152,18 +152,18 @@ public class NPCDatabase {
                     "Financier of the Noli",     "Chapter 3", "Quest 5: Noli Me Tangere",
                     "Maximo Viola was the man who made the Noli Me Tangere possible. When Rizal had no money left to print his novel, Viola provided the funds. He received the first signed copy in return." },
 
-            { "paciano",
+            { "paciano_q6",
                     "Paciano Rizal",             "Kuya Paciano",
                     "Brother & Confidant",       "Chapter 3", "Quest 6: El Filibusterismo",
                     "Returning in a new capacity, Paciano was Jose's most trusted correspondent during the exile years. He relayed news from Calamba and channeled resources to his brother across the ocean." },
     };
 
     public Set<String> unlockedNPCs = new HashSet<>();
-    public int dexSelectedIndex     = 0;
-    public int dexScrollOffset      = 0;
+    public int dexSelectedIndex = 0;
+    public int dexScrollOffset = 0;
 
     public NPCDatabase(GamePanel gp, UserManager userManager) {
-        this.gp          = gp;
+        this.gp = gp;
         this.userManager = userManager;
     }
 
@@ -172,9 +172,15 @@ public class NPCDatabase {
         unlockedNPCs.add(dexId);
     }
 
-    public boolean isUnlocked(String id) { return unlockedNPCs.contains(id); }
-    public int getTotalCount()            { return NPC_MASTER.length; }
-    public int getUnlockedCount()         { return unlockedNPCs.size(); }
+    public boolean isUnlocked(String id) {
+        return unlockedNPCs.contains(id);
+    }
+    public int getTotalCount() {
+        return NPC_MASTER.length;
+    }
+    public int getUnlockedCount() {
+        return unlockedNPCs.size();
+    }
 
     public String getId(int i)       { return NPC_MASTER[i][0]; }
     public String getName(int i)     { return NPC_MASTER[i][1]; }
@@ -184,7 +190,7 @@ public class NPCDatabase {
     public String getQuest(int i)    { return NPC_MASTER[i][5]; }
     public String getBio(int i)      { return NPC_MASTER[i][6]; }
 
-    // File path: saves/<username>_npcdb.dat  (mirrors saves/<username>.dat)
+
     public void save() {
         if (!userManager.isLoggedIn()) return;
         File f = getFile();
