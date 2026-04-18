@@ -242,7 +242,6 @@ public class UI {
         }
 
         int labelX = gp.tileSize / 2;
-        // Just below the exp bar: bar starts at tileSize/2, is tileSize tall
         int labelY = gp.tileSize / 2 + gp.tileSize + 18;
 
         // Shadow
@@ -1710,7 +1709,7 @@ public class UI {
                     g2.drawString("Find Concha's grave nearby!", panelX + 12, panelY + 72);
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 16F));
                     g2.setColor(new Color(180, 180, 180));
-                    g2.drawString("(Look near the old tree)", panelX + 12, panelY + 90);
+                    g2.drawString("(Look around the garden)", panelX + 12, panelY + 90);
 
                 } else if (found >= required) {
                     // All siblings + Concha found — point to delivery zone
