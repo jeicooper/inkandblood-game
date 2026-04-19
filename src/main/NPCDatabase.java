@@ -127,7 +127,7 @@ public class NPCDatabase {
                     "A classmate and confidant at Ateneo who encouraged Jose to enter the discipline competitions. His rivalry with Jose was always friendly — each pushing the other to greater heights. Mariano Katigbak was Rizal’s close friend and brother of his first love. Their friendship represents Rizal’s early social life and emotional development during his youth." },
 
             { "rector",
-                    "Fr. Rector",                "The Rector",
+                    "Fr. Pablo Ramon",                "The Rector",
                     "Ateneo Rector",             "Chapter 2", "Quest 4: Ang Kampeon ng Roma",
                     "The head of Ateneo Municipal de Manila who oversaw the discipline competitions. He recognized in Rizal an extraordinary scholar and presided over the awarding of his medals." },
 
