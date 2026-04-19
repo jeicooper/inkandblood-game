@@ -816,11 +816,6 @@ public class LogIn {
             g2.drawString(sp.displayName(), cx - strW(g2, sp.displayName()) / 2, ly);
             ly += 34;
 
-            // Draw divider
-            g2.setColor(DIM_GREY);
-            g2.setStroke(new BasicStroke(1));
-            g2.drawLine(lx, ly, panelX + panelW - pad, ly);
-            ly += 14;
 
             // Profile rows
             drawProfileRow(g2, lx, ly, labelW, "First Name:",     sp.firstName);     ly += 28;
@@ -835,7 +830,7 @@ public class LogIn {
             File sf = new File("saves" + File.separator + sp.username + ".dat");
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
             g2.setColor(sf.exists() ? OK_GREEN : LIGHT_GREY);
-            g2.drawString(sf.exists() ? "✓ Has saved game data" : "No saved game data yet", lx, ly + 28);
+            g2.drawString(sf.exists() ? "Has saved game data" : "No saved game data yet", (int) (lx + gp.tileSize * 3.5), ly + 40);
         }
 
         // Delete button hint
@@ -855,7 +850,7 @@ public class LogIn {
         g2.setColor(LIGHT_GREY);
         g2.drawString(label, x, y);
 
-        g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 20f));
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 26f));
         g2.setColor(Color.white);
         g2.drawString(value, x + labelW, y);
     }
