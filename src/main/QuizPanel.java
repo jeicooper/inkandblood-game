@@ -9,7 +9,7 @@ public class QuizPanel {
     private final UI        ui;
 
     // QUESTIONS AND ANSWERS
-    private static final String[] POOL_QUESTIONS = {
+    private static final String[] QUESTIONS = {
             "In your Latin studies, we look for precision. What is the correct translation of the phrase `Scientia potentia est`?",
 
             "What do we call a logical argument that applies deductive reasoning to arrive at a conclusion based on two or more propositions?",
@@ -18,21 +18,11 @@ public class QuizPanel {
 
             "You study the `Bachelor of Arts.` In the classical sense, which of these is a core subject of the Trivium we study here?",
 
-            "If you were to graduate from this school with your degree, what would your title be in Latin?",
-
-
-            "Which specific group is associated with the Roman Empire and identified as 'interns' or boarders within the school?",
-
-            "What was the highest rank a student could achieve within his respective empire through academic merit?",
-
-            "In the hierarchy of the empires, which rank was responsible for carrying the empire's banner during competitions?",
-
-            "If you are categorized as an 'extern' or a non-boarder, which empire would you belong to in this system?",
-
-            "How did a student lose their rank or cause their empire to lose its standing in the classroom?"
+            "If you were to graduate from this school with your degree, what would your title be in Latin?"
     };
 
-    private static final String[][] POOL_CHOICES = {
+    // Each row: [A, B, C, D]
+    private static final String[][] CHOICES = {
             { "Science is difficult.",
               "Knowledge is power.",
               "Time is Fleeting"
@@ -46,28 +36,10 @@ public class QuizPanel {
 
             { "Magister Philosophiae",
               "Bachiller en Artes",
-              "Perito Agrimensor"},
-
-            { "Carthaginians", "Romans", "Tribunes" },
-
-            { "Centurion", "Standard-bearer", "Emperor" },
-
-            { "Standard-bearer", "Emperor", "Decurion" },
-
-            {"Roman Empire", "Byzantine Empire", "Carthaginian Empire"},
-
-            {"Losing a physical match", "Arriving late to class", "Failing to answer questions during a challenge"}
-
+              "Perito Agrimensor"}
     };
 
-    private static final int[] POOL_CORRECT = { 1, 0, 2, 1, 1, 1, 2, 0, 2, 2 };
-
-    private static final int QUIZ_SIZE = 10;
-
-    private String[]   QUESTIONS;
-    private String[][] CHOICES;
-    private int[]      CORRECT;
-
+    private static final int[] CORRECT = { 1, 0, 2, 1, 1 };
 
     // STATE
     private int     currentQuestion = 0;
@@ -84,21 +56,6 @@ public class QuizPanel {
     }
 
     public void open() {
-
-        java.util.List<Integer> indices = new java.util.ArrayList<>();
-        for (int i = 0; i < POOL_QUESTIONS.length; i++) indices.add(i);
-        java.util.Collections.shuffle(indices);
-
-        QUESTIONS = new String[QUIZ_SIZE];
-        CHOICES   = new String[QUIZ_SIZE][];
-        CORRECT   = new int[QUIZ_SIZE];
-        for (int i = 0; i < QUIZ_SIZE; i++) {
-            int pick     = indices.get(i);
-            QUESTIONS[i] = POOL_QUESTIONS[pick];
-            CHOICES[i]   = POOL_CHOICES[pick];
-            CORRECT[i]   = POOL_CORRECT[pick];
-        }
-
         currentQuestion = 0;
         selectedChoice  = 0;
         answerConfirmed = false;
@@ -111,6 +68,7 @@ public class QuizPanel {
     // KEY HANDLER
     public void handleKey(int code) {
 
+        // Single-question mode must be checked FIRST
         if (singleMode) {
             if (!singleConfirmed) {
                 if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
@@ -133,6 +91,7 @@ public class QuizPanel {
             return;
         }
 
+        // Regular 5-question quiz
         if (showResult) {
             if (code == KeyEvent.VK_ENTER) {
                 ui.quizPanelOpen = false;
@@ -392,7 +351,6 @@ public class QuizPanel {
     private void drawResultScreen(Graphics2D g2, int px, int py, int pw, int ph) {
         int pad = gp.tileSize;
 
-        // --- Headline ---
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 36f));
         boolean passed = score >= QUESTIONS.length;
         g2.setColor(passed ? new Color(100, 230, 100) : new Color(230, 80, 80));
@@ -400,36 +358,22 @@ public class QuizPanel {
         int hw = g2.getFontMetrics().stringWidth(headline);
         g2.drawString(headline, px + pw / 2 - hw / 2, py + pad + 10);
 
-        // --- Score ---
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 28f));
         g2.setColor(Color.white);
         String scoreStr = "Score: " + score + " / " + QUESTIONS.length;
         int sw = g2.getFontMetrics().stringWidth(scoreStr);
         g2.drawString(scoreStr, px + pw / 2 - sw / 2, py + pad + 50);
 
-        // --- Questions List ---
-        int startY = py + pad + 100;
-        int itemY = startY;
-        int columnX = px + pad;
-        int columnWidth = pw / 2;
+        int itemY = py + pad + 90;
 
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 26f));
-
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 30f));
         for (int i = 0; i < QUESTIONS.length; i++) {
 
-            if (i == 5) {
-                itemY = startY;
-                columnX += columnWidth;
-            }
-
             g2.setColor(correct[i] ? new Color(80, 220, 80) : new Color(220, 80, 80));
-
             String mark   = correct[i] ? "/" : "X";
             String answer = correct[i] ? "Correct" : "Incorrect";
-
-            g2.drawString(mark + " Q" + (i + 1) + ": " + answer, columnX, itemY);
-
-            itemY += 35;
+            g2.drawString(mark + "  Q" + (i + 1) + ":  " + answer, px + pad, itemY);
+            itemY += 32;
         }
 
         // Closing prompt

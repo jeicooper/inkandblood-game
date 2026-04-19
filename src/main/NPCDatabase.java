@@ -15,85 +15,77 @@ public class NPCDatabase {
             { "teodora",
                     "Teodora Alonzo Realonda",            "Nanay",
                     "Mother of Jose Rizal",      "Chapter 1", "Quest 1: Familya Rizal",
-                    "A woman of remarkable intelligence and literary talent, Teodora Alonzo was Rizal's mother as well as his first teacher. She was born in Meisik, Tondo, Manila and was known for being a disciplinarian as well as a dedicated, courteous and hard-working mother. She was 20 years old when she married Francisco Mercado of Biñan, Laguna in 1848. They settled in Calamba, Laguna and to them were born eleven children. She had a profound influence on Rizal's development and was his inspiration in taking up medicine. \n As the mother of a perceived enemy of the Spanish authorities, Teodora was often persecuted. In 1872, she was imprisoned for two and a half years on trumped-up charges of poisoning her brother's wife."},
+                    "A woman of remarkable intelligence and literary talent, Teodora Alonzo was Rizal's first teacher. She introduced him to books and poetry from a very young age, shaping the mind that would one day write Noli Me Tangere." },
 
             { "francisco",
                     "Francisco Engracio Rizal Mercado",           "Tatay",
                     "Father of Jose Rizal",      "Chapter 1", "Quest 1: Familya Rizal",
-                    "Francisco was the father of Jose Rizal. He and his wife Teodora Alonzo had 11 children together. He attended a Latin school in Biñan, which his sons would later attend. He also attended the Colegio de San Jose in Manila, where he studied Latin and philosophy. A hardworking tenant farmer and one of the first in Laguna to establish a sugar mill. His dignity in the face of colonial hardship was not lost on young Jose." },
+                    "A hardworking tenant farmer and one of the first in Laguna to establish a sugar mill. His dignity in the face of colonial hardship was not lost on young Jose." },
 
             { "concha",
                     "Conception Rizal",              "Concha",
                     "Youngest Sibling",          "Chapter 1", "Quest 1: Familya Rizal",
-                    "Conception Rizal was the youngest sister of José Protasio Rizal Mercado y Alonso Realonda and the first among his siblings to die in childhood. Her early passing deeply affected Rizal, marking his first experience with grief and loss. This event shaped his sensitivity and emotional depth, which later appeared in his writings. Though she lived only a short life, Concepción’s memory remained significant to Rizal, symbolizing innocence and the harsh realities of life under difficult conditions." },
+                    "Concepcion, called Concha, was the youngest of the Rizal siblings. Her life was tragically short — she passed away in childhood, leaving a grief in Jose that never fully healed." },
 
             { "saturnina",
                     "Saturnina Rizal",           "Neneng",
                     "Eldest Sister",             "Chapter 1", "Quest 1: Familya Rizal",
-                    "Saturnina Rizal, the eldest sibling, played a maternal role in Rizal’s upbringing. She supported his education financially and emotionally, especially during his early schooling. Her guidance helped nurture his discipline and ambition. Saturnina maintained a close bond with Rizal, often corresponding with him during his travels. Her steady presence in his life contributed to his strong family values and sense of responsibility." },
+                    "Saturnina was a steady presence in the Rizal household. She kept a watchful eye on her younger brothers and sisters and later became a quiet supporter of Jose's reformist writings." },
 
             { "paciano",
                     "Paciano Rizal",             "Ute",
                     "Elder Brother & Protector", "Chapter 1", "Quest 1: Familya Rizal",
-                    "Paciano Rizal was Rizal’s only brother and one of his greatest influences. He supported Rizal’s education and shared his nationalist ideals. Paciano had connections with reformists and was deeply affected by the execution of Gomburza, which also influenced Rizal. Acting as a mentor, he guided Rizal in understanding the injustices of Spanish rule, helping shape his political awareness and reformist views." },
+                    "Paciano was more than a brother — he was Jose's guardian and financier. He sacrificed his own academic ambitions so Jose could study, and later became a general in the Philippine Revolution." },
 
             { "narcisa",
                     "Narcisa Rizal",             "Sisa",
                     "Sibling",                   "Chapter 1", "Quest 1: Familya Rizal",
-                    "Narcisa Rizal was a supportive sister who played an important role after Rizal’s execution by helping locate his grave. Throughout his life, she maintained communication with him and showed strong family loyalty. Her actions reflected courage and devotion, ensuring that Rizal’s memory and dignity were preserved even after his death." },
+                    "Narcisa, nicknamed Sisa, was known for her warm and nurturing nature within the Rizal household." },
 
             { "olimpia",
                     "Olimpia Rizal",             "Ypia",
                     "Sibling",                   "Chapter 1", "Quest 1: Familya Rizal",
-                    "Olimpia Rizal was one of Rizal’s sisters who lived a relatively quiet life but remained part of his close-knit family. Though less publicly involved, she contributed to the supportive environment that shaped Rizal’s character. Her presence reflects the strong familial ties that Rizal valued deeply." },
+                    "Olimpia was spirited and strong-willed. She shared Jose's love of words and was one of his earliest companions in games of rhyme and storytelling." },
 
             { "lucia",
                     "Lucia Rizal",               "Lucing",
                     "Sibling",                   "Chapter 1", "Quest 1: Familya Rizal",
-                    "Lucia Rizal was known for her strength during family hardships, particularly when facing conflicts with Spanish authorities. Her experiences with injustice reinforced Rizal’s awareness of colonial oppression. Lucia’s resilience mirrored the struggles of Filipino families under Spanish rule." },
+                    "Lucia was known for her gentle temperament. She was one of several sisters whose lives would later be upended by the political fallout from Jose's novels." },
 
             { "maria",
                     "Maria Rizal",               "Biang",
                     "Sibling",                   "Chapter 1", "Quest 1: Familya Rizal",
-                    "Maria Rizal was a caring and supportive sister who maintained close ties with Rizal. She was known for her kindness and dedication to family. Her steady support contributed to Rizal’s emotional well-being, especially during his years abroad." },
+                    "Maria, nicknamed Biang, grew up in the lively Rizal home in Calamba. She remained close to Jose throughout his life, even as colonial pressures forced the family apart." },
 
             { "josefa",
                     "Josefa Rizal",              "Panggoy",
                     "Sibling",                   "Chapter 1", "Quest 1: Familya Rizal",
-                    "Josefa Rizal, despite suffering from health issues, remained devoted to her brother. Her condition did not hinder her loyalty and affection. She symbolizes the quiet strength within the Rizal family, supporting him despite personal challenges." },
+                    "Josefa was quiet and introspective. She outlived Jose by decades, carrying the memory of her brother's sacrifice for the rest of her long life." },
 
             { "trinidad",
                     "Trinidad Rizal",            "Trining",
                     "Sibling",                   "Chapter 1", "Quest 1: Familya Rizal",
-                    "Trinidad Rizal is remembered for preserving Rizal’s final poem, Mi Último Adiós. She received it hidden inside a lamp, ensuring its survival. Her role was crucial in safeguarding one of Rizal’s most important literary works, reflecting her trustworthiness and courage." },
+                    "Trinidad was among the most devoted to Jose's memory. She was famously entrusted with his final poem, hidden inside a small alcohol lamp on the night before his execution." },
 
             { "soledad",
                     "Soledad Rizal",             "Choleng",
                     "Sibling",                   "Chapter 1", "Quest 1: Familya Rizal",
-                    "Soledad Rizal, the youngest surviving sibling, admired her brother greatly. Though she was young during Rizal’s lifetime, she carried his legacy forward. Her life reflects the lasting influence Rizal had on his family." },
+                    "Soledad, the youngest, was known as Choleng. Though young when Jose left for Europe, she grew up under the shadow and the pride of her famous brother." },
 
             { "jose",
                     "Jose Alberto",              "Uncle Jose",
                     "Artistic Uncle",            "Chapter 1", "Quest 2: Pangangaral ng mga Tiyo",
-                    "A gifted painter who saw the spark of creativity in young Jose. He tasked his nephew with gathering art supplies as a lesson " +
-                            "in patience and dedication. He encouraged Rizal to explore the arts, specifically painting, sketching, and sculpture. " +
-                            "encouragement helped Rizal develop his artistic talents, which he showcased in various works throughout his life. Rizal's artistic pursuits were not just hobbies; they were integral to his identity and his ability to express his thoughts on nationalism." },
+                    "A gifted painter who saw the spark of creativity in young Jose. He tasked his nephew with gathering art supplies as a lesson in patience and dedication." },
 
             { "manuel",
                     "Manuel Hidalgo",            "Uncle Manuel",
                     "Athletic Uncle",            "Chapter 1", "Quest 2: Pangangaral ng mga Tiyo",
-                    "Uncle Manuel believed a sharp mind must live in a strong body. He designed a course through Calamba's fields, teaching Jose " +
-                            "that perseverance must be practiced, not just preached. Uncle Manuel introduced Rizal to physical activities such as " +
-                            "swimming, fencing, and wrestling. Engaging in sports helped Rizal develop discipline, resilience, and a competitive " +
-                            "spirit, traits that would serve him well in his later endeavors. The emphasis on physical fitness and sports reflects the holistic approach to education that Rizal experienced in his youth." },
+                    "Uncle Manuel believed a sharp mind must live in a strong body. He designed a course through Calamba's fields, teaching Jose that perseverance must be practiced, not just preached." },
 
             { "gregorio",
-                    "Gregorio Alonzo",            "Uncle Gregorio",
+                    "Gregorio Rizal",            "Uncle Gregorio",
                     "Scholar Uncle",             "Chapter 1", "Quest 2: Pangangaral ng mga Tiyo",
-                    "A man of letters who saw in Jose a mind hungry for knowledge. He provided Jose with his first quill and notebook, igniting a " +
-                            "lifelong love of writing. Uncle Gregorio was known for his passion for literature and books, which likely instilled a " +
-                            "love for reading in Rizal. His influence may have contributed to Rizal's later writings, including his novels that " +
-                            "addressed social issues in the Philippines. The importance of literature in Rizal's life can be seen in his extensive reading habits and his own literary contributions." },
+                    "A man of letters who saw in Jose a mind hungry for knowledge. He provided Jose with his first quill and notebook, igniting a lifelong love of writing." },
 
             { "ferrando",
                     "Fr. Pablo Ferrando",        "Father Ferrando",
@@ -103,28 +95,22 @@ public class NPCDatabase {
             { "burgos",
                     "Pedro Burgos",              "Senor Burgos",
                     "Reformist Priest",          "Chapter 2", "Quest 3: Ang Bagong Simula",
-                    "A Filipino secular priest who advocated for the rights of native clergy. His execution in 1872 became a symbol of colonial injustice that deeply marked Rizal. Pedro Burgos was the father of Jose Burgos, one of the Gomburza priests. His connection indirectly influenced Rizal, as the execution of Gomburza became a major inspiration for Rizal’s reformist ideals." },
+                    "A Filipino secular priest who advocated for the rights of native clergy. His execution in 1872 became a symbol of colonial injustice that deeply marked Rizal." },
 
             { "professor",
-                    "Prof. Francisco de Paula Sanchez",           "Professor",
+                    "Prof. Francisco",           "The Professor",
                     "Ateneo Professor",          "Chapter 2", "Quest 3: Ang Bagong Simula",
-                    "Prof. Francisco de Paula Sanchez was Rizal’s favorite teacher at Ateneo. He recognized Rizal’s talent and encouraged his intellectual growth. His mentorship helped develop Rizal’s skills in writing and critical thinking. He who guided Jose through his first academic challenge at Ateneo. He believed that knowledge was the only weapon worth carrying." },
+                    "A stern but fair professor who guided Jose through his first academic challenge at Ateneo. He believed that knowledge was the only weapon worth carrying." },
 
             { "interno",
                     "Classmate",                 "Interno",
                     "Ateneo Student",            "Chapter 2", "Quest 3: Ang Bagong Simula",
-                    "Internos were students who lived inside Ateneo. Rizal initially belonged to this group, which exposed him to stricter discipline and structured learning. This environment shaped his academic excellence." },
-            { "externo",
-                "Classmate",                    "Externo",
-                "Ateneo Student",               "Chapter 2",
-                    "Quest 3: Ang Bagong Simula",
-                    "Externos were students who lived outside Ateneo. Rizal later became one, giving him more independence while continuing his studies. This shift reflected his growing maturity."
-            },
+                    "A fellow interno at Ateneo who challenged Jose to prove himself before the whole class. His confidence in Rizal's abilities helped push Jose to study harder than ever." },
 
             { "mariano",
                     "Mariano Katigbak",          "Mariano",
                     "Fellow Student",            "Chapter 2", "Quest 4: Ang Kampeon ng Roma",
-                    "A classmate and confidant at Ateneo who encouraged Jose to enter the discipline competitions. His rivalry with Jose was always friendly — each pushing the other to greater heights. Mariano Katigbak was Rizal’s close friend and brother of his first love. Their friendship represents Rizal’s early social life and emotional development during his youth." },
+                    "A classmate and confidant at Ateneo who encouraged Jose to enter the discipline competitions. His rivalry with Jose was always friendly — each pushing the other to greater heights." },
 
             { "rector",
                     "Fr. Rector",                "The Rector",
@@ -154,30 +140,30 @@ public class NPCDatabase {
             { "pedro",
                     "Pedro Paterno",             "Pedro",
                     "Patron of the Arts",        "Chapter 3", "Quest 5: Noli Me Tangere",
-                    "A wealthy Filipino intellectual and writer in Madrid who provided moral and financial support to Rizal as he worked on his novel. He understood the weight of what Rizal was trying to do. He was a Filipino intellectual who later negotiated with Spanish authorities during Rizal’s time. Though controversial, he was part of the political environment surrounding Rizal." },
+                    "A wealthy Filipino intellectual and writer in Madrid who provided moral and financial support to Rizal as he worked on his novel. He understood the weight of what Rizal was trying to do." },
 
             { "consuelo",
                     "Consuelo Ortiga",           "Consuelo",
                     "Friend in Madrid",          "Chapter 3", "Quest 5: Noli Me Tangere",
-                    "A charming and intelligent woman in Madrid's Filipino expatriate circle. Her friendship helped sustain Rizal during the lonely, grueling months of writing Noli Me Tangere. Their connection reflects Rizal’s romantic side, though it did not develop into a serious relationship." },
+                    "A charming and intelligent woman in Madrid's Filipino expatriate circle. Her friendship helped sustain Rizal during the lonely, grueling months of writing Noli Me Tangere." },
 
             { "maximo",
                     "Maximo Viola",              "Maximo",
                     "Financier of the Noli",     "Chapter 3", "Quest 5: Noli Me Tangere",
-                    "Maximo Viola was the man who made the Noli Me Tangere possible. When Rizal had no money left to print his novel, Viola provided the funds. He received the first signed copy in return. He was one of Rizal’s closest friends and financial supporter. He helped fund the publication of Noli Me Tangere. His loyalty and belief in Rizal’s work were crucial to its success." },
+                    "Maximo Viola was the man who made the Noli Me Tangere possible. When Rizal had no money left to print his novel, Viola provided the funds. He received the first signed copy in return." },
 
-            { "paciano_q6",
+            { "paciano",
                     "Paciano Rizal",             "Kuya Paciano",
                     "Brother & Confidant",       "Chapter 3", "Quest 6: El Filibusterismo",
                     "Returning in a new capacity, Paciano was Jose's most trusted correspondent during the exile years. He relayed news from Calamba and channeled resources to his brother across the ocean." },
     };
 
     public Set<String> unlockedNPCs = new HashSet<>();
-    public int dexSelectedIndex = 0;
-    public int dexScrollOffset = 0;
+    public int dexSelectedIndex     = 0;
+    public int dexScrollOffset      = 0;
 
     public NPCDatabase(GamePanel gp, UserManager userManager) {
-        this.gp = gp;
+        this.gp          = gp;
         this.userManager = userManager;
     }
 
@@ -186,15 +172,9 @@ public class NPCDatabase {
         unlockedNPCs.add(dexId);
     }
 
-    public boolean isUnlocked(String id) {
-        return unlockedNPCs.contains(id);
-    }
-    public int getTotalCount() {
-        return NPC_MASTER.length;
-    }
-    public int getUnlockedCount() {
-        return unlockedNPCs.size();
-    }
+    public boolean isUnlocked(String id) { return unlockedNPCs.contains(id); }
+    public int getTotalCount()            { return NPC_MASTER.length; }
+    public int getUnlockedCount()         { return unlockedNPCs.size(); }
 
     public String getId(int i)       { return NPC_MASTER[i][0]; }
     public String getName(int i)     { return NPC_MASTER[i][1]; }
@@ -204,7 +184,7 @@ public class NPCDatabase {
     public String getQuest(int i)    { return NPC_MASTER[i][5]; }
     public String getBio(int i)      { return NPC_MASTER[i][6]; }
 
-
+    // File path: saves/<username>_npcdb.dat  (mirrors saves/<username>.dat)
     public void save() {
         if (!userManager.isLoggedIn()) return;
         File f = getFile();

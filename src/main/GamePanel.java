@@ -67,7 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
     //ENTITY AND OBJECT
     public Player player = new Player(this,keyP);
     public Entity obj[] = new Entity[99];
-    public Entity npc [] = new Entity[99];
+    public Entity npc [] = new Entity[50];
     public Entity talkingTo = null;
 
     ArrayList<Entity> entityList = new ArrayList<>();
@@ -409,8 +409,9 @@ public class GamePanel extends JPanel implements Runnable {
         // Quest 1
         if (questManager.isQuestActive(QuestManager.QUEST1)) {
             if (questManager.quest1Stage == QuestManager.QUEST1_NOT_STARTED) {
-                if (npc[0] != null) targets.add(npc[0]);
+                if (npc[0] != null) targets.add(npc[0]); // Teodora
             } else {
+                // all siblings not yet following
                 for (int i = 0; i < npc.length; i++) {
                     if (npc[i] instanceof entity.NPC_Sibling) {
                         entity.NPC_Sibling s = (entity.NPC_Sibling) npc[i];
@@ -420,53 +421,50 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-
         // Quest 2
         if (questManager.isQuestActive(QuestManager.QUEST2)) {
             int stage = questManager.quest2Stage;
             if (stage == QuestManager.JOSE_INACTIVE || stage == QuestManager.JOSE_WAITING) {
-                if (npc[12] != null) targets.add(npc[12]);
+                if (npc[12] != null) targets.add(npc[12]); // Uncle Jose
             } else if (stage == QuestManager.JOSE_DONE || stage == QuestManager.MANUEL_RUNNING) {
-                if (npc[13] != null) targets.add(npc[13]);
+                if (npc[13] != null) targets.add(npc[13]); // Uncle Manuel
             } else if (stage == QuestManager.MANUEL_DONE || stage == QuestManager.GREGORIO_WAITING) {
-                if (npc[14] != null) targets.add(npc[14]);
+                if (npc[14] != null) targets.add(npc[14]); // Uncle Gregorio
             }
         }
-
 
         // Quest 3
         if (questManager.isQuestActive(QuestManager.QUEST3)) {
             int stage = questManager.quest3Stage;
             if (stage == QuestManager.TALK_FERRANDO
                     || stage == QuestManager.TALK_FERRANDO_REWARD) {
-                if (npc[23] != null) targets.add(npc[23]);
+                if (npc[15] != null) targets.add(npc[15]);
             } else if (stage == QuestManager.TALK_BURGOS) {
-                if (npc[24] != null) targets.add(npc[24]);
+                if (npc[16] != null) targets.add(npc[16]);
             } else if (stage == QuestManager.TALK_PROFESSOR) {
-                if (npc[25] != null) targets.add(npc[25]);
+                if (npc[17] != null) targets.add(npc[17]);
             } else if (stage == QuestManager.TALK_STUDENT
                     || stage == QuestManager.QUIZ_FAILED) {
-                if (npc[26] != null) targets.add(npc[26]);
+                if (npc[18] != null) targets.add(npc[18]);
             }
         }
-
 
         // Quest 4
         if (questManager.isQuestActive(QuestManager.QUEST4)) {
             int stage = questManager.quest4Stage;
 
             if (stage == QuestManager.TALK_PROFESSOR_Q4) {
-                if (npc[31] != null) targets.add(npc[31]);
+                if (npc[20] != null) targets.add(npc[20]); // Professor
 
             } else if (stage == QuestManager.TALK_MARIANO) {
-                if (npc[33] != null) targets.add(npc[33]);
+                if (npc[22] != null) targets.add(npc[22]); // Mariano
 
             } else if (stage == QuestManager.TALK_RECTOR
                     || stage == QuestManager.TALK_RECTOR_END) {
-                if (npc[37] != null) targets.add(npc[37]);
+                if (npc[26] != null) targets.add(npc[26]); // Rector
 
             } else if (stage == QuestManager.DISCIPLINES_ACTIVE) {
-                int[] judgeSlots = { 38, 39, 40, 41, 42 };
+                int[] judgeSlots = { 27, 28, 29, 30, 31 }; 
                 for (int i = 0; i < judgeSlots.length; i++) {
                     if (!questManager.disciplineAnswered[i] && npc[judgeSlots[i]] != null) {
                         targets.add(npc[judgeSlots[i]]);
@@ -475,15 +473,15 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-
         // Quest 5
         if (questManager.isQuestActive(QuestManager.QUEST5)) {
             int stage = questManager.quest5Stage;
 
             if (stage == QuestManager.TALK_PEDRO) {
-                if (npc[43] != null) targets.add(npc[43]);
+                if (npc[0] != null) targets.add(npc[0]); // Pedro
+
             } else if (stage == QuestManager.TALK_CONSUELO) {
-                if (npc[44] != null) targets.add(npc[44]);
+                if (npc[1] != null) targets.add(npc[1]); // Consuelo
 
             } else if (stage == QuestManager.FIND_LETTER) {
                 for (int i = 0; i < obj.length; i++) {
@@ -500,18 +498,16 @@ public class GamePanel extends JPanel implements Runnable {
                 }
 
             } else if (stage == QuestManager.TALK_MAXIMO) {
-                if (npc[45] != null) targets.add(npc[45]);
+                if (npc[2] != null) targets.add(npc[2]); // Maximo
             }
         }
-
 
         // QUEST 6
         if (questManager.isQuestActive(QuestManager.QUEST6)) {
             int stage = questManager.quest6Stage;
 
-            if (stage == QuestManager.TALK_PACIANO_Q6
-                    || stage == QuestManager.RETURN_PACIANO) {
-                if (npc[46] != null) targets.add(npc[46]);
+            if (stage == QuestManager.TALK_PACIANO_Q6){
+                if(npc[32] != null) targets.add(npc[32]);
 
             } else if (stage == QuestManager.FIND_DRAFT) {
                 for (int i = 0; i < obj.length; i++) {
@@ -526,9 +522,13 @@ public class GamePanel extends JPanel implements Runnable {
                         targets.add(obj[i]);
                     }
                 }
-            }
-        }
 
+            } else if (stage == QuestManager.TALK_PACIANO_Q6) {
+                if (npc[32] != null) targets.add(npc[32]);
+            }
+
+
+        }
 
 
         return targets;

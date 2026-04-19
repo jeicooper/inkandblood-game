@@ -224,36 +224,7 @@ public class UI {
             g2.drawImage(toDraw, x, y, null);
             x += spacing;
         }
-
-        drawLocationLabel();
     }
-    public void drawLocationLabel() {
-        int currentQ = gp.questManager.currentQuest;
-
-        String location;
-        String sublocation;
-
-        if (currentQ <= QuestManager.QUEST2) {
-            location    = "CALAMBA, LAGUNA";
-        } else if (currentQ <= QuestManager.QUEST4) {
-            location    = "ATENEO MUNICIPAL DE MANILA";
-        } else {
-            location    = "EUROPE";
-        }
-
-        int labelX = gp.tileSize / 2;
-        int labelY = gp.tileSize / 2 + gp.tileSize + 18;
-
-        // Shadow
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
-        g2.setColor(new Color(0, 0, 0, 180));
-        g2.drawString(location, labelX + 1, labelY + 1);
-
-        g2.setColor(new Color(255, 220, 80));
-        g2.drawString(location, labelX, labelY);
-
-    }
-
     public void drawHints(){
 
         g2.setColor(Color.white);
@@ -1675,7 +1646,7 @@ public class UI {
                 currentQ == QuestManager.QUEST1) return;
 
         int panelW = gp.tileSize * 7;
-        int panelH = (int) (gp.tileSize * 2.5);
+        int panelH = gp.tileSize * 2;
         int panelX = gp.screenWidth - panelW - (gp.tileSize / 2);
         int panelY = gp.tileSize / 2;
 
@@ -1697,22 +1668,9 @@ public class UI {
             } else {
                 int found    = gp.questManager.siblingsFound;
                 int required = gp.questManager.SIBLINGS_REQUIRED + 1;
-                // Count only the 9 living siblings (exclude Concha)
-                int siblingsOnly = found - (gp.questManager.conchaVisited ? 1 : 0);
+                g2.drawString("Siblings: " + found + " / " + required, panelX + 12, panelY + 52);
 
-                g2.drawString("Siblings: " + siblingsOnly + " / 9", panelX + 12, panelY + 52);
-
-                // Show Concha hint once all 9 siblings are found but Concha not yet visited
-                if (siblingsOnly >= 9 && !gp.questManager.conchaVisited) {
-                    g2.setColor(new Color(255, 180, 60));
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                    g2.drawString("Find Concha's grave nearby!", panelX + 12, panelY + 72);
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 16F));
-                    g2.setColor(new Color(180, 180, 180));
-                    g2.drawString("(Look around the garden)", panelX + 12, panelY + 90);
-
-                } else if (found >= required) {
-                    // All siblings + Concha found — point to delivery zone
+                if (found >= required) {
                     g2.setColor(new Color(100, 255, 100));
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
                     g2.drawString("Go to the golden circle!", panelX + 12, panelY + 72);
@@ -1721,11 +1679,9 @@ public class UI {
         }
 
         // ===== QUEST 2 =====
-        // ===== QUEST 2 =====
         else if (currentQ == QuestManager.QUEST2 && gp.questManager.isQuestActive(QuestManager.QUEST2)) {
 
             g2.setColor(new Color(255, 220, 80));
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
             g2.drawString("Pangangaral ng mga Tiyo", panelX + 12, panelY + 28);
 
             g2.setColor(Color.white);
@@ -1735,63 +1691,40 @@ public class UI {
 
             if (stage == QuestManager.JOSE_INACTIVE) {
                 g2.drawString("Find Uncle Jose Alberto.", panelX + 12, panelY + 52);
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 17F));
-                g2.setColor(new Color(180, 180, 180));
-                g2.drawString("He teaches the basics of art.", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.JOSE_WAITING) {
-                int buckets = gp.questManager.countItem("Paint Bucket");
-                int brush   = gp.questManager.countItem("Paintbrush");
-                int canvas  = gp.questManager.countItem("Canvas");
-                g2.drawString("Paint Buckets: " + buckets + " / 6", panelX + 12, panelY + 52);
-                g2.drawString("Brush: " + brush + "/1   Canvas: " + canvas + "/1", panelX + 12, panelY + 70);
+                g2.drawString("Buckets: 6  Brush: 1  Canvas: 1", panelX + 12, panelY + 52);
                 if (gp.questManager.hasAllArtSupplies()) {
                     g2.setColor(new Color(100, 255, 100));
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                    g2.drawString("Return to Uncle Jose!", panelX + 12, panelY + 90);
+                    g2.drawString("Return to Uncle Jose!", panelX + 12, panelY + 72);
                 }
 
             } else if (stage == QuestManager.JOSE_DONE) {
                 g2.drawString("Find Uncle Manuel.", panelX + 12, panelY + 52);
 
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(180, 180, 180));
-                g2.drawString("He will train your body ensuring you will gain", panelX + 12, panelY + 72);
-                g2.drawString("agility, endurance, and strength.", panelX + 12, panelY + 90);
-
             } else if (stage == QuestManager.MANUEL_RUNNING) {
                 int hit   = gp.questManager.checkpointsHit;
                 int total = gp.questManager.TOTAL_CHECKPOINTS;
                 g2.drawString("Checkpoints: " + hit + " / " + total, panelX + 12, panelY + 52);
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Run around the map to find the blue checkpoint", panelX + 12, panelY + 70);
-                g2.drawString("circles!", panelX + 12, panelY + 86);
                 if (gp.questManager.courseCompleted) {
                     g2.setColor(new Color(100, 255, 100));
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                    g2.drawString("Return to Uncle Manuel!", panelX + 12, panelY + 104);
+                    g2.drawString("Return to Uncle Manuel!", panelX + 12, panelY + 72);
                 }
 
             } else if (stage == QuestManager.MANUEL_DONE) {
                 g2.drawString("Find Uncle Gregorio.", panelX + 12, panelY + 52);
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(180, 180, 180));
-                g2.drawString("He will teach you to write.", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.GREGORIO_WAITING) {
-                int quill    = gp.questManager.countItem("Quill");
-                int notebook = gp.questManager.countItem("Notebook");
-                g2.drawString("Quill: " + quill + " / 1", panelX + 12, panelY + 52);
-                g2.drawString("Notebook: " + notebook + " / 1", panelX + 12, panelY + 70);
+                g2.drawString("Quill: 1  Notebook: 1", panelX + 12, panelY + 52);
                 if (gp.questManager.hasWritingSupplies()) {
                     g2.setColor(new Color(100, 255, 100));
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                    g2.drawString("Return to Uncle Gregorio!", panelX + 12, panelY + 90);
+                    g2.drawString("Return to Uncle Gregorio!", panelX + 12, panelY + 72);
                 }
 
             } else if (stage == QuestManager.GREGORIO_DONE) {
-                g2.setColor(new Color(100, 230, 100));
                 g2.drawString("Quest 2 Complete!", panelX + 12, panelY + 52);
             }
         }
@@ -1811,16 +1744,8 @@ public class UI {
             if (stage == QuestManager.TALK_FERRANDO) {
                 g2.drawString("Talk to Fr. Ferrando.", panelX + 12, panelY + 52);
 
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Enroll to Ateneo Municipal de Manila", panelX + 12, panelY + 72);
-
             } else if (stage == QuestManager.TALK_BURGOS) {
                 g2.drawString("Talk to Senor Burgos.", panelX + 12, panelY + 52);
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Enroll to Ateneo Municipal de Manila", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.CUTSCENE_DONE
                     || stage == QuestManager.TALK_PROFESSOR) {
@@ -1828,10 +1753,6 @@ public class UI {
 
             } else if (stage == QuestManager.TALK_STUDENT) {
                 g2.drawString("Talk to your classmate.", panelX + 12, panelY + 52);
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Take a quiz lead by your classmate", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.QUIZ_FAILED) {
                 g2.setColor(new Color(230, 100, 100));
@@ -1864,10 +1785,6 @@ public class UI {
 
             } else if (stage == QuestManager.TALK_MARIANO) {
                 g2.drawString("Talk to Mariano.", panelX + 12, panelY + 52);
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("He was feeling down after you dethroned him.", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.TALK_RECTOR) {
                 g2.drawString("Talk to Fr. Rector.", panelX + 12, panelY + 52);
@@ -1904,36 +1821,16 @@ public class UI {
 
             if (stage == QuestManager.TALK_PEDRO) {
                 g2.drawString("Talk to Pedro.", panelX + 12, panelY + 52);
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Talk to your fellow Filipino ilustrado", panelX + 12, panelY + 72);
-
             } else if (stage == QuestManager.TALK_CONSUELO) {
                 g2.drawString("Talk to Consuelo.", panelX + 12, panelY + 52);
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("She has been throwing you flirty looks.", panelX + 12, panelY + 72);
-
             } else if (stage == QuestManager.FIND_LETTER) {
                 g2.drawString("Find the letter.", panelX + 12, panelY + 52);
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Secure the draft you have written.", panelX + 12, panelY + 72);
-
             } else if (stage == QuestManager.COLLECT_OBJECTS) {
                 int done = gp.questManager.objectsCollected;
                 g2.drawString("Manuscript: " + done + "/7", panelX + 12, panelY + 52);
             } else if (stage == QuestManager.TALK_MAXIMO) {
                 g2.setColor(Color.white);
                 g2.drawString("Talk to Maximo Viola.", panelX + 12, panelY + 52);
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("He will be supporting your novel", panelX + 12, panelY + 72);
-
             } else if (stage == QuestManager.QUEST5_DONE) {
                 g2.setColor(new Color(100, 230, 100));
                 g2.drawString("Quest 5 Complete!", panelX + 12, panelY + 52);
@@ -1955,16 +1852,8 @@ public class UI {
             if (stage == QuestManager.TALK_PACIANO_Q6) {
                 g2.drawString("Talk to Kuya Paciano.", panelX + 12, panelY + 52);
 
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("He came to deliver you some bad news", panelX + 12, panelY + 72);
-
             } else if (stage == QuestManager.FIND_DRAFT) {
                 g2.drawString("Find the El Filibusterismo Draft.", panelX + 12, panelY + 52);
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Continue your sequel novel dedicated to GOMBURZA", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.COLLECT_OBJECTS_Q6) {
                 int done = gp.questManager.q6ObjectsCollected;
@@ -1974,11 +1863,6 @@ public class UI {
                 g2.drawString("Return to Kuya Paciano.", panelX + 12, panelY + 52);
                 g2.setColor(new Color(100, 255, 100));
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Bid your farewell to your Kuya", panelX + 12, panelY + 72);
-
                 g2.drawString("Manuscript complete!", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.QUEST6_DONE) {

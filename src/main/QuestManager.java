@@ -415,7 +415,7 @@ public class QuestManager {
     }
 
     public void onQuizResult(int score) {
-        if (score >= 10) {
+        if (score >= 5) {
             quest3Stage = TALK_FERRANDO_REWARD;
         } else {
             quest3Stage = QUIZ_FAILED;
