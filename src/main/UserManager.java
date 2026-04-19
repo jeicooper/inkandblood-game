@@ -8,31 +8,77 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
 
-//Passwords are salted + SHA-256 hashed
 public class UserManager {
 
-    private static final String SAVES_DIR = "saves";
-    private static final String USERS_FILE = SAVES_DIR + File.separator + "users.properties";
+    private static final String SAVES_DIR   = "saves";
+    private static final String USERS_FILE  = SAVES_DIR + File.separator + "users.properties";
+    private static final String PROFILE_FILE = SAVES_DIR + File.separator + "profiles.properties";
 
-    private final Properties users = new Properties();
+    private final Properties users    = new Properties();
+    private final Properties profiles = new Properties(); // key=username, value=CSV profile
     private String currentUser = null;
+
 
     public UserManager() {
         ensureSavesDir();
         loadUsers();
+        loadProfiles();
     }
 
-    public java.util.Set<Object> getAllUsernames() {
-        return users.keySet();
+    public static String usernameFromStudentId(String studentId) {
+        String trimmed = studentId.trim();
+        if (trimmed.length() < 4) return trimmed;
+        return trimmed.substring(trimmed.length() - 4);
     }
 
-    // PUBLIC API
+    public static boolean isValidStudentId(String id) {
+        return id != null && id.trim().matches("20\\d{2}-100-\\d{4}");
+    }
+
+    public String createAccount(String firstName, String lastName, String middleInitial,
+                                String suffix, String yearSection, String studentId,
+                                String password) {
+
+        firstName   = firstName.trim();
+        lastName    = lastName.trim();
+        middleInitial = middleInitial.trim();
+        suffix      = suffix.trim();
+        yearSection = yearSection.trim();
+        studentId   = studentId.trim().toUpperCase();
+
+        // --- Validation ---
+        if (firstName.isEmpty())  return "First name cannot be empty.";
+        if (lastName.isEmpty())   return "Last name cannot be empty.";
+        if (yearSection.isEmpty()) return "Year & Section cannot be empty.";
+        if (!isValidStudentId(studentId))
+            return "Invalid student ID. Format must be: 202X-100-XXXX";
+        if (password.length() < 8)
+            return "Password must be at least 8 characters.";
+
+        String username = usernameFromStudentId(studentId);
+
+        if (users.containsKey(username))
+            return "An account with that student ID already exists (ID ends: " + username + ").";
+
+        // --- Store credentials ---
+        String salt = generateSalt();
+        String hash = hash(password, salt);
+        users.setProperty(username, salt + ":" + hash);
+        saveUsers();
+
+        String profileValue = encode(firstName) + "|" + encode(lastName) + "|"
+                + encode(middleInitial) + "|" + encode(suffix) + "|"
+                + encode(yearSection)   + "|" + encode(studentId);
+        profiles.setProperty(username, profileValue);
+        saveProfiles();
+
+        return null;
+    }
 
     public String createAccount(String username, String password) {
         username = username.trim();
-
         if (username.isEmpty()) return "Username cannot be empty.";
-        if (password.length() < 4) return "Password must be at least 4 characters.";
+        if (password.length() < 8) return "Password must be at least 8 characters.";
         if (!username.matches("[\\w]{3,16}")) return "Username: 3-16 letters/numbers/underscore only.";
         if (users.containsKey(username)) return "Username already exists.";
 
@@ -45,16 +91,15 @@ public class UserManager {
 
     public String login(String username, String password) {
         username = username.trim();
-
         if (!users.containsKey(username)) return "Account not found.";
 
         String stored = users.getProperty(username);
         String[] parts = stored.split(":", 2);
         if (parts.length != 2) return "Corrupted account data.";
 
-        String salt = parts[0];
+        String salt         = parts[0];
         String expectedHash = parts[1];
-        String actualHash = hash(password, salt);
+        String actualHash   = hash(password, salt);
 
         if (!expectedHash.equals(actualHash)) return "Incorrect password.";
 
@@ -62,46 +107,63 @@ public class UserManager {
         return null;
     }
 
-    public void logout() {
-        currentUser = null;
-    }
-
-    public String getCurrentUser() {
-        return currentUser;
-    }
-
-    public boolean isLoggedIn() {
-        return currentUser != null;
-    }
+    public void logout()              { currentUser = null; }
+    public String getCurrentUser()    { return currentUser; }
+    public boolean isLoggedIn()       { return currentUser != null; }
 
     public File getSaveFile() {
         if (currentUser == null) throw new IllegalStateException("Not logged in.");
         return new File(SAVES_DIR + File.separator + currentUser + ".dat");
     }
 
-    // HELPERS
+    public java.util.Set<Object> getAllUsernames() { return users.keySet(); }
 
-    private void ensureSavesDir() {
-        File dir = new File(SAVES_DIR);
-        if (!dir.exists()) dir.mkdirs();
+    public StudentProfile getProfile(String username) {
+        String raw = profiles.getProperty(username.trim());
+        if (raw == null) return null;
+        String[] p = raw.split("\\|", -1);
+        if (p.length < 6) return null;
+        StudentProfile sp = new StudentProfile();
+        sp.username      = username.trim();
+        sp.firstName     = decode(p[0]);
+        sp.lastName      = decode(p[1]);
+        sp.middleInitial = decode(p[2]);
+        sp.suffix        = decode(p[3]);
+        sp.yearSection   = decode(p[4]);
+        sp.studentId     = decode(p[5]);
+        return sp;
     }
 
-    private void loadUsers() {
-        File f = new File(USERS_FILE);
-        if (!f.exists()) return;
-        try (InputStream in = new FileInputStream(f)) {
-            users.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public java.util.List<String> searchByName(String query) {
+        query = query.trim().toLowerCase();
+        java.util.List<String> results = new java.util.ArrayList<>();
+        for (Object key : users.keySet()) {
+            String uname = key.toString();
+            StudentProfile sp = getProfile(uname);
+            if (sp == null) {
+                if (uname.toLowerCase().contains(query)) results.add(uname);
+                continue;
+            }
+            if (sp.firstName.toLowerCase().contains(query)
+                    || sp.lastName.toLowerCase().contains(query)) {
+                results.add(uname);
+            }
         }
+        java.util.Collections.sort(results);
+        return results;
     }
 
-    private void saveUsers() {
-        try (OutputStream out = new FileOutputStream(USERS_FILE)) {
-            users.store(out, "Ink & Blood — User Accounts (DO NOT EDIT MANUALLY)");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public boolean userExists(String username)  { return users.containsKey(username.trim()); }
+
+    public void deleteAccount(String username) {
+        username = username.trim();
+        users.remove(username);
+        profiles.remove(username);
+        saveUsers();
+        saveProfiles();
+
+        File saveFile = new File(SAVES_DIR + File.separator + username + ".dat");
+        if (saveFile.exists()) saveFile.delete();
     }
 
     public String generateSalt() {
@@ -113,24 +175,71 @@ public class UserManager {
     public String hash(String password, String salt) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            String salted = salt + password;
-            byte[] digest = md.digest(salted.getBytes(StandardCharsets.UTF_8));
+            byte[] digest = md.digest((salt + password).getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(digest);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("SHA-256 not available", e);
         }
     }
 
-    public boolean userExists(String username) {
-        return users.containsKey(username.trim());
+    private void ensureSavesDir() {
+        File dir = new File(SAVES_DIR);
+        if (!dir.exists()) dir.mkdirs();
     }
 
-    public void deleteAccount(String username) {
-        users.remove(username.trim());
-        saveUsers();
+    private void loadUsers() {
+        File f = new File(USERS_FILE);
+        if (!f.exists()) return;
+        try (InputStream in = new FileInputStream(f)) { users.load(in); }
+        catch (IOException e) { e.printStackTrace(); }
+    }
 
-        // also delete their save file
-        File saveFile = new File("saves" + File.separator + username.trim() + ".dat");
-        if (saveFile.exists()) saveFile.delete();
+    private void saveUsers() {
+        try (OutputStream out = new FileOutputStream(USERS_FILE)) {
+            users.store(out, "Ink & Blood — User Accounts (DO NOT EDIT MANUALLY)");
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    private void loadProfiles() {
+        File f = new File(PROFILE_FILE);
+        if (!f.exists()) return;
+        try (InputStream in = new FileInputStream(f)) { profiles.load(in); }
+        catch (IOException e) { e.printStackTrace(); }
+    }
+
+    private void saveProfiles() {
+        try (OutputStream out = new FileOutputStream(PROFILE_FILE)) {
+            profiles.store(out, "Ink & Blood — Student Profiles (DO NOT EDIT MANUALLY)");
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    private static String encode(String s) {
+        try {
+            return java.net.URLEncoder.encode(s == null ? "" : s, "UTF-8");
+        } catch (Exception e) { return s == null ? "" : s; }
+    }
+
+    private static String decode(String s) {
+        try {
+            return java.net.URLDecoder.decode(s == null ? "" : s, "UTF-8");
+        } catch (Exception e) { return s == null ? "" : s; }
+    }
+
+    public static class StudentProfile {
+        public String username;
+        public String firstName;
+        public String lastName;
+        public String middleInitial;
+        public String suffix;
+        public String yearSection;
+        public String studentId;
+
+        public String displayName() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(lastName.toUpperCase()).append(", ").append(firstName);
+            if (!middleInitial.isEmpty()) sb.append(" ").append(middleInitial).append(".");
+            if (!suffix.isEmpty())        sb.append(", ").append(suffix);
+            return sb.toString();
+        }
     }
 }

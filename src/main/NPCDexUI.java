@@ -10,20 +10,22 @@ public class NPCDexUI {
     private final GamePanel gp;
     private final UI        ui;
 
+
     private static final int VISIBLE_ROWS = 10;
-    private static final int ROW_H        = 36;
+    private static final int ROW_HEIGHT   = 36;
 
     private BufferedImage dexIcon;
+    private final BufferedImage[] dexPortraits;
 
-    // Chapter accent colours
-    private static final Color COL_CH1   = new Color(29, 158, 117);
-    private static final Color COL_CH2   = new Color(55, 138, 221);
-    private static final Color COL_CH3   = new Color(186, 117,  23);
-    private static final Color COL_LOCK  = new Color(80,  80,  80);
+    // COLOR PER CHAPTER
+    private static final Color COLOR_CHAPTER1 = new Color(29, 158, 117);
+    private static final Color COLOR_CHAPTER2 = new Color(55, 138, 221);
+    private static final Color COLOR_CHAPTER3 = new Color(186, 117,  23);
+    private static final Color COLOR_LOCKED   = new Color(80,  80,  80);
 
-    // bobbing animation
     private int   bobTick   = 0;
     private float bobOffset = 0f;
+
 
     public NPCDexUI(GamePanel gp, UI ui) {
         this.gp = gp;
@@ -33,7 +35,52 @@ public class NPCDexUI {
             dexIcon = ImageIO.read(getClass().getResourceAsStream("/objects/npcdex.png"));
         } catch (Exception e) {
             dexIcon = null;
-            e.printStackTrace();
+        }
+
+        String[] portraitPaths = {
+                "/npc/teodora/teodora_down_1",
+                "/npc/francisco/francisco_down_1",
+                "/npc/grave",
+                "/npc/saturnina/saturnina_down_1",
+                "/npc/paciano/paciano_down_1",
+                "/npc/narcisa/narcisa_down_1",
+                "/npc/olimpia/olimpia_down_1",
+                "/npc/lucia/lucia_down_1",
+                "/npc/maria/maria_down_1",
+                "/npc/josefa/josefa_down_1",
+                "/npc/trinidad/trinidad_down_1",
+                "/npc/soledad/soledad_down_1",
+                "/npc/jose/jose_down_1",
+                "/npc/manuel/manuel_down_1",
+                "/npc/gregorio/gregorio_down_1",
+                "/npc/ferrando/ferrando_down_1",
+                "/npc/burgos/burgos_down_1",
+                "/npc/professor/guro_down_1",
+                "/npc/interno/interno_down_1",
+                "/npc/mariano/mariano_down_1",
+                "/npc/rector/rector_down_1",
+                "/npc/perfect/perfect_down_1",
+                "/npc/casimiro/casimiro_down_1",
+                "/npc/millano/millano_down_1",
+                "/npc/desanctis/desanctis_down_1",
+                "/npc/pedro/pedro_down_1",
+                "/npc/consuelo/consuelo_down_1",
+                "/npc/maximo/maximo_down_1",
+                "/npc/paciano/paciano_down_1",
+        };
+
+        dexPortraits = new BufferedImage[portraitPaths.length];
+        main.UtilityTool uTool = new main.UtilityTool();
+        for (int i = 0; i < portraitPaths.length; i++) {
+            try {
+                var stream = getClass().getResourceAsStream(portraitPaths[i] + ".png");
+                if (stream != null) {
+                    BufferedImage raw = ImageIO.read(stream);
+                    dexPortraits[i] = uTool.scaleImage(raw, gp.tileSize, gp.tileSize);
+                }
+            } catch (Exception e) {
+                dexPortraits[i] = null;
+            }
         }
     }
 
@@ -42,263 +89,312 @@ public class NPCDexUI {
         bobOffset = (float)(Math.sin(bobTick / 22.0) * 2.5);
     }
 
-    // HUD ICON
+    private BufferedImage getSprite(int npcIndex) {
+        if (npcIndex < 0 || npcIndex >= dexPortraits.length) return null;
+        return dexPortraits[npcIndex];
+    }
+
     public void drawHUDIcon(Graphics2D g2) {
-        NPCDatabase db = gp.npcDatabase;
-
-        int iconSize = gp.tileSize - 6;
-
+        NPCDatabase db       = gp.npcDatabase;
+        int         iconSize = gp.tileSize - 6;
 
         int iconX = gp.screenWidth - (gp.tileSize * 2);
-        int iconY = (int)(gp.tileSize / 2 + gp.tileSize * 2 + 8 + bobOffset);
+        int iconY = (int)(gp.tileSize / 2 + gp.tileSize * 4 + 8 + bobOffset);
 
-        // Background pill
+        // Dark pill background
         g2.setColor(new Color(0, 0, 0, 160));
         g2.fillRoundRect(iconX - 5, iconY - 4, iconSize + 10, iconSize + 8, 12, 12);
         g2.setColor(new Color(255, 255, 255, 50));
         g2.setStroke(new BasicStroke(1.2f));
         g2.drawRoundRect(iconX - 5, iconY - 4, iconSize + 10, iconSize + 8, 12, 12);
 
-        // Book symbol
-        g2.drawImage(dexIcon, iconX, iconY, iconSize, iconSize, null);
-
-        // Met-count badge (green pill, top-right of icon)
-        int met = db.getUnlockedCount();
-        if (met > 0) {
-            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 13f));
-            FontMetrics fm = g2.getFontMetrics();
-            String badge = String.valueOf(met);
-            int bw = fm.stringWidth(badge) + 8;
-            int bh = 15;
-            int bx = iconX + iconSize - 2;
-            int by = iconY - 5;
-            g2.setColor(new Color(29, 158, 117));
-            g2.fillRoundRect(bx, by, bw, bh, 8, 8);
-            g2.setColor(Color.white);
-            g2.drawString(badge, bx + 4, by + bh - 3);
+        // Icon image
+        if (dexIcon != null) {
+            g2.drawImage(dexIcon, iconX, iconY, iconSize, iconSize, null);
+        } else {
+            g2.setColor(new Color(255, 220, 80));
+            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 18f));
+            g2.drawString("?", iconX + 4, iconY + iconSize - 4);
         }
 
-        // Key hint below icon
+        // counter
+        int metCount = db.getUnlockedCount();
+        if (metCount > 0) {
+            String      badgeText   = String.valueOf(metCount);
+            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 13f));
+            FontMetrics fm          = g2.getFontMetrics();
+            int         badgeWidth  = fm.stringWidth(badgeText) + 8;
+            int         badgeHeight = 15;
+            int         badgeX      = iconX + iconSize - 2;
+            int         badgeY      = iconY - 5;
+            g2.setColor(new Color(29, 158, 117));
+            g2.fillRoundRect(badgeX, badgeY, badgeWidth, badgeHeight, 8, 8);
+            g2.setColor(Color.white);
+            g2.drawString(badgeText, badgeX + 4, badgeY + badgeHeight - 3);
+        }
+
+        // hint
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 15f));
         g2.setColor(new Color(200, 200, 200, 180));
         g2.drawString("[R]", iconX + iconSize / 2 - 9, iconY + iconSize + 13);
     }
 
+    private int panelLeft() {
+        return gp.tileSize / 2;
+    }
+    private int panelTop() {
+        return gp.tileSize / 2;
+    }
+    private int panelWidth() {
+        return gp.screenWidth  - gp.tileSize;
+    }// total width
+    private int panelHeight() {
+        return gp.screenHeight - gp.tileSize;
+    }
 
+    private static final int SIDEBAR_WIDTH = 215;
 
-    // DEX SCREEN
     public void draw(Graphics2D g2) {
         NPCDatabase db    = gp.npcDatabase;
         int         total = db.getTotalCount();
 
-        // Dim background
+        // Dim the game behind the panel
         g2.setColor(new Color(0, 0, 0, 210));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
-        // Outer frame
-        int fX = gp.tileSize / 2;
-        int fY = gp.tileSize / 2;
-        int fW = gp.screenWidth  - gp.tileSize;
-        int fH = gp.screenHeight - gp.tileSize;
-        ui.drawSubWindow(g2, fX, fY, fW, fH);
+        int left   = panelLeft();
+        int top    = panelTop();
+        int width  = panelWidth();
+        int height = panelHeight();
+        ui.drawSubWindow(g2, left, top, width, height);
 
-        // ── Header ────────────────────────────────────────────────────────
+        int titleY     = top + 38;
+        int subtitleY  = top + 60;
+        int separatorY = top + 68;
+
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 30f));
         g2.setColor(new Color(255, 220, 80));
-        g2.drawString("CHARACTER ALMANAC", fX + 18, fY + 38);
+        g2.drawString("CHARACTER ALMANAC", left + 18, titleY);
 
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 18f));
         g2.setColor(new Color(160, 160, 160));
         g2.drawString("Characters Encountered: " + db.getUnlockedCount() + " / " + total,
-                fX + 18, fY + 60);
+                left + 18, subtitleY);
 
         g2.setColor(new Color(255, 255, 255, 35));
         g2.setStroke(new BasicStroke(1f));
-        g2.drawLine(fX + 12, fY + 68, fX + fW - 12, fY + 68);
+        g2.drawLine(left + 12, separatorY, left + width - 12, separatorY);
 
-        int listX   = fX + 12;
-        int listY   = fY + 78;
-        int listW   = 215;
-        int detailX = listX + listW + 12;
-        int detailY = listY;
-        int detailW = fW - listW - 36;
-        int detailH = fH - 100;
+        int contentLeft   = left + 12;
+        int contentTop    = separatorY + 10;
+        int contentHeight = height - (contentTop - top) - 30;
 
-        drawSidebar(g2, db, listX, listY, listW, total);
-        drawDetail(g2,  db, detailX, detailY, detailW, detailH);
+        int sidebarX = contentLeft;
+        int sidebarY = contentTop;
 
-            //HINTS
+        int detailLeft   = sidebarX + SIDEBAR_WIDTH + 12;
+        int detailTop    = contentTop;
+        int detailWidth  = width - SIDEBAR_WIDTH - 36;
+        int detailHeight = contentHeight;
+
+        drawSidebar(g2, db, sidebarX, sidebarY, SIDEBAR_WIDTH, total);
+        drawDetail(g2, db, detailLeft, detailTop, detailWidth, detailHeight);
+
+        int footerY   = top + height - 12;
+        String hint   = "[ W / S ]  Navigate     [ R ]  Close";
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 17f));
         g2.setColor(new Color(160, 160, 160));
-        String hint = "[ W / S ]  Navigate     [ R ]  Close";
-        int hw = g2.getFontMetrics().stringWidth(hint);
-        g2.drawString(hint, fY+gp.tileSize, fY + fH - 12);
+        int hintWidth = g2.getFontMetrics().stringWidth(hint);
+        g2.drawString(hint, left + width / 2 - hintWidth / 2, footerY);
     }
 
-    // ── Left sidebar: scrollable list of NPC entries ──────────────────────────
     private void drawSidebar(Graphics2D g2, NPCDatabase db,
-                             int x, int y, int w, int total) {
-        int sel    = db.dexSelectedIndex;
-        int scroll = db.dexScrollOffset;
+                             int sidebarX, int sidebarY, int sidebarWidth, int total) {
+        int selectedIndex = db.dexSelectedIndex;
+        int scrollOffset  = db.dexScrollOffset;
 
-        for (int i = 0; i < VISIBLE_ROWS && (i + scroll) < total; i++) {
-            int     idx      = i + scroll;
-            boolean unlocked = db.isUnlocked(db.getId(idx));
-            boolean selected = (idx == sel);
-            int     rowX     = x;
-            int     rowY     = y + i * ROW_H;
+        for (int row = 0; row < VISIBLE_ROWS && (row + scrollOffset) < total; row++) {
+            int     npcIndex   = row + scrollOffset;
+            boolean unlocked   = db.isUnlocked(db.getId(npcIndex));
+            boolean isSelected = (npcIndex == selectedIndex);
+            int     rowX       = sidebarX;
+            int     rowY       = sidebarY + row * ROW_HEIGHT;
 
-            // Selection highlight
-            if (selected) {
+            // Yellow highlight on selected row
+            if (isSelected) {
                 g2.setColor(new Color(255, 220, 80, 30));
-                g2.fillRoundRect(rowX, rowY, w, ROW_H - 3, 8, 8);
+                g2.fillRoundRect(rowX, rowY, sidebarWidth, ROW_HEIGHT - 3, 8, 8);
                 g2.setColor(new Color(255, 220, 80, 100));
                 g2.setStroke(new BasicStroke(1f));
-                g2.drawRoundRect(rowX, rowY, w, ROW_H - 3, 8, 8);
+                g2.drawRoundRect(rowX, rowY, sidebarWidth, ROW_HEIGHT - 3, 8, 8);
             }
 
-            // Chapter colour dot
-            g2.setColor(unlocked ? chapterColor(db.getChapter(idx)) : COL_LOCK);
-            g2.fillOval(rowX + 8, rowY + ROW_H / 2 - 5, 10, 10);
+            // Coloured dot: chapter colour if met, grey if locked
+            g2.setColor(unlocked ? chapterColor(db.getChapter(npcIndex)) : COLOR_LOCKED);
+            g2.fillOval(rowX + 8, rowY + ROW_HEIGHT / 2 - 5, 10, 10);
 
-            // Entry index
+            // Entry number
             g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 13f));
             g2.setColor(new Color(110, 110, 110));
-            g2.drawString(String.format("%02d", idx + 1), rowX + 22, rowY + ROW_H / 2 + 5);
+            g2.drawString(String.format("%02d", npcIndex + 1), rowX + 22, rowY + ROW_HEIGHT / 2 + 5);
 
             // Name (or ??? if locked)
             g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 20f));
             g2.setColor(unlocked ? Color.white : new Color(70, 70, 70));
-            String display = unlocked ? db.getName(idx) : "???";
-            // Clip if too long
+            String displayName = unlocked ? db.getName(npcIndex) : "???";
             FontMetrics fm = g2.getFontMetrics();
-            while (fm.stringWidth(display) > w - 52 && display.length() > 4) {
-                display = display.substring(0, display.length() - 2) + "…";
+            while (fm.stringWidth(displayName) > sidebarWidth - 52 && displayName.length() > 4) {
+                displayName = displayName.substring(0, displayName.length() - 2) + "…";
             }
-            g2.drawString(display, rowX + 44, rowY + ROW_H / 2 + 6);
+            g2.drawString(displayName, rowX + 44, rowY + ROW_HEIGHT / 2 + 6);
         }
 
         // Scroll arrows
         if (total > VISIBLE_ROWS) {
             g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 14f));
             g2.setColor(new Color(110, 110, 110));
-            if (scroll > 0)
-                g2.drawString("▲", x + w / 2 - 5, y - 20);
-            if (scroll + VISIBLE_ROWS < total)
-                g2.drawString("▼", x + w / 2 - 5, y + VISIBLE_ROWS * ROW_H + 12);
+            if (scrollOffset > 0)
+                g2.drawString("▲", sidebarX + sidebarWidth / 2 - 5, sidebarY - 6);
+            if (scrollOffset + VISIBLE_ROWS < total)
+                g2.drawString("▼", sidebarX + sidebarWidth / 2 - 5, sidebarY + VISIBLE_ROWS * ROW_HEIGHT + 12);
         }
     }
 
-    // Right Panel
+    // RIGHT PANEL
     private void drawDetail(Graphics2D g2, NPCDatabase db,
-                            int x, int y, int w, int h) {
-        int     idx      = db.dexSelectedIndex;
-        boolean unlocked = db.isUnlocked(db.getId(idx));
+                            int panelX, int panelY, int panelWidth, int panelHeight) {
+        int     npcIndex = db.dexSelectedIndex;
+        boolean unlocked = db.isUnlocked(db.getId(npcIndex));
 
-        // Panel bg
+        //BG TRANSPARENCY
         g2.setColor(new Color(255, 255, 255, 10));
-        g2.fillRoundRect(x, y, w, h, 14, 14);
+        g2.fillRoundRect(panelX, panelY, panelWidth, panelHeight, 14, 14);
         g2.setColor(new Color(255, 255, 255, 30));
         g2.setStroke(new BasicStroke(1f));
-        g2.drawRoundRect(x, y, w, h, 14, 14);
+        g2.drawRoundRect(panelX, panelY, panelWidth, panelHeight, 14, 14);
 
-        // Chapter accent stripe on left edge
-        Color accent = unlocked ? chapterColor(db.getChapter(idx)) : COL_LOCK;
-        g2.setColor(accent);
-        g2.fillRoundRect(x, y + 2, 4, h - 4, 4, 4);
+        Color accentColor = unlocked ? chapterColor(db.getChapter(npcIndex)) : COLOR_LOCKED;
+        g2.setColor(accentColor);
+        g2.fillRoundRect(panelX, panelY + 2, 4, panelHeight - 4, 4, 4);
 
         if (!unlocked) {
-            drawLockedPanel(g2, x, y, w, h);
+            drawLockedPanel(g2, panelX, panelY, panelWidth, panelHeight);
             return;
         }
 
-        int pad = 18;
-        int cx  = x + pad + 6;
-        int cy  = y + pad;
+        // INTERIOR LAYOUT
+        int padding  = 18;
+        int contentX = panelX + padding + 6;  // left edge of all content
+        int contentY = panelY + padding;       // top of the portrait row
 
-        //Avatar circle with initials
-        int r = 30;
-        g2.setColor(accent.darker());
-        g2.fillOval(cx, cy, r * 2, r * 2);
-        g2.setColor(accent);
-        g2.setStroke(new BasicStroke(2f));
-        g2.drawOval(cx, cy, r * 2, r * 2);
+        // PORTRAIT
+        int portraitSize = gp.tileSize + 8;   // slightly bigger than one tile
+        int portraitX    = contentX;
+        int portraitY    = contentY;
 
-        String initials = getInitials(db.getName(idx));
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 21f));
+        BufferedImage sprite = getSprite(npcIndex);
+        if (sprite != null) {
+            // Rounded frame behind the sprite
+            g2.setColor(accentColor.darker());
+            g2.fillRoundRect(portraitX - 2, portraitY - 2,
+                    portraitSize + 4, portraitSize + 4, 10, 10);
+            g2.setColor(accentColor);
+            g2.setStroke(new BasicStroke(2f));
+            g2.drawRoundRect(portraitX - 2, portraitY - 2,
+                    portraitSize + 4, portraitSize + 4, 10, 10);
+            g2.drawImage(sprite, portraitX, portraitY, portraitSize, portraitSize, null);
+        } else {
+
+            g2.setColor(accentColor.darker());
+            g2.fillOval(portraitX, portraitY, portraitSize, portraitSize);
+            g2.setColor(accentColor);
+            g2.setStroke(new BasicStroke(2f));
+            g2.drawOval(portraitX, portraitY, portraitSize, portraitSize);
+            String      initials  = getInitials(db.getName(npcIndex));
+            int         radius    = portraitSize / 2;
+            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 21f));
+            g2.setColor(Color.white);
+            FontMetrics fmI = g2.getFontMetrics();
+            g2.drawString(initials,
+                    portraitX + radius - fmI.stringWidth(initials) / 2,
+                    portraitY + radius + fmI.getAscent() / 2 - 2);
+        }
+
+        // NAME, NICKNAME, RELATIONSHIP
+        int nameX = portraitX + portraitSize + 14;
+        int nameY = contentY + 20;
+
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
         g2.setColor(Color.white);
-        FontMetrics fmI = g2.getFontMetrics();
-        g2.drawString(initials,
-                cx + r - fmI.stringWidth(initials) / 2,
-                cy + r + fmI.getAscent() / 2 - 2);
+        g2.drawString(db.getName(npcIndex), nameX, nameY);
 
-        // Name, nickname, role
-        int textX = cx + r * 2 + 14;
-        int textY = cy + 20;
-
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
-        g2.setColor(Color.white);
-        g2.drawString(db.getName(idx), textX, textY);
-
-        g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+        g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 20f));
         g2.setColor(new Color(180, 180, 180));
-        g2.drawString("\"" + db.getNickname(idx) + "\"", textX, textY + 22);
+        g2.drawString("\"" + db.getNickname(npcIndex) + "\"", nameX, nameY + 22);
 
         g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 16f));
         g2.setColor(new Color(150, 200, 155));
-        g2.drawString(db.getRole(idx), textX, textY + 42);
+        g2.drawString(db.getRole(npcIndex), nameX, nameY + 42);
 
-        // Chapter badge
-        int badgeY = cy + r * 2 + 14;
-        drawBadge(g2, cx, badgeY, db.getChapter(idx), accent);
+        // CHAPTER BADGE
+        int badgeY = contentY + portraitSize + 14;
+        drawBadge(g2, contentX, badgeY, db.getChapter(npcIndex), accentColor);
 
-        // Separator
-        int sepY = badgeY + 26;
+        // LINE
+        int separatorY = badgeY + 26;
         g2.setColor(new Color(255, 255, 255, 30));
         g2.setStroke(new BasicStroke(1f));
-        g2.drawLine(x + 10, sepY, x + w - 10, sepY);
+        g2.drawLine(panelX + 10, separatorY, panelX + panelWidth - 10, separatorY);
 
-        // Bio
-        int bioY = sepY + 22;
-        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 16f));
+        // BODY TEXT
+        int bioY        = separatorY + 22;
+        int bioMaxWidth = panelWidth - padding * 2;
+        int bioLineH    = 22;
+        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 20f));
         g2.setColor(new Color(205, 205, 205));
-        drawWrapped(g2, db.getBio(idx), cx, bioY, w - pad * 2, 22);
+        drawWrapped(g2, db.getBio(npcIndex), contentX, bioY, bioMaxWidth, bioLineH);
 
-        // First met footer
+        int footerY = panelY + panelHeight - 18;
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 15f));
         g2.setColor(new Color(110, 110, 110));
-        g2.drawString("First encountered: " + db.getChapter(idx)
-                        + "  —  " + db.getQuest(idx),
-                cx, y + h - 18);
+        g2.drawString("First encountered: " + db.getChapter(npcIndex)
+                + "  —  " + db.getQuest(npcIndex), contentX, footerY);
     }
 
-    private void drawLockedPanel(Graphics2D g2, int x, int y, int w, int h) {
+    // LOCKED UI
+    private void drawLockedPanel(Graphics2D g2, int panelX, int panelY,
+                                 int panelWidth, int panelHeight) {
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 52f));
         g2.setColor(new Color(55, 55, 55));
         FontMetrics fm = g2.getFontMetrics();
-        g2.drawString("?", x + w / 2 - fm.stringWidth("?") / 2, y + h / 2 + 18);
+        g2.drawString("?",
+                panelX + panelWidth  / 2 - fm.stringWidth("?") / 2,
+                panelY + panelHeight / 2 + 18);
 
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 18f));
         g2.setColor(new Color(85, 85, 85));
         String msg = "Talk to this character to unlock their entry.";
         fm = g2.getFontMetrics();
-        g2.drawString(msg, x + w / 2 - fm.stringWidth(msg) / 2, y + h / 2 + 50);
+        g2.drawString(msg,
+                panelX + panelWidth  / 2 - fm.stringWidth(msg) / 2,
+                panelY + panelHeight / 2 + 50);
     }
 
-    private void drawBadge(Graphics2D g2, int x, int y, String text, Color color) {
+    // LABELS
+    private void drawBadge(Graphics2D g2, int badgeX, int badgeY,
+                           String text, Color color) {
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 14f));
-        FontMetrics fm = g2.getFontMetrics();
-        int bw = fm.stringWidth(text) + 14;
-        int bh = 20;
+        FontMetrics fm      = g2.getFontMetrics();
+        int         badgeW  = fm.stringWidth(text) + 14;
+        int         badgeH  = 20;
         g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 55));
-        g2.fillRoundRect(x, y, bw, bh, 8, 8);
+        g2.fillRoundRect(badgeX, badgeY, badgeW, badgeH, 8, 8);
         g2.setColor(color);
         g2.setStroke(new BasicStroke(1f));
-        g2.drawRoundRect(x, y, bw, bh, 8, 8);
-        g2.drawString(text, x + 7, y + bh - 4);
+        g2.drawRoundRect(badgeX, badgeY, badgeW, badgeH, 8, 8);
+        g2.drawString(text, badgeX + 7, badgeY + badgeH - 4);
     }
 
-    // INPUT
     public void handleKey(int code) {
         NPCDatabase db    = gp.npcDatabase;
         int         total = db.getTotalCount();
@@ -323,12 +419,12 @@ public class NPCDexUI {
     }
 
     private Color chapterColor(String chapter) {
-        if (chapter == null) return COL_LOCK;
+        if (chapter == null) return COLOR_LOCKED;
         switch (chapter) {
-            case "Chapter 1": return COL_CH1;
-            case "Chapter 2": return COL_CH2;
-            case "Chapter 3": return COL_CH3;
-            default:          return COL_LOCK;
+            case "Chapter 1": return COLOR_CHAPTER1;
+            case "Chapter 2": return COLOR_CHAPTER2;
+            case "Chapter 3": return COLOR_CHAPTER3;
+            default:          return COLOR_LOCKED;
         }
     }
 
@@ -340,21 +436,21 @@ public class NPCDexUI {
     }
 
     private void drawWrapped(Graphics2D g2, String text,
-                             int x, int y, int maxW, int lineH) {
+                             int startX, int startY, int maxWidth, int lineHeight) {
         if (text == null || text.isEmpty()) return;
-        String[] words = text.split(" ");
-        StringBuilder line = new StringBuilder();
-        int drawY = y;
+        String[]      words    = text.split(" ");
+        StringBuilder line     = new StringBuilder();
+        int           currentY = startY;
         for (String word : words) {
-            String test = line.length() == 0 ? word : line + " " + word;
-            if (g2.getFontMetrics().stringWidth(test) > maxW) {
-                g2.drawString(line.toString(), x, drawY);
-                drawY += lineH;
-                line  = new StringBuilder(word);
+            String testLine = line.length() == 0 ? word : line + " " + word;
+            if (g2.getFontMetrics().stringWidth(testLine) > maxWidth) {
+                g2.drawString(line.toString(), startX, currentY);
+                currentY += lineHeight;
+                line      = new StringBuilder(word);
             } else {
-                line = new StringBuilder(test);
+                line = new StringBuilder(testLine);
             }
         }
-        if (line.length() > 0) g2.drawString(line.toString(), x, drawY);
+        if (line.length() > 0) g2.drawString(line.toString(), startX, currentY);
     }
 }
