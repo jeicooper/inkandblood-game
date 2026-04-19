@@ -144,7 +144,7 @@ public class TileManager {
 
         setup(186, "pillarbottomleft_1", true);
         setup(187, "pillarbottomleft_2", true);
-        setup(188, "pillarbottomleft_3", false);
+        setup(188, "pillarbottomleft_3", true);
 
         setup(189, "pillartop_1", true);
         setup(190, "pillartop_2", false);
@@ -156,7 +156,7 @@ public class TileManager {
 
         setup(196, "pillarmiddle_1", true);
         setup(197, "pillarmiddle_2", true);
-        setup(198, "pillarmiddle_3", false);
+        setup(198, "pillarmiddle_3", true);
 
         setup(199, "pillarmiddle_4", true);
         setup(200, "pillarmiddle_5", true);
@@ -517,11 +517,11 @@ public class TileManager {
         setup(507, "sofa_12", true);
         setup(508, "sofa_13", false);
         setup(509, "sofa_14", true);
-        setup(510, "sofa_15", false);
-        setup(511, "sofa_16", false);
-        setup(512, "sofa_17", false);
-        setup(513, "sofa_18", false);
-        setup(514, "sofa_19", false);
+        setup(510, "sofa_15", true);
+        setup(511, "sofa_16", true);
+        setup(512, "sofa_17", true);
+        setup(513, "sofa_18", true);
+        setup(514, "sofa_19", true);
         setup(515, "sofa_20", false);
         setup(516, "sofa_21", false);
         setup(517, "rug10_1", false);

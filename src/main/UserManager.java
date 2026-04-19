@@ -32,7 +32,7 @@ public class UserManager {
         username = username.trim();
 
         if (username.isEmpty()) return "Username cannot be empty.";
-        if (password.length() < 4) return "Password must be at least 4 characters.";
+        if (password.length() < 8) return "Password must be at least 8 characters.";
         if (!username.matches("[\\w]{3,16}")) return "Username: 3-16 letters/numbers/underscore only.";
         if (users.containsKey(username)) return "Username already exists.";
 
