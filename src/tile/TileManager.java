@@ -739,7 +739,7 @@ public class TileManager {
         setup(695,"bagumbayan_wall_8", true);
         setup(696,"bagumbayan_wall_9", true);
 
-        //setup(697,"", true);
+        setup(697,"sand_grass_right2", true);
         //setup(698,"", true);
         //setup(699,"", true);
         //setup(700,"", true);
