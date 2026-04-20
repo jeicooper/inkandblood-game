@@ -6,20 +6,24 @@ public class Config {
 
     GamePanel gp;
 
-    public Config (GamePanel gp){
+    private File getConfigFile() {
+        String home = System.getProperty("user.home");
+        File dir = new File(home, "InkAndBlood");
+        dir.mkdirs();
+        return new File(dir, "config.txt");
+    }
+
+    public Config(GamePanel gp) {
         this.gp = gp;
     }
 
-    public void saveConfig(){
-
+    public void saveConfig() {
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter("config.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(getConfigFile()));
 
-            //Full Screen
-            if(gp.fullscreenOn == true) {
+            if (gp.fullscreenOn == true) {
                 bw.write("On");
-            }
-            if (gp.fullscreenOn == false) {
+            } else {
                 bw.write("Off");
             }
             bw.newLine();
@@ -33,46 +37,39 @@ public class Config {
             bw.close();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    public void loadConfig(){
+    public void loadConfig() {
+        File configFile = getConfigFile();
+
+        if (!configFile.exists()) {
+            gp.fullscreenOn = false;
+            gp.music.volumeScale = 3;
+            gp.sound.volumeScale = 3;
+            return;
+        }
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("config.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(configFile));
 
             String s = br.readLine();
-
             if (s != null) {
-                if ("On".equals(s)) {
-                    gp.fullscreenOn = true;
-                } else if ("Off".equals(s)) {
-                    gp.fullscreenOn = false;
-                }
-            } else {
-                // Handle the case where the file is empty/corrupt
-                System.err.println("Configuration file is empty or corrupt. Using default settings for fullscreen.");
+                if ("On".equals(s)) gp.fullscreenOn = true;
+                else if ("Off".equals(s)) gp.fullscreenOn = false;
             }
 
-            s = br.readLine(); // Reads Music Volume
-            if (s != null) {
-                gp.music.volumeScale = Integer.parseInt(s);
-            }
+            s = br.readLine();
+            if (s != null) gp.music.volumeScale = Integer.parseInt(s);
 
-            s = br.readLine(); // Reads Music Volume
-            if (s != null) {
-                gp.sound.volumeScale = Integer.parseInt(s);
-            }
+            s = br.readLine();
+            if (s != null) gp.sound.volumeScale = Integer.parseInt(s);
 
             br.close();
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-
-
     }
 }
