@@ -66,10 +66,18 @@ public class SaveManager {
         d.q6ObjectsCollected = qm.q6ObjectsCollected;
         d.elFiliParts = qm.elFiliParts.clone();
 
+        d.quest7Stage = qm.quest7Stage;
+
+        // CUTSCENES
         d.pendingChapter2Cutscene = qm.isPendingChapter2Cutscene();
         d.pendingQuest4Cutscene = qm.isPendingQuest4Cutscene();
         d.pendingChapter3Cutscene = qm.isPendingChapter3Cutscene();
         d.pendingQuest6StartCutscene = qm.isPendingQuest6StartCutscene();
+        d.pendingQuest7IntroCutscene = qm.isPendingQuest7IntroCutscene();
+        d.pendingQuest7MidCutscene = qm.isPendingQuest7MidCutscene();
+        d.pendingQuest7EndCutscene = qm.isPendingQuest7EndCutscene();
+
+
 
         // UI
         d.questPageNum  = gp.ui.questPageNum;
@@ -152,10 +160,15 @@ public class SaveManager {
         qm.q6ObjectsCollected = d.q6ObjectsCollected;
         qm.elFiliParts = d.elFiliParts.clone();
 
+        qm.quest7Stage = d.quest7Stage;
+
         qm.setPendingChapter2Cutscene(d.pendingChapter2Cutscene);
         qm.setPendingQuest4Cutscene(d.pendingQuest4Cutscene);
         qm.setPendingChapter3Cutscene(d.pendingChapter3Cutscene);
         qm.setPendingQuest6StartCutscene(d.pendingQuest6StartCutscene);
+        qm.setPendingQuest7IntroCutscene(d.pendingQuest7IntroCutscene);
+        qm.setPendingQuest7MidCutscene(d.pendingQuest7MidCutscene);
+        qm.setPendingQuest7EndCutscene(d.pendingQuest7EndCutscene);
 
         // UI
         gp.ui.questPageNum = d.questPageNum;
@@ -225,6 +238,13 @@ public class SaveManager {
             gp.ui.questPageNum = 2;
             qm.setPendingQuest6StartCutscene(false);
         }
+
+        if (qm.currentQuest == QuestManager.QUEST6 && qm.isQuestCompleted(QuestManager.QUEST6)) {
+            qm.currentQuest = QuestManager.QUEST7;
+            qm.questState[QuestManager.QUEST7] = QuestManager.STATE_ACTIVE;
+            gp.ui.questPageNum = 3;
+            qm.setPendingQuest7IntroCutscene(false);
+        }
     }
 
     private void applyChapterState(QuestManager qm) {
@@ -234,6 +254,26 @@ public class SaveManager {
 
         int cq = qm.currentQuest;
 
+        //QUEST 7
+        if (cq >= QuestManager.QUEST7) {
+            gp.tileM.loadMap("/maps/Chapter4.txt");
+            gp.player.loadSprite3("");
+
+            if (qm.quest7Stage >= QuestManager.Q7_TALK_JOSEPHINE) {
+                // Already in Fort Santiago
+                gp.tileM.loadMap("/maps/FortSantiago.txt");
+                gp.aSetter.activateQuest7FortSantiago();
+                gp.player.worldX    = 10 * gp.tileSize;
+                gp.player.worldY    = 10 * gp.tileSize;
+            } else {
+                // Still in Intramuros
+                gp.aSetter.activateQuest7Intramuros();
+                gp.player.worldX    = 20 * gp.tileSize;
+                gp.player.worldY    = 20 * gp.tileSize;
+            }
+            gp.player.direction = "down";
+            return;
+        }
         //QUEST 6
         if (cq >= QuestManager.QUEST6) {
             gp.tileM.loadMap("/maps/Chapter3.txt");
@@ -365,6 +405,22 @@ public class SaveManager {
                 }
             }
 
+            // QUEST 7
+            if (qm.currentQuest == QuestManager.QUEST7) {
+                if (qm.quest7Stage > QuestManager.Q7_INTERACT_PAPER) {
+                    for (int i = 0; i < gp.obj.length; i++) {
+                        if (gp.obj[i] != null && gp.obj[i].name.equals("Final Thoughts"))
+                            gp.obj[i] = null;
+                    }
+                }
+                if (qm.quest7Stage > QuestManager.Q7_INTERACT_STOVE) {
+                    for (int i = 0; i < gp.obj.length; i++) {
+                        if (gp.obj[i] != null && gp.obj[i].name.equals("Alcohol Stove"))
+                            gp.obj[i] = null;
+                    }
+                }
+            }
+
             // QUEST 2
             if (qm.currentQuest == QuestManager.QUEST2) {
 
@@ -439,6 +495,8 @@ public class SaveManager {
                 return new OBJ_Draft(gp);
             case "Draft of El Filibusterismo":
                 return new OBJ_Draft2(gp);
+            case "Mi Ultimo Adios":
+                return new OBJ_MiUltimoAdios(gp);
             case "Paint Bucket":
                 return new OBJ_PaintBucket(gp, "/objects/red_paint");
             case "Paintbrush":

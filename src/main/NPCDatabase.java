@@ -170,6 +170,27 @@ public class NPCDatabase {
                     "Paciano Rizal",             "Kuya Paciano",
                     "Brother & Confidant",       "Chapter 3", "Quest 6: El Filibusterismo",
                     "Returning in a new capacity, Paciano was Jose's most trusted correspondent during the exile years. He relayed news from Calamba and channeled resources to his brother across the ocean." },
+            { "guardiacivil",
+                    "Guardia Civil",                     "Guardia",
+                    "Colonial Officer",          "Chapter 4", "Quest 7: Consummatum Est",
+                    "A soldier of the Spanish colonial authority stationed at Cuartel de España. " +
+                            "He presented the evidence gathered against Rizal — letters found among rebels, " +
+                            "photographs displayed as war banners — and insisted that Rizal's pen was the spark " +
+                            "that lit the revolution. He saw no doctor; he saw only a threat." },
+
+            { "judge",
+                    "The Judge of Cuartel de España",    "The Judge",
+                    "Military Judge",            "Chapter 4", "Quest 7: Consummatum Est",
+                    "The presiding officer of the military council that tried José Rizal in December 1896. " +
+                            "He found Rizal guilty of illegal association, rebellion, and sedition, and signed " +
+                            "the death warrant ordering him to be shot at Bagumbayan on the morning of " +
+                            "December 30, 1896. His verdict ended the trial of the most famous Filipino " +
+                            "who ever stood before a colonial court." },
+
+            { "josephine",
+                    "Marie Bernadette Josephine Bracken",                 "Dulce Extranjera",
+                    "Common-law Wife",           "Chapter 4", "Quest 7: Consummatum Est",
+                    "Born in Hong Kong to Irish parents, Josephine arrived in the remote town of Dapitan accompanying her blind adoptive father. She soon fell in love with Rizal, becoming his constant companion and domestic partner during his final years of exile. Despite the lack of a formal church wedding and the initial suspicion of Rizal's family, she remained fiercely loyal. She lived with him in Fort Santiago during his final days and, following his execution, she bravely joined the revolutionary forces in Cavite, even participating in field operations against the Spanish" },
     };
 
     public Set<String> unlockedNPCs = new HashSet<>();

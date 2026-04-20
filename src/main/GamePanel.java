@@ -439,9 +439,9 @@ public class GamePanel extends JPanel implements Runnable {
             int stage = questManager.quest3Stage;
             if (stage == QuestManager.TALK_FERRANDO
                     || stage == QuestManager.TALK_FERRANDO_REWARD) {
-                if (npc[23] != null) targets.add(npc[23]);
+                if (npc[15] != null) targets.add(npc[15]);
             } else if (stage == QuestManager.TALK_BURGOS) {
-                if (npc[24] != null) targets.add(npc[24]);
+                if (npc[16] != null) targets.add(npc[16]);
             } else if (stage == QuestManager.TALK_PROFESSOR) {
                 if (npc[25] != null) targets.add(npc[25]);
             } else if (stage == QuestManager.TALK_STUDENT
@@ -449,7 +449,6 @@ public class GamePanel extends JPanel implements Runnable {
                 if (npc[26] != null) targets.add(npc[26]);
             }
         }
-
 
         // Quest 4
         if (questManager.isQuestActive(QuestManager.QUEST4)) {
@@ -529,6 +528,35 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        // QUEST 7
+        if (questManager.isQuestActive(QuestManager.QUEST7)) {
+            int stage = questManager.quest7Stage;
+
+            if (stage == QuestManager.Q7_TALK_GUARDIA) {
+                if (npc[47] != null) targets.add(npc[47]);
+
+            } else if (stage == QuestManager.Q7_TALK_JUDGE) {
+                if (npc[48] != null) targets.add(npc[48]);
+
+            } else if (stage == QuestManager.Q7_TALK_JOSEPHINE) {
+                if (npc[49] != null) targets.add(npc[49]);
+
+            } else if (stage == QuestManager.Q7_INTERACT_PAPER) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && obj[i].name.equals("Final Thoughts"))
+                        targets.add(obj[i]);
+                }
+
+            } else if (stage == QuestManager.Q7_INTERACT_STOVE) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && obj[i].name.equals("Alcohol Stove"))
+                        targets.add(obj[i]);
+                }
+
+            } else if (stage == QuestManager.Q7_TALK_TRINIDAD) {
+                if (npc[50] != null) targets.add(npc[50]);
+            }
+        }
 
 
         return targets;

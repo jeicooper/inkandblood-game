@@ -6,7 +6,8 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO}
+    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION }
+
     private Scene activeScene = Scene.NONE;
 
     // INTRO
@@ -69,37 +70,122 @@ public class CutsceneManager {
                     "a prison then I cannot stay. I must find a place where"," the sun of knowledge actually shines."}
     };
 
+    // QUEST 6 INTRO
     private final String[][] quest6IntroLines = {
-            { "The ink of the Noli Me Tangere had barely dried ",
-              "before the fires began. The celebration in Berlin",
-              "was short-lived As the first 2,000 copies left",
-              "the press, the world Jose knew began to crumble.",
+            {"The ink of the Noli Me Tangere had barely dried ",
+                    "before the fires began. The celebration in Berlin",
+                    "was short-lived As the first 2,000 copies left",
+                    "the press, the world Jose knew began to crumble.",
             },
 
-            { "In Manila, the ‘Comisión Permanente de Censura’ ",
+            {"In Manila, the ‘Comisión Permanente de Censura’ ",
                     "convened in a panic. They did not see a novel...",
                     "they saw a THREAT, a declaration of war. Every copy",
                     " discovered was a death warrant for its owner."
             },
 
-            { "But the true cost was not measured in ink or paper.",
-                    "It was measured in blood and tears..." },
+            {"But the true cost was not measured in ink or paper.",
+                    "It was measured in blood and tears..."},
 
-           { "Paciano, and his brothers-in-law were banished to Mindoro." },
+            {"Paciano, and his brothers-in-law were banished to Mindoro."},
 
-            { "The Dominican friars, angered by the book’s portrayal,",
-                "raised the rents in Calamba. When the townsfolk",
-                "could not pay, the military arrived. Houses were",
-                "torn down, and the Rizal was disowned by its family"
+            {"The Dominican friars, angered by the book’s portrayal,",
+                    "raised the rents in Calamba. When the townsfolk",
+                    "could not pay, the military arrived. Houses were",
+                    "torn down, and the Rizal was disowned by its family"
             },
 
 
-            { "Leonor Rivera was pressured by her mother to marry an",
+            {"Leonor Rivera was pressured by her mother to marry an",
                     "Englishman, believing Jose would never return alive.",
                     "It grew frantic, then faded into a painful silence.",
                     "And the distance between them was no longer just ocean,",
                     "it was a shadow of a man that is branded 'Filibustero'"
             }
+    };
+
+    // QUEST 7 INTRO
+    private final String[][] chapter4IntroLines = {
+            {"The years of writing in the cold of Europe had ended. "},
+
+            {"June 26, 1892"},
+
+            {"After my return to my native land, a group of patriots,",
+             "including Apolinario Mabini, Deodato Arellano, Andres Bonifacio",
+             "and many others greeted me and founded"},
+
+            {"the 'La liga Filipina' which means...",
+             "'The Filipino League'. “Unus Instar Omnium” or “One Like All”…"},
+
+            {"out great motto in the association giving purpose",
+             "UNITE, PROTECT, DEFEND,",
+             "DEVELOP, and REFORM."},
+
+            {" Three days later... July 7, 1892.",
+                    "I was arrested."},
+
+            {"Illegal Association.",
+             "Founding La Liga Filipina to organize a separatist front."},
+
+            {"Rebellion",
+             "Serving as the spiritual head and inspiration for the Katipunan."},
+
+            {"Sedition",
+             "Writing subversive novels to incite hatred against",
+             "the Motherland. I was thrown to Dapitan as a punishment",
+             "but also to have a chance to live at the parish convent"},
+
+            {"Four years in Dapitan. Despite my successes, I am not happy",
+            "Loneliness haunts the quiet after work. "},
+
+            {"I miss Europe, Calamba, and my family."},
+
+            {"The death of Leonor Rivera left a void in my soul"},
+
+            {"until Josephine Bracken arrived"},
+
+            {"Dr.Blumentritt suggested an offer to trade my services",
+            "as military doctor in Cuba exchange for ending my exiles,",
+            "and after months..."},
+
+            {"I finally received a letter from Governor-General",
+            "Ramon Blanco, informing him that his offer had been accepted"},
+
+            {"While boarding the ship Isla de Panay en route to Barcelona,",
+            "was advised by fellow passengers Don Pedro Roxas and his son to",
+            "stay in Singapore and seek British protection, fearing",
+            " for his safety..."},
+
+            {"however, trusting the promise of Governor Blanco",
+            "who gave his 'word of honor'. had a secretly plotted against me..."},
+
+            {"He sees me as a threat to Spanish rule due to",
+                    "my influence on the Philippine Revolution"},
+
+            {"Governor conspired to have him arrested. By the time",
+             "the ship cleared Port Said, the whispers of the passengers",
+             "confirmed my fears: The Governor’s promise was the ink,"},
+
+            {"but my arrest was the final period."}
+    };
+
+    // FORT SANTIAGO
+    private final String[][] fortSantiagoLines = {
+            {"December 26, 1896."},
+            {"The Judge of Cuartel de España has signed",
+                    "my death warrant."},
+            {"I was taken to Fort Santiago —",
+                    "your final cell."},
+            {"The morning of December 30 draws near."}
+    };
+
+    //
+    private final String[][] executionLines = {
+            {"December 30, 1896. 6:30 AM."},
+            {"The march to Bagumbayan.",
+                    "My pulse is steady… the doctor says it is normal."},
+            {"How strange, to have a heart that beats so calmly",
+                    "when it is about to be pierced."},
     };
 
 
@@ -123,6 +209,16 @@ public class CutsceneManager {
     private static final String CHAPTER3_SPRITE = "pepe_older";
     private static final int    SPAWN_TILE_X3    = 23;
     private static final int    SPAWN_TILE_Y3    = 35;
+
+    //CHAP 4 CONFIG
+    private static final String CHAPTER4_MAP    = "/maps/Chapter4.txt";
+    private static final int    SPAWN_TILE_X4    = 23;
+    private static final int    SPAWN_TILE_Y4    = 35;
+
+    //DAPITAN CONFIG
+    private static final String DAPITAN    = "/maps/Dapitan.txt";
+    private static final int    SPAWN_TILE_X5    = 23;
+    private static final int    SPAWN_TILE_Y5    = 35;
 
     public CutsceneManager(GamePanel gp) {
         this.gp = gp;
@@ -150,6 +246,23 @@ public class CutsceneManager {
 
     public void startQuest6StartCutscene() {
         reset(Scene.QUEST6_INTRO);
+    }
+
+    public void startQuest7Intro() {
+        reset(Scene.CHAPTER4_INTRO);
+    }
+
+    public void startExileCutscene() {
+        reset(Scene.FORT_SANTIAGO);
+    }
+
+    public void startQuest7EndCutscene() {
+        reset(Scene.EXECUTION);
+    }
+
+    private void clearWorld() {
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
     }
 
 
@@ -228,6 +341,12 @@ public class CutsceneManager {
                 return chapter3Lines;
             case QUEST6_INTRO:
                 return quest6IntroLines;
+            case CHAPTER4_INTRO:
+                return chapter4IntroLines;
+            case FORT_SANTIAGO:
+                return fortSantiagoLines;
+            case EXECUTION:
+                return executionLines;
 
             default:
                 return chapter2Lines;
@@ -264,6 +383,24 @@ public class CutsceneManager {
             case QUEST6_INTRO:
                 gp.questManager.startQuest6();
                 break;
+
+            case CHAPTER4_INTRO:
+                clearWorld();
+                gp.questManager.startQuest7();
+                gp.ui.questPageNum = 3;
+                break;
+
+            case FORT_SANTIAGO:
+                gp.questManager.onFortSantiagoCutsceneDone();
+                break;
+
+            case EXECUTION:
+                gp.stopMusic();
+                gp.gameState       = gp.titleState;
+                gp.ui.titleScreenState = 0;
+                gp.ui.commandNum   = 0;
+                break;
+
 
             default:
                 break;
@@ -316,4 +453,5 @@ public class CutsceneManager {
         alpha = 0f;
         applied = false;
         gp.gameState = gp.cutsceneState;
-    }}
+    }
+}

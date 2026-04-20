@@ -326,6 +326,10 @@ public class KeyHandler implements KeyListener {
                     gp.gameState = gp.playState;
                     gp.ui.activeLetter = "Draft of El Filibusterismo";
                     gp.ui.showPoemPanel = true;
+                } else if (item.name.equals("Mi Ultimo Adios")) {
+                    gp.gameState = gp.playState;
+                    gp.ui.activeLetter = "Mi Ultimo Adios";
+                    gp.ui.showPoemPanel = true;
                 }
 
             }

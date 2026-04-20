@@ -343,4 +343,38 @@ public class AssetSetter {
         gp.obj[4].worldX = 17 * gp.tileSize;
         gp.obj[4].worldY = 32 * gp.tileSize;
     }
+
+    public void activateQuest7Intramuros() {
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        gp.npc[47] = new NPC_GuardiaCivil(gp);
+        gp.npc[47].worldX = 22 * gp.tileSize;
+        gp.npc[47].worldY = 18 * gp.tileSize;
+
+        gp.npc[48] = new NPC_Judge(gp);
+        gp.npc[48].worldX = 25 * gp.tileSize;
+        gp.npc[48].worldY = 14 * gp.tileSize;
+    }
+
+    public void activateQuest7FortSantiago() {
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        gp.npc[49] = new NPC_Josephine(gp);
+        gp.npc[49].worldX = 12 * gp.tileSize;
+        gp.npc[49].worldY = 10 * gp.tileSize;
+
+        gp.npc[50] = new NPC_Trinidad(gp);
+        gp.npc[50].worldX = 15 * gp.tileSize;
+        gp.npc[50].worldY = 10 * gp.tileSize;
+
+        gp.obj[0] = new OBJ_FinalPaper(gp);
+        gp.obj[0].worldX = 10 * gp.tileSize;
+        gp.obj[0].worldY =  8 * gp.tileSize;
+
+        gp.obj[1] = new OBJ_AlcoholStove(gp);
+        gp.obj[1].worldX = 13 * gp.tileSize;
+        gp.obj[1].worldY =  8 * gp.tileSize;
+    }
 }

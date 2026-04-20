@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class SaveData implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     public int worldX, worldY;
     public int speed;
@@ -17,6 +17,10 @@ public class SaveData implements Serializable {
     public boolean pendingQuest4Cutscene;
     public boolean pendingChapter3Cutscene;
     public boolean pendingQuest6StartCutscene;
+    public boolean pendingQuest7IntroCutscene;
+    public boolean pendingQuest7MidCutscene;
+    public boolean pendingQuest7EndCutscene;
+
     public int cutsceneDelay;
     public int cutsceneDelay1;
     public int cutsceneDelay2;
@@ -50,6 +54,8 @@ public class SaveData implements Serializable {
     public int  quest6Stage;
     public int  q6ObjectsCollected;
     public boolean[] elFiliParts = new boolean[5];
+
+    public int quest7Stage;
 
     public String[] inventoryItemNames = new String[0];
 

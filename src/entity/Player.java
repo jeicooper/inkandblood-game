@@ -206,6 +206,8 @@ public class Player extends  Entity{
 
             String objectName = gp.obj[i].name;
 
+            if (objectName.equals("Final Thoughts"))   return;
+            if (objectName.equals("Alcohol Stove"))    return;
             if (getManuscriptIndex(objectName) >= 0) return;
             if (getManuscriptIndexQ6(objectName) >= 0) return;
             if (objectName.equals("Draft of Noli Me Tangere")) return;
@@ -261,6 +263,37 @@ public class Player extends  Entity{
             }
         }
 
+        if (objectName.equals("Final Thoughts")) {
+            if (gp.questManager.currentQuest != QuestManager.QUEST7) return;
+            if (gp.questManager.quest7Stage != QuestManager.Q7_INTERACT_PAPER) {
+                gp.ui.showMessage("...");
+                return;
+            }
+            gp.ui.currentSpeakerName = "Jose Rizal";
+            gp.ui.currentDialogue =
+                    "The ink is dry. My 'Ultimo Adios' is finished.It is not just a poem;\nit is a map for those who will follow.";
+            gp.gameState = gp.dialogueState;
+            // remove paper from world after reading
+            gp.obj[i] = null;
+            gp.questManager.onFinalPaperInteracted();
+            return;
+        }
+
+        if (objectName.equals("Alcohol Stove")) {
+            if (gp.questManager.currentQuest != QuestManager.QUEST7) return;
+            if (gp.questManager.quest7Stage != QuestManager.Q7_INTERACT_STOVE) {
+                gp.ui.showMessage("There is something inside...");
+                return;
+            }
+            gp.ui.currentSpeakerName = "Jose Rizal";
+            gp.ui.currentDialogue =
+                    "Inside the stove, folded tightly, a small roll of paper. I press it into\nTrinidad's hand.";
+            gp.gameState = gp.dialogueState;
+            gp.questManager.onAlcoholStoveInteracted();
+            return;
+        }
+
+        // NOLI ME TANGERE
         int manuscriptIndex = getManuscriptIndex(objectName);
         if (manuscriptIndex >= 0 &&
                 gp.questManager.quest5Stage == QuestManager.COLLECT_OBJECTS) {
@@ -286,6 +319,7 @@ public class Player extends  Entity{
             gp.questManager.onManuscriptPartCollected(manuscriptIndex);
         }
 
+        // EL FILI
         int manuscriptIndexQ6 = getManuscriptIndexQ6(objectName);
         if (manuscriptIndexQ6 >= 0 &&
                 gp.questManager.quest6Stage == QuestManager.COLLECT_OBJECTS_Q6) {

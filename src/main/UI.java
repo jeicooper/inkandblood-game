@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class UI {
     GamePanel gp;
@@ -139,7 +140,9 @@ public class UI {
                     drawLetterPanel();
                 } else if (activeLetter.equals("Draft of El Filibusterismo")) {
                     drawElFiliPanel();
-                } else {
+                }else if (activeLetter.equals("Mi Ultimo Adios")) {
+                    drawMiUltimoAdiosPanel();
+                }else {
                     drawPoemPanel();
                 }
             }
@@ -237,9 +240,12 @@ public class UI {
             location    = "CALAMBA, LAGUNA";
         } else if (currentQ <= QuestManager.QUEST4) {
             location    = "ATENEO MUNICIPAL DE MANILA";
-        } else {
+        } else if (currentQ <= QuestManager.QUEST6){
             location    = "EUROPE";
+        } else {
+            location    = "INTRAMUROS";
         }
+
 
         int labelX = gp.tileSize / 2;
         int labelY = gp.tileSize / 2 + gp.tileSize + 18;
@@ -1641,7 +1647,94 @@ public class UI {
 
         // ===== Chapter 4 page =====
         else if (questPageNum == 3) {
+            boolean q7done   = gp.questManager.isQuestCompleted(QuestManager.QUEST7);
+            boolean q7active = gp.questManager.isQuestActive(QuestManager.QUEST7);
+            int     q7stage  = gp.questManager.quest7Stage;
 
+            final int PAD        = gp.tileSize;
+            final int LEFT_X     = frameX + PAD;
+            final int TITLE_SIZE = 27;
+            final int DESC_SIZE  = 27;
+            final int BODY_SIZE  = 25;
+            final int HINT_SIZE  = 21;
+            final int LINE_H     = 27;
+            final int HINT_H     = 22;
+            final int TOP_Y      = frameY + gp.tileSize * 2;
+
+            int ly = TOP_Y;
+
+            Color q7color = q7done   ? new Color(100, 230, 100)
+                    : q7active ? new Color(255, 220, 80)
+                    :            Color.gray;
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(q7color);
+            g2.drawString("Quest 7:", LEFT_X, ly);
+            ly += LINE_H - 2;
+            g2.drawString("\"Consummatum Est\""
+                    + (q7done ? " COMPLETE" : ""), LEFT_X, ly);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(q7active || q7done ? Color.lightGray : Color.gray);
+            ly += HINT_H + 2;
+            g2.drawString("Face the trial. Write your last words.", LEFT_X, ly);
+
+            ly += LINE_H + 2;
+
+            if (!q7active && !q7done) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Quest 6 to unlock]", LEFT_X, ly);
+            } else {
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                // Guardia Civil
+                boolean s1 = q7done || q7stage > QuestManager.Q7_TALK_GUARDIA;
+                g2.setColor(s1 ? new Color(80, 220, 80) : Color.white);
+                g2.drawString("- Face the Guardia Civil", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Judge
+                boolean s2 = q7done || q7stage > QuestManager.Q7_TALK_JUDGE;
+                g2.setColor(s2 ? new Color(80, 220, 80)
+                        : q7stage == QuestManager.Q7_TALK_JUDGE ? Color.white : Color.gray);
+                g2.drawString("- Hear the Judge's verdict", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Josephine
+                boolean s3 = q7done || q7stage > QuestManager.Q7_TALK_JOSEPHINE;
+                g2.setColor(s3 ? new Color(80, 220, 80)
+                        : q7stage == QuestManager.Q7_TALK_JOSEPHINE ? Color.white : Color.gray);
+                g2.drawString("- Talk to Josephine Bracken", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Final thoughts paper
+                boolean s4 = q7done || q7stage > QuestManager.Q7_INTERACT_PAPER;
+                g2.setColor(s4 ? new Color(80, 220, 80)
+                        : q7stage == QuestManager.Q7_INTERACT_PAPER ? Color.white : Color.gray);
+                g2.drawString("- Write your final thoughts", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Alcohol stove
+                boolean s5 = q7done || q7stage > QuestManager.Q7_INTERACT_STOVE;
+                g2.setColor(s5 ? new Color(80, 220, 80)
+                        : q7stage == QuestManager.Q7_INTERACT_STOVE ? Color.white : Color.gray);
+                g2.drawString("- Hide the poem in the stove", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Trinidad
+                boolean s6 = q7done || q7stage > QuestManager.Q7_TALK_TRINIDAD;
+                g2.setColor(s6 ? new Color(80, 220, 80)
+                        : q7stage == QuestManager.Q7_TALK_TRINIDAD ? Color.white : Color.gray);
+                g2.drawString("- Give the poem to Trinidad", LEFT_X, ly);
+                ly += LINE_H;
+
+                if (q7done) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Consummatum est.", LEFT_X, ly);
+                }
+            }
         }
 
         // PREV / NEXT buttons
@@ -1718,9 +1811,9 @@ public class UI {
                     g2.drawString("Go to the golden circle!", panelX + 12, panelY + 72);
                 }
             }
+
         }
 
-        // ===== QUEST 2 =====
         // ===== QUEST 2 =====
         else if (currentQ == QuestManager.QUEST2 && gp.questManager.isQuestActive(QuestManager.QUEST2)) {
 
@@ -1964,7 +2057,8 @@ public class UI {
 
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
                 g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Continue your sequel novel dedicated to GOMBURZA", panelX + 12, panelY + 72);
+                g2.drawString("Continue your sequel novel dedicated to", panelX + 12, panelY + 72);
+                g2.drawString("GOMBURZA", panelX + 12, panelY + 90);
 
             } else if (stage == QuestManager.COLLECT_OBJECTS_Q6) {
                 int done = gp.questManager.q6ObjectsCollected;
@@ -1977,13 +2071,61 @@ public class UI {
 
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
                 g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Bid your farewell to your Kuya", panelX + 12, panelY + 72);
+                g2.drawString("Bid your farewell to your Kuya", panelX + 12, panelY + 90);
 
                 g2.drawString("Manuscript complete!", panelX + 12, panelY + 72);
 
             } else if (stage == QuestManager.QUEST6_DONE) {
                 g2.setColor(new Color(100, 230, 100));
                 g2.drawString("Quest 6 Complete!", panelX + 12, panelY + 52);
+            }
+        }
+
+        // ===== QUEST 7 ======
+        else if (currentQ == QuestManager.QUEST7 && gp.questManager.isQuestActive(QuestManager.QUEST7)) {
+
+            g2.setColor(new Color(255, 220, 80));
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+            g2.drawString("Consummatum Est", panelX + 12, panelY + 28);
+
+            g2.setColor(Color.white);
+            g2.setFont(g2.getFont().deriveFont(20F));
+
+            int stage = gp.questManager.quest7Stage;
+
+            if (stage == QuestManager.Q7_TALK_GUARDIA) {
+                g2.drawString("Speak with the Guardia Civil.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.Q7_TALK_JUDGE) {
+                g2.drawString("Face the Judge.", panelX + 12, panelY + 52);
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.setColor(new Color(200, 200, 100));
+                g2.drawString("Hear the verdict of the Council.", panelX + 12, panelY + 72);
+
+            } else if (stage == QuestManager.Q7_TALK_JOSEPHINE) {
+                g2.drawString("Talk to Josephine Bracken.", panelX + 12, panelY + 52);
+
+            } else if (stage == QuestManager.Q7_INTERACT_PAPER) {
+                g2.drawString("Find your final thoughts.", panelX + 12, panelY + 52);
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.setColor(new Color(200, 200, 100));
+                g2.drawString("Read the paper on the table.", panelX + 12, panelY + 72);
+
+            } else if (stage == QuestManager.Q7_INTERACT_STOVE) {
+                g2.drawString("Examine the alcohol stove.", panelX + 12, panelY + 52);
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.setColor(new Color(200, 200, 100));
+                g2.drawString("Do not let the flame go out.", panelX + 12, panelY + 72);
+
+            } else if (stage == QuestManager.Q7_TALK_TRINIDAD) {
+                g2.drawString("Talk to Trinidad.", panelX + 12, panelY + 52);
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.setColor(new Color(200, 200, 100));
+                g2.drawString("Give her what the flame kept safe.", panelX + 12, panelY + 72);
+
+            } else if (stage == QuestManager.Q7_DONE) {
+                g2.setColor(new Color(100, 230, 100));
+                g2.drawString("Consummatum est.", panelX + 12, panelY + 52);
             }
         }
     }
@@ -2240,6 +2382,76 @@ public class UI {
             showPoemPanel = false;
         }
 
+    }
+    public void drawMiUltimoAdiosPanel() {
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int panelW = gp.tileSize * 15;
+        int panelH = gp.tileSize * 10;
+        int panelX = gp.screenWidth  / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        drawSubWindow(panelX, panelY, panelW, panelH);
+
+        // title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28F));
+        g2.setColor(new Color(255, 220, 80));
+        String title = "Mi Último Adiós  —  José Rizal, 1896";
+        int titleX = getXforCenter(title);
+        g2.drawString(title, titleX, panelY + 42);
+
+        String[] left = {
+                "Farewell, adored Fatherland, region of the sun caressed.",
+                "I give you my life, now saddened and repressed.",
+                "Were it brighter, fresher, or more blessed,",
+                "still would I give it for your sake and your rest.",
+                "",
+                "On the field of battle, fighting with delirium,",
+                "others give their lives without hesitation.",
+                "It matters not where—cypress, laurel,",
+                "or lily, gibbet or open field, combat or cruel martyrdom.",
+                "",
+                "I die as I see the sky glow with color,",
+                "announcing the day after a night of pain.",
+                "If you need pigment to dye your dawn,",
+                "pour out my blood to give it a crimson stain.",
+        };
+
+        String[] right = {
+                "My dreams when I was a child,",
+                "my dreams when a young man full of vigor,",
+                "Farewell, parents and brothers,",
+                "fragments of my soul, friends of my childhood in the lost home.",
+                "",
+                "Give thanks that I rest from the wearisome day.",
+                "I go where there are no slaves, no hangmen, no oppressors,",
+                "where faith does not kill, and where God reigns.",
+                "",
+                "Farewell, loved ones. To die is to rest.",
+        };
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 19F));
+        g2.setColor(Color.white);
+
+        int leftX  = panelX + 22;
+        int rightX = panelX + panelW / 2 + 8;
+        int startY = panelY + 74;
+        int lineH  = 22;
+
+        for (String line : left)  { g2.drawString(line, leftX,  startY); startY += lineH; }
+
+        startY = panelY + 74;
+        for (String line : right) { g2.drawString(line, rightX, startY); startY += lineH; }
+
+        // prompt
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+        g2.setColor(new Color(200, 200, 200));
+        g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
+
+        if (gp.keyP.enterPressed) {
+            gp.keyP.enterPressed = false;
+            showPoemPanel = false;
+        }
     }
 
     public int getItemIndexOnSlot(){

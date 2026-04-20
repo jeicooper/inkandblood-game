@@ -13,6 +13,12 @@ public class QuestManager {
     private int cutsceneDelay2 = 0;
 //    private int cutsceneDelay3 = 0;
     private int cutsceneDelay4 = 0;
+    private int cutsceneDelay5 = 0;
+    private int cutsceneDelay6 = 0;
+    private int cutsceneDelay7 = 0;
+    private boolean pendingQuest7IntroCutscene = false;
+    private boolean pendingQuest7MidCutscene   = false;
+    private boolean pendingQuest7EndCutscene   = false;
 
     private boolean pendingChapter2Cutscene = false;
     private boolean pendingQuest4Cutscene = false;
@@ -21,25 +27,26 @@ public class QuestManager {
 
 
     // QUEST IDS
-    public static final int QUEST1   = 0;
-    public static final int QUEST2   = 1;
+    public static final int QUEST1 = 0;
+    public static final int QUEST2 = 1;
     public static final int QUEST3 = 2;
     public static final int QUEST4 = 3;
     public static final int QUEST5 = 4;
     public static final int QUEST6 = 5;
+    public static final int QUEST7 = 6;
 
 
     //STATES
-    public static final int STATE_INACTIVE   = 0;
-    public static final int STATE_ACTIVE     = 1;
-    public static final int STATE_COMPLETED  = 2;
+    public static final int STATE_INACTIVE = 0;
+    public static final int STATE_ACTIVE = 1;
+    public static final int STATE_COMPLETED = 2;
 
     public int currentQuest = QUEST1;
     public int[] questState = new int[10];
 
     // QUEST 1
     public static final int QUEST1_NOT_STARTED = 0;
-    public static final int QUEST1_STARTED     = 1;
+    public static final int QUEST1_STARTED = 1;
     public int quest1Stage = QUEST1_NOT_STARTED;
 
     public int siblingsFound   = 0;
@@ -54,26 +61,26 @@ public class QuestManager {
     public boolean quest0JustCompleted = false;
 
     // QUEST 2
-    public static final int JOSE_INACTIVE  = 0;
-    public static final int JOSE_WAITING   = 1;
-    public static final int JOSE_DONE      = 2;
+    public static final int JOSE_INACTIVE = 0;
+    public static final int JOSE_WAITING = 1;
+    public static final int JOSE_DONE = 2;
     public static final int MANUEL_RUNNING = 3;
-    public static final int MANUEL_DONE    = 4;
+    public static final int MANUEL_DONE = 4;
     public static final int GREGORIO_WAITING = 5;
-    public static final int GREGORIO_DONE    = 6;
+    public static final int GREGORIO_DONE = 6;
 
     public int quest2Stage = JOSE_INACTIVE;
 
     public final int PAINT_BUCKETS_REQUIRED = 6;
-    public final int PAINTBRUSH_REQUIRED    = 1;
-    public final int CANVAS_REQUIRED        = 1;
-    public final int QUILL_REQUIRED    = 1;
+    public final int PAINTBRUSH_REQUIRED = 1;
+    public final int CANVAS_REQUIRED = 1;
+    public final int QUILL_REQUIRED = 1;
     public final int NOTEBOOK_REQUIRED = 1;
 
-    public int checkpointsHit          = 0;
+    public int checkpointsHit = 0;
     public final int TOTAL_CHECKPOINTS = 10;
-    public boolean courseCompleted     = false;
-    public boolean bootsActive         = false;
+    public boolean courseCompleted = false;
+    public boolean bootsActive = false;
 
     private int normalSpeed;
     private static final int BOOST_SPEED = 10;
@@ -83,14 +90,14 @@ public class QuestManager {
     public final int CHECKPOINT_RADIUS = 60;
 
     // QUEST 3
-    public static final int TALK_FERRANDO  = 0;
-    public static final int TALK_BURGOS    = 1;
-    public static final int CUTSCENE_DONE  = 2;
+    public static final int TALK_FERRANDO = 0;
+    public static final int TALK_BURGOS = 1;
+    public static final int CUTSCENE_DONE = 2;
     public static final int TALK_PROFESSOR = 3;
-    public static final int TALK_STUDENT   = 4;
-    public static final int QUIZ_FAILED    = 5;
+    public static final int TALK_STUDENT = 4;
+    public static final int QUIZ_FAILED = 5;
     public static final int TALK_FERRANDO_REWARD = 6;
-    public static final int QUEST3_DONE          = 7;
+    public static final int QUEST3_DONE = 7;
 
     public int quest3Stage = TALK_FERRANDO;
     public boolean ferrandoShooed = false;
@@ -100,40 +107,51 @@ public class QuestManager {
     public static final int TALK_MARIANO = 1;
     public static final int TALK_RECTOR = 2;
     public static final int DISCIPLINES_ACTIVE = 3;  // all 5 judges available
-    public static final int TALK_RECTOR_END    = 4;
-    public static final int QUEST4_DONE        = 5;
+    public static final int TALK_RECTOR_END = 4;
+    public static final int QUEST4_DONE = 5;
     public static final int MEDALS_REQUIRED = 5;
 
-    public int     quest4Stage = TALK_PROFESSOR_Q4;
+    public int quest4Stage = TALK_PROFESSOR_Q4;
     public boolean[] disciplineMedalEarned = new boolean[5];
-    public int     medalsEarned = 0;
+    public int medalsEarned = 0;
     public boolean[] disciplineAnswered = new boolean[5];
     public int disciplinesCompleted = 0;
 
     // QUEST 5
-    public static final int TALK_PEDRO         = 0;
-    public static final int TALK_CONSUELO      = 1;
-    public static final int FIND_LETTER        = 2;
-    public static final int COLLECT_OBJECTS    = 3;
-    public static final int TALK_MAXIMO        = 4;
-    public static final int QUEST5_DONE        = 5;
-    public static final int OBJECTS_REQUIRED   = 7;
+    public static final int TALK_PEDRO = 0;
+    public static final int TALK_CONSUELO = 1;
+    public static final int FIND_LETTER = 2;
+    public static final int COLLECT_OBJECTS = 3;
+    public static final int TALK_MAXIMO = 4;
+    public static final int QUEST5_DONE = 5;
+    public static final int OBJECTS_REQUIRED = 7;
 
-    public int   quest5Stage         = TALK_PEDRO;
-    public int   objectsCollected    = 0;
+    public int quest5Stage = TALK_PEDRO;
+    public int objectsCollected = 0;
     public boolean[] manuscriptParts = new boolean[7];
 
     // QUEST 6
-    public static final int TALK_PACIANO_Q6    = 0;
-    public static final int FIND_DRAFT         = 1;
+    public static final int TALK_PACIANO_Q6 = 0;
+    public static final int FIND_DRAFT = 1;
     public static final int COLLECT_OBJECTS_Q6 = 2;
-    public static final int RETURN_PACIANO     = 3;
-    public static final int QUEST6_DONE        = 4;
+    public static final int RETURN_PACIANO = 3;
+    public static final int QUEST6_DONE = 4;
     public static final int Q6_OBJECTS_REQUIRED = 4;
 
-    public int     quest6Stage        = TALK_PACIANO_Q6;
-    public int     q6ObjectsCollected = 0;
-    public boolean[] elFiliParts      = new boolean[5];
+    public int quest6Stage = TALK_PACIANO_Q6;
+    public int q6ObjectsCollected = 0;
+    public boolean[] elFiliParts = new boolean[5];
+
+    // QUEST 7
+    public static final int Q7_TALK_GUARDIA = 0;
+    public static final int Q7_TALK_JUDGE = 1;
+    public static final int Q7_TALK_JOSEPHINE = 2;
+    public static final int Q7_INTERACT_PAPER = 3;
+    public static final int Q7_INTERACT_STOVE = 4;
+    public static final int Q7_TALK_TRINIDAD  = 5;
+    public static final int Q7_DONE = 6;
+
+    public int quest7Stage = Q7_TALK_GUARDIA;
 
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
@@ -223,6 +241,33 @@ public class QuestManager {
             if (cutsceneDelay4 <= 0) {
                 pendingQuest6StartCutscene = false;
                 gp.cutsceneManager.startQuest6StartCutscene();
+            }
+        }
+
+        // Quest 7 INTRO cutscene
+        if (pendingQuest7IntroCutscene) {
+            cutsceneDelay5--;
+            if (cutsceneDelay5 <= 0) {
+                pendingQuest7IntroCutscene = false;
+                gp.cutsceneManager.startQuest7Intro();
+            }
+        }
+
+        // Quest 7 MID cutscene
+        if (pendingQuest7MidCutscene) {
+            cutsceneDelay6--;
+            if (cutsceneDelay6 <= 0) {
+                pendingQuest7MidCutscene = false;
+                gp.cutsceneManager.startExileCutscene();
+            }
+        }
+
+        // Quest 7 END cutscene
+        if (pendingQuest7EndCutscene) {
+            cutsceneDelay7--;
+            if (cutsceneDelay7 <= 0) {
+                pendingQuest7EndCutscene = false;
+                gp.cutsceneManager.startQuest7EndCutscene();
             }
         }
     }
@@ -549,6 +594,7 @@ public class QuestManager {
         questState[QUEST5] = STATE_COMPLETED;
 
         gp.player.exp += 2;
+        gp.player.age += 3;
         gp.player.intellect += 2;
         gp.player.perception +=3;
         gp.player.charisma +=2;
@@ -612,10 +658,10 @@ public class QuestManager {
     public void completeQuest6() {
         if (quest6Stage == QUEST6_DONE) return;
         quest6Stage = QUEST6_DONE;
-        questState[QUEST5] = STATE_COMPLETED;
+        questState[QUEST6] = STATE_COMPLETED;
 
         gp.player.exp += 2;
-        gp.player.age += 3;
+        gp.player.age += 9;
 
         gp.player.intellect += 1;
         gp.player.perception += 2;
@@ -623,8 +669,66 @@ public class QuestManager {
 
         gp.ui.showMessage("El Filibusterismo begins! Quest 6: Done!");
 
-        pendingQuest6StartCutscene = true;
+        pendingQuest7IntroCutscene = true;
         cutsceneDelay4 = 60;
+        gp.saveManager.save();
+    }
+
+    // QUEST 7
+    public void startQuest7() {
+        currentQuest = QUEST7;
+        questState[QUEST7] = STATE_ACTIVE;
+        quest7Stage = Q7_TALK_GUARDIA;
+        gp.ui.questPageNum = 3;
+        gp.aSetter.activateQuest7Intramuros();
+    }
+
+    public void onGuardiaDone() {
+        if (quest7Stage == Q7_TALK_GUARDIA)
+            quest7Stage = Q7_TALK_JUDGE;
+    }
+
+    public void onJudgeDone() {
+        if (quest7Stage != Q7_TALK_JUDGE) return;
+        pendingQuest7MidCutscene = true;
+        cutsceneDelay6 = 90;
+        gp.saveManager.save();
+    }
+
+    public void onFortSantiagoCutsceneDone() {
+        quest7Stage = Q7_TALK_JOSEPHINE;
+        gp.aSetter.activateQuest7FortSantiago();
+    }
+
+    public void onJosephineDone() {
+        if (quest7Stage == Q7_TALK_JOSEPHINE)
+            quest7Stage = Q7_INTERACT_PAPER;
+    }
+
+    public void onFinalPaperInteracted() {
+        if (quest7Stage == Q7_INTERACT_PAPER)
+            quest7Stage = Q7_INTERACT_STOVE;
+    }
+
+    public void onAlcoholStoveInteracted() {
+        if (quest7Stage == Q7_INTERACT_STOVE)
+            quest7Stage = Q7_TALK_TRINIDAD;
+    }
+
+    public void giveUltimoAdios() {
+        if (quest7Stage != Q7_TALK_TRINIDAD) return;
+        quest7Stage = Q7_DONE;
+        gp.player.inventory.add(new object.OBJ_MiUltimoAdios(gp));
+        gp.ui.showMessage("You received Mi Ultimo Adios.");
+        questState[QUEST7] = STATE_COMPLETED;
+        gp.player.exp += 3;
+
+        gp.player.intellect += 5;
+        gp.player.creativity += 5;
+        gp.player.perception += 5;
+        gp.player.charisma += 5;
+        pendingQuest7EndCutscene = true;
+        cutsceneDelay7 = 90;
         gp.saveManager.save();
     }
 
@@ -639,10 +743,15 @@ public class QuestManager {
     public boolean isPendingQuest4Cutscene()      { return pendingQuest4Cutscene; }
     public boolean isPendingChapter3Cutscene()    { return pendingChapter3Cutscene; }
     public boolean isPendingQuest6StartCutscene() { return pendingQuest6StartCutscene; }
+    public boolean isPendingQuest7IntroCutscene() { return pendingQuest7IntroCutscene; }
+    public boolean isPendingQuest7MidCutscene()   { return pendingQuest7MidCutscene; }
+    public boolean isPendingQuest7EndCutscene()   { return pendingQuest7EndCutscene; }
 
     public void setPendingChapter2Cutscene(boolean v)    { pendingChapter2Cutscene = v;    if (v) cutsceneDelay  = 60; }
     public void setPendingQuest4Cutscene(boolean v)      { pendingQuest4Cutscene = v;      if (v) cutsceneDelay1 = 60; }
     public void setPendingChapter3Cutscene(boolean v)    { pendingChapter3Cutscene = v;    if (v) cutsceneDelay2 = 60; }
     public void setPendingQuest6StartCutscene(boolean v) { pendingQuest6StartCutscene = v; if (v) cutsceneDelay4 = 60; }
-
+    public void setPendingQuest7IntroCutscene(boolean v) { pendingQuest7IntroCutscene = v; if (v) cutsceneDelay5 = 60; }
+    public void setPendingQuest7MidCutscene(boolean v)   { pendingQuest7MidCutscene = v;   if (v) cutsceneDelay6 = 60; }
+    public void setPendingQuest7EndCutscene(boolean v)   { pendingQuest7EndCutscene = v;   if (v) cutsceneDelay7 = 60; }
 }
