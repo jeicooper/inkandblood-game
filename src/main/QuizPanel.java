@@ -60,7 +60,7 @@ public class QuizPanel {
 
     };
 
-    private static final int[] POOL_CORRECT = { 1, 0, 2, 1, 1, 1, 2, 0, 2, 2 };
+    private static final int[] POOL_CORRECT = { 1, 1, 1, 1, 1, 1, 2, 0, 2, 2 };
 
     private static final int QUIZ_SIZE = 10;
 
