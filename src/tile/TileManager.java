@@ -692,6 +692,71 @@ public class TileManager {
         setup(656,"window2_1", true);
         setup(657,"window2_2", true);
 
+        setup(658,"cell1", true);
+        setup(659,"cell2", true);
+        setup(660,"cell3", true);
+        setup(661,"cell4", true);
+
+        setup(662,"cellwall_1", true);
+        setup(663,"cellwall_2", true);
+        setup(664,"cellwall_3", true);
+
+        setup(665,"cellwall_4", true);
+        setup(666,"cellwall_5", true);
+        setup(667,"cellwall_6", true);
+
+        setup(668,"cell_door1", true);
+        setup(669,"cell_door2", true);
+        setup(670,"cell_door3", true);
+        setup(671,"cell_door4", true);
+        setup(672,"cell_door5", true);
+        setup(673,"cell_door6", true);
+
+        setup(674,"table2_1", true);
+        setup(675,"table2_2", true);
+        setup(676,"table2_3", true);
+        setup(677,"table2_4", true);
+
+        setup(678,"redcarpet_1", false);
+        setup(679,"redcarpet_2", false);
+        setup(680,"redcarpet_3", false);
+        setup(681,"redcarpet_4", false);
+        setup(682,"redcarpet_5", false);
+        setup(683,"redcarpet_6", false);
+        setup(684,"redcarpet_7", false);
+        setup(685,"redcarpet_8", false);
+        setup(686,"redcarpet_9", false);
+        setup(687,"redcarpet_10", true);
+
+        setup(688,"bagumbayan_wall_1", true);
+        setup(689,"bagumbayan_wall_2", true);
+        setup(690,"bagumbayan_wall_3", true);
+        setup(691,"bagumbayan_wall_4", true);
+        setup(692,"bagumbayan_wall_5", true);
+
+        setup(693,"bagumbayan_wall_6", true);
+        setup(694,"bagumbayan_wall_7", true);
+        setup(695,"bagumbayan_wall_8", true);
+        setup(696,"bagumbayan_wall_9", true);
+
+        setup(697,"sand_grass_right2", true);
+        //setup(698,"", true);
+        //setup(699,"", true);
+        //setup(700,"", true);
+        //setup(701,"", true);
+        //setup(702,"", true);
+        //setup(703,"", true);
+        //setup(704,"", true);
+        //setup(705,"", true);
+
+        setup(706,"tree4_0", true);
+        setup(707,"tree4_1", true);
+        setup(708,"tree4_2", true);
+        setup(709,"tree4_3", true);
+        setup(710,"tree4_4", true);
+        setup(711,"tree4_5", true);
+//        setup(712,"tree4_6", true);
+
     }
 
     public void setup(int index, String imagePath, boolean collision){
@@ -699,14 +764,23 @@ public class TileManager {
 
         try {
             tile[index] = new Tile();
-            BufferedImage raw = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imagePath + ".png"));
-            // Scale using nearest-neighbor to avoid bleeding for pixel-art tiles
-            tile[index].image = scaleTileImage(raw, gp.tileSize, gp.tileSize);
             tile[index].collision = collision;
 
+            InputStream stream = getClass().getResourceAsStream("/tiles/" + imagePath + ".png");
+            if (stream == null) {
+                System.out.println("WARNING: Missing tile image for index " + index + " -> /tiles/" + imagePath + ".png");
+                return;
+            }
+
+            BufferedImage raw = ImageIO.read(stream);
+            // Scale using nearest-neighbor to avoid bleeding for pixel-art tiles
+            tile[index].image = scaleTileImage(raw, gp.tileSize, gp.tileSize);
+
         }catch (IOException e){
+            System.out.println("ERROR loading tile index " + index + " (" + imagePath + "): " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e){
+            System.out.println("ERROR loading tile index " + index + " (" + imagePath + "): " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -771,7 +845,7 @@ public class TileManager {
         for (int row = startRow; row <= endRow; row++) {
             for (int col = startCol; col <= endCol; col++) {
                 int tileNum = mapTileNum[col][row];
-                if (tileNum < 0 || tileNum >= tile.length || tile[tileNum] == null) continue;
+                if (tileNum < 0 || tileNum >= tile.length || tile[tileNum] == null || tile[tileNum].image == null) continue;
 
                 int screenX = (col * gp.tileSize) - playerWorldX + playerScreenX;
                 int screenY = (row * gp.tileSize) - playerWorldY + playerScreenY;
