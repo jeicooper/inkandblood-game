@@ -875,11 +875,13 @@ public class LogIn {
         } else {
             UserManager.StudentProfile sp = selectedProfile;
 
+            // Display name banner
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 26f));
             g2.setColor(GOLD);
             g2.drawString(sp.displayName(), cx - strW(g2, sp.displayName()) / 2, ly);
             ly += 34;
 
+            // Profile rows
             drawProfileRow(g2, lx, ly, labelW, "First Name:",     sp.firstName);     ly += 28;
             drawProfileRow(g2, lx, ly, labelW, "Last Name:",      sp.lastName);      ly += 28;
             drawProfileRow(g2, lx, ly, labelW, "Middle Initial:", sp.middleInitial.isEmpty() ? "—" : sp.middleInitial); ly += 28;
@@ -888,6 +890,7 @@ public class LogIn {
             drawProfileRow(g2, lx, ly, labelW, "Student ID:",     sp.studentId);     ly += 28;
             drawProfileRow(g2, lx, ly, labelW, "Login Username:", sp.username);      ly += 10;
 
+            // Save file indicator
             File sf = new File("saves" + File.separator + sp.username + ".dat");
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
 

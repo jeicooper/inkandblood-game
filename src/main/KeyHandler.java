@@ -461,16 +461,9 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_ENTER && gp.inputDelay <= 0) {
             if (gp.ui.newGameConfirmCursor == 0) {
-
-                if (gp.saveManager.hasSave()) {
-                    gp.userManager.deleteAccount(gp.userManager.getCurrentUser());
-                    gp.userManager.createAccount(
-                            gp.userManager.getCurrentUser(),
-                            ""
-                    );
-                    java.io.File sf = gp.userManager.getSaveFile();
-                    if (sf.exists()) sf.delete();
-                }
+                java.io.File sf = gp.userManager.getSaveFile();
+                if (sf.exists()) sf.delete();
+                main.NPCDatabase.deleteForUser(gp.userManager.getCurrentUser());
                 gp.resetGame();
                 gp.ui.newGameConfirmCursor = 0;
                 gp.cutsceneManager.startIntroCutscene();

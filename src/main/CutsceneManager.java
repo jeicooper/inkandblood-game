@@ -17,7 +17,7 @@ public class CutsceneManager {
             {"He was different from the start...",
                     "quiet, observant, and curious."},
             {"Raised with discipline and faith by Francisco and Teodora.. ",
-            "he was baptized three days later"},
+                    "he was baptized three days later"},
             {"and he was endearly called 'Pepe'."}
     };
 
@@ -111,32 +111,32 @@ public class CutsceneManager {
             {"June 26, 1892"},
 
             {"After my return to my native land, a group of patriots,",
-             "including Apolinario Mabini, Deodato Arellano, Andres Bonifacio",
-             "and many others greeted me and founded"},
+                    "including Apolinario Mabini, Deodato Arellano, Andres Bonifacio",
+                    "and many others greeted me and founded"},
 
             {"the 'La liga Filipina' which means...",
-             "'The Filipino League'. “Unus Instar Omnium” or “One Like All”…"},
+                    "'The Filipino League'. “Unus Instar Omnium” or “One Like All”…"},
 
             {"out great motto in the association giving purpose",
-             "UNITE, PROTECT, DEFEND,",
-             "DEVELOP, and REFORM."},
+                    "UNITE, PROTECT, DEFEND,",
+                    "DEVELOP, and REFORM."},
 
             {" Three days later... July 7, 1892.",
                     "I was arrested."},
 
             {"Illegal Association.",
-             "Founding La Liga Filipina to organize a separatist front."},
+                    "Founding La Liga Filipina to organize a separatist front."},
 
             {"Rebellion",
-             "Serving as the spiritual head and inspiration for the Katipunan."},
+                    "Serving as the spiritual head and inspiration for the Katipunan."},
 
             {"Sedition",
-             "Writing subversive novels to incite hatred against",
-             "the Motherland. I was thrown to Dapitan as a punishment",
-             "but also to have a chance to live at the parish convent"},
+                    "Writing subversive novels to incite hatred against",
+                    "the Motherland. I was thrown to Dapitan as a punishment",
+                    "but also to have a chance to live at the parish convent"},
 
             {"Four years in Dapitan. Despite my successes, I am not happy",
-            "Loneliness haunts the quiet after work. "},
+                    "Loneliness haunts the quiet after work. "},
 
             {"I miss Europe, Calamba, and my family."},
 
@@ -145,26 +145,26 @@ public class CutsceneManager {
             {"until Josephine Bracken arrived"},
 
             {"Dr.Blumentritt suggested an offer to trade my services",
-            "as military doctor in Cuba exchange for ending my exiles,",
-            "and after months..."},
+                    "as military doctor in Cuba exchange for ending my exiles,",
+                    "and after months..."},
 
             {"I finally received a letter from Governor-General",
-            "Ramon Blanco, informing him that his offer had been accepted"},
+                    "Ramon Blanco, informing him that his offer had been accepted"},
 
             {"While boarding the ship Isla de Panay en route to Barcelona,",
-            "was advised by fellow passengers Don Pedro Roxas and his son to",
-            "stay in Singapore and seek British protection, fearing",
-            " for his safety..."},
+                    "was advised by fellow passengers Don Pedro Roxas and his son to",
+                    "stay in Singapore and seek British protection, fearing",
+                    " for his safety..."},
 
             {"however, trusting the promise of Governor Blanco",
-            "who gave his 'word of honor'. had a secretly plotted against me..."},
+                    "who gave his 'word of honor'. had a secretly plotted against me..."},
 
             {"He sees me as a threat to Spanish rule due to",
                     "my influence on the Philippine Revolution"},
 
             {"Governor conspired to have him arrested. By the time",
-             "the ship cleared Port Said, the whispers of the passengers",
-             "confirmed my fears: The Governor’s promise was the ink,"},
+                    "the ship cleared Port Said, the whispers of the passengers",
+                    "confirmed my fears: The Governor’s promise was the ink,"},
 
             {"but my arrest was the final period."}
     };
@@ -207,18 +207,18 @@ public class CutsceneManager {
     // CHAP 3 CONFIG
     private static final String CHAPTER3_MAP    = "/maps/Chapter3.txt";
     private static final String CHAPTER3_SPRITE = "pepe_older";
-    private static final int    SPAWN_TILE_X3    = 23;
-    private static final int    SPAWN_TILE_Y3    = 35;
+    private static final int    SPAWN_TILE_X3 = 23;
+    private static final int    SPAWN_TILE_Y3 = 35;
 
     //CHAP 4 CONFIG
-    private static final String CHAPTER4_MAP    = "/maps/Chapter4.txt";
-    private static final int    SPAWN_TILE_X4    = 23;
-    private static final int    SPAWN_TILE_Y4    = 35;
+    private static final String CHAPTER4_MAP = "/maps/Chapter4.txt";
+    private static final int SPAWN_TILE_X4 = 61;
+    private static final int SPAWN_TILE_Y4 = 28;
 
     //DAPITAN CONFIG
-    private static final String DAPITAN    = "/maps/Dapitan.txt";
-    private static final int    SPAWN_TILE_X5    = 23;
-    private static final int    SPAWN_TILE_Y5    = 35;
+    private static final String DAPITAN = "/maps/Chapter4.txt";
+    private static final int SPAWN_TILE_X5 = 55;
+    private static final int SPAWN_TILE_Y5 = 71;
 
     public CutsceneManager(GamePanel gp) {
         this.gp = gp;
@@ -385,12 +385,14 @@ public class CutsceneManager {
                 break;
 
             case CHAPTER4_INTRO:
+                applyChapter4Changes();
                 clearWorld();
                 gp.questManager.startQuest7();
                 gp.ui.questPageNum = 3;
                 break;
 
             case FORT_SANTIAGO:
+                applyFortSantiagoChanges();
                 gp.questManager.onFortSantiagoCutsceneDone();
                 break;
 
@@ -444,7 +446,33 @@ public class CutsceneManager {
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
 
         gp.aSetter.activateChapter3();
+        gp.saveManager.save();
     }
+
+    private void applyChapter4Changes() {
+        gp.tileM.loadMap(CHAPTER4_MAP);
+        gp.player.worldX = SPAWN_TILE_X4 * gp.tileSize;
+        gp.player.worldY = SPAWN_TILE_Y4 * gp.tileSize;
+        gp.player.direction = "down";
+
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        gp.aSetter.activateQuest7Intramuros();
+    }
+
+    private void applyFortSantiagoChanges() {
+        gp.tileM.loadMap(DAPITAN);
+        gp.player.worldX = SPAWN_TILE_X5 * gp.tileSize;
+        gp.player.worldY = SPAWN_TILE_Y5 * gp.tileSize;
+        gp.player.direction = "down";
+
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        gp.aSetter.activateQuest7FortSantiago();
+    }
+
 
     private void reset(Scene scene) {
         activeScene = scene;

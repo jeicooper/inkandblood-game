@@ -11,7 +11,7 @@ public class QuestManager {
     private int cutsceneDelay = 0;
     private int cutsceneDelay1 = 0;
     private int cutsceneDelay2 = 0;
-//    private int cutsceneDelay3 = 0;
+    //    private int cutsceneDelay3 = 0;
     private int cutsceneDelay4 = 0;
     private int cutsceneDelay5 = 0;
     private int cutsceneDelay6 = 0;
@@ -308,7 +308,7 @@ public class QuestManager {
         gp.ui.showMessage("Quest 1: Done!");
 
         //STATS GAINED
-        gp.player.exp += 1;
+        gp.player.exp += 3;
         gp.player.perception += 2;
         gp.player.charisma += 2;
 
@@ -427,7 +427,7 @@ public class QuestManager {
 
         //STATS GAINED
         gp.player.inventory.add(new object.OBJ_Poem(gp));
-        gp.player.exp += 3;
+        gp.player.exp += 4;
         gp.player.age += 3;
 
         gp.ui.showMessage("Quest 2: Done!");
@@ -549,7 +549,7 @@ public class QuestManager {
         questState[QUEST4] = STATE_COMPLETED;
 
         //STATS GAINED
-        gp.player.exp += 2;
+        gp.player.exp += 3;
         gp.player.intellect += 3;
         gp.player.age += 7;
 
@@ -557,7 +557,6 @@ public class QuestManager {
 
         pendingChapter3Cutscene = true;
         cutsceneDelay2 = 60;
-        gp.saveManager.save();
     }
 
     // ===== QUEST 5 =====
@@ -593,7 +592,7 @@ public class QuestManager {
         quest5Stage = QUEST5_DONE;
         questState[QUEST5] = STATE_COMPLETED;
 
-        gp.player.exp += 2;
+        gp.player.exp += 3;
         gp.player.age += 3;
         gp.player.intellect += 2;
         gp.player.perception +=3;
@@ -660,12 +659,13 @@ public class QuestManager {
         quest6Stage = QUEST6_DONE;
         questState[QUEST6] = STATE_COMPLETED;
 
-        gp.player.exp += 2;
+        gp.player.exp += 3;
         gp.player.age += 9;
 
-        gp.player.intellect += 1;
-        gp.player.perception += 2;
-        gp.player.creativity += 3;
+        gp.player.intellect += 5;
+        gp.player.perception += 6;
+        gp.player.creativity += 8;
+        gp.player.charisma += 5;
 
         gp.ui.showMessage("El Filibusterismo begins! Quest 6: Done!");
 

@@ -237,13 +237,13 @@ public class UI {
         String sublocation;
 
         if (currentQ <= QuestManager.QUEST2) {
-            location    = "CALAMBA, LAGUNA";
+            location    = " CALAMBA, LAGUNA";
         } else if (currentQ <= QuestManager.QUEST4) {
-            location    = "ATENEO MUNICIPAL DE MANILA";
+            location    = " ATENEO MUNICIPAL DE MANILA";
         } else if (currentQ <= QuestManager.QUEST6){
-            location    = "EUROPE";
+            location    = " EUROPE";
         } else {
-            location    = "INTRAMUROS";
+            location    = " INTRAMUROS";
         }
 
 
@@ -1623,7 +1623,7 @@ public class UI {
                     };
 
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
-                    for (int i = 0; i < 7; i++) {
+                    for (int i = 0; i < 4; i++) {
                         boolean done = q6done || gp.questManager.elFiliParts[i];
                         g2.setColor(done ? new Color(80, 220, 80) : Color.white);
                         g2.drawString((done ? "/ " : "- ") + parts[i], RIGHT_X + 10, ry);
@@ -1966,11 +1966,11 @@ public class UI {
                 g2.drawString("Talk to Fr. Rector.", panelX + 12, panelY + 52);
 
             } else if (stage == QuestManager.DISCIPLINES_ACTIVE) {
-            int done = gp.questManager.disciplinesCompleted;
-            g2.drawString("Disciplines: " + done + "/5", panelX + 12, panelY + 52);
-            g2.setColor(new Color(200, 200, 100));
-            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-            g2.drawString("Medals: " + gp.questManager.medalsEarned + "/5", panelX + 12, panelY + 72);
+                int done = gp.questManager.disciplinesCompleted;
+                g2.drawString("Disciplines: " + done + "/5", panelX + 12, panelY + 52);
+                g2.setColor(new Color(200, 200, 100));
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                g2.drawString("Medals: " + gp.questManager.medalsEarned + "/5", panelX + 12, panelY + 72);
             } else if (stage == QuestManager.TALK_RECTOR_END) {
                 g2.drawString("Medals: " + gp.questManager.medalsEarned + "/5", panelX + 12, panelY + 52);
                 g2.setColor(new Color(100, 255, 100));
