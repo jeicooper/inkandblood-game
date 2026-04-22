@@ -40,6 +40,13 @@ public class AdminManager {
         return userManager.getProfile(username);
     }
 
+    public String resetPassword(String username, String newPassword) {
+        username = username.trim();
+        if (!userManager.userExists(username))
+            return "Account '" + username + "' not found.";
+        return userManager.resetPassword(username, newPassword);
+    }
+
     public String resetAccount(String username) {
         username = username.trim();
         if (!userManager.userExists(username))

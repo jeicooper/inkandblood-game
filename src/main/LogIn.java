@@ -28,7 +28,11 @@ public class LogIn {
     private String selectedAccount = null;
     private UserManager.StudentProfile selectedProfile = null;
 
-    private boolean confirmingDelete = false;
+    private boolean confirmingDelete  = false;
+    private boolean resettingPassword = false;
+    private final StringBuilder newPasswordField    = new StringBuilder();
+    private final StringBuilder confirmPasswordField = new StringBuilder();
+    private boolean resetPwFocusOnConfirm = false;
 
     private final GamePanel   gp;
     private final UserManager userManager;
@@ -319,6 +323,12 @@ public class LogIn {
             if (adminMode == 3) {
                 if (confirmingDelete) {
                     confirmingDelete = false;
+                } else if (resettingPassword) {
+                    resettingPassword = false;
+                    newPasswordField.setLength(0);
+                    confirmPasswordField.setLength(0);
+                    resetPwFocusOnConfirm = false;
+                    adminError = "";
                 } else {
                     adminMode = 2;
                     selectedAccount = null;
@@ -396,9 +406,58 @@ public class LogIn {
         }
 
         if (adminMode == 3) {
+            if (resettingPassword) {
+                // Password reset form
+                if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN) {
+                    resetPwFocusOnConfirm = !resetPwFocusOnConfirm;
+                    return;
+                }
+                if (code == KeyEvent.VK_BACK_SPACE) {
+                    StringBuilder active = resetPwFocusOnConfirm ? confirmPasswordField : newPasswordField;
+                    if (active.length() > 0) active.deleteCharAt(active.length() - 1);
+                    adminError = "";
+                    return;
+                }
+                if (code == KeyEvent.VK_ENTER) {
+                    String np = newPasswordField.toString();
+                    String cp = confirmPasswordField.toString();
+                    if (np.length() < 8) {
+                        adminError = "Password must be at least 8 characters.";
+                    } else if (!np.equals(cp)) {
+                        adminError = "Passwords do not match.";
+                    } else {
+                        String err = adminManager.resetPassword(selectedAccount, np);
+                        if (err != null) {
+                            adminError = err;
+                        } else {
+                            adminSuccess = "Password reset for '" + selectedAccount + "'.";
+                            resettingPassword = false;
+                            newPasswordField.setLength(0);
+                            confirmPasswordField.setLength(0);
+                            resetPwFocusOnConfirm = false;
+                            adminError = "";
+                        }
+                    }
+                    return;
+                }
+                if (keyChar >= 32 && keyChar != 127) {
+                    StringBuilder active = resetPwFocusOnConfirm ? confirmPasswordField : newPasswordField;
+                    if (active.length() < 32) active.append(keyChar);
+                }
+                return;
+            }
+
             if (!confirmingDelete) {
                 if (code == KeyEvent.VK_D) {
                     confirmingDelete = true;
+                }
+                if (code == KeyEvent.VK_P) {
+                    resettingPassword = true;
+                    newPasswordField.setLength(0);
+                    confirmPasswordField.setLength(0);
+                    resetPwFocusOnConfirm = false;
+                    adminError = "";
+                    adminSuccess = "";
                 }
             } else {
                 if (code == KeyEvent.VK_ENTER && selectedAccount != null) {
@@ -493,7 +552,7 @@ public class LogIn {
                 false, !focusOnPassword, fieldX, fieldY, fieldW);
 
         fieldY += gp.tileSize + 32;
-        drawField(g2, "Password", "•".repeat(passwordField.length()),
+        drawField(g2, "Password", getMaskedValue(passwordField.toString()),
                 true, focusOnPassword, fieldX, fieldY, fieldW);
 
         if (!errorMessage.isEmpty()) {
@@ -790,6 +849,12 @@ public class LogIn {
     }
 
     private void drawProfileView(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
+        // Route to password reset form if active
+        if (resettingPassword) {
+            drawPasswordResetForm(g2, panelX, panelY, panelW, panelH, cx, pad);
+            return;
+        }
+
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
         g2.setColor(new Color(255, 100, 100));
         String t = "Student Profile";
@@ -810,14 +875,11 @@ public class LogIn {
         } else {
             UserManager.StudentProfile sp = selectedProfile;
 
-            // Display name banner
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 26f));
             g2.setColor(GOLD);
             g2.drawString(sp.displayName(), cx - strW(g2, sp.displayName()) / 2, ly);
             ly += 34;
 
-
-            // Profile rows
             drawProfileRow(g2, lx, ly, labelW, "First Name:",     sp.firstName);     ly += 28;
             drawProfileRow(g2, lx, ly, labelW, "Last Name:",      sp.lastName);      ly += 28;
             drawProfileRow(g2, lx, ly, labelW, "Middle Initial:", sp.middleInitial.isEmpty() ? "—" : sp.middleInitial); ly += 28;
@@ -826,22 +888,102 @@ public class LogIn {
             drawProfileRow(g2, lx, ly, labelW, "Student ID:",     sp.studentId);     ly += 28;
             drawProfileRow(g2, lx, ly, labelW, "Login Username:", sp.username);      ly += 10;
 
-            // Save file indicator
             File sf = new File("saves" + File.separator + sp.username + ".dat");
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
-            g2.setColor(sf.exists() ? OK_GREEN : LIGHT_GREY);
-            g2.drawString(sf.exists() ? "Has saved game data" : "No saved game data yet", (int) (lx + gp.tileSize * 3.5), ly + 40);
+
+            if (sf.exists()) {
+                // Read the quest progress from the save file
+                String questLabel = "Unknown progress";
+                try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.FileInputStream(sf))) {
+                    SaveData sd = (SaveData) ois.readObject();
+                    switch (sd.currentQuest) {
+                        case 0: questLabel = "Chapter 1 — Quest 1: Find the Siblings";      break;
+                        case 1: questLabel = "Chapter 1 — Quest 2: Art and Writing";         break;
+                        case 2: questLabel = "Chapter 2 — Quest 3: Enrollment at Ateneo";    break;
+                        case 3: questLabel = "Chapter 2 — Quest 4: The Competitions";        break;
+                        case 4: questLabel = "Chapter 3 — Quest 5: Writing Noli Me Tangere"; break;
+                        case 5: questLabel = "Chapter 3 — Quest 6: El Filibusterismo";       break;
+                        case 6: questLabel = "Chapter 4 — Quest 7: The Final Days";          break;
+                        default: questLabel = "Quest " + (sd.currentQuest + 1);              break;
+                    }
+                } catch (Exception e) {
+                    questLabel = "Save file unreadable";
+                }
+
+                g2.setColor(OK_GREEN);
+                g2.drawString("Progress: " + questLabel, (int)(lx + gp.tileSize * 1.5), ly + 28);
+
+            } else {
+                g2.setColor(LIGHT_GREY);
+                g2.drawString("No saved game data yet", (int)(lx + gp.tileSize * 3.5), ly + 28);
+            }
         }
 
-        // Delete button hint
-        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
+        // Success message if a reset just happened
+        if (!adminSuccess.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
+            g2.setColor(OK_GREEN);
+            g2.drawString(adminSuccess, cx - strW(g2, adminSuccess) / 2, panelY + panelH - 58);
+        }
+
+        // Action hints at the bottom
+        int hintY = panelY + panelH - 36;
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 19f));
+        g2.setColor(new Color(80, 160, 255));
+        String pHint = "[ P ] Reset Password";
+        g2.drawString(pHint, cx - strW(g2, pHint) / 2 - 100, hintY);
+
         g2.setColor(ERROR_RED);
         String dHint = "[ D ] Delete Account";
-        g2.drawString(dHint, cx - strW(g2, dHint) / 2, panelY + panelH - 36);
+        g2.drawString(dHint, cx - strW(g2, dHint) / 2 + 100, hintY);
 
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
         g2.setColor(LIGHT_GREY);
         String hint = "[ ESC ] Back to Search";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
+    }
+
+    private void drawPasswordResetForm(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
+        // Title
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(80, 160, 255));
+        String t = "Reset Password";
+        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad);
+
+        // Who we are resetting for
+        String forName = (selectedProfile != null) ? selectedProfile.displayName() : selectedAccount;
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+        g2.setColor(LIGHT_GREY);
+        String sub = "for: " + forName;
+        g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 28);
+
+        int fieldW = panelW - pad * 2;
+        int fieldX = panelX + pad;
+        int fieldY = panelY + pad + 70;
+
+        // New password field
+        drawField(g2, "New Password (min. 8 chars)",
+                getMaskedValue(newPasswordField.toString()),
+                true, !resetPwFocusOnConfirm, fieldX, fieldY, fieldW);
+
+        fieldY += gp.tileSize + 32;
+
+        // Confirm password field
+        drawField(g2, "Confirm New Password",
+                getMaskedValue(confirmPasswordField.toString()),
+                true, resetPwFocusOnConfirm, fieldX, fieldY, fieldW);
+
+        // Error message
+        if (!adminError.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(adminError, cx - strW(g2, adminError) / 2, fieldY + gp.tileSize + 30);
+        }
+
+        // Hints
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ UP/DOWN ] Switch field    [ ENTER ] Confirm    [ ESC ] Cancel";
         g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
     }
 
@@ -994,5 +1136,17 @@ public class LogIn {
 
     private int strW(Graphics2D g2, String s) {
         return g2.getFontMetrics().stringWidth(s);
+    }
+
+    private String getMaskedValue(String raw) {
+        if (raw.isEmpty()) return "";
+        StringBuilder masked = new StringBuilder();
+        // All characters except the last become dots
+        for (int i = 0; i < raw.length() - 1; i++) {
+            masked.append('•');
+        }
+        // The last character shows as plaintext
+        masked.append(raw.charAt(raw.length() - 1));
+        return masked.toString();
     }
 }

@@ -166,6 +166,17 @@ public class UserManager {
         if (saveFile.exists()) saveFile.delete();
     }
 
+    public String resetPassword(String username, String newPassword) {
+        username = username.trim();
+        if (!users.containsKey(username)) return "Account not found.";
+        if (newPassword.length() < 8)     return "Password must be at least 8 characters.";
+        String salt = generateSalt();
+        String hash = hash(newPassword, salt);
+        users.setProperty(username, salt + ":" + hash);
+        saveUsers();
+        return null;
+    }
+
     public String generateSalt() {
         byte[] bytes = new byte[16];
         new SecureRandom().nextBytes(bytes);
