@@ -553,7 +553,7 @@ public class QuestManager {
         gp.player.intellect += 3;
         gp.player.age += 7;
 
-        gp.ui.showMessage("Quest 4: Done!");
+        gp.ui.showMessage("Noli Me Tangere Begins! Quest 4: Done!");
 
         pendingChapter3Cutscene = true;
         cutsceneDelay2 = 60;
@@ -598,7 +598,7 @@ public class QuestManager {
         gp.player.perception +=3;
         gp.player.charisma +=2;
 
-        gp.ui.showMessage(" Noli Me Tangere begins! Quest 5: Done!");
+        gp.ui.showMessage("El Filibusterismo begins!  Quest 5: Done!");
 
         pendingQuest6StartCutscene = true;
         cutsceneDelay4 = 60;
@@ -667,7 +667,7 @@ public class QuestManager {
         gp.player.creativity += 8;
         gp.player.charisma += 5;
 
-        gp.ui.showMessage("El Filibusterismo begins! Quest 6: Done!");
+        gp.ui.showMessage("Quest 6: Done!");
 
         pendingQuest7IntroCutscene = true;
         cutsceneDelay4 = 60;
@@ -716,7 +716,6 @@ public class QuestManager {
     }
 
     public void giveUltimoAdios() {
-        if (quest7Stage != Q7_TALK_TRINIDAD) return;
         quest7Stage = Q7_DONE;
         gp.player.inventory.add(new object.OBJ_MiUltimoAdios(gp));
         gp.ui.showMessage("You received Mi Ultimo Adios.");

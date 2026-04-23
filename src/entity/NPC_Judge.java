@@ -15,14 +15,14 @@ public class NPC_Judge extends Entity {
     }
 
     public void getImage() {
-        down1  = setup("/npc/judge/judge_down_1");
-        down2  = setup("/npc/judge/judge_down_2");
-        up1    = setup("/npc/judge/judge_up_1");
-        up2    = setup("/npc/judge/judge_up_2");
-        left1  = setup("/npc/judge/judge_left_1");
-        left2  = setup("/npc/judge/judge_left_2");
-        right1 = setup("/npc/judge/judge_right_1");
-        right2 = setup("/npc/judge/judge_right_2");
+        down1  = setup("/npc/judge/judge_down");
+        down2  = setup("/npc/judge/judge_down");
+        up1    = setup("/npc/judge/judge_up");
+        up2    = setup("/npc/judge/judge_up");
+        left1  = setup("/npc/judge/judge_left");
+        left2  = setup("/npc/judge/judge_left");
+        right1 = setup("/npc/judge/judge_right");
+        right2 = setup("/npc/judge/judge_right");
     }
 
     @Override
@@ -41,11 +41,11 @@ public class NPC_Judge extends Entity {
         int stage = gp.questManager.quest7Stage;
 
         if (stage == QuestManager.Q7_TALK_JUDGE) {
-            dialogues[0] = "\"José Protacio Rizal Mercado y Alonso Realonda\"...";
-            dialogues[1] = "By the unanimous agreement of this Council…\nwe find you GUILTY as charged.";
-            dialogues[2] = "The Councils has heard enough.\nWe see no doctor here… but a threat to citizens!";
+            dialogues[0] = "José Protacio Rizal Mercado y Alonso Realonda...";
+            dialogues[1] = "By the unanimous agreement of this Council... we find you GUILTY\nas charged.";
+            dialogues[2] = "The Councils has heard enough. We see no doctor here...but a\nthreat to citizens!";
             dialogues[3] = "The decision of this Council is unanimous.";
-            dialogues[4] = "The verdict is to be shot at the back on the\nmorning of December 30 at Bagumbayan Field!!";
+            dialogues[4] = "The verdict is to be shot at the back on the morning of December\n30 at Bagumbayan Field!";
             dialogues[5] = null;
 
             super.speak();
@@ -54,7 +54,7 @@ public class NPC_Judge extends Entity {
                 gp.questManager.onJudgeDone();
             }
         } else {
-            dialogues[0] = "The sentence stands.";
+            dialogues[0] = "We have nothing else to talk about.";
             dialogues[1] = null;
             dialogueIndex = 0;
             super.speak();

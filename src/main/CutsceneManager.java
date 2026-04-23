@@ -6,7 +6,8 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION }
+    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
+        EXECUTION_ANIM, EXECUTION_WALK  }
 
     private Scene activeScene = Scene.NONE;
 
@@ -188,18 +189,54 @@ public class CutsceneManager {
                     "when it is about to be pierced."},
     };
 
+    public boolean isExecutionWalkActive() {
+        return activeScene == Scene.EXECUTION_WALK;
+    }
 
-    private int   currentLine = 0;
-    private int   fadeState   = 0;
-    private float alpha       = 0f;
+    // EXECUTION WALK SCENE
+    private int ewPhase = 0;
+    private int ewTick = 0;
+    private int ewFrame = 0;
+    private float ewBlackAlpha = 0f;
+    private boolean ewApplied = false;
+
+    // Rizal position
+    private float ewRizalX, ewRizalY;
+    // Guard positions (4 on each side, 8 total)
+    private float[] ewGuardX = new float[8];
+    private float[] ewGuardY = new float[8];
+
+    // Dialogue
+    private String ewDialogue = "";
+    private int ewDialogueTick = 0;
+    private boolean ewShowDialogue = false;
+
+    private java.awt.image.BufferedImage ewWalkDown1, ewWalkDown2;
+    private java.awt.image.BufferedImage ewWalkRight1, ewWalkRight2;
+    private java.awt.image.BufferedImage ewRizalFall, ewRizalDead;
+    private java.awt.image.BufferedImage ewKillerDown1, ewKillerDown2;
+    private java.awt.image.BufferedImage ewKillerRight1, ewKillerRight2;
+    private java.awt.image.BufferedImage ewKillerAim1, ewKillerAim2, ewKillerAim3;
+    private java.awt.image.BufferedImage ewKillerFire;
+
+    // Guard facing: "down", "right", "left"
+    private String ewGuardFacing = "down";
+    private int    ewAimFrame    = 0;
+    private boolean ewFlash      = false;
+    private int     ewFlashTick  = 0;
+    private float   ewFallAngle  = 0f;
+
+    private int currentLine = 0;
+    private int fadeState = 0;
+    private float alpha = 0f;
     private static final float FADE_SPEED = 0.03f;
-    private boolean applied   = false;
+    private boolean applied = false;
 
     // CHAP 2 CONFIG
-    private static final String CHAPTER2_MAP    = "/maps/Chapter2.txt";
+    private static final String CHAPTER2_MAP = "/maps/Chapter2.txt";
     private static final String CHAPTER2_SPRITE = "rizal_adult";
-    private static final int    SPAWN_TILE_X    = 59;
-    private static final int    SPAWN_TILE_Y    = 25;
+    private static final int SPAWN_TILE_X = 59;
+    private static final int    SPAWN_TILE_Y = 25;
 
     private static final int SPAWN_TILE_X2 = 46;
     private static final int SPAWN_TILE_Y2 = 47;
@@ -207,18 +244,18 @@ public class CutsceneManager {
     // CHAP 3 CONFIG
     private static final String CHAPTER3_MAP    = "/maps/Chapter3.txt";
     private static final String CHAPTER3_SPRITE = "pepe_older";
-    private static final int    SPAWN_TILE_X3 = 23;
-    private static final int    SPAWN_TILE_Y3 = 35;
+    private static final int SPAWN_TILE_X3 = 23;
+    private static final int SPAWN_TILE_Y3 = 35;
 
     //CHAP 4 CONFIG
     private static final String CHAPTER4_MAP = "/maps/Chapter4.txt";
-    private static final int SPAWN_TILE_X4 = 61;
-    private static final int SPAWN_TILE_Y4 = 28;
+    private static final int SPAWN_TILE_X4 = 60;
+    private static final int SPAWN_TILE_Y4 = 29;
 
     //DAPITAN CONFIG
     private static final String DAPITAN = "/maps/Chapter4.txt";
-    private static final int SPAWN_TILE_X5 = 55;
-    private static final int SPAWN_TILE_Y5 = 71;
+    private static final int SPAWN_TILE_X5 = 51;
+    private static final int SPAWN_TILE_Y5 = 36;
 
     public CutsceneManager(GamePanel gp) {
         this.gp = gp;
@@ -267,6 +304,11 @@ public class CutsceneManager {
 
 
     public void update() {
+        if (activeScene == Scene.EXECUTION_WALK) {
+            updateExecutionWalk();
+            return;
+        }
+
         if (fadeState == 0) {
             alpha += FADE_SPEED;
             if (alpha >= 1f) { alpha = 1f; fadeState = 1; }
@@ -278,7 +320,9 @@ public class CutsceneManager {
                     applied = true;
                     applyEndOfScene();
                 }
-                gp.gameState = gp.playState;
+                if (activeScene != Scene.EXECUTION_WALK) {
+                    gp.gameState = gp.playState;
+                }
             }
         }
     }
@@ -290,6 +334,11 @@ public class CutsceneManager {
     }
 
     public void draw(Graphics2D g2) {
+        if (activeScene == Scene.EXECUTION_WALK) {
+            drawExecutionWalk(g2);
+            return;
+        }
+
         g2.setColor(Color.black);
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
@@ -347,6 +396,9 @@ public class CutsceneManager {
                 return fortSantiagoLines;
             case EXECUTION:
                 return executionLines;
+            case EXECUTION_WALK:
+                return executionLines;
+
 
             default:
                 return chapter2Lines;
@@ -397,12 +449,8 @@ public class CutsceneManager {
                 break;
 
             case EXECUTION:
-                gp.stopMusic();
-                gp.gameState       = gp.titleState;
-                gp.ui.titleScreenState = 0;
-                gp.ui.commandNum   = 0;
+                startExecutionWalk();
                 break;
-
 
             default:
                 break;
@@ -473,6 +521,312 @@ public class CutsceneManager {
         gp.aSetter.activateQuest7FortSantiago();
     }
 
+    public void startExecutionWalk() {
+        activeScene   = Scene.EXECUTION_WALK;
+        ewPhase       = 0;
+        ewTick        = 0;
+        ewFrame       = 0;
+        ewBlackAlpha  = 0f;
+        ewApplied     = false;
+        ewShowDialogue = false;
+        ewDialogue    = "";
+        ewGuardFacing = "down";
+        ewAimFrame    = 0;
+        ewFlash       = false;
+        ewFlashTick   = 0;
+        ewFallAngle   = 0f;
+
+        int ts = gp.tileSize;
+
+        ewRizalX = 51 * ts;
+        ewRizalY = 35 * ts;
+
+        ewGuardX[0] = ewRizalX; ewGuardY[0] = ewRizalY - 1 * ts;
+        ewGuardX[1] = ewRizalX; ewGuardY[1] = ewRizalY - 2 * ts;
+        ewGuardX[2] = ewRizalX; ewGuardY[2] = ewRizalY - 3 * ts;
+        ewGuardX[3] = ewRizalX; ewGuardY[3] = ewRizalY - 4 * ts;
+        ewGuardX[4] = ewRizalX; ewGuardY[4] = ewRizalY - 5 * ts;
+        ewGuardX[5] = ewRizalX; ewGuardY[5] = ewRizalY - 6 * ts;
+        ewGuardX[6] = ewRizalX; ewGuardY[6] = ewRizalY - 7 * ts;
+        ewGuardX[7] = ewRizalX; ewGuardY[7] = ewRizalY - 8 * ts;
+
+        // Load Rizal sprites
+        ewWalkDown1  = loadSingle("/player/walking_down_1.png");
+        ewWalkDown2  = loadSingle("/player/walking_down_2.png");
+        ewWalkRight1 = loadSingle("/player/walking_right_1.png");
+        ewWalkRight2 = loadSingle("/player/walking_right_2.png");
+        ewRizalFall  = loadSingle("/player/rizal_fall.png");
+        ewRizalDead  = loadSingle("/player/rizal_dead_.png");
+
+        // Load guard sprites
+        ewKillerDown1 = loadSingle("/npc/Killer/killer_down_1.png");
+        ewKillerDown2 = loadSingle("/npc/Killer/killer_down_2.png");
+        ewKillerRight1 = loadSingle("/npc/Killer/killer_right_1.png");
+        ewKillerRight2 = loadSingle("/npc/Killer/killer_right_2.png");
+        ewKillerAim1  = loadSingle("/npc/Killer/killer_right_3.png");
+        ewKillerAim2  = loadSingle("/npc/Killer/killer_right_4.png");
+        ewKillerAim3  = loadSingle("/npc/Killer/killer_right_5.png");
+        ewKillerFire  = loadSingle("/npc/Killer/killer_right_6.png");
+
+        gp.stopMusic();
+        gp.playMusic(2);
+        gp.gameState = gp.cutsceneState;
+    }
+
+    private java.awt.image.BufferedImage loadSingle(String path) {
+        try {
+            return javax.imageio.ImageIO.read(getClass().getResourceAsStream(path));
+        } catch (Exception e) {
+            System.out.println("CutsceneManager: could not load " + path);
+            return null;
+        }
+    }
+
+    private void updateExecutionWalk() {
+        ewTick++;
+        int ts = gp.tileSize;
+        float speed = 1.2f;
+
+        if (ewTick % 14 == 0) ewFrame = (ewFrame + 1) % 2;
+
+        if (ewShowDialogue) {
+            ewDialogueTick--;
+            if (ewDialogueTick <= 0) ewShowDialogue = false;
+        }
+
+        if (ewPhase == 0) {
+            float targetY = 70 * ts;
+            ewRizalY += speed;
+
+            ewGuardX[0] = ewRizalX; ewGuardY[0] = ewRizalY - 1 * ts;
+            ewGuardX[1] = ewRizalX; ewGuardY[1] = ewRizalY - 2 * ts;
+            ewGuardX[2] = ewRizalX; ewGuardY[2] = ewRizalY - 3 * ts;
+            ewGuardX[3] = ewRizalX; ewGuardY[3] = ewRizalY - 4 * ts;
+            ewGuardX[4] = ewRizalX; ewGuardY[4] = ewRizalY - 5 * ts;
+            ewGuardX[5] = ewRizalX; ewGuardY[5] = ewRizalY - 6 * ts;
+            ewGuardX[6] = ewRizalX; ewGuardY[6] = ewRizalY - 7 * ts;
+            ewGuardX[7] = ewRizalX; ewGuardY[7] = ewRizalY - 8 * ts;
+
+            if (ewRizalY >= targetY) {
+                ewRizalY = targetY;
+                ewPhase = 1;
+                ewTick  = 0;
+                ewFrame = 0;
+                ewGuardFacing = "right";
+            }
+
+        } else if (ewPhase == 1) {
+            // Walk RIGHT — Rizal leads, guards maintain V but now sideways
+            float targetX = 59 * ts;
+            ewRizalX += speed;
+
+            ewGuardX[0] = ewRizalX - 1 * ts; ewGuardY[0] = ewRizalY;
+            ewGuardX[1] = ewRizalX - 2 * ts; ewGuardY[1] = ewRizalY;
+            ewGuardX[2] = ewRizalX - 3 * ts; ewGuardY[2] = ewRizalY;
+            ewGuardX[3] = ewRizalX - 4 * ts; ewGuardY[3] = ewRizalY;
+            ewGuardX[4] = ewRizalX - 5 * ts; ewGuardY[4] = ewRizalY;
+            ewGuardX[5] = ewRizalX - 6 * ts; ewGuardY[5] = ewRizalY;
+            ewGuardX[6] = ewRizalX - 7 * ts; ewGuardY[6] = ewRizalY;
+            ewGuardX[7] = ewRizalX - 8 * ts; ewGuardY[7] = ewRizalY;
+
+            if (ewRizalX >= targetX) {
+                ewRizalX = targetX;
+                ewPhase  = 2;
+                ewTick   = 0;
+                ewFrame  = 0;
+            }
+
+        } else if (ewPhase == 2) {
+            float[] targetX = {
+                    ewRizalX - 4 * ts, ewRizalX - 3 * ts, ewRizalX - 2 * ts, ewRizalX - 1 * ts,
+                    ewRizalX - 4 * ts, ewRizalX - 3 * ts, ewRizalX - 2 * ts, ewRizalX - 1 * ts
+            };
+            float[] targetY = {
+                    ewRizalY - 1 * ts, ewRizalY - 1 * ts, ewRizalY - 1 * ts, ewRizalY - 1 * ts,
+                    ewRizalY + 1 * ts, ewRizalY + 1 * ts, ewRizalY + 1 * ts, ewRizalY + 1 * ts
+            };
+
+            boolean allDone = true;
+            for (int i = 0; i < 8; i++) {
+                if (Math.abs(ewGuardX[i] - targetX[i]) > speed) {
+                    ewGuardX[i] += (targetX[i] > ewGuardX[i]) ? speed : -speed;
+                    allDone = false;
+                } else ewGuardX[i] = targetX[i];
+
+                if (Math.abs(ewGuardY[i] - targetY[i]) > speed) {
+                    ewGuardY[i] += (targetY[i] > ewGuardY[i]) ? speed : -speed;
+                    allDone = false;
+                } else ewGuardY[i] = targetY[i];
+            }
+
+            if (allDone) {
+                ewPhase = 3;
+                ewTick  = 0;
+                ewGuardFacing = "right";
+            }
+
+        } else if (ewPhase == 3) {
+            // Guards aim — cycle aim frames slowly
+            if (ewTick % 20 == 0) ewAimFrame = (ewAimFrame + 1) % 3;
+
+            // "Preparen Apunten" at tick 60 — give player time to read
+            if (ewTick == 60) {
+                ewDialogue     = "¡Preparen! ¡Apunten!";
+                ewShowDialogue = true;
+                ewDialogueTick = 120; // 2 seconds
+            }
+
+            // Rizal's last words after guards' dialogue finishes
+            if (ewTick == 200) {
+                ewDialogue     = "Consummatum est...";
+                ewShowDialogue = true;
+                ewDialogueTick = 120; // 2 seconds
+            }
+
+            if (ewTick >= 340) {
+                ewPhase = 4;
+                ewTick  = 0;
+            }
+
+        } else if (ewPhase == 4) {
+            // FUEGO — guards fire
+            if (ewTick == 1) {
+                ewDialogue     = "¡FUEGO!";
+                ewShowDialogue = true;
+                ewDialogueTick = 100;
+                // gp.playSE(your_gunshot_index);
+            }
+
+            if (ewTick >= 80) {
+                ewPhase = 5;
+                ewTick  = 0;
+            }
+
+        } else if (ewPhase == 5) {
+            // Show rizal_fall sprite for 60 ticks
+            if (ewTick >= 60) {
+                ewPhase = 6;
+                ewTick  = 0;
+            }
+
+        } else if (ewPhase == 6) {
+            // Show rizal_dead sprite and fade to black
+            ewBlackAlpha += 0.006f;
+            if (ewBlackAlpha >= 1f) {
+                ewBlackAlpha = 1f;
+                if (!ewApplied) {
+                    ewApplied = true;
+                    gp.stopMusic();
+                    gp.gameState           = gp.titleState;
+                    gp.ui.titleScreenState = 0;
+                    gp.ui.commandNum       = 0;
+                }
+            }
+        }
+    }
+
+    private void drawExecutionWalk(Graphics2D g2) {
+        int spriteSize = gp.tileSize;
+        int ts = gp.tileSize;
+        int sw = gp.screenWidth;
+        int sh = gp.screenHeight;
+
+        // Temporarily move player to Rizal's position so tile renderer uses it as camera
+        int prevX = gp.player.worldX;
+        int prevY = gp.player.worldY;
+        gp.player.worldX = (int)ewRizalX;
+        gp.player.worldY = (int)ewRizalY;
+        gp.tileM.draw(g2);
+        gp.player.worldX = prevX;
+        gp.player.worldY = prevY;
+
+        // Camera offset for drawing sprites
+        int camX = (int)ewRizalX - sw / 2 + ts / 2;
+        int camY = (int)ewRizalY - sh / 2 + ts / 2;
+
+        Composite old = g2.getComposite();
+
+        // --- DRAW GUARDS ---
+        for (int i = 0; i < 8; i++) {
+            int gsx = (int)ewGuardX[i] - camX;
+            int gsy = (int)ewGuardY[i] - camY;
+
+            java.awt.image.BufferedImage guardImg = null;
+
+            if (ewPhase >= 4) {
+                guardImg = ewKillerFire;
+            } else if (ewPhase == 3) {
+                if      (ewAimFrame == 0) guardImg = ewKillerAim1;
+                else if (ewAimFrame == 1) guardImg = ewKillerAim2;
+                else                      guardImg = ewKillerAim3;
+            } else {
+                guardImg = (ewFrame == 0) ? ewKillerDown1 : ewKillerDown2;
+            }
+
+            if (guardImg != null) {
+                if (i < 4 && (ewGuardFacing.equals("right") || ewGuardFacing.equals("left"))) {
+                    java.awt.geom.AffineTransform at = new java.awt.geom.AffineTransform();
+                    at.translate(gsx + ts, gsy);
+                    at.scale(-1, 1);
+                    g2.drawImage(guardImg, at, null);
+                } else {
+                    g2.drawImage(guardImg, gsx, gsy, ts, ts, null);
+                }
+            }
+        }
+
+        // --- DRAW RIZAL ---
+        int rx = (int)ewRizalX - camX;
+        int ry = (int)ewRizalY - camY;
+
+        if (ewPhase >= 6) {
+            // Dead — draw rizal_dead as-is, no rotation
+            if (ewRizalDead != null) g2.drawImage(ewRizalDead, rx, ry, ts, ts, null);
+        } else if (ewPhase == 5) {
+            // Falling — draw rizal_fall as-is, no rotation
+            if (ewRizalFall != null) g2.drawImage(ewRizalFall, rx, ry, spriteSize, spriteSize, null);
+
+        } else {
+            // Walking
+            java.awt.image.BufferedImage rizalImg;
+            if (ewPhase == 0) {
+                rizalImg = (ewFrame == 0) ? ewWalkDown1 : ewWalkDown2;
+            } else {
+                rizalImg = (ewFrame == 0) ? ewWalkRight1 : ewWalkRight2;
+            }
+            if (rizalImg != null) g2.drawImage(rizalImg, rx, ry, spriteSize, spriteSize, null);
+        }
+
+        // --- DIALOGUE BOX ---
+        if (ewShowDialogue && !ewDialogue.isEmpty()) {
+            int boxW = 500;
+            int boxH = 60;
+            int boxX = sw / 2 - boxW / 2;
+            int boxY = sh - boxH - 30;
+
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.85f));
+            g2.setColor(Color.black);
+            g2.fillRoundRect(boxX, boxY, boxW, boxH, 14, 14);
+            g2.setColor(Color.white);
+            g2.setStroke(new BasicStroke(2f));
+            g2.drawRoundRect(boxX, boxY, boxW, boxH, 14, 14);
+
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 22f));
+            g2.setColor(Color.white);
+            int tw = g2.getFontMetrics().stringWidth(ewDialogue);
+            g2.drawString(ewDialogue, sw / 2 - tw / 2, boxY + 38);
+        }
+
+        // --- FADE TO BLACK ---
+        if (ewBlackAlpha > 0f) {
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ewBlackAlpha));
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0, sw, sh);
+        }
+
+        g2.setComposite(old);
+    }
 
     private void reset(Scene scene) {
         activeScene = scene;

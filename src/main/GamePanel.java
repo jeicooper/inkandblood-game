@@ -541,27 +541,24 @@ public class GamePanel extends JPanel implements Runnable {
 
             } else if (stage == QuestManager.Q7_TALK_JOSEPHINE) {
                 if (npc[49] != null) targets.add(npc[49]);
+                if (npc[50] != null) targets.add(npc[50]);
 
             } else if (stage == QuestManager.Q7_INTERACT_PAPER) {
                 for (int i = 0; i < obj.length; i++) {
                     if (obj[i] != null && obj[i].name.equals("Final Thoughts"))
                         targets.add(obj[i]);
                 }
+
             } else if (stage == QuestManager.Q7_INTERACT_STOVE) {
                 for (int i = 0; i < obj.length; i++) {
                     if (obj[i] != null && obj[i].name.equals("Alcohol Stove"))
                         targets.add(obj[i]);
                 }
 
-            } else if (stage == QuestManager.Q7_TALK_JOSEPHINE) {
-                if (npc[50] != null) targets.add(npc[50]);
             } else if (stage == QuestManager.Q7_TALK_TRINIDAD) {
                 if (npc[51] != null) targets.add(npc[51]);
             }
-
         }
-
-
         return targets;
     }
 

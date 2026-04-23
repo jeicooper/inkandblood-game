@@ -266,14 +266,13 @@ public class Player extends  Entity{
         if (objectName.equals("Final Thoughts")) {
             if (gp.questManager.currentQuest != QuestManager.QUEST7) return;
             if (gp.questManager.quest7Stage != QuestManager.Q7_INTERACT_PAPER) {
-                gp.ui.showMessage("...");
+                gp.ui.showMessage("I'm not ready for this yet.");
                 return;
             }
             gp.ui.currentSpeakerName = "Jose Rizal";
             gp.ui.currentDialogue =
                     "The ink is dry. My 'Ultimo Adios' is finished.It is not just a poem;\nit is a map for those who will follow.";
             gp.gameState = gp.dialogueState;
-            // remove paper from world after reading
             gp.obj[i] = null;
             gp.questManager.onFinalPaperInteracted();
             return;
@@ -282,13 +281,14 @@ public class Player extends  Entity{
         if (objectName.equals("Alcohol Stove")) {
             if (gp.questManager.currentQuest != QuestManager.QUEST7) return;
             if (gp.questManager.quest7Stage != QuestManager.Q7_INTERACT_STOVE) {
-                gp.ui.showMessage("There is something inside...");
+                gp.ui.showMessage("I'm not ready for this yet.");
                 return;
             }
             gp.ui.currentSpeakerName = "Jose Rizal";
             gp.ui.currentDialogue =
                     "Inside the stove, folded tightly, a small roll of paper. I press it into\nTrinidad's hand.";
             gp.gameState = gp.dialogueState;
+            gp.obj[i] = null;
             gp.questManager.onAlcoholStoveInteracted();
             return;
         }

@@ -172,16 +172,9 @@ public class SaveManager {
         // UI
         gp.ui.questPageNum = d.questPageNum;
 
-
-        int savedWorldX = d.worldX;
-        int savedWorldY = d.worldY;
-
         System.out.println("Saved position from file: " + d.worldX / gp.tileSize + ", " + d.worldY / gp.tileSize);
         fixQuestProgression();
         applyChapterState(qm);
-
-        gp.player.worldX = savedWorldX;
-        gp.player.worldY = savedWorldY;
 
         removeCollectedObjects();
         removeCompletedNPCs();
@@ -254,24 +247,24 @@ public class SaveManager {
 
         int cq = qm.currentQuest;
 
-        //QUEST 7
+        // QUEST 7
         if (cq >= QuestManager.QUEST7) {
+            gp.tileM.loadMap("/maps/Chapter4.txt");
             gp.player.loadSprite3("");
 
             if (qm.quest7Stage >= QuestManager.Q7_TALK_JOSEPHINE) {
-                gp.tileM.loadMap("/maps/Chapter4.txt");
                 gp.aSetter.activateQuest7FortSantiago();
-                gp.player.worldX    = 51 * gp.tileSize;
-                gp.player.worldY    = 36 * gp.tileSize;
+                gp.player.worldX = 51 * gp.tileSize;
+                gp.player.worldY = 36 * gp.tileSize;
             } else {
-                gp.tileM.loadMap("/maps/Chapter4.txt");
                 gp.aSetter.activateQuest7Intramuros();
-                gp.player.worldX    = 71 * gp.tileSize;
-                gp.player.worldY    = 55 * gp.tileSize;
+                gp.player.worldX = 60 * gp.tileSize;
+                gp.player.worldY = 29 * gp.tileSize;
             }
             gp.player.direction = "down";
             return;
         }
+
         //QUEST 6
         if (cq >= QuestManager.QUEST6) {
             gp.tileM.loadMap("/maps/Chapter3.txt");

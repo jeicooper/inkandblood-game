@@ -15,14 +15,14 @@ public class NPC_GuardiaCivil extends Entity {
     }
 
     public void getImage() {
-        down1  = setup("/npc/guardiacivil/guardiacivil_down_1");
-        down2  = setup("/npc/guardiacivil/guardiacivil_down_2");
-        up1    = setup("/npc/guardiacivil/guardiacivil_up_1");
-        up2    = setup("/npc/guardiacivil/guardiacivil_up_2");
-        left1  = setup("/npc/guardiacivil/guardiacivil_left_1");
-        left2  = setup("/npc/guardiacivil/guardiacivil_left_2");
-        right1 = setup("/npc/guardiacivil/guardiacivil_right_1");
-        right2 = setup("/npc/guardiacivil/guardiacivil_right_2");
+        down1  = setup("/npc/gwardya/gwardya_down_1");
+        down2  = setup("/npc/gwardya/gwardya_down_2");
+        up1    = setup("/npc/gwardya/gwardya_up_1");
+        up2    = setup("/npc/gwardya/gwardya_up_2");
+        left1  = setup("/npc/gwardya/ggwardya_left_1");
+        left2  = setup("/npc/gwardya/gwardya_left_2");
+        right1 = setup("/npc/gwardya/gwardya_right_1");
+        right2 = setup("/npc/gwardya/gwardya_right_2");
     }
 
     @Override
@@ -42,11 +42,11 @@ public class NPC_GuardiaCivil extends Entity {
 
         if (stage == QuestManager.Q7_TALK_GUARDIA) {
             dialogues[0] = "We have letters, Doctor.";
-            dialogues[1] = "Letters from your colleagues found in\nthe caves of the rebels.";
-            dialogues[2] = "They use your name as their war cry.\nYour photo hangs in their halls.";
+            dialogues[1] = "Letters from your colleagues found in the caves of the rebels.";
+            dialogues[2] = "They use your name as their war cry. Your photo hangs in their halls.";
             dialogues[3] = "How do you explain this?";
-            dialogues[4] = "Not talking? But your 'reforms' are merely\na mask for revolution.";
-            dialogues[5] = "Your words were the spark, Doctor…\nyou cannot now blame the fire for burning.";
+            dialogues[4] = "Not talking? But your 'reforms' are merely a mask for revolution.";
+            dialogues[5] = "Your words were the spark, Doctor... you cannot now blame the fire\nfor burning.";
             dialogues[6] = null;
 
             super.speak();
