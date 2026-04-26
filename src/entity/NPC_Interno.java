@@ -58,7 +58,7 @@ public class NPC_Interno extends Entity {
         }
 
         if (stage == QuestManager.TALK_FERRANDO_REWARD || stage == QuestManager.QUEST3_DONE) {
-            dialogues[0] = "Great job on the quiz! We are going to be good classmates\nI can tell.";
+            dialogues[0] = "Great job on the quiz! We are going to be good classmates I can\ntell.";
             dialogues[1] = null;
             dialogueIndex = 0;
             super.speak();
@@ -68,7 +68,7 @@ public class NPC_Interno extends Entity {
         if (dialogueStage == 0) {
             dialogues[0] = "Hey! You must be Jose. I'm your new classmate.";
             dialogues[1] = "Professor asked me to give you a small quiz to see how much\nyou already know.";
-            dialogues[2] = "You need to get all 5 questions right. Ready? Let's go!";
+            dialogues[2] = "You need to get all 10 questions right. Ready? Let's go!";
             dialogues[3] = null;
 
             super.speak();
@@ -80,7 +80,7 @@ public class NPC_Interno extends Entity {
 
         } else if (dialogueStage == 1) {
             dialogues[0] = "Don't give up! Let's try the quiz again.";
-            dialogues[1] = "Remember — you need a perfect score of 5 out of 5.";
+            dialogues[1] = "Remember — you need a perfect score of 10 out of 10.";
             dialogues[2] = null;
 
             super.speak();

@@ -48,7 +48,7 @@ public class NPC_Jose extends Entity {
 
         if (dialogueStage == 0) {
             dialogues[0] = "Pepe! I have been waiting for you.";
-            dialogues[1] = "To learn the basics of colors, you will need to gather some supplies.";
+            dialogues[1] = "To learn the basics of colors, you will need to gather some\nsupplies.";
             dialogues[2] = "Find 6 paint buckets, 1 paintbrush, and 1 blank canvas.";
             dialogues[3] = "Bring them back to me when you have collected them all.";
             dialogues[4] = null;

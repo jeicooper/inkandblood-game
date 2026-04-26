@@ -52,7 +52,7 @@ public class NPC_Ferrando extends Entity {
         if (q3stage == QuestManager.TALK_FERRANDO) {
             dialogues[0] = "Stop right there!";
             dialogues[1] = "This is Ateneo Municipal de Manila.";
-            dialogues[2] = "Frankly, you look far too frail and underweight\nfor an eleven year-old.";
+            dialogues[2] = "Frankly, you look far too frail and underweight for an\neleven year-old.";
             dialogues[3] = "You won't survive the rigor here.";
             dialogues[4] = null;
             super.speak();

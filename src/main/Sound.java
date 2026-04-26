@@ -16,9 +16,18 @@ public class Sound {
 
     public Sound() {
 
+        //bg music
         soundURL[0] = getClass().getResource("/sounds/bgsong.wav");
+        soundURL[4] = getClass().getResource("/sounds/bgsong2.wav");
+        soundURL[5] = getClass().getResource("/sounds/endbg.wav");
+
+        //sound effects
         soundURL[1] = getClass().getResource("/sounds/itemPickUp.wav");
-        soundURL[2] = getClass().getResource("/sound/cursor.wav");
+        soundURL[2] = getClass().getResource("/sounds/select.wav");
+        soundURL[3] = getClass().getResource("/sounds/bg2.wav");
+        soundURL[6] = getClass().getResource("/sounds/firing.wav");
+        soundURL[7] = getClass().getResource("/sounds/menu-selection.wav");
+
     }
 
     public void setFile(int i){

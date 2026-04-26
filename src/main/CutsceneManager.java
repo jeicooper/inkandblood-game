@@ -714,7 +714,7 @@ public class CutsceneManager {
         } else if (ewPhase == 4) {
             if (ewTick == 1) {
                 showDialogue("\u00a1FUEGO!", false, 100);
-                // gp.playSE(your_gunshot_index);
+                gp.playSE(6);
             }
             if (ewTick >= 80) { ewPhase = 5; ewTick = 0; }
 

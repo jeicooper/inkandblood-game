@@ -47,7 +47,7 @@ public class NPC_Gregorio extends Entity {
         gp.ui.currentSpeakerName = "Uncle Gregorio";
 
         if (gp.questManager.quest2Stage < QuestManager.MANUEL_DONE) {
-            dialogues[0] = "Hello Pepe. Go see your\nUncle Manuel first.";
+            dialogues[0] = "Hello Pepe. Go see your Uncle Manuel first.";
             dialogues[1] = null;
             dialogueIndex = 0;
             super.speak();

@@ -46,13 +46,11 @@ public class NPC_Mariano extends Entity {
 
         int q4stage = gp.questManager.quest4Stage;
 
-        // Not yet Mariano's turn
         if (q4stage == QuestManager.TALK_PROFESSOR_Q4) {
             dialogues[0] = "...";
             dialogues[1] = null;
             super.speak();
 
-            // Mariano's turn
         } else if (q4stage == QuestManager.TALK_MARIANO) {
             dialogues[0] = "...Jose.";
             dialogues[1] = "I won't pretend it doesn't sting. I trained hard for that title.";
@@ -61,12 +59,10 @@ public class NPC_Mariano extends Entity {
             dialogues[4] = "Do not let it go to your head.";
             dialogues[5] = null;
             super.speak();
-            // advance quest when all lines are exhausted (dialogueIndex wraps to 0)
             if (dialogueIndex == 0) {
                 gp.questManager.onMarianoDone();
             }
 
-            // After Mariano is done
         } else {
             dialogues[0] = "The better student won. Nothing more to say.";
             dialogues[1] = null;

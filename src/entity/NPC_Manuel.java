@@ -51,9 +51,9 @@ public class NPC_Manuel extends Entity {
         }
 
         if (dialogueStage == 0) {
-            dialogues[0] = "Pepe! Jose tells me you have learned the basics of \ncolors. Good.";
-            dialogues[1] = "Now it is time to train your body. A healthy mind\n needs a healthy body.";
-            dialogues[2] = "Take these boots. They will make you run faster\nthan the wind.";
+            dialogues[0] = "Pepe! Jose tells me you have learned the basics of colors.\nGood.";
+            dialogues[1] = "Now it is time to train your body. A healthy mind needs a\n healthy body.";
+            dialogues[2] = "Take these boots. They will make you run faster than the wind.";
             dialogues[3] = "Run the course around the town. I will be watching.";
             dialogues[4] = null;
 

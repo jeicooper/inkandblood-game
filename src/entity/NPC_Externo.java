@@ -7,7 +7,7 @@ public class NPC_Externo extends Entity{
     public NPC_Externo (GamePanel gp){
         super(gp);
         direction = "down";
-        dexId = null;
+        dexId = "externo";
 
         solidArea.x = 8;
         solidArea.y = 16;

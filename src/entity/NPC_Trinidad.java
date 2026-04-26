@@ -48,7 +48,6 @@ public class NPC_Trinidad extends Entity {
             super.speak();
 
             if (dialogueIndex == 0) {
-                // Give the player the Mi Ultimo Adios as an inventory item
                 gp.questManager.giveUltimoAdios();
             }
         } else {
