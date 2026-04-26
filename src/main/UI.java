@@ -42,6 +42,10 @@ public class UI {
 
     public int questPageNum = 0;
 
+    private String  pickupItemName  = "";
+    private int     pickupTimer     = 0;
+    private static final int PICKUP_DURATION = 120;
+
     public BufferedImage titleBackground;
     public BufferedImage cutsceneBG;
 
@@ -96,6 +100,10 @@ public class UI {
         message = text;
         messageOn = true;
     }
+    public void showPickup(String itemName) {
+        pickupItemName = itemName;
+        pickupTimer    = PICKUP_DURATION;
+    }
 
     public void openQuizPanel() {
         quizPanel.open();
@@ -149,6 +157,35 @@ public class UI {
 
             if (quizPanelOpen) {
                 quizPanel.draw(g2);
+            }
+
+            if (pickupTimer > 0) {
+                pickupTimer--;
+
+                float alpha = pickupTimer < 60 ? pickupTimer / 60f : 1f;
+                Composite oldC = g2.getComposite();
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+
+                int boxW = 220;
+                int boxH = 36;
+                int boxX = 14;
+                int boxY = (int) (gp.screenHeight - (gp.tileSize*3.5));
+
+                // Background
+                g2.setColor(new Color(0, 0, 0, 180));
+                g2.fillRoundRect(boxX, boxY, boxW, boxH, 10, 10);
+
+                // Border
+                g2.setColor(new Color(255, 210, 80));
+                g2.setStroke(new BasicStroke(1.5f));
+                g2.drawRoundRect(boxX, boxY, boxW, boxH, 10, 10);
+
+                // Text
+                g2.setFont(maruMonica.deriveFont(Font.BOLD, 20f));
+                g2.setColor(Color.white);
+                g2.drawString(pickupItemName, boxX + 10, boxY + 23);
+
+                g2.setComposite(oldC);
             }
         }
 

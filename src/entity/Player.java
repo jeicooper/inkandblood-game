@@ -217,6 +217,7 @@ public class Player extends  Entity{
 
                 objectName = gp.obj[i].name;
                 inventory.add(gp.obj[i]);
+                gp.ui.showPickup(objectName);
                 gp.obj[i] = null;
                 gp.playSE(1);
             } else {
