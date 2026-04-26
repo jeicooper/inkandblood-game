@@ -63,4 +63,13 @@ public class SaveData implements Serializable {
     public int    spriteVersion;
 
     public int questPageNum;
+
+    //STATISTICS TRACKING
+    public long gameStartTime = 0L;
+    public long gameEndTime = 0L;
+    public long bootsStartTime = 0L;
+    public long bootsEndTime = 0L;
+    public int firstQuizScore = -1;
+    public int quizAttempts = 0;
+    public int totalNPCMet = 0;
 }

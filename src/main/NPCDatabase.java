@@ -217,13 +217,27 @@ public class NPCDatabase {
         return unlockedNPCs.size();
     }
 
-    public String getId(int i)       { return NPC_MASTER[i][0]; }
-    public String getName(int i)     { return NPC_MASTER[i][1]; }
-    public String getNickname(int i) { return NPC_MASTER[i][2]; }
-    public String getRole(int i)     { return NPC_MASTER[i][3]; }
-    public String getChapter(int i)  { return NPC_MASTER[i][4]; }
-    public String getQuest(int i)    { return NPC_MASTER[i][5]; }
-    public String getBio(int i)      { return NPC_MASTER[i][6]; }
+    public String getId(int i) {
+        return NPC_MASTER[i][0];
+    }
+    public String getName(int i) {
+        return NPC_MASTER[i][1];
+    }
+    public String getNickname(int i) {
+        return NPC_MASTER[i][2];
+    }
+    public String getRole(int i) {
+        return NPC_MASTER[i][3];
+    }
+    public String getChapter(int i) {
+        return NPC_MASTER[i][4];
+    }
+    public String getQuest(int i) {
+        return NPC_MASTER[i][5];
+    }
+    public String getBio(int i) {
+        return NPC_MASTER[i][6];
+    }
 
 
     public void save() {

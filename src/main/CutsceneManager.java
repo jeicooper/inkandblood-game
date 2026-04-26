@@ -6,7 +6,8 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION, EXECUTION_WALK, ENDING_SCROLL }
+    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
+        EXECUTION_WALK, ENDING_SCROLL, STATS_SCREEN }
 
     private Scene activeScene = Scene.NONE;
 
@@ -169,6 +170,13 @@ public class CutsceneManager {
     private float   esFadeAlpha  = 0f;
     private boolean esApplied    = false;
 
+    // STATS SCREEN
+    private boolean statsShowing  = false;
+    private float   statsFadeIn   = 0f;
+    private float   statsFadeOut  = 0f;
+    private boolean statsDone     = false;
+    private boolean statsApplied  = false;
+
     private static final String[][] ENDING_CONTENT = {
             // ── SECTION 1 ──
             { "§ THE LEGACY OF JOSE RIZAL §",
@@ -310,21 +318,47 @@ public class CutsceneManager {
 
     public CutsceneManager(GamePanel gp) { this.gp = gp; }
 
-    public void startIntroCutscene()       { reset(Scene.INTRO);         }
-    public void startChapter2()            { reset(Scene.CHAPTER2);      }
-    public void startEnrollmentCutscene()  { reset(Scene.ENROLLMENT);    }
-    public void startQuest4Cutscene()      { reset(Scene.QUEST4);        }
-    public void startChapter3()            { reset(Scene.CHAPTER3);      }
-    public void startQuest6StartCutscene() { reset(Scene.QUEST6_INTRO);  }
-    public void startQuest7Intro()         { reset(Scene.CHAPTER4_INTRO);}
-    public void startExileCutscene()       { reset(Scene.FORT_SANTIAGO); }
-    public void startQuest7EndCutscene()   { reset(Scene.EXECUTION);     }
+    public void startIntroCutscene() {
+        reset(Scene.INTRO);
+    }
+    public void startChapter2() {
+        reset(Scene.CHAPTER2);
+    }
+    public void startEnrollmentCutscene() {
+        reset(Scene.ENROLLMENT);
+    }
+    public void startQuest4Cutscene() {
+        reset(Scene.QUEST4);
+    }
+    public void startChapter3() {
+        reset(Scene.CHAPTER3);
+    }
+    public void startQuest6StartCutscene() {
+        reset(Scene.QUEST6_INTRO);
+    }
+    public void startQuest7Intro() {
+        reset(Scene.CHAPTER4_INTRO);
+    }
+    public void startExileCutscene() {
+        reset(Scene.FORT_SANTIAGO);
+    }
+    public void startQuest7EndCutscene() {
+        reset(Scene.EXECUTION);
+    }
     public void startEndingScroll() {
         activeScene = Scene.ENDING_SCROLL;
-        esScrollY   = gp.screenHeight;
-        esDone      = false;
+        esScrollY = gp.screenHeight;
+        esDone = false;
         esFadeAlpha = 0f;
-        esApplied   = false;
+        esApplied = false;
+        gp.gameState = gp.cutsceneState;
+    }
+    public void startStatsScreen() {
+        activeScene = Scene.STATS_SCREEN;
+        statsFadeIn = 0f;
+        statsFadeOut = 0f;
+        statsDone = false;
+        statsApplied = false;
         gp.gameState = gp.cutsceneState;
     }
 
@@ -339,6 +373,10 @@ public class CutsceneManager {
             return;
         } if (activeScene == Scene.ENDING_SCROLL) {
             updateEndingScroll();
+            return;
+        }
+        if (activeScene == Scene.STATS_SCREEN) {
+            updateStatsScreen();
             return;
         }
 
@@ -369,6 +407,10 @@ public class CutsceneManager {
             return;
         } if (activeScene == Scene.ENDING_SCROLL) {
             drawEndingScroll(g2);
+            return;
+        }
+        if (activeScene == Scene.STATS_SCREEN) {
+            drawStatsScreen(g2);
             return;
         }
 
@@ -406,18 +448,30 @@ public class CutsceneManager {
 
     private String[][] activeLines() {
         switch (activeScene) {
-            case INTRO:          return introLine;
-            case ENROLLMENT:     return enrollmentLines;
-            case QUEST4:         return quest4Lines;
-            case CHAPTER2:       return chapter2Lines;
-            case CHAPTER3:       return chapter3Lines;
-            case QUEST6_INTRO:   return quest6IntroLines;
-            case CHAPTER4_INTRO: return chapter4IntroLines;
-            case FORT_SANTIAGO:  return fortSantiagoLines;
-            case EXECUTION:
-            case EXECUTION_WALK: return executionLines;
-            case ENDING_SCROLL: return executionLines;
-            default:             return chapter2Lines;
+            case INTRO:
+                return introLine;
+            case ENROLLMENT:
+                return enrollmentLines;
+            case QUEST4:
+                return quest4Lines;
+            case CHAPTER2:
+                return chapter2Lines;
+            case CHAPTER3:
+                return chapter3Lines;
+            case QUEST6_INTRO:
+                return quest6IntroLines;
+            case CHAPTER4_INTRO:
+                return chapter4IntroLines;
+            case FORT_SANTIAGO:
+                return fortSantiagoLines;
+            case EXECUTION_WALK:
+                return executionLines;
+            case ENDING_SCROLL:
+                return executionLines;
+            case STATS_SCREEN:
+                return executionLines;
+            default:
+                return chapter2Lines;
         }
     }
 
@@ -458,6 +512,7 @@ public class CutsceneManager {
             case EXECUTION:
                 startExecutionWalk();
                 break;
+
             default:
                 break;
         }
@@ -727,8 +782,8 @@ public class CutsceneManager {
                 ewBlackAlpha = 1f;
                 if (!ewApplied) {
                     ewApplied = true;
+                    gp.questManager.gameEndTime = System.currentTimeMillis();
                     gp.stopMusic();
-                    gp.playMusic(1);
                     startEndingScroll();
                 }
             }
@@ -847,9 +902,7 @@ public class CutsceneManager {
                 if (!esApplied) {
                     esApplied = true;
                     gp.stopMusic();
-                    gp.gameState           = gp.titleState;
-                    gp.ui.titleScreenState = 0;
-                    gp.ui.commandNum       = 0;
+                    startStatsScreen();
                 }
             }
         }
@@ -916,6 +969,129 @@ public class CutsceneManager {
         }
 
         g2.setComposite(old);
+    }
+
+    private void updateStatsScreen() {
+        if (!statsDone) {
+            statsFadeIn = Math.min(statsFadeIn + 0.02f, 1f);
+        } else {
+            statsFadeOut += 0.008f;
+            if (statsFadeOut >= 1f) {
+                statsFadeOut = 1f;
+                if (!statsApplied) {
+                    statsApplied = true;
+                    gp.stopMusic();
+                    gp.gameState           = gp.titleState;
+                    gp.ui.titleScreenState = 0;
+                    gp.ui.commandNum       = 0;
+                }
+            }
+        }
+    }
+    private void drawStatsScreen(Graphics2D g2) {
+        int sw = gp.screenWidth;
+        int sh = gp.screenHeight;
+
+        // Black background
+        g2.setColor(Color.black);
+        g2.fillRect(0, 0, sw, sh);
+
+        Composite old = g2.getComposite();
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, statsFadeIn));
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(255, 210, 80));
+        String header = "— YOUR JOURNEY —";
+        int hw = g2.getFontMetrics().stringWidth(header);
+        g2.drawString(header, sw / 2 - hw / 2, 70);
+
+        UserManager.StudentProfile sp = gp.userManager.getProfile(gp.userManager.getCurrentUser());
+        if (sp != null) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 20f));
+            g2.setColor(Color.white);
+            String nameStr = sp.firstName + " " + sp.lastName;
+            int nw = g2.getFontMetrics().stringWidth(nameStr);
+            g2.drawString(nameStr, sw / 2 - nw / 2, 110);
+
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 16f));
+            g2.setColor(new Color(180, 180, 180));
+            int iw = g2.getFontMetrics().stringWidth(sp.studentId);
+            g2.drawString(sp.studentId, sw / 2 - iw / 2, 132);
+        }
+
+        int lineH = 46;
+        int startY = 185;
+        int labelX = sw / 2 - 280;
+        int valueX = sw / 2 + 80;
+
+        String totalTime  = formatDuration(gp.questManager.gameStartTime, gp.questManager.gameEndTime);
+        String bootsTime  = formatDuration(gp.questManager.bootsStartTime, gp.questManager.bootsEndTime);
+        int firstScore = gp.questManager.firstQuizScore;
+        int    attempts   = gp.questManager.quizAttempts;
+        int    medals     = gp.questManager.medalsEarned;
+        int    npcMet     = gp.npcDatabase.getUnlockedCount();
+
+        String[][] rows = {
+                { "Total Play Time", totalTime },
+                { "Quest 2 — Race Time", bootsTime },
+                { "First Quiz Score", firstScore  == -1 ? "—" : firstScore + " / 10" },
+                { "Quiz Attempts", attempts + (attempts == 1 ? " try" : " tries") },
+                { "Medals Collected", medals + " / 5" },
+                { "NPCs Met", npcMet + " NPCs" },
+        };
+
+        for (String[] row : rows) {
+            // Label
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 18f));
+            g2.setColor(new Color(200, 200, 200));
+            g2.drawString(row[0], labelX, startY);
+
+            // Dotted line
+            g2.setColor(new Color(80, 80, 80));
+            g2.fillRect(labelX + g2.getFontMetrics().stringWidth(row[0]) + 8,
+                    startY - 5, valueX - labelX - g2.getFontMetrics().stringWidth(row[0]) - 16, 1);
+
+            // Value
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 18f));
+            g2.setColor(new Color(255, 220, 100));
+            g2.drawString(row[1], valueX, startY);
+
+            startY += lineH;
+        }
+
+        if (statsFadeIn >= 1f && !statsDone) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 16f));
+            g2.setColor(new Color(150, 150, 150));
+            String prompt = "[ ENTER ] Continue";
+            int pw = g2.getFontMetrics().stringWidth(prompt);
+            g2.drawString(prompt, sw / 2 - pw / 2, sh - 40);
+        }
+
+        if (statsFadeOut > 0f) {
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, statsFadeOut));
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0, sw, sh);
+        }
+
+        g2.setComposite(old);
+    }
+
+    private String formatDuration(long start, long end) {
+        if (start == 0 || end == 0) return "—";
+        long ms      = end - start;
+        long seconds = (ms / 1000) % 60;
+        long minutes = (ms / (1000 * 60)) % 60;
+        long hours   = ms / (1000 * 60 * 60);
+        if (hours > 0) return String.format("%dh %02dm %02ds", hours, minutes, seconds);
+        return String.format("%dm %02ds", minutes, seconds);
+    }
+
+    public boolean isStatsScreenActive() {
+        return activeScene == Scene.STATS_SCREEN;
+    }
+
+    public void dismissStats() {
+        if (statsFadeIn >= 1f) statsDone = true;
     }
 
     private void reset(Scene scene) {

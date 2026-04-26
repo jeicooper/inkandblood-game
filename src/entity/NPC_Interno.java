@@ -21,7 +21,6 @@ public class NPC_Interno extends Entity {
         solidArea.height = 32;
 
         getImage();
-        setDialogue();
     }
 
     public void getImage() {
@@ -34,11 +33,6 @@ public class NPC_Interno extends Entity {
         right1 = setup("/npc/interno/interno_right_1");
         right2 = setup("/npc/interno/interno_right_2");
     }
-
-    public void setDialogue() {}
-
-    @Override
-    public void setAction() {}
 
     @Override
     public void speak() {

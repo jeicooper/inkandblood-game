@@ -25,6 +25,14 @@ public class QuestManager {
     private boolean pendingChapter3Cutscene = false;
     private boolean pendingQuest6StartCutscene = false;
 
+    //STATISTICS
+    public long gameStartTime = 0L;
+    public long gameEndTime = 0L;
+    public long bootsStartTime = 0L;
+    public long bootsEndTime = 0L;
+    public int firstQuizScore = -1;
+    public int quizAttempts = 0;
+
 
     // QUEST IDS
     public static final int QUEST1 = 0;
@@ -398,12 +406,14 @@ public class QuestManager {
         normalSpeed = gp.player.speed;
         gp.player.speed = BOOST_SPEED;
         bootsActive = true;
+        bootsStartTime = System.currentTimeMillis();
     }
 
     public void removeBoots() {
         removeItems("Boots", 1);
         gp.player.speed = normalSpeed;
         bootsActive = false;
+        bootsEndTime = System.currentTimeMillis();
     }
 
 
@@ -448,11 +458,17 @@ public class QuestManager {
     }
 
     public void onQuizResult(int score) {
+        quizAttempts++;
+
+        if (firstQuizScore == -1) {
+            firstQuizScore = score;
+        }
+
         if (score >= 10) {
             quest3Stage = TALK_FERRANDO_REWARD;
         } else {
             quest3Stage = QUIZ_FAILED;
-            gp.ui.showMessage("Score: " + score + "/5. Try again!");
+            gp.ui.showMessage("Score: " + score + "/10. Try again!");
         }
     }
 

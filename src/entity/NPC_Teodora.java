@@ -42,12 +42,13 @@ public class NPC_Teodora extends Entity{
         gp.ui.currentSpeakerName = "Teodora Alonso Realonda";
 
         if (!spoke) {
-            // First time talking — start the quest
             dialogues[0] = "Pepe! Thank goodness you are here.";
             dialogues[1] = "Your siblings are scattered all around the house.";
             dialogues[2] = "Please find them and bring them all back for dinner.";
             dialogues[3] = "Now go, Pepe!";
             dialogues[4] = null;
+
+            gp.questManager.gameStartTime = System.currentTimeMillis();
 
             super.speak();
 
