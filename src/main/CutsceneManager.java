@@ -999,7 +999,7 @@ public class CutsceneManager {
         Composite old = g2.getComposite();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, statsFadeIn));
 
-        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 32f));
         g2.setColor(new Color(255, 210, 80));
         String header = "— YOUR JOURNEY —";
         int hw = g2.getFontMetrics().stringWidth(header);
@@ -1007,13 +1007,13 @@ public class CutsceneManager {
 
         UserManager.StudentProfile sp = gp.userManager.getProfile(gp.userManager.getCurrentUser());
         if (sp != null) {
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 20f));
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 28f));
             g2.setColor(Color.white);
             String nameStr = sp.firstName + " " + sp.lastName;
             int nw = g2.getFontMetrics().stringWidth(nameStr);
             g2.drawString(nameStr, sw / 2 - nw / 2, 110);
 
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 16f));
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 24f));
             g2.setColor(new Color(180, 180, 180));
             int iw = g2.getFontMetrics().stringWidth(sp.studentId);
             g2.drawString(sp.studentId, sw / 2 - iw / 2, 132);
@@ -1042,7 +1042,7 @@ public class CutsceneManager {
 
         for (String[] row : rows) {
             // Label
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 18f));
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 26f));
             g2.setColor(new Color(200, 200, 200));
             g2.drawString(row[0], labelX, startY);
 
@@ -1052,7 +1052,7 @@ public class CutsceneManager {
                     startY - 5, valueX - labelX - g2.getFontMetrics().stringWidth(row[0]) - 16, 1);
 
             // Value
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 18f));
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 26f));
             g2.setColor(new Color(255, 220, 100));
             g2.drawString(row[1], valueX, startY);
 
