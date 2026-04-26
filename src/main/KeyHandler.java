@@ -45,14 +45,12 @@ public class KeyHandler implements KeyListener {
         }
         //CUTSCENE STATE
         else if (gp.gameState == gp.cutsceneState) {
-            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
-                gp.cutsceneManager.advance();
-            }
-            else if (gp.gameState == gp.cutsceneState
-                    && gp.cutsceneManager.isStatsScreenActive()) {
+            if (gp.cutsceneManager.isStatsScreenActive()) {
                 if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
                     gp.cutsceneManager.dismissStats();
                 }
+            } else if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+                gp.cutsceneManager.advance();
             }
         }
         //CHARACTER STATE

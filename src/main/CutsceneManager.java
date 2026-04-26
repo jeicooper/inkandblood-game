@@ -148,9 +148,9 @@ public class CutsceneManager {
     // FORT SANTIAGO
     private final String[][] fortSantiagoLines = {
             {"December 26, 1896."},
-            {"The Judge of Cuartel de Espa\u00f1a has signed",
+            {"The Judge of Cuartel de Espana has signed",
                     "my death warrant."},
-            {"I was taken to Fort Santiago \u2014",
+            {"I was taken to Fort Santiago-",
                     "your final cell."},
             {"The morning of December 30 draws near."}
     };
@@ -158,20 +158,20 @@ public class CutsceneManager {
     private final String[][] executionLines = {
             {"December 30, 1896. 6:30 AM."},
             {"The march to Bagumbayan.",
-                    "My pulse is steady\u2026 the doctor says it is normal."},
+                    "My pulse is steady... the doctor says it is normal."},
             {"How strange, to have a heart that beats so calmly",
                     "when it is about to be pierced."},
     };
 
     // ENDING SCROLL
     private float   esScrollY    = 0f;
-    private float   esSpeed      = 0.8f;
+    private final float   esSpeed      = 0.8f;
     private boolean esDone       = false;
     private float   esFadeAlpha  = 0f;
     private boolean esApplied    = false;
 
     // STATS SCREEN
-    private boolean statsShowing  = false;
+    private boolean gameCompleted = false;   // survives fade-out; persisted to save file
     private float   statsFadeIn   = 0f;
     private float   statsFadeOut  = 0f;
     private boolean statsDone     = false;
@@ -265,6 +265,7 @@ public class CutsceneManager {
     private int     ewFrame        = 0;
     private float   ewBlackAlpha   = 0f;
     private boolean ewApplied      = false;
+    private boolean ewFired        = false;
 
     private float ewRizalX, ewRizalY;
 
@@ -354,6 +355,19 @@ public class CutsceneManager {
         gp.gameState = gp.cutsceneState;
     }
     public void startStatsScreen() {
+        activeScene = Scene.STATS_SCREEN;
+        gameCompleted = true;
+        statsFadeIn = 0f;
+        statsFadeOut = 0f;
+        statsDone = false;
+        statsApplied = false;
+        gp.gameState = gp.cutsceneState;
+        // Persist completed flag so reloading this save re-shows the stats screen
+        gp.saveManager.save();
+    }
+
+    /** Restores the stats screen after loading a completed save (no re-save). */
+    public void restoreStatsScreen() {
         activeScene = Scene.STATS_SCREEN;
         statsFadeIn = 0f;
         statsFadeOut = 0f;
@@ -579,6 +593,7 @@ public class CutsceneManager {
         ewFrame        = 0;
         ewBlackAlpha   = 0f;
         ewApplied      = false;
+        ewFired        = false;
         ewShowDialogue = false;
         ewDialogue     = "";
         ewIsRizalLine  = false;
@@ -610,7 +625,7 @@ public class CutsceneManager {
         ewKillerFire   = loadSingle("/npc/Killer/killer_right_6.png");
 
         gp.stopMusic();
-        gp.playMusic(2);
+        gp.playMusic(5);
         gp.gameState = gp.cutsceneState;
     }
 
@@ -767,8 +782,9 @@ public class CutsceneManager {
             if (ewTick >= 340) { ewPhase = 4; ewTick = 0; }
 
         } else if (ewPhase == 4) {
-            if (ewTick == 1) {
-                showDialogue("\u00a1FUEGO!", false, 100);
+            if (ewTick == 1 && !ewFired) {
+                ewFired = true;
+                showDialogue("FUEGO!", false, 100);
                 gp.playSE(6);
             }
             if (ewTick >= 80) { ewPhase = 5; ewTick = 0; }
@@ -1088,6 +1104,16 @@ public class CutsceneManager {
 
     public boolean isStatsScreenActive() {
         return activeScene == Scene.STATS_SCREEN;
+    }
+
+    /** True once the game has been completed (persists after the screen fades out). */
+    public boolean isGameCompleted() {
+        return gameCompleted;
+    }
+
+    /** Called by SaveManager when loading a completed save to restore the stats screen. */
+    public void setGameCompleted(boolean value) {
+        gameCompleted = value;
     }
 
     public void dismissStats() {

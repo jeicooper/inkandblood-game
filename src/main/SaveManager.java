@@ -70,10 +70,14 @@ public class SaveManager {
         d.pendingQuest4Cutscene = qm.isPendingQuest4Cutscene();
         d.pendingChapter3Cutscene = qm.isPendingChapter3Cutscene();
         d.pendingQuest6StartCutscene = qm.isPendingQuest6StartCutscene();
+        d.pendingQuest7IntroCutscene = qm.isPendingQuest7IntroCutscene();
+        d.pendingQuest7MidCutscene   = qm.isPendingQuest7MidCutscene();
+        d.pendingQuest7EndCutscene   = qm.isPendingQuest7EndCutscene();
 
         // UI
         d.questPageNum  = gp.ui.questPageNum;
         d.spriteVersion = detectSpriteVersion();
+        d.gameCompleted = gp.cutsceneManager.isGameCompleted();
 
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(userManager.getSaveFile()))) {
@@ -158,6 +162,9 @@ public class SaveManager {
         qm.setPendingQuest4Cutscene(d.pendingQuest4Cutscene);
         qm.setPendingChapter3Cutscene(d.pendingChapter3Cutscene);
         qm.setPendingQuest6StartCutscene(d.pendingQuest6StartCutscene);
+        qm.setPendingQuest7IntroCutscene(d.pendingQuest7IntroCutscene);
+        qm.setPendingQuest7MidCutscene(d.pendingQuest7MidCutscene);
+        qm.setPendingQuest7EndCutscene(d.pendingQuest7EndCutscene);
 
         // UI
         gp.ui.questPageNum = d.questPageNum;
@@ -175,6 +182,14 @@ public class SaveManager {
         gp.player.direction = savedDir;
 
         gp.npcDatabase.load();
+
+        // If the player had already finished the game, show the stats screen again
+        // (call the internal setup directly to avoid a redundant re-save)
+        if (d.gameCompleted) {
+            gp.cutsceneManager.setGameCompleted(true);
+            gp.cutsceneManager.restoreStatsScreen();
+        }
+
         return true;
     }
 

@@ -64,6 +64,8 @@ public class SaveData implements Serializable {
 
     public int questPageNum;
 
+    public boolean gameCompleted = false;
+
     //STATISTICS TRACKING
     public long gameStartTime = 0L;
     public long gameEndTime = 0L;
