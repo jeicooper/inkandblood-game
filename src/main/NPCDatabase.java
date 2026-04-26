@@ -112,11 +112,11 @@ public class NPCDatabase {
 
             { "interno",
                     "Classmate",                 "Interno",
-                    "Ateneo Student",            "Chapter 2", "Quest 3: Ang Bagong Simula",
+                    "Romans",            "Chapter 2", "Quest 3: Ang Bagong Simula",
                     "Internos were students who lived inside Ateneo. Rizal initially belonged to this group, which exposed him to stricter discipline and structured learning. This environment shaped his academic excellence." },
             { "externo",
                 "Classmate",                    "Externo",
-                "Ateneo Student",               "Chapter 2",
+                "Carthaginian",               "Chapter 2",
                     "Quest 3: Ang Bagong Simula",
                     "Externos were students who lived outside Ateneo. Rizal later became one, giving him more independence while continuing his studies. This shift reflected his growing maturity."
             },
@@ -163,13 +163,9 @@ public class NPCDatabase {
 
             { "maximo",
                     "Maximo Viola",              "Maximo",
-                    "Financier of the Noli",     "Chapter 3", "Quest 5: Noli Me Tangere",
+                    "Financier of the Noli Me Tangere",     "Chapter 3", "Quest 5: Noli Me Tangere",
                     "Maximo Viola was the man who made the Noli Me Tangere possible. When Rizal had no money left to print his novel, Viola provided the funds. He received the first signed copy in return. He was one of Rizal’s closest friends and financial supporter. He helped fund the publication of Noli Me Tangere. His loyalty and belief in Rizal’s work were crucial to its success." },
 
-            { "paciano_q6",
-                    "Paciano Rizal",             "Kuya Paciano",
-                    "Brother & Confidant",       "Chapter 3", "Quest 6: El Filibusterismo",
-                    "Returning in a new capacity, Paciano was Jose's most trusted correspondent during the exile years. He relayed news from Calamba and channeled resources to his brother across the ocean." },
             { "guardiacivil",
                     "Guardia Civil",                     "Guardia",
                     "Colonial Officer",          "Chapter 4", "Quest 7: Consummatum Est",
