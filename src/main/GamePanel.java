@@ -261,10 +261,6 @@ public class GamePanel extends JPanel implements Runnable {
             //EMPTY ENTITY LIST
             entityList.clear();
 
-            if (questManager.isQuestActive(QuestManager.QUEST1)) {
-                drawDeliveryZone(g2);
-            }
-
             if (questManager.isQuestActive(QuestManager.QUEST2) &&
                     questManager.quest2Stage == QuestManager.MANUEL_RUNNING) {
                 drawCheckpoints(g2);
@@ -324,27 +320,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         // reset npc dex
         npcDatabase.reset();
-    }
-
-    private void drawDeliveryZone(Graphics2D g2) {
-
-        int screenX = questManager.deliveryWorldX - player.worldX + player.screenX;
-        int screenY = questManager.deliveryWorldY - player.worldY + player.screenY;
-        int r       = questManager.deliveryRadius;
-
-        // Only draw if on screen
-        if (screenX + r < 0 || screenX - r > screenWidth ||
-                screenY + r < 0 || screenY - r > screenHeight) return;
-
-        Composite old = g2.getComposite();
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
-        g2.setColor(new Color(255, 220, 50));
-        g2.fillOval(screenX - r, screenY - r, (int) (r * 1.5), (int) (r * 1.5));
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-        g2.setColor(new Color(255, 200, 0));
-        g2.setStroke(new BasicStroke(3));
-        g2.drawOval(screenX - r, screenY - r, (int) (r * 1.5), (int) (r * 1.5));
-        g2.setComposite(old);
     }
 
     private void drawCheckpoints(Graphics2D g2) {

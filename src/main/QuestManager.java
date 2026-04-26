@@ -47,15 +47,13 @@ public class QuestManager {
     // QUEST 1
     public static final int QUEST1_NOT_STARTED = 0;
     public static final int QUEST1_STARTED = 1;
+    public static final int QUEST1_RETURN_TEODORA = 2;
     public int quest1Stage = QUEST1_NOT_STARTED;
 
     public int siblingsFound   = 0;
     public final int SIBLINGS_REQUIRED = 9;
     public boolean conchaVisited = false;
 
-    public int deliveryWorldX;
-    public int deliveryWorldY;
-    public int deliveryRadius;
 
     private int debugTimer = 0;
     public boolean quest0JustCompleted = false;
@@ -161,10 +159,6 @@ public class QuestManager {
 
     //CHECKPOINTS
     public void init() {
-        deliveryWorldX = 75 * gp.tileSize;
-        deliveryWorldY = 28 * gp.tileSize;
-        deliveryRadius = gp.tileSize * 2;
-
         checkpoints = new int[][]{
                 {29 * gp.tileSize, 34 * gp.tileSize},
                 {54 * gp.tileSize, 34 * gp.tileSize},
@@ -292,18 +286,12 @@ public class QuestManager {
             debugTimer = 0;
         }
 
-        if (following >= SIBLINGS_REQUIRED && conchaVisited && playerInDeliveryZone()) {
-            completeQuest1();
+        if (following >= SIBLINGS_REQUIRED && conchaVisited) {
+            quest1Stage = QUEST1_RETURN_TEODORA;
         }
     }
 
-    private boolean playerInDeliveryZone() {
-        int dx = gp.player.worldX - deliveryWorldX;
-        int dy = gp.player.worldY - deliveryWorldY;
-        return (dx * dx + dy * dy) <= (deliveryRadius * deliveryRadius);
-    }
-
-    private void completeQuest1() {
+    public void completeQuest1FromTeodora() {
         questState[QUEST1] = STATE_COMPLETED;
         gp.ui.showMessage("Quest 1: Done!");
 

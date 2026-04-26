@@ -37,13 +37,15 @@ public class NPC_Teodora extends Entity{
 
     }
 
-    public void speak(){
+    @Override
+    public void speak() {
         gp.ui.currentSpeakerName = "Teodora Alonso Realonda";
 
         if (!spoke) {
+            // First time talking — start the quest
             dialogues[0] = "Pepe! Thank goodness you are here.";
-            dialogues[1] = "Your siblings are scattered all around the town.";
-            dialogues[2] = "Please find them and bring them all back home safely.";
+            dialogues[1] = "Your siblings are scattered all around the house.";
+            dialogues[2] = "Please find them and bring them all back for dinner.";
             dialogues[3] = "Now go, Pepe!";
             dialogues[4] = null;
 
@@ -58,8 +60,30 @@ public class NPC_Teodora extends Entity{
                     }
                 }
             }
+
+        } else if (gp.questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
+            dialogues[0] = "Pepe, my son... you have proven your diligence in such a young age.";
+            dialogues[1] = "Treasure it and stay humble as you live.";
+            dialogues[2] = " Go find your tiyo’s tomorrow.";
+            dialogues[3] = null;
+
+            super.speak();
+
+            if (dialogueIndex == 0) {
+                gp.questManager.completeQuest1FromTeodora();
+            }
+
+        } else if (gp.questManager.quest1Stage == QuestManager.QUEST1_STARTED) {
+            int found    = gp.questManager.siblingsFound;
+            int required = gp.questManager.SIBLINGS_REQUIRED;
+            dialogues[0] = "You haven't found all of them yet, Pepe.";
+            dialogues[1] = found + " of " + required + " siblings found.";
+            dialogues[2] = null;
+            dialogueIndex = 0;
+            super.speak();
+
         } else {
-            dialogues[0] = "Have you finished your home work?";
+            dialogues[0] = "Have you finished your homework?";
             dialogues[1] = null;
             dialogueIndex = 0;
             super.speak();

@@ -1223,10 +1223,11 @@ public class UI {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                 g2.setColor(new Color(200, 200, 100));
                 g2.drawString("Siblings found: " + found + "/" + required, LEFT_X, ly);
-                if (found >= required) {
+                if (found >= required
+                        || gp.questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
                     ly += HINT_H;
                     g2.setColor(new Color(100, 255, 100));
-                    g2.drawString("Go to the golden circle!", LEFT_X, ly);
+                    g2.drawString("Return to Nanay Teodora!", LEFT_X, ly);
                 }
             }
 
@@ -1844,11 +1845,11 @@ public class UI {
                         g2.setColor(new Color(180, 180, 180));
                         g2.drawString("(Look around the garden)", panelX + 12, panelY + 90);
 
-                    } else if (found >= required) {
-                        // All siblings + Concha found — point to delivery zone
+                    } else if (found >= required
+                            || gp.questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
                         g2.setColor(new Color(100, 255, 100));
                         g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                        g2.drawString("Go to the golden circle!", panelX + 12, panelY + 72);
+                        g2.drawString("Return to Nanay Teodora!", panelX + 12, panelY + 72);
                     }
                 }
 

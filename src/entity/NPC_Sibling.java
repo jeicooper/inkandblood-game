@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 public class NPC_Sibling extends Entity {
 
-    public String siblingName;
+    public String  siblingName;
     public boolean isFollowing = false;
     public boolean delivered   = false;
 
@@ -16,8 +16,7 @@ public class NPC_Sibling extends Entity {
     private final LinkedList<int[]> posHistory = new LinkedList<>();
     private static final int HISTORY_DELAY = 30;
 
-    private String[] greetDialogue  = new String[3];
-    private String[] followDialogue = new String[3];
+    private String[] greetDialogue;
 
     public NPC_Sibling(GamePanel gp, String siblingName, String spritePath) {
         super(gp);
@@ -25,14 +24,13 @@ public class NPC_Sibling extends Entity {
 
         setHitbox();
         direction = "down";
-        speed = 5;
+        speed     = 5;
 
         loadSprites(spritePath);
         buildDialogue();
     }
 
     private void loadSprites(String basePath) {
-
         up1    = setup(basePath + "_up_1");
         up2    = setup(basePath + "_up_2");
         down1  = setup(basePath + "_down_1");
@@ -49,7 +47,85 @@ public class NPC_Sibling extends Entity {
     }
 
     private void buildDialogue() {
-        greetDialogue[0]  = "What is it Pepe?. Oh! is it time to eat?";
+        String n = siblingName;
+
+        if (n.contains("Saturnina")) {
+            greetDialogue = new String[]{
+                    "As the eldest of us all, I usually keep an eye on everyone, but I got\ndistracted by Sisa.",
+                    "I am Saturnina, though you always call me Neneng.",
+                    "Let’s get back, Nanay Teodora is waiting for us to eat.",
+                    null
+            };
+
+        } else if (n.contains("Paciano")) {
+            greetDialogue = new String[]{
+                    "There you are, little brother. I am Paciano, the second child and your\nonly brother.",
+                    "I was just thinking about the future of our family, but my stomach\nsays the present requires dinner.",
+                    "Let's go.",
+                    null
+            };
+
+        } else if (n.contains("Narcisa")) {
+            greetDialogue = new String[]{
+                    "Hello, Pepe! I am Narcisa, the third in our line, but I prefer Sisa.",
+                    "I’ve been tired all day",
+                    "I hope Nanay has prepared something delicious for us tonight",
+                    null
+            };
+
+        } else if (n.contains("Olimpia")) {
+            greetDialogue = new String[]{
+                    "Pepe! I am Olimpia, your fourth sibling",
+                    " Is the food already? Nanay must be worried.",
+                    "Let’s hurry back to the Nanay!",
+                    null
+            };
+        } else if (n.contains("Lucia")) {
+            greetDialogue = new String[]{
+                    "Hi, Pepe! I am Lucia, the fifth child, or Lucing as you like to call me.",
+                    "I’m glad you’re here because I’m starting to get very hungry",
+                    "Let’s go!",
+                    null
+            };
+
+        } else if (n.contains("Maria")) {
+            greetDialogue = new String[]{
+                    "You found me, Pepe! I am Maria, the sixth of us...though you know\nme best as Biang",
+                    "I’ve been watching the town from this view",
+                    "but I’m ready to head home and share a meal with everyone.",
+                    null
+            };
+
+        } else if (n.contains("Josefa")) {
+            greetDialogue = new String[]{
+                    "I’m here! I am Josefa, the ninth child, call me Panggoy.",
+                    "I was just watching this painting, but a home-cooked meal sounds\nmuch better right now.",
+                    "Take me to Nanay, Pepe!",
+                    null
+            };
+
+        } else if (n.contains("Trinidad")) {
+            greetDialogue = new String[]{
+                    "Oh, Pepe! I am Trinidad, the tenth sibling.",
+                    "I was just enjoying the fresh air, but if Nanay sent you, food must be\nready.",
+                    "Let’s go before the food gets cold!",
+                    null
+            };
+
+        } else if (n.contains("Soledad")) {
+            greetDialogue = new String[]{
+                    "Pepe, you’re here! I am Soledad, the youngest of all eleven, often\ncalled Choleng.",
+                    "I was just playing, but I’m ready to go home and eat with the whole\nfamily",
+                    "Let’s go!",
+                    null
+            };
+
+        } else {
+            greetDialogue = new String[]{
+                    "...",
+                    null
+            };
+        }
 
         dialogues = greetDialogue;
     }
@@ -61,22 +137,16 @@ public class NPC_Sibling extends Entity {
         if (gp.questManager.quest1Stage == QuestManager.QUEST1_NOT_STARTED) {
             gp.ui.currentDialogue = "...";
             dialogueIndex = 0;
-
-            switch (gp.player.direction){
-                case "up":    direction = "down";  break;
-                case "down":  direction = "up";    break;
-                case "left":  direction = "right"; break;
-                case "right": direction = "left";  break;
-            }
+            facePlayer();
             return;
         }
 
         if (!isFollowing) {
             dialogues = greetDialogue;
+            dialogueIndex = 0;
             super.speak();
             startFollowing();
         } else {
-            dialogues = followDialogue;
             super.speak();
         }
     }
@@ -87,9 +157,7 @@ public class NPC_Sibling extends Entity {
     }
 
     @Override
-    public void setAction() {
-
-    }
+    public void setAction() { }
 
     @Override
     public void update() {
@@ -100,14 +168,14 @@ public class NPC_Sibling extends Entity {
 
             spriteCounter++;
             if (spriteCounter > 12) {
-                spriteNum = (spriteNum == 1) ? 2 : 1;
+                spriteNum     = (spriteNum == 1) ? 2 : 1;
                 spriteCounter = 0;
             }
         }
     }
 
     private void followUpdate() {
-        posHistory.addLast(new int[]{followTarget.worldX, followTarget.worldY});
+        posHistory.addLast(new int[]{ followTarget.worldX, followTarget.worldY });
 
         if (posHistory.size() > HISTORY_DELAY) {
             int[] targetPos = posHistory.removeFirst();
@@ -119,14 +187,12 @@ public class NPC_Sibling extends Entity {
             double dist = Math.sqrt(dx * dx + dy * dy);
 
             if (dist > speed) {
-                // figure out direction first
                 if (Math.abs(dx) > Math.abs(dy)) {
                     direction = (dx > 0) ? "right" : "left";
                 } else {
                     direction = (dy > 0) ? "down" : "up";
                 }
 
-                // check tile collision before moving
                 collisionOn = false;
                 gp.cChecker.checkTile(this);
                 gp.cChecker.checkObject(this, false);
@@ -137,15 +203,12 @@ public class NPC_Sibling extends Entity {
                     worldX += (int) stepX;
                     worldY += (int) stepY;
                 } else {
-                    // blocked — try moving on just one axis
                     collisionOn = false;
                     if (Math.abs(dx) > Math.abs(dy)) {
-                        // try vertical instead
                         direction = (dy > 0) ? "down" : "up";
                         gp.cChecker.checkTile(this);
                         if (!collisionOn) worldY += (dy > 0) ? speed : -speed;
                     } else {
-                        // try horizontal instead
                         direction = (dx > 0) ? "right" : "left";
                         gp.cChecker.checkTile(this);
                         if (!collisionOn) worldX += (dx > 0) ? speed : -speed;
