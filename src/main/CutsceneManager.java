@@ -171,7 +171,7 @@ public class CutsceneManager {
     private boolean esApplied    = false;
 
     // STATS SCREEN
-    private boolean gameCompleted = false;   // survives fade-out; persisted to save file
+    private boolean gameCompleted = false;
     private float   statsFadeIn   = 0f;
     private float   statsFadeOut  = 0f;
     private boolean statsDone     = false;
@@ -255,6 +255,14 @@ public class CutsceneManager {
                     "— Jose Rizal"
             },
     };
+
+    public boolean isGameCompleted() {
+        return gameCompleted;
+    }
+ 
+    public void setGameCompleted(boolean value) {
+        gameCompleted = value;
+    }
 
     public boolean isExecutionWalkActive() {
         return activeScene == Scene.EXECUTION_WALK;
@@ -1104,16 +1112,6 @@ public class CutsceneManager {
 
     public boolean isStatsScreenActive() {
         return activeScene == Scene.STATS_SCREEN;
-    }
-
-    /** True once the game has been completed (persists after the screen fades out). */
-    public boolean isGameCompleted() {
-        return gameCompleted;
-    }
-
-    /** Called by SaveManager when loading a completed save to restore the stats screen. */
-    public void setGameCompleted(boolean value) {
-        gameCompleted = value;
     }
 
     public void dismissStats() {

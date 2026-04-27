@@ -66,6 +66,8 @@ public class SaveManager {
         d.q6ObjectsCollected = qm.q6ObjectsCollected;
         d.elFiliParts = qm.elFiliParts.clone();
 
+        d.quest7Stage = qm.quest7Stage;
+
         d.pendingChapter2Cutscene = qm.isPendingChapter2Cutscene();
         d.pendingQuest4Cutscene = qm.isPendingQuest4Cutscene();
         d.pendingChapter3Cutscene = qm.isPendingChapter3Cutscene();
@@ -74,10 +76,24 @@ public class SaveManager {
         d.pendingQuest7MidCutscene   = qm.isPendingQuest7MidCutscene();
         d.pendingQuest7EndCutscene   = qm.isPendingQuest7EndCutscene();
 
+        // Statistics
+        d.gameStartTime  = qm.gameStartTime;
+        d.gameEndTime    = qm.gameEndTime;
+        d.bootsStartTime = qm.bootsStartTime;
+        d.bootsEndTime   = qm.bootsEndTime;
+        d.firstQuizScore = qm.firstQuizScore;
+        d.quizAttempts   = qm.quizAttempts;
+
         // UI
         d.questPageNum  = gp.ui.questPageNum;
         d.spriteVersion = detectSpriteVersion();
         d.gameCompleted = gp.cutsceneManager.isGameCompleted();
+
+        // Reset in-progress quest stages so loading always resumes at the quest START,
+        // not mid-way through. Quest boundary saves (completeQuestN) have already
+        // advanced currentQuest before calling save(), so the NEXT quest's stage is 0
+        // already — this only affects quests that are still STATE_ACTIVE mid-progress.
+        resetInProgressQuestState(d);
 
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(userManager.getSaveFile()))) {
@@ -158,6 +174,8 @@ public class SaveManager {
         qm.q6ObjectsCollected = d.q6ObjectsCollected;
         qm.elFiliParts = d.elFiliParts.clone();
 
+        qm.quest7Stage = d.quest7Stage;
+
         qm.setPendingChapter2Cutscene(d.pendingChapter2Cutscene);
         qm.setPendingQuest4Cutscene(d.pendingQuest4Cutscene);
         qm.setPendingChapter3Cutscene(d.pendingChapter3Cutscene);
@@ -166,20 +184,38 @@ public class SaveManager {
         qm.setPendingQuest7MidCutscene(d.pendingQuest7MidCutscene);
         qm.setPendingQuest7EndCutscene(d.pendingQuest7EndCutscene);
 
+        // Statistics
+        qm.gameStartTime  = d.gameStartTime;
+        qm.gameEndTime    = d.gameEndTime;
+        qm.bootsStartTime = d.bootsStartTime;
+        qm.bootsEndTime   = d.bootsEndTime;
+        qm.firstQuizScore = d.firstQuizScore;
+        qm.quizAttempts   = d.quizAttempts;
+
         // UI
         gp.ui.questPageNum = d.questPageNum;
 
-        // Apply world state in correct order
+        // Apply world state in correct order.
+        // Track the quest number BEFORE fixQuestProgression so we can tell if
+        // the chapter changed — if it did, the saved position belongs to the OLD
+        // chapter and must NOT be restored (applyChapterState already set the
+        // correct spawn for the new chapter).
+        int questBeforeFix = qm.currentQuest;
         fixQuestProgression();
-        applyChapterState(qm);   // loads map + sprites + NPCs — intentionally sets a spawn pos
+        boolean chapterAdvanced = (qm.currentQuest != questBeforeFix);
+
+        applyChapterState(qm);   // loads map + sprites + NPCs — sets spawn pos for the chapter
         removeCollectedObjects();
         removeCompletedNPCs();
 
-        // Restore saved player position/speed/direction — overrides the hardcoded spawn above
-        gp.player.worldX   = savedWorldX;
-        gp.player.worldY   = savedWorldY;
-        gp.player.speed    = savedSpeed;
-        gp.player.direction = savedDir;
+        // Only restore the saved position when we are staying in the same chapter.
+        // If the chapter advanced, applyChapterState's spawn is the right position.
+        if (!chapterAdvanced) {
+            gp.player.worldX    = savedWorldX;
+            gp.player.worldY    = savedWorldY;
+            gp.player.speed     = savedSpeed;
+            gp.player.direction = savedDir;
+        }
 
         gp.npcDatabase.load();
 
@@ -197,6 +233,88 @@ public class SaveManager {
         return userManager.isLoggedIn() && userManager.getSaveFile().exists();
     }
 
+
+    /**
+     * Wipes the stage-level fields of whichever quest is currently STATE_ACTIVE
+     * back to their initial values inside the SaveData object (not in QuestManager).
+     * This ensures that if a player saves mid-quest and reloads, they restart the
+     * quest from the beginning rather than at whatever mid-point they had reached.
+     *
+     * Quest-boundary saves (completeQuestN) already advance currentQuest BEFORE
+     * calling save(), so the incoming quest starts fresh by default — this method
+     * only needs to handle the case where the player exits during an active quest.
+     */
+    private void resetInProgressQuestState(SaveData d) {
+        // If game is completed there is nothing to reset.
+        if (d.gameCompleted) return;
+
+        int cq = d.currentQuest;
+
+        // Only reset if the current quest is still active (not completed).
+        if (cq < d.questState.length && d.questState[cq] != QuestManager.STATE_COMPLETED) {
+            switch (cq) {
+                case QuestManager.QUEST1:
+                    d.quest1Stage    = QuestManager.QUEST1_NOT_STARTED;
+                    d.siblingsFound  = 0;
+                    d.conchaVisited  = false;
+                    break;
+
+                case QuestManager.QUEST2:
+                    d.quest2Stage      = QuestManager.JOSE_INACTIVE;
+                    d.checkpointsHit   = 0;
+                    d.courseCompleted  = false;
+                    break;
+
+                case QuestManager.QUEST3:
+                    d.quest3Stage    = QuestManager.TALK_FERRANDO;
+                    d.ferrandoShooed = false;
+                    // Also clear the pending cutscene flags that belong to this quest
+                    d.pendingChapter2Cutscene = false;
+                    break;
+
+                case QuestManager.QUEST4:
+                    d.quest4Stage             = QuestManager.TALK_PROFESSOR_Q4;
+                    d.medalsEarned            = 0;
+                    d.disciplinesCompleted    = 0;
+                    d.disciplineMedalEarned   = new boolean[5];
+                    d.disciplineAnswered      = new boolean[5];
+                    d.pendingQuest4Cutscene   = false;
+                    break;
+
+                case QuestManager.QUEST5:
+                    d.quest5Stage      = QuestManager.TALK_PEDRO;
+                    d.objectsCollected = 0;
+                    d.manuscriptParts  = new boolean[7];
+                    d.pendingChapter3Cutscene = false;
+                    // Remove Noli draft from inventory if it was picked up mid-quest
+                    d.inventoryItemNames = removeFromInventory(d.inventoryItemNames, "Draft of Noli Me Tangere");
+                    break;
+
+                case QuestManager.QUEST6:
+                    d.quest6Stage        = QuestManager.TALK_PACIANO_Q6;
+                    d.q6ObjectsCollected = 0;
+                    d.elFiliParts        = new boolean[5];
+                    d.pendingQuest6StartCutscene = false;
+                    // Remove El Fili draft from inventory if it was picked up mid-quest
+                    d.inventoryItemNames = removeFromInventory(d.inventoryItemNames, "Draft of El Filibusterismo");
+                    break;
+
+                case QuestManager.QUEST7:
+                    d.quest7Stage = QuestManager.Q7_TALK_GUARDIA;
+                    d.pendingQuest7IntroCutscene = false;
+                    d.pendingQuest7MidCutscene   = false;
+                    d.pendingQuest7EndCutscene   = false;
+                    break;
+            }
+        }
+    }
+
+    /** Returns a copy of the name array with all occurrences of {@code name} removed. */
+    private String[] removeFromInventory(String[] items, String name) {
+        java.util.List<String> kept = new java.util.ArrayList<>();
+        for (String s : items) if (!s.equals(name)) kept.add(s);
+        return kept.toArray(new String[0]);
+    }
 
     private int detectSpriteVersion() {
         int q = gp.questManager.currentQuest;
@@ -251,6 +369,8 @@ public class SaveManager {
     }
 
     private void applyChapterState(QuestManager qm) {
+
+        if (gp.cutsceneManager.isGameCompleted()) return;
 
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;

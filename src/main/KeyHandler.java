@@ -98,6 +98,7 @@ public class KeyHandler implements KeyListener {
                 // load game
                 if (gp.ui.commandNum == 1) {
                     if (gp.saveManager.hasSave()) {
+                        gp.resetForLoad();
                         if (gp.saveManager.load()) {
                             gp.gameState = gp.playState;
                             gp.playMusic(0);

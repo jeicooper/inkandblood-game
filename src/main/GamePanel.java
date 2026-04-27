@@ -322,6 +322,40 @@ public class GamePanel extends JPanel implements Runnable {
         npcDatabase.reset();
     }
 
+    /**
+     * Lightweight reset used before loading a save file.
+     * Resets player/quest/UI state but intentionally skips world population
+     * (NPCs, objects, map) — the save loader handles all of that itself via
+     * applyChapterState(), so calling setNPC()/setObject()/loadMap() here
+     * would cause Chapter 1 entities to bleed into the loaded chapter's world.
+     */
+    public void resetForLoad() {
+        player.setDefaultValues();
+        player.getPlayerImage();
+        player.inventory.clear();
+
+        questManager = new QuestManager(this);
+        questManager.init();
+
+        for (int i = 0; i < npc.length; i++) npc[i] = null;
+        for (int i = 0; i < obj.length; i++) obj[i] = null;
+
+        ui.questPageNum = 0;
+        ui.commandNum = 0;
+        ui.slotCol = 0;
+        ui.slotRow = 0;
+        ui.messageOn = false;
+        ui.showPoemPanel = false;
+        ui.currentDialogue = "";
+        ui.currentSpeakerName = "";
+        ui.activeLetter = "";
+        talkingTo = null;
+
+        npcDatabase.reset();
+        // Note: NO aSetter.setNPC(), NO aSetter.setObject(), NO tileM.loadMap()
+        // SaveManager.load() → applyChapterState() takes care of all of that.
+    }
+
     private void drawCheckpoints(Graphics2D g2) {
         if (questManager.checkpoints == null) return;
 

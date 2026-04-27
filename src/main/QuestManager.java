@@ -576,7 +576,7 @@ public class QuestManager {
         if (quest5Stage == FIND_LETTER) {
             quest5Stage = COLLECT_OBJECTS;
             gp.ui.showMessage("Find objects around the room to write your manuscript.");
-            gp.saveManager.save();
+            // No mid-quest save — quest boundary save happens at completeQuest5()
         }
     }
 
@@ -587,7 +587,7 @@ public class QuestManager {
         if (objectsCollected >= OBJECTS_REQUIRED) {
             quest5Stage = TALK_MAXIMO;
             gp.ui.showMessage("Manuscript complete!");
-            gp.saveManager.save();
+            // No mid-quest save — quest boundary save happens at completeQuest5()
         }
     }
 
@@ -631,7 +631,7 @@ public class QuestManager {
         if (quest6Stage == FIND_DRAFT) {
             quest6Stage = COLLECT_OBJECTS_Q6;
             gp.ui.showMessage("Find objects around the room to write your manuscript.");
-            gp.saveManager.save();
+            // No mid-quest save — quest boundary save happens at completeQuest6()
         }
     }
 
@@ -643,7 +643,7 @@ public class QuestManager {
         if (q6ObjectsCollected >= Q6_OBJECTS_REQUIRED){
             quest6Stage = RETURN_PACIANO;
             gp.ui.showMessage("Manuscript Complete!");
-            gp.saveManager.save();
+            // No mid-quest save — quest boundary save happens at completeQuest6()
         }
     }
     public void giveElFiliBook() {
@@ -696,7 +696,7 @@ public class QuestManager {
         if (quest7Stage != Q7_TALK_JUDGE) return;
         pendingQuest7MidCutscene = true;
         cutsceneDelay6 = 90;
-        gp.saveManager.save();
+        // No mid-quest save — quest boundary save happens at giveUltimoAdios()
     }
 
     public void onFortSantiagoCutsceneDone() {

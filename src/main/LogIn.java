@@ -1062,7 +1062,7 @@ public class LogIn {
     }
 
     private void onLoginSuccess() {
-        gp.resetGame();
+        gp.resetForLoad();
         gp.ui.titleScreenState = 0;
         gp.ui.commandNum = 0;
         gp.gameState = gp.titleState;

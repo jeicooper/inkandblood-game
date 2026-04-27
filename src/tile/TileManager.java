@@ -807,6 +807,10 @@ public class TileManager {
                 System.out.println("Map file not found: " + filePath);
                 return;
             }
+
+            for (int c = 0; c < gp.maxWorldCol; c++)
+                for (int r = 0; r < gp.maxWorldRow; r++)
+                    mapTileNum[c][r] = 0;
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line;
             int row = 0;
