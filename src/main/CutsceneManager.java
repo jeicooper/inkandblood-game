@@ -247,10 +247,12 @@ public class CutsceneManager {
             },
             // ── CLOSING ──
             { "",
-                    " ``I want to show to those who deprive people the right to love of country,",
-                    "that when we know how to sacrifice ourselves for our duties and convictions,",
-                    "death does not matter if one dies for those one loves —",
-                    "for his country and for others dear to him.``",
+                    "``I only wanted my people to learn how to weep for their country. But as the",
+                    "'Social Cancer' became more than a metaphor, the ink had to change. I heard",
+                    "the whispers of reform turn into blueprints for revolution. I wrote El",
+                    "Filibusterismo to teach them how to fight. I do not regret a single letter.",
+                    "For some truths are too heavy to carry alone, they must be written down,",
+                    "passed on, and ignited.",
                     "",
                     "— Jose Rizal"
             },
@@ -371,11 +373,9 @@ public class CutsceneManager {
         statsApplied = false;
         gp.stopMusic();
         gp.gameState = gp.cutsceneState;
-        // Persist completed flag so reloading this save re-shows the stats screen
         gp.saveManager.save();
     }
 
-    /** Restores the stats screen after loading a completed save (no re-save). */
     public void restoreStatsScreen() {
         activeScene = Scene.STATS_SCREEN;
         statsFadeIn = 0f;
@@ -851,10 +851,8 @@ public class CutsceneManager {
                 else if (ewAimFrame == 1) guardImg = ewKillerAim2;
                 else                      guardImg = ewKillerAim3;
             } else if (ewPhase == 1 || ewPhase == 2) {
-                // Walking / moving right — use right-facing sprites
                 guardImg = (ewFrame == 0) ? ewKillerRight1 : ewKillerRight2;
             } else {
-                // Phase 0 — walking down
                 guardImg = (ewFrame == 0) ? ewKillerDown1 : ewKillerDown2;
             }
 

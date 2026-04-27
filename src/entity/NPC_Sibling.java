@@ -92,7 +92,7 @@ public class NPC_Sibling extends Entity {
             greetDialogue = new String[]{
                     "You found me, Pepe! I am Maria, the sixth of us...though you know\nme best as Biang",
                     "I’ve been watching the town from this view",
-                    "but I’m ready to head home and share a meal with everyone.",
+                    "but I’m ready for supper and share a meal with everyone.",
                     null
             };
 

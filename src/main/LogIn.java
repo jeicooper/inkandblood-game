@@ -923,7 +923,6 @@ public class LogIn {
             }
         }
 
-        // Success message if a reset just happened
         if (!adminSuccess.isEmpty()) {
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
             g2.setColor(OK_GREEN);
@@ -1117,14 +1116,14 @@ public class LogIn {
     }
 
     private int fieldLimit(int step, int focus) {
-        if (step == 0 && focus == 0) return 25;  // First Name
-        if (step == 0 && focus == 1) return 25;  // Last Name
+        if (step == 0 && focus == 0) return 20;  // First Name
+        if (step == 0 && focus == 1) return 20;  // Last Name
         if (step == 0 && focus == 2) return 2;   // M.I
         if (step == 0 && focus == 3) return 3;   // Suffix
         if (step == 1 && focus == 0) return 10;   // Year & Section
         if (step == 1 && focus == 1) return 13;  // Student ID
-        if (step == 2) return 25;                // Password
-        return 25;
+        if (step == 2) return 13;                // Password
+        return 20;
     }
 
     private void refreshList(String search) {
@@ -1145,11 +1144,9 @@ public class LogIn {
     private String getMaskedValue(String raw) {
         if (raw.isEmpty()) return "";
         StringBuilder masked = new StringBuilder();
-        // All characters except the last become dots
         for (int i = 0; i < raw.length() - 1; i++) {
             masked.append('•');
         }
-        // The last character shows as plaintext
         masked.append(raw.charAt(raw.length() - 1));
         return masked.toString();
     }

@@ -59,7 +59,6 @@ public class NPC_Manuel extends Entity {
 
             super.speak();
 
-            // only trigger after last line
             if (dialogueIndex == 0) {
                 dialogueStage = 1;
                 gp.questManager.quest2Stage = QuestManager.MANUEL_RUNNING;

@@ -35,13 +35,15 @@ public class NPC_Concha extends Entity{
 
     public void setDialogue(){
 
-        dialogues[0] = "Born: 1862, Died: 1865. We will miss you forever.";
+        dialogues[0] = "Concepcion 'Concha' Rizal. Born: 1862, Died: 1865.";
+        dialogues[1] = "Our eight sibling and my dearest sister. Died at the very young age of 3";
+        dialogues[2] = "The food is ready sis. I miss you everyday";
+        dialogues[3] = null;
     }
 
     @Override
     public void speak() {
-
-        gp.ui.currentSpeakerName = "Concepcion 'Concha' Rizal";
+        gp.ui.currentSpeakerName = "Jose 'Pepe' Rizal";
         super.speak();
         if (!visited) {
             visited = true;

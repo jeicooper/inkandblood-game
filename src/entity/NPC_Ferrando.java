@@ -48,7 +48,6 @@ public class NPC_Ferrando extends Entity {
         int q4stage = gp.questManager.quest4Stage;
         boolean q4active = gp.questManager.isQuestActive(QuestManager.QUEST4);
 
-        // QUEST 3 — initial shoo
         if (q3stage == QuestManager.TALK_FERRANDO) {
             dialogues[0] = "Stop right there!";
             dialogues[1] = "This is Ateneo Municipal de Manila.";
@@ -60,7 +59,6 @@ public class NPC_Ferrando extends Entity {
                 gp.questManager.onFerrandoShooed();
             }
 
-            // QUEST 3 — waiting after Burgos, before reward
         } else if (q3stage == QuestManager.TALK_BURGOS
                 || q3stage == QuestManager.CUTSCENE_DONE
                 || q3stage == QuestManager.TALK_PROFESSOR
@@ -70,7 +68,6 @@ public class NPC_Ferrando extends Entity {
             dialogues[1] = null;
             super.speak();
 
-            // QUEST 3 — player passed quiz, come back for reward
         } else if (q3stage == QuestManager.TALK_FERRANDO_REWARD) {
             dialogues[0] = "So... you passed. I must admit, I did not expect that.";
             dialogues[1] = "Perhaps I was wrong about you, young Rizal.";
@@ -81,13 +78,11 @@ public class NPC_Ferrando extends Entity {
                 gp.questManager.completeQuest3();
             }
 
-            // QUEST 3 done, QUEST 4 not yet started
         } else if (q3stage == QuestManager.QUEST3_DONE && !q4active) {
             dialogues[0] = "Study hard, Jose. You have a bright future ahead of you.";
             dialogues[1] = null;
             super.speak();
 
-            // QUEST 4 — dedication discipline
         } else if (q4active && q4stage == QuestManager.DISCIPLINES_ACTIVE
                 && !gp.questManager.disciplineAnswered[4]) {
             dialogues[0] = "I am judging you on Dedication. The quality that\nbrought you through these gates against all odds.";
@@ -97,7 +92,7 @@ public class NPC_Ferrando extends Entity {
             if (dialogueIndex == 0 && !dedicationAnswered) {
                 dedicationAnswered = true;
                 gp.ui.quizPanel.openSingleQuestion(
-                        "How many languages did Jose Rizal learn to speak\nin his lifetime?",
+                        "How many languages did you learn to speak\nin your lifetime?",
                         new String[]{
                                 "More than 20 languages.",
                                 "Exactly 5 languages.",
@@ -108,7 +103,6 @@ public class NPC_Ferrando extends Entity {
                 );
             }
 
-            // QUEST 4 — after dedication answered
         } else if (q4active && gp.questManager.disciplineAnswered[4]) {
             dialogues[0] = gp.questManager.disciplineMedalEarned[4]
                     ? "Dedication brought you this far. Never lose it."
