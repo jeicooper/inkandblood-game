@@ -369,6 +369,7 @@ public class CutsceneManager {
         statsFadeOut = 0f;
         statsDone = false;
         statsApplied = false;
+        gp.stopMusic();
         gp.gameState = gp.cutsceneState;
         // Persist completed flag so reloading this save re-shows the stats screen
         gp.saveManager.save();
@@ -570,6 +571,8 @@ public class CutsceneManager {
         gp.player.direction = "down";
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+        gp.stopMusic();
+        gp.playMusic(4);
         gp.aSetter.activateChapter3();
         gp.saveManager.save();
     }
@@ -791,11 +794,12 @@ public class CutsceneManager {
             if (ewTick >= 340) { ewPhase = 4; ewTick = 0; }
 
         } else if (ewPhase == 4) {
-            if (ewTick == 1 && !ewFired) {
-                ewFired = true;
-                gp.playSE(6);
-                showDialogue("FUEGO!", false, 100);
-            }
+                if (ewTick == 1 && !ewFired) {
+                    ewFired = true;
+                    showDialogue("FUEGO!", false, 100);
+                    gp.playSE(6);
+                    gp.playMusic(5);
+                }
             if (ewTick >= 80) { ewPhase = 5; ewTick = 0; }
 
         } else if (ewPhase == 5) {
@@ -1062,7 +1066,7 @@ public class CutsceneManager {
                 { "First Quiz Score", firstScore  == -1 ? "—" : firstScore + " / 10" },
                 { "Quiz Attempts", attempts + (attempts == 1 ? " try" : " tries") },
                 { "Medals Collected", medals + " / 5" },
-                { "NPCs Met", npcMet + " NPCs" },
+                { "NPCs Met", npcMet + "/32 NPCs" },
         };
 
         for (String[] row : rows) {

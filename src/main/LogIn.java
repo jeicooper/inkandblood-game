@@ -624,7 +624,8 @@ public class LogIn {
             // ---- Step 1: Academic details — 2×2 equal grid ----
             case 1: {
                 // Row 1: Year & Section | Student ID
-                drawField(g2, "Year & Section *",              ysField.toString(), false, signupFocus == 0, col1X, row1Y, cellW);
+                drawField(g2, "Year & Section * (X-XX)",              ysField.toString(), false, signupFocus == 0,
+                        col1X, row1Y, cellW);
                 drawField(g2, "Student ID *  (202X-100-XXXX)", idField.toString(), false, signupFocus == 1, col2X, row1Y, cellW);
 
                 // Live username preview sits below row 1 on the right column
