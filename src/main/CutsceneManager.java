@@ -967,7 +967,7 @@ public class CutsceneManager {
             }
             currentY += titleH;
 
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 26f));
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 28f));
             g2.setColor(Color.white);
             for (int i = 1; i < section.length; i++) {
 
@@ -977,10 +977,10 @@ public class CutsceneManager {
 
                     if (line.startsWith("\"") || line.startsWith("—")) {
 
-                        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+                        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 22f));
                         g2.setColor(new Color(200, 200, 200));
                     } else {
-                        g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 17f));
+                        g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 20f));
                         g2.setColor(Color.white);
                     }
                     int lw = g2.getFontMetrics().stringWidth(line);

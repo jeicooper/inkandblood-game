@@ -20,61 +20,67 @@ public class SaveManager {
 
         SaveData d = new SaveData();
 
-        // Player
-        d.worldX = gp.player.worldX;
-        d.worldY = gp.player.worldY;
-        d.speed = gp.player.speed;
-        d.direction = gp.player.direction;
-        d.exp = gp.player.exp;
-        d.maxExp = gp.player.maxExp;
-        d.intellect = gp.player.intellect;
+        d.exp        = gp.player.exp;
+        d.maxExp     = gp.player.maxExp;
+        d.intellect  = gp.player.intellect;
         d.creativity = gp.player.creativity;
         d.perception = gp.player.perception;
-        d.charisma = gp.player.charisma;
-        d.age = gp.player.age;
+        d.charisma   = gp.player.charisma;
+        d.age        = gp.player.age;
+        d.speed      = gp.player.speed;
+        d.direction  = "down";
+        d.worldX     = 0;
+        d.worldY     = 0;
 
         // Inventory
-        d.inventoryItemNames = gp.player.inventory.stream().map(e -> e.name).toArray(String[]::new);
+        d.inventoryItemNames = gp.player.inventory.stream()
+                .map(e -> e.name).toArray(String[]::new);
 
-        // Quest manager
+        // Quest progress
         QuestManager qm = gp.questManager;
         d.currentQuest = qm.currentQuest;
-        d.questState = qm.questState.clone();
+        d.questState   = qm.questState.clone();
 
-        d.quest1Stage = qm.quest1Stage;
+        d.quest1Stage   = qm.quest1Stage;
         d.siblingsFound = qm.siblingsFound;
         d.conchaVisited = qm.conchaVisited;
 
-        d.quest2Stage = qm.quest2Stage;
-        d.checkpointsHit = qm.checkpointsHit;
+        d.quest2Stage     = qm.quest2Stage;
+        d.checkpointsHit  = qm.checkpointsHit;
         d.courseCompleted = qm.courseCompleted;
 
-        d.quest3Stage = qm.quest3Stage;
+        d.quest3Stage    = qm.quest3Stage;
         d.ferrandoShooed = qm.ferrandoShooed;
 
-        d.quest4Stage = qm.quest4Stage;
-        d.medalsEarned = qm.medalsEarned;
-        d.disciplinesCompleted = qm.disciplinesCompleted;
+        d.quest4Stage           = qm.quest4Stage;
+        d.medalsEarned          = qm.medalsEarned;
+        d.disciplinesCompleted  = qm.disciplinesCompleted;
         d.disciplineMedalEarned = qm.disciplineMedalEarned.clone();
-        d.disciplineAnswered = qm.disciplineAnswered.clone();
+        d.disciplineAnswered    = qm.disciplineAnswered.clone();
 
-        d.quest5Stage = qm.quest5Stage;
+        d.quest5Stage      = qm.quest5Stage;
         d.objectsCollected = qm.objectsCollected;
-        d.manuscriptParts = qm.manuscriptParts.clone();
+        d.manuscriptParts  = qm.manuscriptParts.clone();
 
-        d.quest6Stage = qm.quest6Stage;
+        d.quest6Stage        = qm.quest6Stage;
         d.q6ObjectsCollected = qm.q6ObjectsCollected;
-        d.elFiliParts = qm.elFiliParts.clone();
+        d.elFiliParts        = qm.elFiliParts.clone();
 
         d.quest7Stage = qm.quest7Stage;
 
-        d.pendingChapter2Cutscene = qm.isPendingChapter2Cutscene();
-        d.pendingQuest4Cutscene = qm.isPendingQuest4Cutscene();
-        d.pendingChapter3Cutscene = qm.isPendingChapter3Cutscene();
-        d.pendingQuest6StartCutscene = qm.isPendingQuest6StartCutscene();
-        d.pendingQuest7IntroCutscene = qm.isPendingQuest7IntroCutscene();
-        d.pendingQuest7MidCutscene   = qm.isPendingQuest7MidCutscene();
-        d.pendingQuest7EndCutscene   = qm.isPendingQuest7EndCutscene();
+        d.pendingChapter2Cutscene    = false;
+        d.pendingQuest4Cutscene      = false;
+        d.pendingChapter3Cutscene    = false;
+        d.pendingQuest6StartCutscene = false;
+        d.pendingQuest7IntroCutscene = false;
+        d.pendingQuest7MidCutscene   = false;
+        d.pendingQuest7EndCutscene   = false;
+
+        // UI
+        d.questPageNum  = gp.ui.questPageNum;
+        d.spriteVersion = detectSpriteVersion();
+
+        d.gameCompleted = gp.cutsceneManager.isGameCompleted();
 
         // Statistics
         d.gameStartTime  = qm.gameStartTime;
@@ -83,17 +89,7 @@ public class SaveManager {
         d.bootsEndTime   = qm.bootsEndTime;
         d.firstQuizScore = qm.firstQuizScore;
         d.quizAttempts   = qm.quizAttempts;
-
-        // UI
-        d.questPageNum  = gp.ui.questPageNum;
-        d.spriteVersion = detectSpriteVersion();
-        d.gameCompleted = gp.cutsceneManager.isGameCompleted();
-
-        // Reset in-progress quest stages so loading always resumes at the quest START,
-        // not mid-way through. Quest boundary saves (completeQuestN) have already
-        // advanced currentQuest before calling save(), so the NEXT quest's stage is 0
-        // already — this only affects quests that are still STATE_ACTIVE mid-progress.
-        resetInProgressQuestState(d);
+        d.totalNPCMet    = gp.npcDatabase.getUnlockedCount();
 
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(userManager.getSaveFile()))) {
@@ -121,13 +117,7 @@ public class SaveManager {
             return false;
         }
 
-        // Stash saved player state — applied AFTER applyChapterState so spawn overrides don't win
-        int    savedWorldX   = d.worldX;
-        int    savedWorldY   = d.worldY;
-        int    savedSpeed    = d.speed;
-        String savedDir      = (d.direction != null) ? d.direction : "down";
-
-        // Non-positional stats are safe to set now
+        // ---- Player stats ----
         gp.player.exp        = d.exp;
         gp.player.maxExp     = d.maxExp;
         gp.player.intellect  = d.intellect;
@@ -135,54 +125,55 @@ public class SaveManager {
         gp.player.perception = d.perception;
         gp.player.charisma   = d.charisma;
         gp.player.age        = d.age;
+        gp.player.speed      = (d.speed > 0) ? d.speed : 10;
 
-        // Inventory
+        // ---- Inventory ----
         gp.player.inventory.clear();
         for (String name : d.inventoryItemNames) {
-
             Entity item = createItemByName(name);
             if (item != null) gp.player.inventory.add(item);
         }
 
-        // Quest
+        // ---- Quest state ----
         QuestManager qm = gp.questManager;
         qm.currentQuest = d.currentQuest;
-        qm.questState = d.questState.clone();
+        qm.questState   = d.questState.clone();
 
-        qm.quest1Stage = d.quest1Stage;
+        qm.quest1Stage   = d.quest1Stage;
         qm.siblingsFound = d.siblingsFound;
         qm.conchaVisited = d.conchaVisited;
 
-        qm.quest2Stage = d.quest2Stage;
-        qm.checkpointsHit = d.checkpointsHit;
+        qm.quest2Stage     = d.quest2Stage;
+        qm.checkpointsHit  = d.checkpointsHit;
         qm.courseCompleted = d.courseCompleted;
 
-        qm.quest3Stage = d.quest3Stage;
+        qm.quest3Stage    = d.quest3Stage;
         qm.ferrandoShooed = d.ferrandoShooed;
 
-        qm.quest4Stage = d.quest4Stage;
-        qm.medalsEarned = d.medalsEarned;
-        qm.disciplinesCompleted = d.disciplinesCompleted;
+        qm.quest4Stage           = d.quest4Stage;
+        qm.medalsEarned          = d.medalsEarned;
+        qm.disciplinesCompleted  = d.disciplinesCompleted;
         qm.disciplineMedalEarned = d.disciplineMedalEarned.clone();
-        qm.disciplineAnswered = d.disciplineAnswered.clone();
+        qm.disciplineAnswered    = d.disciplineAnswered.clone();
 
-        qm.quest5Stage = d.quest5Stage;
+        qm.quest5Stage      = d.quest5Stage;
         qm.objectsCollected = d.objectsCollected;
-        qm.manuscriptParts = d.manuscriptParts.clone();
+        qm.manuscriptParts  = d.manuscriptParts.clone();
 
-        qm.quest6Stage = d.quest6Stage;
+        qm.quest6Stage        = d.quest6Stage;
         qm.q6ObjectsCollected = d.q6ObjectsCollected;
-        qm.elFiliParts = d.elFiliParts.clone();
+        qm.elFiliParts        = d.elFiliParts.clone();
 
         qm.quest7Stage = d.quest7Stage;
 
-        qm.setPendingChapter2Cutscene(d.pendingChapter2Cutscene);
-        qm.setPendingQuest4Cutscene(d.pendingQuest4Cutscene);
-        qm.setPendingChapter3Cutscene(d.pendingChapter3Cutscene);
-        qm.setPendingQuest6StartCutscene(d.pendingQuest6StartCutscene);
-        qm.setPendingQuest7IntroCutscene(d.pendingQuest7IntroCutscene);
-        qm.setPendingQuest7MidCutscene(d.pendingQuest7MidCutscene);
-        qm.setPendingQuest7EndCutscene(d.pendingQuest7EndCutscene);
+        // Always clear all pending cutscene flags on load
+        qm.setPendingChapter2Cutscene(false);
+        qm.setPendingQuest4Cutscene(false);
+        qm.setPendingChapter3Cutscene(false);
+        qm.setPendingQuest6StartCutscene(false);
+        qm.setPendingQuest7IntroCutscene(false);
+        qm.setPendingQuest7MidCutscene(false);
+        qm.setPendingQuest7EndCutscene(false);
 
         // Statistics
         qm.gameStartTime  = d.gameStartTime;
@@ -195,35 +186,20 @@ public class SaveManager {
         // UI
         gp.ui.questPageNum = d.questPageNum;
 
-        // Apply world state in correct order.
-        // If fixQuestProgression advanced us into a DIFFERENT map, the saved
-        // position belongs to the old map and must be discarded — applyChapterState
-        // already set the correct spawn.  If we're staying on the same map, restore
-        // the exact saved position so the player lands where they left off.
-        int questBeforeFix = qm.currentQuest;
-        fixQuestProgression();
-        boolean mapChanged = getMapIndex(questBeforeFix) != getMapIndex(qm.currentQuest);
+        // ---- Game already completed: just show stats screen ----
+        if (d.gameCompleted) {
+            gp.cutsceneManager.setGameCompleted(true);
+            gp.cutsceneManager.restoreStatsScreen();
+            gp.npcDatabase.load();
+            return true;
+        }
 
+        fixQuestProgression(qm);
         applyChapterState(qm);
         removeCollectedObjects();
         removeCompletedNPCs();
 
-        if (!mapChanged) {
-            gp.player.worldX    = savedWorldX;
-            gp.player.worldY    = savedWorldY;
-            gp.player.speed     = savedSpeed;
-            gp.player.direction = savedDir;
-        }
-
         gp.npcDatabase.load();
-
-        // If the player had already finished the game, show the stats screen again
-        // (call the internal setup directly to avoid a redundant re-save)
-        if (d.gameCompleted) {
-            gp.cutsceneManager.setGameCompleted(true);
-            gp.cutsceneManager.restoreStatsScreen();
-        }
-
         return true;
     }
 
@@ -231,155 +207,78 @@ public class SaveManager {
         return userManager.isLoggedIn() && userManager.getSaveFile().exists();
     }
 
-
-    /**
-     * Wipes the stage-level fields of whichever quest is currently STATE_ACTIVE
-     * back to their initial values inside the SaveData object (not in QuestManager).
-     * This ensures that if a player saves mid-quest and reloads, they restart the
-     * quest from the beginning rather than at whatever mid-point they had reached.
-     *
-     * Quest-boundary saves (completeQuestN) already advance currentQuest BEFORE
-     * calling save(), so the incoming quest starts fresh by default — this method
-     * only needs to handle the case where the player exits during an active quest.
-     */
-    private void resetInProgressQuestState(SaveData d) {
-        // If game is completed there is nothing to reset.
-        if (d.gameCompleted) return;
-
-        int cq = d.currentQuest;
-
-        // Only reset if the current quest is still active (not completed).
-        if (cq < d.questState.length && d.questState[cq] != QuestManager.STATE_COMPLETED) {
-            switch (cq) {
-                case QuestManager.QUEST1:
-                    d.quest1Stage    = QuestManager.QUEST1_NOT_STARTED;
-                    d.siblingsFound  = 0;
-                    d.conchaVisited  = false;
-                    break;
-
-                case QuestManager.QUEST2:
-                    d.quest2Stage      = QuestManager.JOSE_INACTIVE;
-                    d.checkpointsHit   = 0;
-                    d.courseCompleted  = false;
-                    break;
-
-                case QuestManager.QUEST3:
-                    d.quest3Stage    = QuestManager.TALK_FERRANDO;
-                    d.ferrandoShooed = false;
-                    // Also clear the pending cutscene flags that belong to this quest
-                    d.pendingChapter2Cutscene = false;
-                    break;
-
-                case QuestManager.QUEST4:
-                    d.quest4Stage             = QuestManager.TALK_PROFESSOR_Q4;
-                    d.medalsEarned            = 0;
-                    d.disciplinesCompleted    = 0;
-                    d.disciplineMedalEarned   = new boolean[5];
-                    d.disciplineAnswered      = new boolean[5];
-                    d.pendingQuest4Cutscene   = false;
-                    break;
-
-                case QuestManager.QUEST5:
-                    d.quest5Stage      = QuestManager.TALK_PEDRO;
-                    d.objectsCollected = 0;
-                    d.manuscriptParts  = new boolean[7];
-                    d.pendingChapter3Cutscene = false;
-                    // Remove Noli draft from inventory if it was picked up mid-quest
-                    d.inventoryItemNames = removeFromInventory(d.inventoryItemNames, "Draft of Noli Me Tangere");
-                    break;
-
-                case QuestManager.QUEST6:
-                    d.quest6Stage        = QuestManager.TALK_PACIANO_Q6;
-                    d.q6ObjectsCollected = 0;
-                    d.elFiliParts        = new boolean[5];
-                    d.pendingQuest6StartCutscene = false;
-                    // Remove El Fili draft from inventory if it was picked up mid-quest
-                    d.inventoryItemNames = removeFromInventory(d.inventoryItemNames, "Draft of El Filibusterismo");
-                    break;
-
-                case QuestManager.QUEST7:
-                    d.quest7Stage = QuestManager.Q7_TALK_GUARDIA;
-                    d.pendingQuest7IntroCutscene = false;
-                    d.pendingQuest7MidCutscene   = false;
-                    d.pendingQuest7EndCutscene   = false;
-                    break;
-            }
-        }
-    }
-
-    /** Returns a copy of the name array with all occurrences of {@code name} removed. */
-    private String[] removeFromInventory(String[] items, String name) {
-        java.util.List<String> kept = new java.util.ArrayList<>();
-        for (String s : items) if (!s.equals(name)) kept.add(s);
-        return kept.toArray(new String[0]);
-    }
-
-    private int detectSpriteVersion() {
-        int q = gp.questManager.currentQuest;
-        if (q >= QuestManager.QUEST5) return 3;
-        if (q >= QuestManager.QUEST3) return 2;
-        return 1;
-    }
-
-
-    private void fixQuestProgression() {
-        QuestManager qm = gp.questManager;
+    private void fixQuestProgression(QuestManager qm) {
 
         if (qm.currentQuest == QuestManager.QUEST1
                 && qm.isQuestCompleted(QuestManager.QUEST1)) {
             qm.currentQuest = QuestManager.QUEST2;
             qm.questState[QuestManager.QUEST2] = QuestManager.STATE_ACTIVE;
             gp.ui.questPageNum = 0;
-        }
 
-        if (qm.currentQuest == QuestManager.QUEST2
+        } else if (qm.currentQuest == QuestManager.QUEST2
                 && qm.isQuestCompleted(QuestManager.QUEST2)) {
             qm.currentQuest = QuestManager.QUEST3;
             qm.questState[QuestManager.QUEST3] = QuestManager.STATE_ACTIVE;
-            if (qm.quest3Stage == QuestManager.TALK_FERRANDO) qm.ferrandoShooed = false;
+            qm.ferrandoShooed = false;
+            qm.quest3Stage = QuestManager.TALK_FERRANDO;
             gp.ui.questPageNum = 1;
-            qm.setPendingChapter2Cutscene(false);
-        }
 
-        if (qm.currentQuest == QuestManager.QUEST3
+        } else if (qm.currentQuest == QuestManager.QUEST3
                 && qm.isQuestCompleted(QuestManager.QUEST3)) {
             qm.currentQuest = QuestManager.QUEST4;
             qm.questState[QuestManager.QUEST4] = QuestManager.STATE_ACTIVE;
+            qm.quest4Stage = QuestManager.TALK_PROFESSOR_Q4;
             gp.ui.questPageNum = 1;
-            qm.setPendingQuest4Cutscene(false);
-        }
 
-        if (qm.currentQuest == QuestManager.QUEST4
+        } else if (qm.currentQuest == QuestManager.QUEST4
                 && qm.isQuestCompleted(QuestManager.QUEST4)) {
             qm.currentQuest = QuestManager.QUEST5;
             qm.questState[QuestManager.QUEST5] = QuestManager.STATE_ACTIVE;
+            qm.quest5Stage = QuestManager.TALK_PEDRO;
             gp.ui.questPageNum = 2;
-            qm.setPendingChapter3Cutscene(false);
-        }
 
-        if (qm.currentQuest == QuestManager.QUEST5
+        } else if (qm.currentQuest == QuestManager.QUEST5
                 && qm.isQuestCompleted(QuestManager.QUEST5)) {
             qm.currentQuest = QuestManager.QUEST6;
             qm.questState[QuestManager.QUEST6] = QuestManager.STATE_ACTIVE;
+            qm.quest6Stage = QuestManager.TALK_PACIANO_Q6;
             gp.ui.questPageNum = 2;
-            qm.setPendingQuest6StartCutscene(false);
+
+        } else if (qm.currentQuest == QuestManager.QUEST6
+                && qm.isQuestCompleted(QuestManager.QUEST6)) {
+            qm.currentQuest = QuestManager.QUEST7;
+            qm.questState[QuestManager.QUEST7] = QuestManager.STATE_ACTIVE;
+            qm.quest7Stage = QuestManager.Q7_TALK_GUARDIA;
+            gp.ui.questPageNum = 3;
         }
     }
 
     private void applyChapterState(QuestManager qm) {
-
-        if (gp.cutsceneManager.isGameCompleted()) return;
 
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
 
         int cq = qm.currentQuest;
 
+        // QUEST 7
+        if (cq == QuestManager.QUEST7) {
+            gp.tileM.loadMap("/maps/Chapter4.txt");
+            gp.player.loadSprite3("");
+            if (qm.quest7Stage >= QuestManager.Q7_TALK_JOSEPHINE) {
+                gp.aSetter.activateQuest7FortSantiago();
+                placePlayer(51, 36);
+            } else {
+                gp.aSetter.activateQuest7Intramuros();
+                placePlayer(60, 29);
+            }
+        }
+
         // QUEST 6
-        if (cq >= QuestManager.QUEST6) {
+        else if (cq == QuestManager.QUEST6) {
             gp.tileM.loadMap("/maps/Chapter3.txt");
             gp.player.loadSprite3("");
             gp.aSetter.activateQuest6();
+            placePlayer(23, 35);
         }
 
         // QUEST 5
@@ -387,6 +286,7 @@ public class SaveManager {
             gp.tileM.loadMap("/maps/Chapter3.txt");
             gp.player.loadSprite3("");
             gp.aSetter.activateChapter3();
+            placePlayer(23, 35);
         }
 
         // QUEST 4
@@ -394,6 +294,7 @@ public class SaveManager {
             gp.tileM.loadMap("/maps/Chapter2.txt");
             gp.player.loadSprite2("");
             gp.aSetter.activateQuest4();
+            placePlayer(46, 47);
         }
 
         // QUEST 3
@@ -402,58 +303,57 @@ public class SaveManager {
             gp.player.loadSprite2("");
             if (qm.quest3Stage >= QuestManager.TALK_PROFESSOR) {
                 gp.aSetter.activateEnrollment();
+                placePlayer(46, 47);
             } else {
                 gp.aSetter.activateChapter2();
+                placePlayer(59, 25);
             }
         }
 
         // QUEST 2
         else if (cq == QuestManager.QUEST2) {
             gp.tileM.loadMap("/maps/Chapter1.txt");
-
-            gp.npc[0] = new entity.NPC_Teodora(gp);
-            gp.npc[0].worldX = 64 * gp.tileSize;
-            gp.npc[0].worldY = 24 * gp.tileSize;
-
+            gp.npc[0]  = new entity.NPC_Teodora(gp);
+            gp.npc[0].worldX  = 64 * gp.tileSize;
+            gp.npc[0].worldY  = 24 * gp.tileSize;
             gp.npc[11] = new entity.NPC_Francisco(gp);
             gp.npc[11].worldX = 65 * gp.tileSize;
             gp.npc[11].worldY = 24 * gp.tileSize;
-
             gp.aSetter.activateQuest2();
-
             if (qm.quest2Stage >= QuestManager.MANUEL_DONE
                     && qm.quest2Stage < QuestManager.GREGORIO_DONE) {
                 gp.aSetter.activateGregorio();
             }
+            placePlayer(64, 18);
         }
 
         // QUEST 1
         else {
             gp.tileM.loadMap("/maps/Chapter1.txt");
             gp.aSetter.setNPC();
+            placePlayer(64, 18);
         }
+    }
+
+    private void placePlayer(int tileX, int tileY) {
+        gp.player.worldX    = tileX * gp.tileSize;
+        gp.player.worldY    = tileY * gp.tileSize;
+        gp.player.direction = "down";
     }
 
     private void removeCollectedObjects() {
         try {
             QuestManager qm = gp.questManager;
 
-            // QUEST 5
+            // Quest 5
             if (qm.currentQuest == QuestManager.QUEST5) {
-
                 if (qm.quest5Stage > QuestManager.FIND_LETTER) {
-                    for (int i = 0; i < gp.obj.length; i++) {
-                        if (gp.obj[i] == null) continue;
-                        if (gp.obj[i].name.equals("Draft of Noli Me Tangere"))
+                    for (int i = 0; i < gp.obj.length; i++)
+                        if (gp.obj[i] != null && gp.obj[i].name.equals("Draft of Noli Me Tangere"))
                             gp.obj[i] = null;
-                    }
                 }
-
                 if (qm.quest5Stage >= QuestManager.COLLECT_OBJECTS) {
-                    String[] names = {
-                            "Scalpel", "Mirror", "Dried Flower",
-                            "Rosary", "Portrait", "Scrap Metal", "Empty Plate"
-                    };
+                    String[] names = {"Scalpel","Mirror","Dried Flower","Rosary","Portrait","Scrap Metal","Empty Plate"};
                     for (int i = 0; i < gp.obj.length; i++) {
                         if (gp.obj[i] == null) continue;
                         for (int j = 0; j < names.length; j++) {
@@ -465,19 +365,15 @@ public class SaveManager {
                 }
             }
 
-            // QUEST 6
+            // Quest 6
             if (qm.currentQuest == QuestManager.QUEST6) {
-
                 if (qm.quest6Stage > QuestManager.FIND_DRAFT) {
-                    for (int i = 0; i < gp.obj.length; i++) {
-                        if (gp.obj[i] == null) continue;
-                        if (gp.obj[i].name.equals("Draft of El Filibusterismo"))
+                    for (int i = 0; i < gp.obj.length; i++)
+                        if (gp.obj[i] != null && gp.obj[i].name.equals("Draft of El Filibusterismo"))
                             gp.obj[i] = null;
-                    }
                 }
-
                 if (qm.quest6Stage >= QuestManager.COLLECT_OBJECTS_Q6) {
-                    String[] names = { "Glasses", "Newspaper", "Old Letter", "Worn Letter" };
+                    String[] names = {"Glasses","Newspaper","Old Letter","Worn Letter"};
                     for (int i = 0; i < gp.obj.length; i++) {
                         if (gp.obj[i] == null) continue;
                         for (int j = 0; j < names.length; j++) {
@@ -491,9 +387,8 @@ public class SaveManager {
                 }
             }
 
-            // QUEST 2
+            // Quest 2
             if (qm.currentQuest == QuestManager.QUEST2) {
-
                 if (qm.quest2Stage == QuestManager.JOSE_WAITING) {
                     int bktInv = qm.countItem("Paint Bucket");
                     int brInv  = qm.countItem("Paintbrush");
@@ -501,18 +396,13 @@ public class SaveManager {
                     int bktRm = 0, brRm = 0, cnRm = 0;
                     for (int i = 0; i < gp.obj.length; i++) {
                         if (gp.obj[i] == null) continue;
-                        if (gp.obj[i].name.equals("Paint Bucket") && bktRm < bktInv) {
-                            gp.obj[i] = null; bktRm++;
-                        } else if (gp.obj[i].name.equals("Paintbrush") && brRm < brInv) {
-                            gp.obj[i] = null; brRm++;
-                        } else if (gp.obj[i].name.equals("Canvas") && cnRm < cnInv) {
-                            gp.obj[i] = null; cnRm++;
-                        }
+                        if      (gp.obj[i].name.equals("Paint Bucket") && bktRm < bktInv) { gp.obj[i] = null; bktRm++; }
+                        else if (gp.obj[i].name.equals("Paintbrush")   && brRm  < brInv)  { gp.obj[i] = null; brRm++;  }
+                        else if (gp.obj[i].name.equals("Canvas")       && cnRm  < cnInv)  { gp.obj[i] = null; cnRm++;  }
                     }
                 }
-
                 if (qm.quest2Stage >= QuestManager.JOSE_DONE) {
-                    String[] art = { "Paint Bucket", "Paintbrush", "Canvas" };
+                    String[] art = {"Paint Bucket","Paintbrush","Canvas"};
                     for (int i = 0; i < gp.obj.length; i++) {
                         if (gp.obj[i] == null) continue;
                         for (String s : art) {
@@ -521,14 +411,11 @@ public class SaveManager {
                         }
                     }
                 }
-
                 if (qm.quest2Stage >= QuestManager.GREGORIO_DONE) {
-                    for (int i = 0; i < gp.obj.length; i++) {
-                        if (gp.obj[i] == null) continue;
-                        if (gp.obj[i].name.equals("Quill") ||
-                                gp.obj[i].name.equals("Notebook"))
+                    for (int i = 0; i < gp.obj.length; i++)
+                        if (gp.obj[i] != null &&
+                                (gp.obj[i].name.equals("Quill") || gp.obj[i].name.equals("Notebook")))
                             gp.obj[i] = null;
-                    }
                 } else if (qm.quest2Stage == QuestManager.GREGORIO_WAITING) {
                     boolean hasQuill    = qm.countItem("Quill")    >= 1;
                     boolean hasNotebook = qm.countItem("Notebook") >= 1;
@@ -541,76 +428,54 @@ public class SaveManager {
             }
 
         } catch (NullPointerException e) {
-            System.out.println("removeCollectedObjects: caught NPE — " + e.getMessage());
+            System.out.println("removeCollectedObjects NPE: " + e.getMessage());
         }
     }
 
     private void removeCompletedNPCs() {
         QuestManager qm = gp.questManager;
-
         if (qm.currentQuest == QuestManager.QUEST2) {
             int stage = qm.quest2Stage;
-            if (stage >= QuestManager.JOSE_DONE) gp.npc[12] = null;
-            if (stage >= QuestManager.MANUEL_DONE) gp.npc[13] = null;
+            if (stage >= QuestManager.JOSE_DONE)     gp.npc[12] = null;
+            if (stage >= QuestManager.MANUEL_DONE)   gp.npc[13] = null;
             if (stage >= QuestManager.GREGORIO_DONE) gp.npc[14] = null;
         }
     }
 
-    // ITEMS
+    private int detectSpriteVersion() {
+        int q = gp.questManager.currentQuest;
+        if (q >= QuestManager.QUEST5) return 3;
+        if (q >= QuestManager.QUEST3) return 2;
+        return 1;
+    }
+
     private Entity createItemByName(String name) {
         switch (name) {
-            case "Sa Aking Mga Kabata":
-                return new OBJ_Poem(gp);
-            case "Draft of Noli Me Tangere":
-                return new OBJ_Draft(gp);
-            case "Draft of El Filibusterismo":
-                return new OBJ_Draft2(gp);
-            case "Paint Bucket":
-                return new OBJ_PaintBucket(gp, "/objects/red_paint");
-            case "Paintbrush":
-                return new OBJ_PaintBrush(gp);
-            case "Canvas":
-                return new OBJ_Canvas(gp);
-            case "Quill":
-                return new OBJ_Quil(gp);
-            case "Notebook":
-                return new OBJ_Notebook(gp);
-            case "Boots":
-                return new OBJ_Boots(gp);
-            case "Sobresaliente Medal":
-                return new OBJ_SobreMedal(gp);
-            case "Scalpel":
-                return new OBJ_Scalpel(gp);
-            case "Mirror":
-                return new OBJ_Mirror(gp);
-            case "Dried Flower":
-                return new OBJ_DriedFlower(gp);
-            case "Rosary":
-                return new OBJ_Rosary(gp);
-            case "Portrait":
-                return new OBJ_Portrait(gp);
-            case "Scrap Metal":
-                return new OBJ_ScrapMetal(gp);
-            case "Empty Plate":
-                return new OBJ_EmptyPlate(gp);
-            case "Glasses":
-                return new OBJ_Glasses(gp);
-            case "Newspaper":
-                return new OBJ_Newspaper(gp);
-            case "Old Letter":
-                return new OBJ_OldLetter(gp);
-            case "Worn Letter":
-                return new OBJ_WornLetter(gp);
+            case "Sa Aking Mga Kabata":        return new OBJ_Poem(gp);
+            case "Draft of Noli Me Tangere":   return new OBJ_Draft(gp);
+            case "Draft of El Filibusterismo": return new OBJ_Draft2(gp);
+            case "Paint Bucket":               return new OBJ_PaintBucket(gp, "/objects/red_paint");
+            case "Paintbrush":                 return new OBJ_PaintBrush(gp);
+            case "Canvas":                     return new OBJ_Canvas(gp);
+            case "Quill":                      return new OBJ_Quil(gp);
+            case "Notebook":                   return new OBJ_Notebook(gp);
+            case "Boots":                      return new OBJ_Boots(gp);
+            case "Sobresaliente Medal":        return new OBJ_SobreMedal(gp);
+            case "Scalpel":                    return new OBJ_Scalpel(gp);
+            case "Mirror":                     return new OBJ_Mirror(gp);
+            case "Dried Flower":               return new OBJ_DriedFlower(gp);
+            case "Rosary":                     return new OBJ_Rosary(gp);
+            case "Portrait":                   return new OBJ_Portrait(gp);
+            case "Scrap Metal":                return new OBJ_ScrapMetal(gp);
+            case "Empty Plate":                return new OBJ_EmptyPlate(gp);
+            case "Glasses":                    return new OBJ_Glasses(gp);
+            case "Newspaper":                  return new OBJ_Newspaper(gp);
+            case "Old Letter":                 return new OBJ_OldLetter(gp);
+            case "Worn Letter":                return new OBJ_WornLetter(gp);
+            case "Mi Ultimo Adios":            return new OBJ_MiUltimoAdios(gp);
             default:
                 System.out.println("SaveManager: unknown item '" + name + "', skipping.");
                 return null;
         }
-    }
-
-    private int getMapIndex(int quest) {
-        if (quest <= QuestManager.QUEST2) return 0;
-        if (quest <= QuestManager.QUEST4) return 1;
-        if (quest <= QuestManager.QUEST6) return 2;
-        return 3;
     }
 }

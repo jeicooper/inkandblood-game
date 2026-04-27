@@ -163,6 +163,7 @@ public class QuestManager {
     public QuestManager(GamePanel gp) {
         this.gp = gp;
         questState[QUEST1] = STATE_ACTIVE;
+        gameStartTime = System.currentTimeMillis();
     }
 
     //CHECKPOINTS
@@ -576,7 +577,6 @@ public class QuestManager {
         if (quest5Stage == FIND_LETTER) {
             quest5Stage = COLLECT_OBJECTS;
             gp.ui.showMessage("Find objects around the room to write your manuscript.");
-            // No mid-quest save — quest boundary save happens at completeQuest5()
         }
     }
 
@@ -587,7 +587,6 @@ public class QuestManager {
         if (objectsCollected >= OBJECTS_REQUIRED) {
             quest5Stage = TALK_MAXIMO;
             gp.ui.showMessage("Manuscript complete!");
-            // No mid-quest save — quest boundary save happens at completeQuest5()
         }
     }
 
@@ -618,6 +617,7 @@ public class QuestManager {
         elFiliParts = new boolean[5];
         gp.ui.questPageNum = 2;
         gp.aSetter.activateQuest6();
+        gp.saveManager.save();
     }
 
     public void onPacianoQ6Talked() {
@@ -631,19 +631,16 @@ public class QuestManager {
         if (quest6Stage == FIND_DRAFT) {
             quest6Stage = COLLECT_OBJECTS_Q6;
             gp.ui.showMessage("Find objects around the room to write your manuscript.");
-            // No mid-quest save — quest boundary save happens at completeQuest6()
         }
     }
 
-    public void onq6ObjectsCollected (int index){
+    public void onq6ObjectsCollected(int index) {
         if (elFiliParts[index]) return;
         elFiliParts[index] = true;
         q6ObjectsCollected++;
-
-        if (q6ObjectsCollected >= Q6_OBJECTS_REQUIRED){
+        if (q6ObjectsCollected >= Q6_OBJECTS_REQUIRED) {
             quest6Stage = RETURN_PACIANO;
             gp.ui.showMessage("Manuscript Complete!");
-            // No mid-quest save — quest boundary save happens at completeQuest6()
         }
     }
     public void giveElFiliBook() {
@@ -685,6 +682,7 @@ public class QuestManager {
         quest7Stage = Q7_TALK_GUARDIA;
         gp.ui.questPageNum = 3;
         gp.aSetter.activateQuest7Intramuros();
+        gp.saveManager.save();
     }
 
     public void onGuardiaDone() {
@@ -695,8 +693,7 @@ public class QuestManager {
     public void onJudgeDone() {
         if (quest7Stage != Q7_TALK_JUDGE) return;
         pendingQuest7MidCutscene = true;
-        cutsceneDelay6 = 90;
-        // No mid-quest save — quest boundary save happens at giveUltimoAdios()
+        cutsceneDelay6 = 60;
     }
 
     public void onFortSantiagoCutsceneDone() {

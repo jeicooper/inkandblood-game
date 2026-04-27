@@ -100,8 +100,10 @@ public class KeyHandler implements KeyListener {
                     if (gp.saveManager.hasSave()) {
                         gp.resetForLoad();
                         if (gp.saveManager.load()) {
-                            gp.gameState = gp.playState;
-                            gp.playMusic(0);
+                            if (!gp.cutsceneManager.isGameCompleted()) {
+                                gp.gameState = gp.playState;
+                                gp.playMusic(0);
+                            }
                         }
                     } else {
                         gp.ui.titleScreenState = 4;
