@@ -259,7 +259,7 @@ public class CutsceneManager {
     public boolean isGameCompleted() {
         return gameCompleted;
     }
- 
+
     public void setGameCompleted(boolean value) {
         gameCompleted = value;
     }
@@ -595,6 +595,7 @@ public class CutsceneManager {
     }
 
     public void startExecutionWalk() {
+        gp.tileM.loadMap(CHAPTER4_MAP);
         activeScene    = Scene.EXECUTION_WALK;
         ewPhase        = 0;
         ewTick         = 0;
@@ -792,8 +793,8 @@ public class CutsceneManager {
         } else if (ewPhase == 4) {
             if (ewTick == 1 && !ewFired) {
                 ewFired = true;
-                showDialogue("FUEGO!", false, 100);
                 gp.playSE(6);
+                showDialogue("FUEGO!", false, 100);
             }
             if (ewTick >= 80) { ewPhase = 5; ewTick = 0; }
 

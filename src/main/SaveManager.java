@@ -196,21 +196,19 @@ public class SaveManager {
         gp.ui.questPageNum = d.questPageNum;
 
         // Apply world state in correct order.
-        // Track the quest number BEFORE fixQuestProgression so we can tell if
-        // the chapter changed — if it did, the saved position belongs to the OLD
-        // chapter and must NOT be restored (applyChapterState already set the
-        // correct spawn for the new chapter).
+        // If fixQuestProgression advanced us into a DIFFERENT map, the saved
+        // position belongs to the old map and must be discarded — applyChapterState
+        // already set the correct spawn.  If we're staying on the same map, restore
+        // the exact saved position so the player lands where they left off.
         int questBeforeFix = qm.currentQuest;
         fixQuestProgression();
-        boolean chapterAdvanced = (qm.currentQuest != questBeforeFix);
+        boolean mapChanged = getMapIndex(questBeforeFix) != getMapIndex(qm.currentQuest);
 
-        applyChapterState(qm);   // loads map + sprites + NPCs — sets spawn pos for the chapter
+        applyChapterState(qm);
         removeCollectedObjects();
         removeCompletedNPCs();
 
-        // Only restore the saved position when we are staying in the same chapter.
-        // If the chapter advanced, applyChapterState's spawn is the right position.
-        if (!chapterAdvanced) {
+        if (!mapChanged) {
             gp.player.worldX    = savedWorldX;
             gp.player.worldY    = savedWorldY;
             gp.player.speed     = savedSpeed;
@@ -607,5 +605,12 @@ public class SaveManager {
                 System.out.println("SaveManager: unknown item '" + name + "', skipping.");
                 return null;
         }
+    }
+
+    private int getMapIndex(int quest) {
+        if (quest <= QuestManager.QUEST2) return 0;
+        if (quest <= QuestManager.QUEST4) return 1;
+        if (quest <= QuestManager.QUEST6) return 2;
+        return 3;
     }
 }
