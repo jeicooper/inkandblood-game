@@ -247,7 +247,7 @@ public class LogIn {
         if (!Character.isDigit(c)) return;
         String raw = idField.toString().replaceAll("[^0-9]", "");
 
-        if (raw.length() >= 11) return;
+        if (raw.length() >= 12) return;
 
         String next = raw + c;
 
@@ -1139,7 +1139,7 @@ public class LogIn {
         if (step == 0 && focus == 2) return 2;   // M.I
         if (step == 0 && focus == 3) return 3;   // Suffix
         if (step == 1 && focus == 0) return 3;   // Year & Section
-        if (step == 1 && focus == 1) return 12;  // Student ID
+        if (step == 1 && focus == 1) return 13;  // Student ID (2022-100-1234 = 13 chars)
         if (step == 2) return 13;                // Password
         return 20;
     }

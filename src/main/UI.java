@@ -1437,7 +1437,7 @@ public class UI {
                 boolean q3s5done   = q3done || q3stage >= QuestManager.TALK_FERRANDO_REWARD;
                 g2.setColor(q3s5done   ? new Color(80, 220, 80)
                         : q3s5active ? Color.white : Color.gray);
-                g2.drawString("- Pass the quiz (5/5)", LEFT_X, ly);
+                g2.drawString("- Pass the quiz (10/10)", LEFT_X, ly);
                 ly += LINE_H;
 
                 if (q3stage == QuestManager.QUIZ_FAILED) {
