@@ -33,37 +33,61 @@ public class QuizPanel {
     };
 
     private static final String[][] POOL_CHOICES = {
+            //1
             { "Science is difficult.",
               "Knowledge is power.",
               "Time is Fleeting"
             },
 
+            //2
             { "José Protacio Rizal Mercado y Alonso Realonda",
                     "José Protacio Rizal y Alonzo Mercado Realonda",
                     "José Protacio Rizal Alonso y Mercado Realonda"
             },
 
-            { "Passing", "Excellent", "Failure" },
+            //3
+            { "Passing",
+                    "Excellent",
+                    "Failure" },
 
-            { "Botany", "Rhetoric", "Agriculture"},
+            //4
+            { "Botany",
+                    "Rhetoric",
+                    "Agriculture"},
 
+            //5
             { "Professor",
               "Headmaster",
               "Registrar"},
 
-            { "Carthaginians", "Romans", "Tribunes" },
+            //6
+            { "Carthaginians",
+                    "Tribunes",
+                    "Romans", },
 
-            { "Centurion", "Standard-bearer", "Emperor" },
+            //7
+            { "Centurion",
+                    "Standard-bearer",
+                    "Emperor" },
 
-            { "Standard-bearer", "Emperor", "Decurion" },
+            //8
+            { "Standard-bearer",
+                    "Emperor",
+                    "Decurion" },
 
-            {"Roman Empire", "Byzantine Empire", "Carthaginian Empire"},
+            //9
+            {"Roman Empire",
+                    "Byzantine Empire",
+                    "Carthaginian Empire"},
 
-            {"Losing a physical match", "Arriving late to class", "Failing to answer questions during a challenge"}
+            //10
+            {"Losing a physical match",
+                    "Arriving late to class",
+                    "Failing to answer questions during a challenge"}
 
     };
 
-    private static final int[] POOL_CORRECT = { 1, 0, 1, 1, 2, 1, 2, 0, 2, 2 };
+    private static final int[] POOL_CORRECT = { 1, 0, 1, 1, 2, 0, 2, 0, 2, 2 };
 
     private static final int QUIZ_SIZE = 10;
 

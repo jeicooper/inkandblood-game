@@ -19,7 +19,7 @@ public class CutsceneManager {
                     "quiet, observant, and curious."},
             {"Raised with discipline and faith by Francisco and Teodora.. ",
                     "he was baptized three days later"},
-            {"and he was endearly called 'Pepe'."}
+            {"and he was endearingly called 'Pepe'."}
     };
 
     // TRANSITION TO CHAP 2
@@ -121,28 +121,34 @@ public class CutsceneManager {
                     "Writing subversive novels to incite hatred against",
                     "the Motherland. I was thrown to Dapitan as a punishment",
                     "but also to have a chance to live at the parish convent"},
-            {"Four years in Dapitan. Despite my successes, I am not happy",
-                    "Loneliness haunts the quiet after work. "},
-            {"I miss Europe, Calamba, and my family."},
-            {"The death of Leonor Rivera left a void in my soul"},
-            {"until Josephine Bracken arrived"},
-            {"Dr.Blumentritt suggested an offer to trade my services",
-                    "as military doctor in Cuba exchange for ending my exiles,",
-                    "and after months..."},
-            {"I finally received a letter from Governor-General",
-                    "Ramon Blanco, informing him that his offer had been accepted"},
-            {"While boarding the ship Isla de Panay en route to Barcelona,",
-                    "was advised by fellow passengers Don Pedro Roxas and his son to",
-                    "stay in Singapore and seek British protection, fearing",
-                    " for his safety..."},
-            {"however, trusting the promise of Governor Blanco",
-                    "who gave his 'word of honor'. had a secretly plotted against me..."},
-            {"He sees me as a threat to Spanish rule due to",
-                    "my influence on the Philippine Revolution"},
-            {"Governor conspired to have him arrested. By the time",
-                    "the ship cleared Port Said, the whispers of the passengers",
-                    "confirmed my fears: The Governor's promise was the ink,"},
-            {"but my arrest was the final period."}
+
+            { "Four years in Dapitan. Despite my successes, the 22 language",
+                "I learned, I am not happy."},
+
+            {"Loneliness haunts the quiet after work.",
+                    "The death of Leonor Rivera left a void in my soul until",
+                            "Josephine Bracken arrived" },
+
+            {"Dr. Blumentritt suggested an offer to trade my services",
+                    "military doctor in Cuba in exchange for ending my exiles,",
+                    "and after months..."
+            },
+
+            {"I received Governor-General Ramon Blanco’s letter accepting",
+                    " my offer. While boarding the Isla de Panay,",
+                    "Don Pedro Roxas and his son urged me to stay in Singapore",
+                    "for British protection.",
+            },
+            {
+                "Trusting Blanco’s 'word of honor,' I refused."
+            },
+
+            {"He sees me as a threat to Spanish rule due to my influence",
+                    "on the Philippine Revolution"
+            },
+            {"By Port Said, the whispers were confirmed: the Governor’s promise",
+                    "was merely the ink, but my arrest was the final period."
+            }
     };
 
     // FORT SANTIAGO
