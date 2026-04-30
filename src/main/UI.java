@@ -668,9 +668,16 @@ public class UI {
         final int frameHeight = gp.tileSize*10;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
+        // LABEL
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(255, 220, 80));
+        String invLabel = "CHARACTER STATS";
+        int labelX = frameX + (frameWidth - g2.getFontMetrics().stringWidth(invLabel)) / 2;
+        g2.drawString(invLabel, labelX, frameY - 6);
+
         //TEXT
         g2.setColor(Color.white);
-        g2.setFont(g2.getFont().deriveFont(32F));
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 32F));
 
         int textX = frameX + 20;
         int textY = frameY + gp.tileSize;
@@ -747,6 +754,7 @@ public class UI {
         g2.drawString(value, textX,textY);
         textY += lineHeight;
     }
+
     public void drawInventory(){
 
         //FRAME
@@ -755,6 +763,13 @@ public class UI {
         int frameWidth = gp.tileSize * 6;
         int frameHeight = gp.tileSize * 5;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        // LABEL
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(255, 220, 80));
+        String invLabel = "INVENTORY";
+        int labelX = frameX + (frameWidth - g2.getFontMetrics().stringWidth(invLabel)) / 2;
+        g2.drawString(invLabel, labelX, frameY - 6);
 
         //SLOTS
         int totalGridWidth = gp.tileSize * 5;
@@ -765,15 +780,29 @@ public class UI {
         int slotX = slotXstart;
         int slotY = slotYstart;
 
+        // DRAW EMPTY SLOT OUTLINES (all 20 slots)
+        g2.setStroke(new BasicStroke(1.5f));
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 5; col++) {
+                int sx = slotXstart + col * gp.tileSize;
+                int sy = slotYstart + row * gp.tileSize;
+                g2.setColor(new Color(255, 255, 255, 40));
+                g2.fillRoundRect(sx, sy, gp.tileSize, gp.tileSize, 6, 6);
+                g2.setColor(new Color(255, 255, 255, 80));
+                g2.drawRoundRect(sx, sy, gp.tileSize, gp.tileSize, 6, 6);
+            }
+        }
 
         // DRAW PLAYER ITEM
+        slotX = slotXstart;
+        slotY = slotYstart;
         for (int i = 0; i < gp.player.inventory.size(); i++) {
 
             g2.drawImage(gp.player.inventory.get(i).image, slotX, slotY, gp.tileSize, gp.tileSize, null);
 
             slotX += gp.tileSize;
 
-            if (i == 4 || i  == 9 || i ==14 ){
+            if (i == 4 || i == 9 || i == 14){
                 slotX = slotXstart;
                 slotY += gp.tileSize;
             }
@@ -787,13 +816,13 @@ public class UI {
 
         g2.setColor(Color.white);
         g2.setStroke(new BasicStroke(3));
-        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10 );
+        g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
 
         //DESC FRAME
         int dFrameX = frameX;
         int dFrameY = frameY + frameHeight;
         int dFrameWidth = frameWidth;
-        int dFrameHeight =  gp.tileSize*4;
+        int dFrameHeight = gp.tileSize * 4;
 
         int textX = dFrameX + 20;
         int textY = dFrameY + gp.tileSize;
@@ -805,7 +834,7 @@ public class UI {
 
             if (itemIndex < gp.player.inventory.size()){
 
-                drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
+                drawSubWindow(dFrameX, dFrameY, dFrameWidth, dFrameHeight);
 
                 Entity selectedItem = gp.player.inventory.get(itemIndex);
                 for (String line : selectedItem.description.split("\n")) {
@@ -813,12 +842,9 @@ public class UI {
                     textY += 32;
                 }
             }
-
-
-
         }
-
     }
+
     public void drawNewGameConfirm() {
         // dim background
         g2.setColor(new Color(0, 0, 0, 180));
