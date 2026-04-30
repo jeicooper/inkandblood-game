@@ -48,10 +48,6 @@ public class LogIn {
     private final StringBuilder passwordField = new StringBuilder();
     private boolean focusOnPassword = false;
 
-    // Sign Up Form
-    // personal info (FN, LN, MI, Suffix)
-    // academic info (Year & Section, Student ID)
-    // password (Password, Confirm Password)
 
     private int signupStep    = 0;
     private int signupFocus   = 0;
@@ -232,23 +228,41 @@ public class LogIn {
 
     private void appendYearSectionChar(char c) {
         if (!Character.isDigit(c)) return;
-        String raw = ysField.toString().replaceAll("-", "");
-        if (raw.length() >= 3) return;
-        raw += c;
-        StringBuilder formatted = new StringBuilder();
-        for (int i = 0; i < raw.length(); i++) {
-            formatted.append(raw.charAt(i));
-            if (i == 0 && raw.length() > 1) formatted.append('-');
+        String raw = ysField.toString().replace("-", "");
+
+        if (raw.isEmpty()) {
+            int year = c - '0';
+            if (year < 1 || year > 4) return;
+            ysField.setLength(0);
+            ysField.append(c);
+        } else if (raw.length() == 1) {
+            int section = c - '0';
+            if (section < 1 || section > 9) return;
+            ysField.setLength(0);
+            ysField.append(raw.charAt(0)).append('-').append(c);
         }
-        ysField.setLength(0);
-        ysField.append(formatted);
     }
 
     private void appendStudentIdChar(char c) {
         if (!Character.isDigit(c)) return;
         String raw = idField.toString().replaceAll("[^0-9]", "");
+
         if (raw.length() >= 11) return;
-        raw += c;
+
+        String next = raw + c;
+
+        // Validate year prefix live (positions 0–3)
+        if (next.length() <= 4) {
+            if (next.length() >= 1 && next.charAt(0) != '2') return;
+            if (next.length() >= 2 && next.charAt(1) != '0') return;
+            if (next.length() == 4) {
+                int year = Integer.parseInt(next.substring(0, 4));
+                if (year < 2005 || year > 2035) return;
+            }
+        }
+
+        raw = next;
+
         StringBuilder formatted = new StringBuilder();
         for (int i = 0; i < raw.length(); i++) {
             if (i == 4 || i == 7) formatted.append('-');
@@ -274,13 +288,18 @@ public class LogIn {
     }
 
     private void validateStep1() {
-        if (ysField.toString().trim().isEmpty()) { errorMessage = "Year & Section is required."; return; }
-        if (!ysField.toString().trim().matches("\\d-\\d{2}")) { errorMessage = "Year & Section must be in X-XX format."; return; }
-        if (!UserManager.isValidStudentId(idField.toString())) {
-            errorMessage = "Invalid ID format. Use: 202X-100-XXXX";
+        String ys = ysField.toString().trim();
+        if (ys.isEmpty()) { errorMessage = "Year & Section is required."; return; }
+        if (!ys.matches("[1-4]-[1-9]")) {
+            errorMessage = "Year must be 1–4 and Section must be 1–9.";
             return;
         }
-        String username = UserManager.usernameFromStudentId(idField.toString());
+        String id = idField.toString().trim();
+        if (!id.matches("20(0[5-9]|[12]\\d|3[0-5])-100-\\d{3,4}")) {
+            errorMessage = "Invalid ID. Use: 20XX-100-XXX(X)";
+            return;
+        }
+        String username = UserManager.usernameFromStudentId(id);
         if (userManager.userExists(username)) {
             errorMessage = "That student ID is already registered.";
             return;
@@ -624,14 +643,14 @@ public class LogIn {
             // ---- Step 1: Academic details — 2×2 equal grid ----
             case 1: {
                 // Row 1: Year & Section | Student ID
-                drawField(g2, "Year & Section * (X-XX)",              ysField.toString(), false, signupFocus == 0,
+                drawField(g2, "Year & Section * (X-X)",              ysField.toString(), false, signupFocus == 0,
                         col1X, row1Y, cellW);
-                drawField(g2, "Student ID *  (202X-100-XXXX)", idField.toString(), false, signupFocus == 1, col2X, row1Y, cellW);
+                drawField(g2, "Student ID *  (20XX-100-XXX(X))", idField.toString(), false, signupFocus == 1, col2X, row1Y, cellW);
 
                 // Live username preview sits below row 1 on the right column
                 String rawId = idField.toString().trim();
                 int previewY = row1Y + rowH + 10;
-                if (UserManager.isValidStudentId(rawId)) {
+                if (rawId.matches("20(0[5-9]|[12]\\d|3[0-5])-100-\\d{3,4}")) {
                     String derived = UserManager.usernameFromStudentId(rawId);
                     g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
                     g2.setColor(OK_GREEN);
@@ -1119,8 +1138,8 @@ public class LogIn {
         if (step == 0 && focus == 1) return 20;  // Last Name
         if (step == 0 && focus == 2) return 2;   // M.I
         if (step == 0 && focus == 3) return 3;   // Suffix
-        if (step == 1 && focus == 0) return 10;   // Year & Section
-        if (step == 1 && focus == 1) return 13;  // Student ID
+        if (step == 1 && focus == 0) return 3;   // Year & Section
+        if (step == 1 && focus == 1) return 12;  // Student ID
         if (step == 2) return 13;                // Password
         return 20;
     }

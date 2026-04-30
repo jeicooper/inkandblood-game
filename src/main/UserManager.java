@@ -32,7 +32,14 @@ public class UserManager {
     }
 
     public static boolean isValidStudentId(String id) {
-        return id != null && id.trim().matches("20\\d{2}-100-\\d{4}");
+        return id != null && id.trim().matches("20(0[5-9]|[12]\\d|3[0-5])-100-\\d{3,4}");
+    }
+
+    public static boolean isValidYearSection(String ys) {
+        if (ys == null) return false;
+        String s = ys.trim();
+        return s.matches("[1-4][-\\s]?[1-9]")
+                || s.matches("[1-4][-\\s]?[A-Za-z]");
     }
 
     public String createAccount(String firstName, String lastName, String middleInitial,
