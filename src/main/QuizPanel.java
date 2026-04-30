@@ -12,13 +12,13 @@ public class QuizPanel {
     private static final String[] POOL_QUESTIONS = {
             "In your Latin studies, we look for precision. What is the correct translation of the phrase `Scientia potentia est`?",
 
-            "What do we call a logical argument that applies deductive reasoning to arrive at a conclusion based on two or more propositions?",
+            "What is your full name?",
 
             "In our Latin studies, what is the correct translation and significance of the phrase `Sobresaliente` which we all strive for in our grades?",
 
             "You study the `Bachelor of Arts.` In the classical sense, which of these is a core subject of the Trivium we study here?",
 
-            "If you were to graduate from this school with your degree, what would your title be in Latin?",
+            "What is the position of our Fr. Magin Ferrando in Ateneo Municipal De Manila?",
 
 
             "Which specific group is associated with the Roman Empire and identified as 'interns' or boarders within the school?",
@@ -38,15 +38,18 @@ public class QuizPanel {
               "Time is Fleeting"
             },
 
-            { "Soliloquy", "Syllogism", "Paradox"},
+            { "José Protacio Rizal Mercado y Alonso Realonda",
+                    "José Protacio Rizal y Alonzo Mercado Realonda",
+                    "José Protacio Rizal Alonso y Mercado Realonda"
+            },
 
             { "Passing", "Excellent", "Failure" },
 
             { "Botany", "Rhetoric", "Agriculture"},
 
-            { "Magister Philosophiae",
-              "Bachiller en Artes",
-              "Perito Agrimensor"},
+            { "Professor",
+              "Headmaster",
+              "Registrar"},
 
             { "Carthaginians", "Romans", "Tribunes" },
 
@@ -60,7 +63,7 @@ public class QuizPanel {
 
     };
 
-    private static final int[] POOL_CORRECT = { 1, 1, 1, 1, 1, 1, 2, 0, 2, 2 };
+    private static final int[] POOL_CORRECT = { 1, 0, 1, 1, 2, 1, 2, 0, 2, 2 };
 
     private static final int QUIZ_SIZE = 10;
 

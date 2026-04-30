@@ -410,13 +410,15 @@ public class GamePanel extends JPanel implements Runnable {
         if (questManager.isQuestActive(QuestManager.QUEST1)) {
             if (questManager.quest1Stage == QuestManager.QUEST1_NOT_STARTED) {
                 if (npc[0] != null) targets.add(npc[0]);
-            } else {
+            } else if (questManager.quest1Stage == QuestManager.QUEST1_STARTED) {
                 for (int i = 0; i < npc.length; i++) {
                     if (npc[i] instanceof entity.NPC_Sibling) {
                         entity.NPC_Sibling s = (entity.NPC_Sibling) npc[i];
                         if (!s.isFollowing) targets.add(s);
                     }
                 }
+            } else if (questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
+                if (npc[0] != null) targets.add(npc[0]);
             }
         }
 

@@ -61,7 +61,7 @@ public class NPC_Interno extends Entity {
 
         if (dialogueStage == 0) {
             dialogues[0] = "Hey! You must be Jose. I'm your new classmate.";
-            dialogues[1] = "Professor asked me to give you a small quiz to see how much\nyou already know.";
+            dialogues[1] = "Professor asked me to give you **a small quiz** to see how much\nyou already know.";
             dialogues[2] = "You need to get all 10 questions right. Ready? Let's go!";
             dialogues[3] = null;
 

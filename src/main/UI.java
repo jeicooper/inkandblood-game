@@ -644,13 +644,19 @@ public class UI {
             g2.drawString(currentSpeakerName, nameX, nameY);
         }
 
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD,25F));
-        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 25F));
         x += gp.tileSize;
         y += gp.tileSize;
 
-        for (String line : currentDialogue.split("\n")){
-            g2.drawString(line, x, y);
+        for (String line : currentDialogue.split("\n")) {
+            String[] segments = line.split("\\*\\*");
+            int drawX = x;
+            for (int s = 0; s < segments.length; s++) {
+                boolean isHighlight = (s % 2 == 1);
+                g2.setColor(isHighlight ? new Color(255, 220, 80) : Color.white);
+                g2.drawString(segments[s], drawX, y);
+                drawX += g2.getFontMetrics().stringWidth(segments[s]);
+            }
             y += 40;
         }
 

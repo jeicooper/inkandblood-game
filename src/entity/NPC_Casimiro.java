@@ -48,7 +48,7 @@ public class NPC_Casimiro extends Entity {
             super.speak();
 
         } else if (dialogueStage == 1) {
-            dialogues[0] = "I am Brother Casimiro, judge of Painting.";
+            dialogues[0] = "I am Brother Casimiro, **judge of Painting**.";
             dialogues[1] = "Art is not merely skill — it is the expression of the soul.";
             dialogues[2] = "Answer my question correctly and the medal is yours. There\nis no retry.";
             dialogues[3] = "What technique did you use to create small figures as a child?";

@@ -43,7 +43,7 @@ public class NPC_Teodora extends Entity{
 
         if (!spoke) {
             dialogues[0] = "Pepe! Thank goodness you are here.";
-            dialogues[1] = "Your siblings are scattered all around the house.";
+            dialogues[1] = "Your **siblings** are scattered all around the house.";
             dialogues[2] = "Please find them and bring them all back for dinner.";
             dialogues[3] = "Now go, Pepe!";
             dialogues[4] = null;
@@ -65,7 +65,7 @@ public class NPC_Teodora extends Entity{
         } else if (gp.questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
             dialogues[0] = "Pepe, my son... you have proven your diligence in such a young age.";
             dialogues[1] = "Treasure it and stay humble as you live.";
-            dialogues[2] = " Go find your tiyo’s tomorrow.";
+            dialogues[2] = " Go find your **tiyo’s** tomorrow.";
             dialogues[3] = null;
 
             super.speak();

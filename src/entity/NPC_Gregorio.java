@@ -47,7 +47,7 @@ public class NPC_Gregorio extends Entity {
         gp.ui.currentSpeakerName = "Uncle Gregorio";
 
         if (gp.questManager.quest2Stage < QuestManager.MANUEL_DONE) {
-            dialogues[0] = "Hello Pepe. Go see your Uncle Manuel first.";
+            dialogues[0] = "Hello Pepe. Go see your **Uncle Manuel** first.";
             dialogues[1] = null;
             dialogueIndex = 0;
             super.speak();
@@ -57,7 +57,7 @@ public class NPC_Gregorio extends Entity {
         if (dialogueStage == 0) {
             dialogues[0] = "Pepe! I have been expecting you.";
             dialogues[1] = "It is time to learn the power of words and writing.";
-            dialogues[2] = "Go to my house and find my quill and notebook.";
+            dialogues[2] = "Go to my house and **find my quill and notebook**.";
             dialogues[3] = "Bring them back to me when you have found them.";
             dialogues[4] = null;
 
@@ -79,7 +79,7 @@ public class NPC_Gregorio extends Entity {
                 if (dialogueIndex == 0) {
                     dialogueStage = 2;
                     gp.questManager.removeWritingSupplies();
-                    gp.ui.showPoemPanel = true; // trigger poem panel
+                    gp.ui.showPoemPanel = true;
                 }
             } else {
                 int quill    = gp.questManager.countItem("Quill");

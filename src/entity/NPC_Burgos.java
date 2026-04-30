@@ -46,8 +46,8 @@ public class NPC_Burgos extends Entity {
 
         if (dialogueStage == 0 && !gp.questManager.ferrandoShooed) {
             dialogues[0] = "Ah, good day! Are you looking to enroll?";
-            dialogues[1] = "Before I can assist you, you will need to speak with Father\nFerrando at the entrance first.";
-            dialogues[2] = "He is the school's registrar. Please see him and then come\nback to me.";
+            dialogues[1] = "Before I can assist you, you will need to speak with **Father\nFerrando** at the entrance first.";
+            dialogues[2] = "He is **the school's registrar**. Please see him and then come\nback to me.";
             dialogues[3] = null;
             super.speak();
 

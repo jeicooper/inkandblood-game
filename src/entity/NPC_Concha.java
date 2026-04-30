@@ -1,8 +1,6 @@
 package entity;
 import main.GamePanel;
 
-import java.util.Random;
-
 public class NPC_Concha extends Entity{
 
     public boolean visited = false;
@@ -36,7 +34,7 @@ public class NPC_Concha extends Entity{
     public void setDialogue(){
 
         dialogues[0] = "Concepcion 'Concha' Rizal. Born: 1862, Died: 1865.";
-        dialogues[1] = "Our eight sibling and my dearest sister. Died at the very young age of 3";
+        dialogues[1] = "Our **eighth sibling** and my dearest sister. Died at the very young age\nof 3";
         dialogues[2] = "The food is ready sis. I miss you everyday";
         dialogues[3] = null;
     }

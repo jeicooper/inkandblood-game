@@ -34,8 +34,8 @@ public class NPC_Consuelo extends Entity {
         if (stage == QuestManager.TALK_CONSUELO) {
             dialogues[0] = "So you are the famous Jose Rizal. I have heard much about you.";
             dialogues[1] = "They say you write like the angels but think like a revolutionary.";
-            dialogues[2] = "I found something left on the table. A paper with your name on it.\nPerhaps it belongs to you?";
-            dialogues[3] = "Writing stuff like that, you should be careful Jose...";
+            dialogues[2] = "I found **something left on the table**. A paper with your name on it.\nPerhaps it belongs to you?";
+            dialogues[3] = "Writing stuff like that, you should **be careful Jose**...";
             dialogues[4] = null;
             super.speak();
             if (dialogueIndex == 0) {

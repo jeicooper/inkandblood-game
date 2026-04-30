@@ -48,7 +48,7 @@ public class NPC_Desanctis extends Entity {
             super.speak();
 
         } else if (dialogueStage == 1) {
-            dialogues[0] = "I am Father de Sanctis, judge of Rhetoric.";
+            dialogues[0] = "I am Father de Sanctis, **judge of Rhetoric**.";
             dialogues[1] = "Words are the most powerful weapons ever devised by man.";
             dialogues[2] = "One question stands between you and this medal. Answer wrong\nand it is gone.";
             dialogues[3] = "Which rhetorical device repeats a word at the start of\nsuccessive clauses?";
@@ -59,11 +59,11 @@ public class NPC_Desanctis extends Entity {
                 rhetoricAnswered = true;
                 dialogueStage = 2;
                 gp.ui.quizPanel.openSingleQuestion(
-                        "Which rhetorical device repeats a word at the start of successive clauses?",
+                        "Words are the most powerful weapons ever devised by man. Tell me, student, what is the primary goal of the art of Rhetoric?",
                         new String[]{
-                                "Metaphor",
-                                "Hyperbole",
-                                "Anaphora"
+                                "To talk very fast.",
+                                "To read many books.",
+                                "To speak well and persuade others."
                         },
                         2,
                         (correct) -> gp.questManager.onDisciplineResult(3, correct)

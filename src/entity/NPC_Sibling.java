@@ -51,7 +51,7 @@ public class NPC_Sibling extends Entity {
 
         if (n.contains("Saturnina")) {
             greetDialogue = new String[]{
-                    "As the eldest of us all, I usually keep an eye on everyone, but I got\ndistracted by Sisa.",
+                    "As the **eldest** of us all, I usually keep an eye on everyone, but I got\ndistracted by Sisa.",
                     "I am Saturnina, though you always call me Neneng.",
                     "Let’s get back, Nanay Teodora is waiting for us to eat.",
                     null
@@ -59,7 +59,7 @@ public class NPC_Sibling extends Entity {
 
         } else if (n.contains("Paciano")) {
             greetDialogue = new String[]{
-                    "There you are, little brother. I am Paciano, the second child and your\nonly brother.",
+                    "There you are, little brother. I am Paciano, the **second child and your\nonly brother**.",
                     "I was just thinking about the future of our family, but my stomach\nsays the present requires dinner.",
                     "Let's go.",
                     null
@@ -67,7 +67,7 @@ public class NPC_Sibling extends Entity {
 
         } else if (n.contains("Narcisa")) {
             greetDialogue = new String[]{
-                    "Hello, Pepe! I am Narcisa, the third in our line, but I prefer Sisa.",
+                    "Hello, Pepe! I am Narcisa, the **third** in our line, but I prefer Sisa.",
                     "I’ve been tired all day",
                     "I hope Nanay has prepared something delicious for us tonight",
                     null
@@ -75,14 +75,14 @@ public class NPC_Sibling extends Entity {
 
         } else if (n.contains("Olimpia")) {
             greetDialogue = new String[]{
-                    "Pepe! I am Olimpia, your fourth sibling",
+                    "Pepe! I am Olimpia, your **fourth sibling**",
                     " Is the food already? Nanay must be worried.",
                     "Let’s hurry back to the Nanay!",
                     null
             };
         } else if (n.contains("Lucia")) {
             greetDialogue = new String[]{
-                    "Hi, Pepe! I am Lucia, the fifth child, or Lucing as you like to call me.",
+                    "Hi, Pepe! I am Lucia, the **fifth child**, or Lucing as you like to call me.",
                     "I’m glad you’re here because I’m starting to get very hungry",
                     "Let’s go!",
                     null
@@ -90,7 +90,7 @@ public class NPC_Sibling extends Entity {
 
         } else if (n.contains("Maria")) {
             greetDialogue = new String[]{
-                    "You found me, Pepe! I am Maria, the sixth of us...though you know\nme best as Biang",
+                    "You found me, Pepe! I am Maria, the **sixth** of us...though you know\nme best as Biang",
                     "I’ve been watching the town from this view",
                     "but I’m ready for supper and share a meal with everyone.",
                     null
@@ -98,7 +98,7 @@ public class NPC_Sibling extends Entity {
 
         } else if (n.contains("Josefa")) {
             greetDialogue = new String[]{
-                    "I’m here! I am Josefa, the ninth child, call me Panggoy.",
+                    "I’m here! I am Josefa, the **ninth child**, call me Panggoy.",
                     "I was just watching this painting, but a home-cooked meal sounds\nmuch better right now.",
                     "Take me to Nanay, Pepe!",
                     null
@@ -106,7 +106,7 @@ public class NPC_Sibling extends Entity {
 
         } else if (n.contains("Trinidad")) {
             greetDialogue = new String[]{
-                    "Oh, Pepe! I am Trinidad, the tenth sibling.",
+                    "Oh, Pepe! I am Trinidad, the **tenth sibling**.",
                     "I was just enjoying the fresh air, but if Nanay sent you, food must be\nready.",
                     "Let’s go before the food gets cold!",
                     null
@@ -114,7 +114,7 @@ public class NPC_Sibling extends Entity {
 
         } else if (n.contains("Soledad")) {
             greetDialogue = new String[]{
-                    "Pepe, you’re here! I am Soledad, the youngest of all eleven, often\ncalled Choleng.",
+                    "Pepe, you’re here! I am Soledad, **the youngest of all** eleven, often\ncalled Choleng.",
                     "I was just playing, but I’m ready to go home and eat with the whole\nfamily",
                     "Let’s go!",
                     null
@@ -143,9 +143,10 @@ public class NPC_Sibling extends Entity {
 
         if (!isFollowing) {
             dialogues = greetDialogue;
-            dialogueIndex = 0;
             super.speak();
-            startFollowing();
+            if (dialogueIndex == 0) {
+                startFollowing();
+            }
         } else {
             super.speak();
         }

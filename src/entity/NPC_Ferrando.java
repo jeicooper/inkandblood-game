@@ -85,7 +85,7 @@ public class NPC_Ferrando extends Entity {
 
         } else if (q4active && q4stage == QuestManager.DISCIPLINES_ACTIVE
                 && !gp.questManager.disciplineAnswered[4]) {
-            dialogues[0] = "I am judging you on Dedication. The quality that\nbrought you through these gates against all odds.";
+            dialogues[0] = "I am judging you on **Dedication**. The quality that\nbrought you through these gates against all odds.";
             dialogues[1] = "One question. Answer correctly for the medal.\nThere is no second chance.";
             dialogues[2] = null;
             super.speak();

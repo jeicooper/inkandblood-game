@@ -42,10 +42,10 @@ public class NPC_Judge extends Entity {
 
         if (stage == QuestManager.Q7_TALK_JUDGE) {
             dialogues[0] = "José Protacio Rizal Mercado y Alonso Realonda...";
-            dialogues[1] = "By the unanimous agreement of this Council... we find you GUILTY\nas charged.";
+            dialogues[1] = "By the unanimous agreement of this Council... we find you **GUILTY\nas charged**.";
             dialogues[2] = "The Councils has heard enough. We see no doctor here...but a\nthreat to citizens!";
             dialogues[3] = "The decision of this Council is unanimous.";
-            dialogues[4] = "The verdict is to be shot at the back on the morning of December\n30 at Bagumbayan Field!";
+            dialogues[4] = "The verdict is to be shot at the back on the **morning of December\n30 at Bagumbayan Field!**";
             dialogues[5] = null;
 
             super.speak();

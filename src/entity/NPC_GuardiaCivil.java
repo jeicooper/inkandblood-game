@@ -45,7 +45,7 @@ public class NPC_GuardiaCivil extends Entity {
             dialogues[1] = "Letters from your colleagues found in the caves of the rebels.";
             dialogues[2] = "They use your name as their war cry. Your photo hangs in their halls.";
             dialogues[3] = "How do you explain this?";
-            dialogues[4] = "Not talking? But your 'reforms' are merely a mask for revolution.";
+            dialogues[4] = "Not talking? But your **'reforms'** are merely a mask for revolution.";
             dialogues[5] = "Your words were the spark, Doctor... you cannot now blame the fire\nfor burning.";
             dialogues[6] = null;
 
