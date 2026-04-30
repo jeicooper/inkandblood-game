@@ -1070,7 +1070,7 @@ public class CutsceneManager {
                 { "First Quiz Score", firstScore  == -1 ? "—" : firstScore + " / 10" },
                 { "Quiz Attempts", attempts + (attempts == 1 ? " try" : " tries") },
                 { "Medals Collected", medals + " / 5" },
-                { "NPCs Met", npcMet + "/32 NPCs" },
+                { "Characters Met", npcMet + "/32 NPCs" },
         };
 
         for (String[] row : rows) {

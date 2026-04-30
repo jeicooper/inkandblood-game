@@ -644,12 +644,11 @@ public class LogIn {
                 break;
             }
 
-            // ---- Step 2: Password — 2×2 grid ----
+            // ---- Step 2: Password ----
             case 2: {
                 // Row 1: Password | Confirm Password
-                drawField(g2, "Password  (min. 8 characters)", "•".repeat(pw1Field.length()),
-                        true, signupFocus == 0, col1X, row1Y, cellW);
-                drawField(g2, "Confirm Password", "•".repeat(pw2Field.length()),
+                drawField(g2, "Password  (min. 8 characters)", getMaskedValue(pw1Field.toString()), true, signupFocus == 0, col1X, row1Y, cellW);
+                drawField(g2, "Confirm Password", getMaskedValue(pw2Field.toString()),
                         true, signupFocus == 1, col2X, row1Y, cellW);
 
                 // Password match indicator below row 1
@@ -740,7 +739,7 @@ public class LogIn {
             int fieldW = panelW - pad * 2;
             int fieldX = panelX + pad;
             int fieldY = panelY + pad + 56;
-            drawField(g2, "Admin Password", "•".repeat(adminPassField.length()),
+            drawField(g2, "Admin Password", getMaskedValue(adminPassField.toString()),
                     true, true, fieldX, fieldY, fieldW);
 
             if (!adminError.isEmpty()) {
