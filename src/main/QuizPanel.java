@@ -10,25 +10,34 @@ public class QuizPanel {
 
     // QUESTIONS AND ANSWERS
     private static final String[] POOL_QUESTIONS = {
+            //1
             "In your Latin studies, we look for precision. What is the correct translation of the phrase `Scientia potentia est`?",
 
+            //2
             "What is your full name?",
 
+            //3
             "In our Latin studies, what is the correct translation and significance of the phrase `Sobresaliente` which we all strive for in our grades?",
 
+            //4
             "You study the `Bachelor of Arts.` In the classical sense, which of these is a core subject of the Trivium we study here?",
 
+            //5
             "What is the position of our Fr. Magin Ferrando in Ateneo Municipal De Manila?",
 
-
+            //6
             "Which specific group is associated with the Roman Empire and identified as 'interns' or boarders within the school?",
 
+            //7
             "What was the highest rank a student could achieve within his respective empire through academic merit?",
 
+            //8
             "In the hierarchy of the empires, which rank was responsible for carrying the empire's banner during competitions?",
 
+            //9
             "If you are categorized as an 'extern' or a non-boarder, which empire would you belong to in this system?",
 
+            //10
             "How did a student lose their rank or cause their empire to lose its standing in the classroom?"
     };
 
@@ -87,7 +96,8 @@ public class QuizPanel {
 
     };
 
-    private static final int[] POOL_CORRECT = { 1, 0, 1, 1, 2, 0, 2, 0, 2, 2 };
+    private static final int[] POOL_CORRECT = { 1, 0, 1, 1, 2,
+                                                2, 2, 0, 2, 2 };
 
     private static final int QUIZ_SIZE = 10;
 
