@@ -145,8 +145,13 @@ public class LogIn {
     }
 
     // LOGIN
-    private void handleLoginKey(int code, char keyChar) {
+    private void
+    handleLoginKey(int code, char keyChar) {
         errorMessage = "";
+
+        // Ignore modifier keys
+        if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
+                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT) return;
 
         if (code == KeyEvent.VK_ESCAPE) { mode = 0; clearLoginFields(); return; }
 
@@ -184,6 +189,10 @@ public class LogIn {
 
     private void handleSignupKey(int code, char keyChar) {
         errorMessage = "";
+
+        // Ignore modifier keys
+        if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
+                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT) return;
 
         if (code == KeyEvent.VK_ESCAPE) {
             if (signupStep == 0) { mode = 0; clearSignupFields(); }
@@ -831,7 +840,7 @@ public class LogIn {
 
                     g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
                     g2.setColor(sel ? new Color(60, 40, 0) : new Color(140, 140, 140));
-                    g2.drawString(section, cardX + 12 + strW(g2, displayName) + 4, cardY + cardH - 8);
+                    g2.drawString(section, cardX + 48 + strW(g2, displayName) + 4, cardY + cardH - 8);
                 }
 
                 if (filteredList.size() > MAX_VISIBLE) {
