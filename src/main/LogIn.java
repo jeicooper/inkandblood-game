@@ -347,6 +347,10 @@ public class LogIn {
         adminError   = "";
         adminSuccess = "";
 
+        // Ignore modifier keys
+        if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
+                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT) return;
+
         if (code == KeyEvent.VK_ESCAPE) {
             if (adminMode == 3) {
                 if (confirmingDelete) {
