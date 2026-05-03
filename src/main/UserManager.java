@@ -10,7 +10,9 @@ import java.util.Properties;
 
 public class UserManager {
 
-    private static final String SAVES_DIR   = "saves";
+    private static final String SAVES_DIR =
+            System.getProperty("user.home") + File.separator +
+                    "InkAndBlood" + File.separator + "saves";
     private static final String USERS_FILE  = SAVES_DIR + File.separator + "users.properties";
     private static final String PROFILE_FILE = SAVES_DIR + File.separator + "profiles.properties";
 

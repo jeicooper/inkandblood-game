@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/inkandblood_jar</output-path>
     <root id="archive" name="inkandblood.jar">
       <element id="module-output" name="inkandblood" />
+      <element id="dir-copy" path="$PROJECT_DIR$/res" />
     </root>
   </artifact>
 </component>

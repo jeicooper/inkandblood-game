@@ -144,7 +144,7 @@ public class TileManager {
 
         setup(186, "pillarbottomleft_1", true);
         setup(187, "pillarbottomleft_2", true);
-        setup(188, "pillarbottomleft_3", false);
+        setup(188, "pillarbottomleft_3", true);
 
         setup(189, "pillartop_1", true);
         setup(190, "pillartop_2", false);
@@ -156,7 +156,7 @@ public class TileManager {
 
         setup(196, "pillarmiddle_1", true);
         setup(197, "pillarmiddle_2", true);
-        setup(198, "pillarmiddle_3", false);
+        setup(198, "pillarmiddle_3", true);
 
         setup(199, "pillarmiddle_4", true);
         setup(200, "pillarmiddle_5", true);

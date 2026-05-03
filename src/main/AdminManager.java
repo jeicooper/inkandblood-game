@@ -5,7 +5,9 @@ import java.util.Properties;
 
 public class AdminManager {
 
-    private static final String ADMIN_FILE            = "saves" + File.separator + "admin.properties";
+    private static final String ADMIN_FILE =
+            System.getProperty("user.home") + File.separator +
+                    "InkAndBlood" + File.separator + "saves" + File.separator + "admin.properties";
     private static final String DEFAULT_ADMIN_PASSWORD = "adminpower";
 
     private final UserManager   userManager;
