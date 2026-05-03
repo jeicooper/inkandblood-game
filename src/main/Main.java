@@ -21,6 +21,9 @@ public class Main {
             window.setUndecorated(true);
         }
 
+        ImageIcon img = new ImageIcon(Main.class.getResource("/player/app.ico"));
+        window.setIconImage(img.getImage());
+
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
