@@ -447,7 +447,7 @@ public class LogIn {
                 adminMode = 4;
                 return;
             }
-            if (keyChar >= 32 && keyChar != 127 && searchField.length() < 30) {
+            if (keyChar >= 32 && keyChar != 127 && searchField.length() < 23) {
                 searchField.append(keyChar);
                 refreshList(searchField.toString());
                 listCursor = 0;
