@@ -155,6 +155,8 @@ public class GamePanel extends JPanel implements Runnable {
 
 
             if (delta >=1){
+
+                if (delta > 3) delta = 1;
                 update();
                 drawToTempScreen();
                 drawToScreen();
@@ -192,10 +194,9 @@ public class GamePanel extends JPanel implements Runnable {
         if (inputDelay > 0) inputDelay--;
 
         if (gameState == playState){
-            //PLAYER
+
             player.update();
 
-            //NPC
             for (int i = 0; i < npc.length; i++) {
                 if (npc[i] != null){
                     npc[i].update();
@@ -203,6 +204,10 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             questManager.update();
+            npcDexUI.tick();
+        }
+
+        if (gameState == dexState){
             npcDexUI.tick();
         }
         if (gameState == pauseState){
@@ -370,11 +375,6 @@ public class GamePanel extends JPanel implements Runnable {
             g2.setColor(new Color(0, 180, 255));
             g2.setStroke(new BasicStroke(3));
             g2.drawOval(screenX - r, screenY - r, r * 2, r * 2);
-
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-            g2.setColor(Color.white);
-            g2.setFont(new Font("Arial", Font.BOLD, 20));
-            g2.drawString(String.valueOf(i + 1), screenX - 6, screenY + 7);
 
             g2.setComposite(old);
         }
