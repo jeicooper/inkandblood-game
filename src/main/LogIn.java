@@ -17,6 +17,12 @@ public class LogIn {
     private final StringBuilder adminPassField = new StringBuilder();
     private final StringBuilder searchField    = new StringBuilder();
 
+    private boolean changingAdminPassword = false;
+    private final StringBuilder adminNewPw1Field = new StringBuilder();
+    private final StringBuilder adminNewPw2Field = new StringBuilder();
+    private boolean adminPwFocusOnConfirm = false;
+    private int adminChangePwStep = 0;
+
     private String adminError   = "";
     private String adminSuccess = "";
 
@@ -349,7 +355,7 @@ public class LogIn {
 
         // Ignore modifier keys
         if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
-                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT) return;
+                code == KeyEvent.VK_CONTROL) return;
 
         if (code == KeyEvent.VK_ESCAPE) {
             if (adminMode == 3) {
@@ -428,6 +434,19 @@ public class LogIn {
                 }
                 return;
             }
+
+            if (code == KeyEvent.VK_ALT) {
+                changingAdminPassword = true;
+                adminChangePwStep = 0;
+                adminPassField.setLength(0);
+                adminNewPw1Field.setLength(0);
+                adminNewPw2Field.setLength(0);
+                adminPwFocusOnConfirm = false;
+                adminError = "";
+                adminSuccess = "";
+                adminMode = 4;
+                return;
+            }
             if (keyChar >= 32 && keyChar != 127 && searchField.length() < 30) {
                 searchField.append(keyChar);
                 refreshList(searchField.toString());
@@ -503,6 +522,67 @@ public class LogIn {
                     listCursor = 0;
                     listScrollOffset = 0;
                 }
+            }
+        }
+        if (adminMode == 4) {
+            if (code == KeyEvent.VK_ESCAPE) {
+                adminMode = 2;
+                changingAdminPassword = false;
+                adminPassField.setLength(0);
+                adminNewPw1Field.setLength(0);
+                adminNewPw2Field.setLength(0);
+                adminError = "";
+                return;
+            }
+            if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN) {
+                if (adminChangePwStep == 1) adminPwFocusOnConfirm = !adminPwFocusOnConfirm;
+                return;
+            }
+            if (code == KeyEvent.VK_BACK_SPACE) {
+                StringBuilder active = (adminChangePwStep == 0) ? adminPassField
+                        : adminPwFocusOnConfirm ? adminNewPw2Field : adminNewPw1Field;
+                if (active.length() > 0) active.deleteCharAt(active.length() - 1);
+                adminError = "";
+                return;
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                if (adminChangePwStep == 0) {
+                    if (!adminManager.verifyAdmin(adminPassField.toString())) {
+                        adminError = "Current password is incorrect.";
+                    } else {
+                        adminChangePwStep = 1;
+                        adminPwFocusOnConfirm = false;
+                        adminError = "";
+                    }
+                } else {
+                    // Confirm new password
+                    String np = adminNewPw1Field.toString();
+                    String cp = adminNewPw2Field.toString();
+                    if (np.length() < 8) {
+                        adminError = "Password must be at least 8 characters.";
+                    } else if (!np.equals(cp)) {
+                        adminError = "Passwords do not match.";
+                    } else {
+                        String err = adminManager.changeAdminPassword(adminPassField.toString(), np);
+                        if (err != null) {
+                            adminError = err;
+                        } else {
+                            adminMode = 2;
+                            changingAdminPassword = false;
+                            adminPassField.setLength(0);
+                            adminNewPw1Field.setLength(0);
+                            adminNewPw2Field.setLength(0);
+                            adminError = "";
+                            adminSuccess = "Admin password changed successfully!";
+                        }
+                    }
+                }
+                return;
+            }
+            if (keyChar >= 32 && keyChar != 127) {
+                StringBuilder active = (adminChangePwStep == 0) ? adminPassField
+                        : adminPwFocusOnConfirm ? adminNewPw2Field : adminNewPw1Field;
+                if (active.length() < 32) active.append(keyChar);
             }
         }
     }
@@ -861,14 +941,18 @@ public class LogIn {
             if (!adminSuccess.isEmpty()) {
                 g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
                 g2.setColor(OK_GREEN);
-                g2.drawString(adminSuccess, cx - strW(g2, adminSuccess) / 2, panelY + panelH - 36);
+                g2.drawString(adminSuccess, cx - strW(g2, adminSuccess) / 2, panelY + panelH - 70);
             }
 
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
             g2.setColor(LIGHT_GREY);
             String hint = "[ UP/DOWN ] Navigate    [ ENTER ] View Profile    [ ESC ] Back";
             g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
-            return;
+
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 17f));
+            g2.setColor(new Color(100, 113, 255));
+            String chHint = "[ ALT ] Change Admin Password";
+            g2.drawString(chHint, cx - strW(g2, chHint) / 2, panelY + panelH - 36);
         }
 
         if (adminMode == 3) {
@@ -877,6 +961,11 @@ public class LogIn {
             } else {
                 drawDeleteConfirm(g2, panelX, panelY, panelW, panelH, cx, pad);
             }
+        }
+
+        if (adminMode == 4) {
+            drawChangeAdminPasswordForm(g2, panelX, panelY, panelW, panelH, cx, pad);
+            return;
         }
     }
 
@@ -1018,6 +1107,68 @@ public class LogIn {
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
         g2.setColor(LIGHT_GREY);
         String hint = "[ UP/DOWN ] Switch field    [ ENTER ] Confirm    [ ESC ] Cancel";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
+    }
+
+    private void drawChangeAdminPasswordForm(Graphics2D g2, int panelX, int panelY,
+                                             int panelW, int panelH, int cx, int pad) {
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(255, 100, 100));
+        String t = "Change Admin Password";
+        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad);
+
+        int fieldW = panelW - pad * 2;
+        int fieldX = panelX + pad;
+        int fieldY = panelY + pad + 56;
+
+        if (adminChangePwStep == 0) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+            g2.setColor(LIGHT_GREY);
+            String sub = "Enter your current admin password to continue.";
+            g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 28);
+
+            drawField(g2, "Current Admin Password",
+                    getMaskedValue(adminPassField.toString()),
+                    true, true, fieldX, fieldY, fieldW);
+
+        } else {
+            // Step 2: enter new password
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+            g2.setColor(LIGHT_GREY);
+            String sub = "Enter and confirm your new admin password.";
+            g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 28);
+
+            drawField(g2, "New Admin Password (min. 8 chars)",
+                    getMaskedValue(adminNewPw1Field.toString()),
+                    true, !adminPwFocusOnConfirm, fieldX, fieldY, fieldW);
+
+            fieldY += gp.tileSize + 32;
+
+            drawField(g2, "Confirm New Password",
+                    getMaskedValue(adminNewPw2Field.toString()),
+                    true, adminPwFocusOnConfirm, fieldX, fieldY, fieldW);
+
+            // Match indicator
+            if (adminNewPw1Field.length() > 0 && adminNewPw2Field.length() > 0) {
+                boolean match = adminNewPw1Field.toString().equals(adminNewPw2Field.toString());
+                g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
+                g2.setColor(match ? OK_GREEN : ERROR_RED);
+                String matchMsg = match ? "Passwords match" : "Passwords do not match";
+                g2.drawString(matchMsg, cx - strW(g2, matchMsg) / 2, fieldY + gp.tileSize + 30);
+            }
+        }
+
+        if (!adminError.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(adminError, cx - strW(g2, adminError) / 2, panelY + panelH - 36);
+        }
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+        g2.setColor(LIGHT_GREY);
+        String hint = adminChangePwStep == 0
+                ? "[ ENTER ] Verify    [ ESC ] Cancel"
+                : "[ UP/DOWN ] Switch field    [ ENTER ] Confirm    [ ESC ] Cancel";
         g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
     }
 

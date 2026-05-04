@@ -68,7 +68,19 @@ public class AdminManager {
         String hash = userManager.hash(DEFAULT_ADMIN_PASSWORD, salt);
         adminProps.setProperty("admin_hash", salt + ":" + hash);
         save();
-        System.out.println("Admin password created: " + DEFAULT_ADMIN_PASSWORD);
+    }
+
+    public String changeAdminPassword(String currentPassword, String newPassword) {
+        if (!verifyAdmin(currentPassword))
+            return "Current password is incorrect.";
+        if (newPassword.length() < 8)
+            return "New password must be at least 8 characters.";
+
+        String salt = userManager.generateSalt();
+        String hash = userManager.hash(newPassword, salt);
+        adminProps.setProperty("admin_hash", salt + ":" + hash);
+        save();
+        return null; // null = success
     }
 
     private void load() {
