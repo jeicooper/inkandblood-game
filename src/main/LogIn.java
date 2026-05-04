@@ -174,10 +174,10 @@ public class LogIn {
 
         if (code == KeyEvent.VK_ENTER) { submitLogin(); return; }
 
-        if (keyChar >= 32 && keyChar != 127) {
+        if (keyChar >= 20 && keyChar != 127) {
             if (!focusOnPassword && usernameField.length() < 4) {
                 if (Character.isDigit(keyChar)) usernameField.append(keyChar);
-            } else if (focusOnPassword && passwordField.length() < 32) {
+            } else if (focusOnPassword && passwordField.length() < 20) {
                 passwordField.append(keyChar);
             }
         }
@@ -225,7 +225,7 @@ public class LogIn {
         }
 
         // Printable characters
-        if (keyChar >= 32 && keyChar != 127) {
+        if (keyChar >= 20 && keyChar != 127) {
             StringBuilder active = activeSignupField();
             if (active == null) return;
             int limit = fieldLimit(signupStep, signupFocus);
@@ -396,7 +396,7 @@ public class LogIn {
                 }
                 return;
             }
-            if (keyChar >= 32 && keyChar != 127 && adminPassField.length() < 32)
+            if (keyChar >= 20 && keyChar != 127 && adminPassField.length() < 20)
                 adminPassField.append(keyChar);
             return;
         }
@@ -447,7 +447,7 @@ public class LogIn {
                 adminMode = 4;
                 return;
             }
-            if (keyChar >= 32 && keyChar != 127 && searchField.length() < 23) {
+            if (keyChar >= 20 && keyChar != 127 && searchField.length() < 20) {
                 searchField.append(keyChar);
                 refreshList(searchField.toString());
                 listCursor = 0;
@@ -491,9 +491,9 @@ public class LogIn {
                     }
                     return;
                 }
-                if (keyChar >= 32 && keyChar != 127) {
+                if (keyChar >= 20 && keyChar != 127) {
                     StringBuilder active = resetPwFocusOnConfirm ? confirmPasswordField : newPasswordField;
-                    if (active.length() < 32) active.append(keyChar);
+                    if (active.length() < 20) active.append(keyChar);
                 }
                 return;
             }
@@ -579,10 +579,10 @@ public class LogIn {
                 }
                 return;
             }
-            if (keyChar >= 32 && keyChar != 127) {
+            if (keyChar >= 20 && keyChar != 127) {
                 StringBuilder active = (adminChangePwStep == 0) ? adminPassField
                         : adminPwFocusOnConfirm ? adminNewPw2Field : adminNewPw1Field;
-                if (active.length() < 32) active.append(keyChar);
+                if (active.length() < 20) active.append(keyChar);
             }
         }
     }
