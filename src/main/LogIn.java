@@ -157,7 +157,7 @@ public class LogIn {
 
         // Ignore modifier keys
         if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
-                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT) return;
+                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
 
         if (code == KeyEvent.VK_ESCAPE) { mode = 0; clearLoginFields(); return; }
 
@@ -198,7 +198,7 @@ public class LogIn {
 
         // Ignore modifier keys
         if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
-                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT) return;
+                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
 
         if (code == KeyEvent.VK_ESCAPE) {
             if (signupStep == 0) { mode = 0; clearSignupFields(); }
@@ -355,7 +355,7 @@ public class LogIn {
 
         // Ignore modifier keys
         if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
-                code == KeyEvent.VK_CONTROL) return;
+                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
 
         if (code == KeyEvent.VK_ESCAPE) {
             if (adminMode == 3) {
