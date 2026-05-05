@@ -664,7 +664,7 @@ public class UI {
         g2.setColor(new Color(200, 200, 200));
         int promptX = (gp.tileSize * 2) + (gp.screenWidth - (gp.tileSize*4)) - gp.tileSize;
         int promptY = (gp.tileSize * 8) + (gp.tileSize * 3) - 15;
-        g2.drawString("[ ENTER ]", promptX - 60, promptY);
+        g2.drawString("[ ENTER ] / [ F ]", promptX - 60, promptY);
     }
     public void drawCharacterScreen(){
         //FRAME
