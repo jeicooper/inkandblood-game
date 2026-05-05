@@ -147,9 +147,9 @@ public class TileManager {
         setup(188, "pillarbottomleft_3", true);
 
         setup(189, "pillartop_1", true);
-        setup(190, "pillartop_2", false);
+        setup(190, "pillartop_2", true);
         setup(191, "pillarbottom_1", true);
-        setup(192, "pillarbottom_2", false);
+        setup(192, "pillarbottom_2", true);
         setup(193, "pillar_wall", true);
         setup(194, "pillarright", true);
         setup(195, "pillarleft", true);
@@ -413,7 +413,7 @@ public class TileManager {
         setup(414, "dining_1", false);
         setup(415, "dining_2", false);
         setup(416, "dining_3", true);
-        setup(417, "dining_4", true);
+        setup(417, "dining_4", false);
         setup(418, "dining_5", false);
         setup(419, "dining_6", false);
         setup(420, "dining_7", true);
@@ -421,7 +421,7 @@ public class TileManager {
         setup(422, "dining_9", true);
         setup(423, "dining_10", false);
         setup(424, "dining_11", true);
-        setup(425, "dining_12", false);
+        setup(425, "dining_12", true);
         setup(426, "dining_13", false);
         setup(427, "dining_14", false);
         setup(428, "dining_15", true);
@@ -517,8 +517,8 @@ public class TileManager {
         setup(507, "sofa_12", true);
         setup(508, "sofa_13", false);
         setup(509, "sofa_14", true);
-        setup(510, "sofa_15", false);
-        setup(511, "sofa_16", false);
+        setup(510, "sofa_15", true);
+        setup(511, "sofa_16", true);
         setup(512, "sofa_17", false);
         setup(513, "sofa_18", false);
         setup(514, "sofa_19", false);
@@ -756,6 +756,21 @@ public class TileManager {
         setup(710,"tree4_4", true);
         setup(711,"tree4_5", true);
 //        setup(712,"tree4_6", true);
+        setup(712,"partymesa_00", true);
+        setup(713,"partymesa_01", true);
+        setup(714,"partymesa_02", true);
+
+        setup(715,"partymesa_03", true);
+        setup(716,"partymesa_04", true);
+        setup(717,"partymesa_05", true);
+
+        setup(718,"partymesa_06", true);
+        setup(719,"partymesa_07", true);
+        setup(720,"partymesa_08", true);
+        setup(721,"partymesa_09", true);
+        setup(722,"partymesa_10", true);
+
+
 
     }
 
