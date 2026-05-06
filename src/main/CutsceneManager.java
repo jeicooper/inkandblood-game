@@ -493,6 +493,8 @@ public class CutsceneManager {
                 return chapter4IntroLines;
             case FORT_SANTIAGO:
                 return fortSantiagoLines;
+            case EXECUTION:
+                return executionLines;
             case EXECUTION_WALK:
                 return executionLines;
             case ENDING_SCROLL:

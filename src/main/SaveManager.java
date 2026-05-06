@@ -18,6 +18,9 @@ public class SaveManager {
     public void save() {
         if (!userManager.isLoggedIn()) return;
 
+        if (gp.cutsceneManager.isExecutionWalkActive()
+                || gp.cutsceneManager.isGameCompleted()) return;
+
         SaveData d = new SaveData();
 
         d.exp        = gp.player.exp;
@@ -264,6 +267,12 @@ public class SaveManager {
         if (cq == QuestManager.QUEST7) {
             gp.tileM.loadMap("/maps/Chapter4.txt");
             gp.player.loadSprite3("");
+            if (qm.quest7Stage >= QuestManager.Q7_DONE) {
+                gp.cutsceneManager.startQuest7EndCutscene();
+                placePlayer(51, 36);
+                return;
+            }
+
             if (qm.quest7Stage >= QuestManager.Q7_TALK_JOSEPHINE) {
                 gp.aSetter.activateQuest7FortSantiago();
                 placePlayer(51, 36);

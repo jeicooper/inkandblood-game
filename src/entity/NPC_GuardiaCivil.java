@@ -19,7 +19,7 @@ public class NPC_GuardiaCivil extends Entity {
         down2  = setup("/npc/gwardya/gwardya_down_2");
         up1    = setup("/npc/gwardya/gwardya_up_1");
         up2    = setup("/npc/gwardya/gwardya_up_2");
-        left1  = setup("/npc/gwardya/ggwardya_left_1");
+        left1  = setup("/npc/gwardya/gwardya_left_1");
         left2  = setup("/npc/gwardya/gwardya_left_2");
         right1 = setup("/npc/gwardya/gwardya_right_1");
         right2 = setup("/npc/gwardya/gwardya_right_2");

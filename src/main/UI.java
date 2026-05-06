@@ -1844,6 +1844,10 @@ public class UI {
     public void drawQuestHUD() {
         if (gp.questManager == null) return;
 
+        if (gp.cutsceneManager.isExecutionWalkActive()
+                || gp.cutsceneManager.isStatsScreenActive()
+                || gp.cutsceneManager.isGameCompleted()) return;
+
         if (gp.cutsceneManager.isExecutionWalkActive()) {
             // skip all HUD drawing
         } else {
