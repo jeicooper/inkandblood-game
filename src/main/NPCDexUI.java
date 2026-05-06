@@ -57,6 +57,7 @@ public class NPCDexUI {
                 "/npc/burgos/burgos_down_1",
                 "/npc/professor/guro_down_1",
                 "/npc/interno/interno_down_1",
+                "/npc/externo/externo_down_1",
                 "/npc/mariano/mariano_down_1",
                 "/npc/rector/rector_down_1",
                 "/npc/perfect/perfect_down_1",

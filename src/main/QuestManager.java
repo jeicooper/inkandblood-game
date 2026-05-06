@@ -739,19 +739,19 @@ public class QuestManager {
         return questState[quest] == STATE_COMPLETED;
     }
 
-    public boolean isPendingChapter2Cutscene()    { return pendingChapter2Cutscene; }
-    public boolean isPendingQuest4Cutscene()      { return pendingQuest4Cutscene; }
-    public boolean isPendingChapter3Cutscene()    { return pendingChapter3Cutscene; }
-    public boolean isPendingQuest6StartCutscene() { return pendingQuest6StartCutscene; }
-    public boolean isPendingQuest7IntroCutscene() { return pendingQuest7IntroCutscene; }
-    public boolean isPendingQuest7MidCutscene()   { return pendingQuest7MidCutscene; }
-    public boolean isPendingQuest7EndCutscene()   { return pendingQuest7EndCutscene; }
 
-    public void setPendingChapter2Cutscene(boolean v)    { pendingChapter2Cutscene = v;    if (v) cutsceneDelay  = 60; }
-    public void setPendingQuest4Cutscene(boolean v)      { pendingQuest4Cutscene = v;      if (v) cutsceneDelay1 = 60; }
-    public void setPendingChapter3Cutscene(boolean v)    { pendingChapter3Cutscene = v;    if (v) cutsceneDelay2 = 60; }
-    public void setPendingQuest6StartCutscene(boolean v) { pendingQuest6StartCutscene = v; if (v) cutsceneDelay4 = 60; }
-    public void setPendingQuest7IntroCutscene(boolean v) { pendingQuest7IntroCutscene = v; if (v) cutsceneDelay5 = 60; }
-    public void setPendingQuest7MidCutscene(boolean v)   { pendingQuest7MidCutscene = v;   if (v) cutsceneDelay6 = 60; }
-    public void setPendingQuest7EndCutscene(boolean v)   { pendingQuest7EndCutscene = v;   if (v) cutsceneDelay7 = 60; }
+    public void setPendingChapter2Cutscene(boolean v) {
+        pendingChapter2Cutscene = v;    if (v) cutsceneDelay  = 60; }
+    public void setPendingQuest4Cutscene(boolean v) {
+        pendingQuest4Cutscene = v;      if (v) cutsceneDelay1 = 60; }
+    public void setPendingChapter3Cutscene(boolean v) {
+        pendingChapter3Cutscene = v;    if (v) cutsceneDelay2 = 60; }
+    public void setPendingQuest6StartCutscene(boolean v) {
+        pendingQuest6StartCutscene = v; if (v) cutsceneDelay4 = 60; }
+    public void setPendingQuest7IntroCutscene(boolean v) {
+        pendingQuest7IntroCutscene = v; if (v) cutsceneDelay5 = 60; }
+    public void setPendingQuest7MidCutscene(boolean v) {
+        pendingQuest7MidCutscene = v;   if (v) cutsceneDelay6 = 60; }
+    public void setPendingQuest7EndCutscene(boolean v) {
+        pendingQuest7EndCutscene = v;   if (v) cutsceneDelay7 = 60; }
 }

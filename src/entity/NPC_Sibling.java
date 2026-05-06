@@ -14,7 +14,7 @@ public class NPC_Sibling extends Entity {
     public Entity followTarget = null;
 
     private final LinkedList<int[]> posHistory = new LinkedList<>();
-    private static final int HISTORY_DELAY = 30;
+    private static final int HISTORY_DELAY = 10;
 
     private String[] greetDialogue;
 

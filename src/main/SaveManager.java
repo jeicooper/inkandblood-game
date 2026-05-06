@@ -460,7 +460,7 @@ public class SaveManager {
             case "Quill":                      return new OBJ_Quil(gp);
             case "Notebook":                   return new OBJ_Notebook(gp);
             case "Boots":                      return new OBJ_Boots(gp);
-            case "Sobresaliente Medal":        return new OBJ_SobreMedal(gp);
+            case "Medal":                      return new OBJ_SobreMedal(gp);
             case "Scalpel":                    return new OBJ_Scalpel(gp);
             case "Mirror":                     return new OBJ_Mirror(gp);
             case "Dried Flower":               return new OBJ_DriedFlower(gp);

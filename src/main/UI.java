@@ -664,7 +664,7 @@ public class UI {
         g2.setColor(new Color(200, 200, 200));
         int promptX = (gp.tileSize * 2) + (gp.screenWidth - (gp.tileSize*4)) - gp.tileSize;
         int promptY = (gp.tileSize * 8) + (gp.tileSize * 3) - 15;
-        g2.drawString("[ ENTER ] / [ F ]", promptX - 60, promptY);
+        g2.drawString("[ ENTER ] / [ F ]", promptX - 80, promptY);
     }
     public void drawCharacterScreen(){
         //FRAME
@@ -1338,19 +1338,30 @@ public class UI {
                 g2.drawString("- Study with Uncle Gregorio", RIGHT_X, ry);
                 ry += LINE_H;
 
-                if (q2stage == QuestManager.GREGORIO_WAITING) {
+                int quillCount    = gp.questManager.countItem("Quill");
+                int notebookCount = gp.questManager.countItem("Notebook");
+
+                if (q2stage == QuestManager.GREGORIO_WAITING && (quillCount < 1 || notebookCount < 1)) {
+
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("  Quill: "
-                                    + gp.questManager.countItem("Quill") + "/1"
-                                    + "  Notebook: "
-                                    + gp.questManager.countItem("Notebook") + "/1",
+                    g2.drawString("  Find a Quill and a Notebook!", RIGHT_X, ry);
+                    ry += HINT_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                } else if (q2stage == QuestManager.GREGORIO_WAITING && quillCount >= 1 && notebookCount >= 1) {
+
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("  Quill: " + quillCount + "/1"
+                                    + "  Notebook: " + notebookCount + "/1",
                             RIGHT_X, ry);
                     ry += HINT_H;
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
                 }
 
-                if (q2done) {
+
+                if (q2stage == QuestManager.GREGORIO_DONE) {
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(100, 255, 100));
                     g2.drawString("All lessons complete!", RIGHT_X, ry);
