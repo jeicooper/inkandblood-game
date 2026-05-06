@@ -380,18 +380,21 @@ public class Player extends  Entity{
     }
 
     public void rebuildCongoLine() {
-        Entity leader = this;
-        int count = 0;
-
+        ArrayList<NPC_Sibling> followers = new ArrayList<>();
         for (int i = 0; i < gp.npc.length; i++) {
-            if (gp.npc[i] instanceof NPC_Sibling) {
-                NPC_Sibling s = (NPC_Sibling) gp.npc[i];
+            if (gp.npc[i] instanceof NPC_Sibling s) {
                 if (s.isFollowing && !s.delivered) {
-                    s.followTarget = leader;
-                    leader = s;
-                    count++;
+                    followers.add(s);
                 }
             }
+        }
+
+        followers.sort((a, b) -> Integer.compare(a.recruitOrder, b.recruitOrder));
+
+        Entity leader = this;
+        for (NPC_Sibling s : followers) {
+            s.followTarget = leader;
+            leader = s;
         }
     }
 

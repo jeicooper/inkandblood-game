@@ -1213,6 +1213,7 @@ public class UI {
 
             ly += LINE_H + 2;
 
+            boolean[] sibFound = new boolean[10];
             String[] siblingNames = {
                     "Saturnina", "Paciano",
                     "Narcisa",   "Olimpia",
@@ -1220,15 +1221,18 @@ public class UI {
                     "Josefa",    "Trinidad",
                     "Soledad",   "Concepcion"
             };
-
-            boolean[] sibFound = new boolean[10];
             for (int i = 0; i < gp.npc.length; i++) {
                 if (gp.npc[i] instanceof entity.NPC_Sibling) {
                     entity.NPC_Sibling s = (entity.NPC_Sibling) gp.npc[i];
-                    int slot = i - 2;
-                    if (slot >= 0 && slot < 9) sibFound[slot] = s.isFollowing;
+                    for (int j = 0; j < 9; j++) {
+                        if (s.siblingName.contains(siblingNames[j])) {
+                            sibFound[j] = s.isFollowing;
+                            break;
+                        }
+                    }
                 }
             }
+
             sibFound[9] = !q1done && gp.questManager.conchaVisited;
 
             final int SUB_LEFT  = LEFT_X;
