@@ -189,8 +189,10 @@ public class SaveManager {
         // UI
         gp.ui.questPageNum = d.questPageNum;
 
-        // ---- Game already completed: just show stats screen ----
-        if (d.gameCompleted) {
+
+        boolean isCompleted = d.gameCompleted
+                || (d.quest7Stage >= QuestManager.Q7_DONE);
+        if (isCompleted) {
             gp.cutsceneManager.setGameCompleted(true);
             gp.cutsceneManager.restoreStatsScreen();
             gp.npcDatabase.load();
@@ -277,7 +279,8 @@ public class SaveManager {
             gp.tileM.loadMap("/maps/Chapter4.txt");
             gp.player.loadSprite3("");
             if (qm.quest7Stage >= QuestManager.Q7_DONE) {
-
+                // startQuest7EndCutscene leads to startExecutionWalk which plays soundURL[5].
+                // Signal to caller that music is already handled.
                 gp.cutsceneManager.startQuest7EndCutscene();
                 placePlayer(51, 36);
                 return true;
