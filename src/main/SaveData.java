@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class SaveData implements Serializable {
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 1L;
 
     public int worldX, worldY;
     public int speed;
@@ -20,7 +20,6 @@ public class SaveData implements Serializable {
     public boolean pendingQuest7IntroCutscene;
     public boolean pendingQuest7MidCutscene;
     public boolean pendingQuest7EndCutscene;
-
     public int cutsceneDelay;
     public int cutsceneDelay1;
     public int cutsceneDelay2;
@@ -55,7 +54,7 @@ public class SaveData implements Serializable {
     public int  q6ObjectsCollected;
     public boolean[] elFiliParts = new boolean[5];
 
-    public int quest7Stage;
+    public int  quest7Stage;
 
     public String[] inventoryItemNames = new String[0];
 
@@ -64,14 +63,14 @@ public class SaveData implements Serializable {
 
     public int questPageNum;
 
-    public boolean gameCompleted = false;
+    public boolean gameCompleted;
 
     //STATISTICS TRACKING
-    public long gameStartTime = 0L;
-    public long gameEndTime = 0L;
-    public long bootsStartTime = 0L;
-    public long bootsEndTime = 0L;
+    public long gameStartTime;
+    public long gameEndTime;
+    public long bootsStartTime;
+    public long bootsEndTime;
     public int firstQuizScore = -1;
-    public int quizAttempts = 0;
-    public int totalNPCMet = 0;
+    public int quizAttempts;
+    public int totalNPCMet;
 }

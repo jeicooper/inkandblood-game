@@ -258,7 +258,7 @@ public class CutsceneManager {
                     "the whispers of reform turn into blueprints for revolution. I wrote El",
                     "Filibusterismo to teach them how to fight. I do not regret a single letter.",
                     "For some truths are too heavy to carry alone, they must be written down,",
-                    "passed on, and ignited.",
+                    "passed on, and ignited.``",
                     "",
                     "— Jose Rizal"
             },
@@ -592,6 +592,8 @@ public class CutsceneManager {
         gp.player.direction = "down";
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+        gp.stopMusic();
+        gp.playMusic(4);
         gp.aSetter.activateQuest7Intramuros();
     }
 
@@ -802,12 +804,11 @@ public class CutsceneManager {
             if (ewTick >= 340) { ewPhase = 4; ewTick = 0; }
 
         } else if (ewPhase == 4) {
-                if (ewTick == 1 && !ewFired) {
-                    ewFired = true;
-                    showDialogue("FUEGO!", false, 100);
-                    gp.playSE(6);
-                    gp.playMusic(5);
-                }
+            if (ewTick == 1 && !ewFired) {
+                ewFired = true;
+                showDialogue("FUEGO!", false, 100);
+                gp.playSE(6);
+            }
             if (ewTick >= 80) { ewPhase = 5; ewTick = 0; }
 
         } else if (ewPhase == 5) {

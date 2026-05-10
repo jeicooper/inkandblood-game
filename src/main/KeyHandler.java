@@ -102,7 +102,6 @@ public class KeyHandler implements KeyListener {
                         if (gp.saveManager.load()) {
                             if (!gp.cutsceneManager.isGameCompleted()) {
                                 gp.gameState = gp.playState;
-                                gp.playMusic(0);
                             }
                         }
                     } else {

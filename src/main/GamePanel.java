@@ -618,6 +618,15 @@ public class GamePanel extends JPanel implements Runnable {
         music.stop();
     }
 
+    public void playMusicForQuest(int quest) {
+        stopMusic();
+        if (quest >= QuestManager.QUEST5) {
+            playMusic(4);
+        } else {
+            playMusic(0);
+        }
+    }
+
     public void playSE(int i){
 
         sound.setFile(i);

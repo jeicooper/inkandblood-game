@@ -198,9 +198,14 @@ public class SaveManager {
         }
 
         fixQuestProgression(qm);
-        applyChapterState(qm);
+        boolean musicHandled = applyChapterState(qm);
         removeCollectedObjects();
         removeCompletedNPCs();
+
+        if (!musicHandled) {
+            gp.stopMusic();
+            gp.playMusicForQuest(qm.currentQuest);
+        }
 
         gp.npcDatabase.load();
         return true;
@@ -256,7 +261,11 @@ public class SaveManager {
         }
     }
 
-    private void applyChapterState(QuestManager qm) {
+    /**
+     * Applies the correct world state for the loaded quest.
+     * Returns true if music was already started internally (caller must skip playMusicForQuest).
+     */
+    private boolean applyChapterState(QuestManager qm) {
 
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
@@ -268,9 +277,10 @@ public class SaveManager {
             gp.tileM.loadMap("/maps/Chapter4.txt");
             gp.player.loadSprite3("");
             if (qm.quest7Stage >= QuestManager.Q7_DONE) {
+
                 gp.cutsceneManager.startQuest7EndCutscene();
                 placePlayer(51, 36);
-                return;
+                return true;
             }
 
             if (qm.quest7Stage >= QuestManager.Q7_TALK_JOSEPHINE) {
@@ -342,6 +352,8 @@ public class SaveManager {
             gp.aSetter.setNPC();
             placePlayer(64, 18);
         }
+
+        return false;
     }
 
     private void placePlayer(int tileX, int tileY) {
