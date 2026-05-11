@@ -379,6 +379,11 @@ public class CutsceneManager {
         statsApplied = false;
         gp.stopMusic();
         gp.gameState = gp.cutsceneState;
+
+        if (gp.questManager.gameEndTime == 0L) {
+            gp.questManager.gameEndTime = System.currentTimeMillis();
+        }
+
         gp.saveManager.save();
     }
 
