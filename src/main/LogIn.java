@@ -46,7 +46,8 @@ public class LogIn {
 
     public int mode = 0;
 
-    private int menuCursor  = 0;
+    private int menuCursor      = 0;
+    private int loginTypeCursor = 0;
     private String errorMessage = "";
 
     // LogIn Form
@@ -93,6 +94,7 @@ public class LogIn {
     public void reset() {
         mode = 0;
         menuCursor = 0;
+        loginTypeCursor = 0;
         clearLoginFields();
         clearSignupFields();
         errorMessage = "";
@@ -104,24 +106,26 @@ public class LogIn {
         } else if (mode == 0) {
             handleMenuKey(code);
         } else if (mode == 1) {
-            handleLoginKey(code, keyChar);
+            handleLoginTypeKey(code);
         } else if (mode == 2) {
             handleSignupKey(code, keyChar);
+        } else if (mode == 3) {
+            handleLoginKey(code, keyChar);
         }
     }
 
     private void handleMenuKey(int code) {
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-            menuCursor = (menuCursor - 1 + 4) % 4;
+            menuCursor = (menuCursor - 1 + 3) % 3;
         }
         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-            menuCursor = (menuCursor + 1) % 4;
+            menuCursor = (menuCursor + 1) % 3;
         }
         if (code == KeyEvent.VK_ENTER) {
             switch (menuCursor) {
-                case 0: // Log In
+                case 0:
                     mode = 1;
-                    clearLoginFields();
+                    loginTypeCursor = 0;
                     errorMessage = "";
                     break;
                 case 1: // Sign Up
@@ -131,21 +135,38 @@ public class LogIn {
                     clearSignupFields();
                     errorMessage = "";
                     break;
-                case 2: // Admin
-                    adminMode = 1;
-                    adminPassField.setLength(0);
-                    searchField.setLength(0);
-                    adminError = "";
-                    adminSuccess = "";
-                    selectedAccount = null;
-                    selectedProfile = null;
-                    confirmingDelete = false;
-                    listCursor = 0;
-                    listScrollOffset = 0;
-                    break;
-                case 3: // Quit
+                case 2: // Quit
                     System.exit(0);
                     break;
+            }
+        }
+    }
+
+    // LOGIN TYPE SUB-MENU
+    private void handleLoginTypeKey(int code) {
+        if (code == KeyEvent.VK_ESCAPE) { mode = 0; return; }
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            loginTypeCursor = (loginTypeCursor - 1 + 2) % 2;
+        }
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            loginTypeCursor = (loginTypeCursor + 1) % 2;
+        }
+        if (code == KeyEvent.VK_ENTER) {
+            if (loginTypeCursor == 0) {
+                mode = 3;
+                clearLoginFields();
+                errorMessage = "";
+            } else {
+                adminMode = 1;
+                adminPassField.setLength(0);
+                searchField.setLength(0);
+                adminError   = "";
+                adminSuccess = "";
+                selectedAccount  = null;
+                selectedProfile  = null;
+                confirmingDelete = false;
+                listCursor       = 0;
+                listScrollOffset = 0;
             }
         }
     }
@@ -159,7 +180,7 @@ public class LogIn {
         if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
                 code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
 
-        if (code == KeyEvent.VK_ESCAPE) { mode = 0; clearLoginFields(); return; }
+        if (code == KeyEvent.VK_ESCAPE) { mode = 1; clearLoginFields(); return; }
 
         if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN) {
             focusOnPassword = !focusOnPassword;
@@ -374,6 +395,7 @@ public class LogIn {
                 }
             } else {
                 adminMode = 0;
+                mode = 1;
             }
             return;
         }
@@ -600,8 +622,9 @@ public class LogIn {
 
         if (adminMode > 0) { drawAdminPanel(g2); return; }
         if (mode == 0)      drawMenu(g2);
-        else if (mode == 1) drawLoginForm(g2);
+        else if (mode == 1) drawLoginTypeMenu(g2);
         else if (mode == 2) drawSignupForm(g2);
+        else if (mode == 3) drawLoginForm(g2);
     }
 
     // MENU
@@ -616,7 +639,7 @@ public class LogIn {
         g2.setColor(Color.black);
         g2.drawString(title, cx - strW(g2, title) / 2, gp.tileSize * 3);
 
-        String[] items = { "Log In", "Sign Up", "Admin Reset", "Quit" };
+        String[] items = { "Log In", "Sign Up", "Quit" };
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 38f));
         int itemY = gp.tileSize * 6 + 10;
         for (int i = 0; i < items.length; i++) {
@@ -632,6 +655,39 @@ public class LogIn {
         g2.setColor(LIGHT_GREY);
         String hint = "[ UP/DOWN ] Navigate    [ ENTER ] Select";
         g2.drawString(hint, cx - strW(g2, hint) / 2, gp.screenHeight - 20);
+    }
+
+
+    private void drawLoginTypeMenu(Graphics2D g2) {
+        int panelW = gp.tileSize * 10;
+        int panelH = gp.tileSize * 6;
+        int panelX = gp.screenWidth  / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        gp.ui.drawSubWindow(g2, panelX, panelY, panelW, panelH);
+
+        int cx = panelX + panelW / 2;
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 36f));
+        g2.setColor(GOLD);
+        String t = "Log In";
+        g2.drawString(t, cx - strW(g2, t) / 2, (int) (panelY + gp.tileSize * 1.5));
+
+        String[] items = { "Log In as User", "Log In as Admin" };
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 30f));
+        int itemY = panelY + gp.tileSize * 2 + 20;
+        for (int i = 0; i < items.length; i++) {
+            boolean sel = (i == loginTypeCursor);
+            g2.setColor(sel ? GOLD : Color.white);
+            int ix = cx - strW(g2, items[i]) / 2;
+            g2.drawString(items[i], ix, itemY);
+            if (sel) g2.drawString(">", ix - gp.tileSize, itemY);
+            itemY += gp.tileSize;
+        }
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ UP/DOWN ] Navigate    [ ENTER ] Select    [ ESC ] Back";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
     }
 
     // LOGIN FORM
