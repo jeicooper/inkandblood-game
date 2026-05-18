@@ -28,6 +28,12 @@ public class Player extends  Entity{
             { 73, 29 },
             { 74, 29 },
 
+            {54, 21},
+            {54, 22},
+            {55, 22},
+            {56, 22},
+            {56, 21},
+
             { 49, 44 },
             { 49, 45 },
 
@@ -47,6 +53,12 @@ public class Player extends  Entity{
             "The Rizal's Family Home",
             "The Rizal's Family Home",
             "The Rizal's Family Home",
+
+            "Our Lady of Peace and Good Voyage",
+            "Our Lady of Peace and Good Voyage",
+            "Our Lady of Peace and Good Voyage",
+            "Our Lady of Peace and Good Voyage",
+            "Our Lady of Peace and Good Voyage",
 
             "Ateneo Municipal De Manila",
             "Ateneo Municipal De Manila",
