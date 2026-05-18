@@ -78,6 +78,99 @@ public class AdminManager {
         save();
     }
 
+    public String exportToExcel() {
+        java.util.List<String> usernames = getAllUsernames();
+        if (usernames.isEmpty()) return "No accounts to export.";
+
+        // Use the same relative path as the .dat save files
+        String exportPath = "saves" + File.separator + "user_export.xls";
+
+        try {
+            File f = new File(exportPath);
+            f.getParentFile().mkdirs();
+
+            try (java.io.PrintWriter pw = new java.io.PrintWriter(
+                    new java.io.OutputStreamWriter(new FileOutputStream(f),
+                            java.nio.charset.StandardCharsets.UTF_8))) {
+
+                // SpreadsheetML — opens natively in Excel and LibreOffice, no library needed
+                pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                pw.println("<?mso-application progid=\"Excel.Sheet\"?>");
+                pw.println("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"");
+                pw.println(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\">");
+                pw.println("<Worksheet ss:Name=\"Students\">");
+                pw.println("<Table>");
+
+                // Header row
+                pw.println("<Row>");
+                for (String h : new String[]{
+                        "Username", "First Name", "Last Name", "Middle Initial",
+                        "Suffix", "Year &amp; Section", "Student ID", "Game Progress"}) {
+                    pw.println("<Cell><Data ss:Type=\"String\">" + h + "</Data></Cell>");
+                }
+                pw.println("</Row>");
+
+                // Data rows
+                for (String username : usernames) {
+                    UserManager.StudentProfile sp = getProfile(username);
+                    String progress = getProgressLabel(username);
+
+                    pw.println("<Row>");
+                    pw.println(cell(username));
+                    if (sp != null) {
+                        pw.println(cell(sp.firstName));
+                        pw.println(cell(sp.lastName));
+                        pw.println(cell(sp.middleInitial));
+                        pw.println(cell(sp.suffix));
+                        pw.println(cell(sp.yearSection));
+                        pw.println(cell(sp.studentId));
+                    } else {
+                        for (int i = 0; i < 6; i++) pw.println(cell("—"));
+                    }
+                    pw.println(cell(progress));
+                    pw.println("</Row>");
+                }
+
+                pw.println("</Table>");
+                pw.println("</Worksheet>");
+                pw.println("</Workbook>");
+            }
+
+            return null; // null = success
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Export failed: " + e.getMessage();
+        }
+    }
+
+    private String getProgressLabel(String username) {
+        File sf = new File("saves" + File.separator + username + ".dat");
+        if (!sf.exists()) return "No save data";
+        try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(
+                new java.io.FileInputStream(sf))) {
+            main.SaveData sd = (main.SaveData) ois.readObject();
+            switch (sd.currentQuest) {
+                case 0: return "Chapter 1 — Quest 1: Find the Siblings";
+                case 1: return "Chapter 1 — Quest 2: Art and Writing";
+                case 2: return "Chapter 2 — Quest 3: Enrollment at Ateneo";
+                case 3: return "Chapter 2 — Quest 4: The Competitions";
+                case 4: return "Chapter 3 — Quest 5: Writing Noli Me Tangere";
+                case 5: return "Chapter 3 — Quest 6: El Filibusterismo";
+                case 6: return "Chapter 4 — Quest 7: The Final Days";
+                default: return "Quest " + (sd.currentQuest + 1);
+            }
+        } catch (Exception e) {
+            return "Save file unreadable";
+        }
+    }
+
+    private String cell(String value) {
+        if (value == null) value = "";
+        value = value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+        return "<Cell><Data ss:Type=\"String\">" + value + "</Data></Cell>";
+    }
+
     public String changeAdminPassword(String currentPassword, String newPassword) {
         if (!verifyAdmin(currentPassword))
             return "Current password is incorrect.";

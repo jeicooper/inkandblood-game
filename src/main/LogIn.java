@@ -479,6 +479,15 @@ public class LogIn {
                 adminMode = 4;
                 return;
             }
+            if (code == KeyEvent.VK_X) {
+                String err = adminManager.exportToExcel();
+                if (err == null) {
+                    adminSuccess = "Exported! Saved as user_export.xls in your saves folder.";
+                } else {
+                    adminError = err;
+                }
+                return;
+            }
             if (keyChar >= 20 && keyChar != 127 && searchField.length() < 20) {
                 searchField.append(keyChar);
                 refreshList(searchField.toString());
@@ -1073,7 +1082,11 @@ public class LogIn {
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 17f));
             g2.setColor(new Color(100, 113, 255));
             String chHint = "[ ALT ] Change Admin Password";
-            g2.drawString(chHint, cx - strW(g2, chHint) / 2, panelY + panelH - 36);
+            g2.drawString(chHint, panelX + pad, panelY + panelH - 36);
+
+            g2.setColor(new Color(80, 220, 160));
+            String exHint = "[ X ] Export to Excel";
+            g2.drawString(exHint, panelX + panelW - pad - strW(g2, exHint), panelY + panelH - 36);
         }
 
         if (adminMode == 3) {
