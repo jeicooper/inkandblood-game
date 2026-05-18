@@ -40,6 +40,16 @@ public class LogIn {
     private final StringBuilder confirmPasswordField = new StringBuilder();
     private boolean resetPwFocusOnConfirm = false;
 
+    // Edit profile (adminMode == 5)
+    private String  editOriginalUsername = null;
+    private int     editFocus            = 0;
+    private final StringBuilder editFnField  = new StringBuilder();
+    private final StringBuilder editLnField  = new StringBuilder();
+    private final StringBuilder editMiField  = new StringBuilder();
+    private final StringBuilder editSfxField = new StringBuilder();
+    private final StringBuilder editYsField  = new StringBuilder();
+    private final StringBuilder editIdField  = new StringBuilder();
+
     private final GamePanel   gp;
     private final UserManager userManager;
     private final SaveManager saveManager;
@@ -532,6 +542,25 @@ public class LogIn {
                     adminError = "";
                     adminSuccess = "";
                 }
+                if (code == KeyEvent.VK_E && selectedAccount != null) {
+                    // Pre-populate edit fields from current profile
+                    editOriginalUsername = selectedAccount;
+                    editFnField.setLength(0);  editLnField.setLength(0);
+                    editMiField.setLength(0);  editSfxField.setLength(0);
+                    editYsField.setLength(0);  editIdField.setLength(0);
+                    if (selectedProfile != null) {
+                        editFnField.append(selectedProfile.firstName);
+                        editLnField.append(selectedProfile.lastName);
+                        editMiField.append(selectedProfile.middleInitial);
+                        editSfxField.append(selectedProfile.suffix);
+                        editYsField.append(selectedProfile.yearSection);
+                        editIdField.append(selectedProfile.studentId);
+                    }
+                    editFocus = 0;
+                    adminError = "";
+                    adminSuccess = "";
+                    adminMode = 5;
+                }
             } else {
                 if (code == KeyEvent.VK_ENTER && selectedAccount != null) {
                     adminManager.resetAccount(selectedAccount);
@@ -605,6 +634,42 @@ public class LogIn {
                 StringBuilder active = (adminChangePwStep == 0) ? adminPassField
                         : adminPwFocusOnConfirm ? adminNewPw2Field : adminNewPw1Field;
                 if (active.length() < 20) active.append(keyChar);
+            }
+        }
+
+        if (adminMode == 5) {
+            if (code == KeyEvent.VK_ESCAPE) {
+                adminMode = 3;
+                adminError = "";
+                return;
+            }
+            if (code == KeyEvent.VK_UP) {
+                editFocus = (editFocus - 1 + 6) % 6;
+                return;
+            }
+            if (code == KeyEvent.VK_DOWN) {
+                editFocus = (editFocus + 1) % 6;
+                return;
+            }
+            if (code == KeyEvent.VK_BACK_SPACE) {
+                StringBuilder f = activeEditField();
+                if (f != null && f.length() > 0) f.deleteCharAt(f.length() - 1);
+                adminError = "";
+                return;
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                submitEditProfile();
+                return;
+            }
+            if (keyChar >= 20 && keyChar != 127) {
+                StringBuilder f = activeEditField();
+                if (f == null) return;
+                int limit = editFieldLimit(editFocus);
+                if (f.length() < limit) {
+                    if (editFocus == 4)      appendEditYearSectionChar(keyChar);
+                    else if (editFocus == 5) appendEditStudentIdChar(keyChar);
+                    else                     f.append(keyChar);
+                }
             }
         }
     }
@@ -1023,6 +1088,11 @@ public class LogIn {
             drawChangeAdminPasswordForm(g2, panelX, panelY, panelW, panelH, cx, pad);
             return;
         }
+
+        if (adminMode == 5) {
+            drawEditProfileForm(g2, panelX, panelY, panelW, panelH, cx, pad);
+            return;
+        }
     }
 
     private void drawProfileView(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
@@ -1108,13 +1178,18 @@ public class LogIn {
         // Action hints at the bottom
         int hintY = panelY + panelH - 36;
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 19f));
+
         g2.setColor(new Color(80, 160, 255));
         String pHint = "[ P ] Reset Password";
-        g2.drawString(pHint, cx - strW(g2, pHint) / 2 - 100, hintY);
+        g2.drawString(pHint, panelX + pad, hintY);
+
+        g2.setColor(new Color(80, 200, 120));
+        String eHint = "[ E ] Edit Profile";
+        g2.drawString(eHint, cx - strW(g2, eHint) / 2, hintY);
 
         g2.setColor(ERROR_RED);
         String dHint = "[ D ] Delete Account";
-        g2.drawString(dHint, cx - strW(g2, dHint) / 2 + 100, hintY);
+        g2.drawString(dHint, panelX + panelW - pad - strW(g2, dHint), hintY);
 
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
         g2.setColor(LIGHT_GREY);
@@ -1362,6 +1437,172 @@ public class LogIn {
         if (step == 1 && focus == 1) return 13;  // Student ID (2022-100-1234 = 13 chars)
         if (step == 2) return 13;                // Password
         return 20;
+    }
+
+    // ---- Edit Profile helpers ----
+
+    private StringBuilder activeEditField() {
+        switch (editFocus) {
+            case 0: return editFnField;
+            case 1: return editLnField;
+            case 2: return editMiField;
+            case 3: return editSfxField;
+            case 4: return editYsField;
+            case 5: return editIdField;
+            default: return null;
+        }
+    }
+
+    private int editFieldLimit(int focus) {
+        switch (focus) {
+            case 0: case 1: return 20;  // First/Last name
+            case 2: return 2;           // M.I.
+            case 3: return 3;           // Suffix
+            case 4: return 3;           // Year & Section  (e.g. "1-2")
+            case 5: return 13;          // Student ID (2022-100-1234)
+            default: return 20;
+        }
+    }
+
+    private void appendEditYearSectionChar(char c) {
+        if (!Character.isDigit(c)) return;
+        String raw = editYsField.toString().replace("-", "");
+        if (raw.isEmpty()) {
+            int year = c - '0';
+            if (year < 1 || year > 4) return;
+            editYsField.setLength(0);
+            editYsField.append(c);
+        } else if (raw.length() == 1) {
+            int section = c - '0';
+            if (section < 1 || section > 9) return;
+            editYsField.setLength(0);
+            editYsField.append(raw.charAt(0)).append('-').append(c);
+        }
+    }
+
+    private void appendEditStudentIdChar(char c) {
+        if (!Character.isDigit(c)) return;
+        String raw = editIdField.toString().replaceAll("[^0-9]", "");
+        if (raw.length() >= 12) return;
+        String next = raw + c;
+        if (next.length() <= 4) {
+            if (next.length() >= 1 && next.charAt(0) != '2') return;
+            if (next.length() >= 2 && next.charAt(1) != '0') return;
+            if (next.length() == 4) {
+                int year = Integer.parseInt(next.substring(0, 4));
+                if (year < 2005 || year > 2035) return;
+            }
+        }
+        raw = next;
+        StringBuilder formatted = new StringBuilder();
+        for (int i = 0; i < raw.length(); i++) {
+            if (i == 4 || i == 7) formatted.append('-');
+            formatted.append(raw.charAt(i));
+        }
+        editIdField.setLength(0);
+        editIdField.append(formatted);
+    }
+
+    private void submitEditProfile() {
+        adminError = "";
+        String fn  = editFnField.toString().trim();
+        String ln  = editLnField.toString().trim();
+        String ys  = editYsField.toString().trim();
+        String id  = editIdField.toString().trim();
+
+        if (fn.isEmpty())  { adminError = "First name is required.";  return; }
+        if (ln.isEmpty())  { adminError = "Last name is required.";    return; }
+        if (ys.isEmpty())  { adminError = "Year & Section is required."; return; }
+        if (!ys.matches("[1-4]-[1-9]")) { adminError = "Year must be 1–4 and Section must be 1–9."; return; }
+        if (!id.matches("20(0[5-9]|[12]\\d|3[0-5])-100-\\d{3,4}")) {
+            adminError = "Invalid ID. Use: 20XX-100-XXX(X)";
+            return;
+        }
+
+        String result = adminManager.editProfile(
+                editOriginalUsername,
+                fn, ln,
+                editMiField.toString().trim(),
+                editSfxField.toString().trim(),
+                ys, id
+        );
+
+        if (result != null) {
+            adminError = result;
+        } else {
+            String newUsername = UserManager.usernameFromStudentId(id);
+            selectedAccount = newUsername;
+            selectedProfile = adminManager.getProfile(newUsername);
+            adminSuccess = "Profile updated successfully.";
+            adminMode = 3;
+            refreshList(searchField.toString());
+        }
+    }
+
+    private void drawEditProfileForm(Graphics2D g2, int panelX, int panelY,
+                                     int panelW, int panelH, int cx, int pad) {
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(80, 200, 120));
+        String t = "Edit Student Profile";
+        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad);
+
+        if (editOriginalUsername != null) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
+            g2.setColor(LIGHT_GREY);
+            String sub = "Editing: " + editOriginalUsername;
+            g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 26);
+        }
+
+        int gridW  = (int)(panelW * 0.80);
+        int gridX  = panelX + (panelW - gridW) / 2;
+        int colGap = 20;
+        int cellW  = (gridW - colGap) / 2;
+        int rowH   = gp.tileSize + 14;
+        int rowGap = 16;
+
+        int col1X = gridX;
+        int col2X = gridX + cellW + colGap;
+        int row1Y = panelY + pad + 52;
+        int row2Y = row1Y + rowH + rowGap;
+        int row3Y = row2Y + rowH + rowGap;
+
+        // Row 1: First Name | Last Name
+        drawField(g2, "First Name *",  editFnField.toString(),  false, editFocus == 0, col1X, row1Y, cellW);
+        drawField(g2, "Last Name *",   editLnField.toString(),  false, editFocus == 1, col2X, row1Y, cellW);
+
+        // Row 2: M.I. | Suffix
+        drawField(g2, "M.I.",                     editMiField.toString(),  false, editFocus == 2, col1X, row2Y, cellW);
+        drawField(g2, "Suffix  (Jr., III, etc.)",  editSfxField.toString(), false, editFocus == 3, col2X, row2Y, cellW);
+
+        // Row 3: Year & Section | Student ID
+        drawField(g2, "Year & Section *",              editYsField.toString(), false, editFocus == 4, col1X, row3Y, cellW);
+        drawField(g2, "Student ID *  (20XX-100-XXXX)", editIdField.toString(), false, editFocus == 5, col2X, row3Y, cellW);
+
+        // Live username preview under Student ID field
+        String rawId = editIdField.toString().trim();
+        int previewY = row3Y + rowH + 6;
+        if (rawId.matches("20(0[5-9]|[12]\\d|3[0-5])-100-\\d{3,4}")) {
+            String derived = UserManager.usernameFromStudentId(rawId);
+            boolean changed = !derived.equals(editOriginalUsername);
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
+            g2.setColor(changed ? new Color(255, 180, 60) : OK_GREEN);
+            String preview = "Login username: " + derived
+                    + (changed ? "  (username will change!)" : "");
+            g2.drawString(preview, col2X - 40, previewY);
+        }
+
+        // Error
+        if (!adminError.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(adminError, cx - strW(g2, adminError) / 2, panelY + panelH - 36);
+        }
+
+        // Nav hint
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ UP/DOWN ] Switch field    [ ENTER ] Save    [ ESC ] Cancel";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
     }
 
     private void refreshList(String search) {

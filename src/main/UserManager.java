@@ -175,6 +175,59 @@ public class UserManager {
         if (saveFile.exists()) saveFile.delete();
     }
 
+    public String updateProfile(String username,
+                                String firstName, String lastName,
+                                String middleInitial, String suffix,
+                                String yearSection, String newStudentId) {
+        username    = username.trim();
+        firstName   = firstName.trim();
+        lastName    = lastName.trim();
+        middleInitial = middleInitial.trim();
+        suffix      = suffix.trim();
+        yearSection = yearSection.trim();
+        newStudentId = newStudentId.trim().toUpperCase();
+
+        if (!users.containsKey(username))  return "Account not found.";
+        if (firstName.isEmpty())           return "First name cannot be empty.";
+        if (lastName.isEmpty())            return "Last name cannot be empty.";
+        if (yearSection.isEmpty())         return "Year & Section cannot be empty.";
+        if (!isValidStudentId(newStudentId))
+            return "Invalid student ID. Format must be: 202X-100-XXXX";
+
+        String newUsername = usernameFromStudentId(newStudentId);
+
+        if (!newUsername.equals(username)) {
+            if (users.containsKey(newUsername))
+                return "Another account already uses that student ID (ID ends: " + newUsername + ").";
+
+            // Move credentials and profile to new key
+            String creds = users.getProperty(username);
+            users.remove(username);
+            users.setProperty(newUsername, creds);
+
+            // Move save file
+            File oldSave = new File(SAVES_DIR + File.separator + username + ".dat");
+            File newSave = new File(SAVES_DIR + File.separator + newUsername + ".dat");
+            if (oldSave.exists()) oldSave.renameTo(newSave);
+
+            // Move npcdb file
+            File oldNpc = new File(SAVES_DIR + File.separator + username + "_npcdb.dat");
+            File newNpc = new File(SAVES_DIR + File.separator + newUsername + "_npcdb.dat");
+            if (oldNpc.exists()) oldNpc.renameTo(newNpc);
+
+            profiles.remove(username);
+            saveUsers();
+            username = newUsername;
+        }
+
+        String profileValue = encode(firstName) + "|" + encode(lastName) + "|"
+                + encode(middleInitial) + "|" + encode(suffix) + "|"
+                + encode(yearSection)   + "|" + encode(newStudentId);
+        profiles.setProperty(username, profileValue);
+        saveProfiles();
+        return null;
+    }
+
     public String resetPassword(String username, String newPassword) {
         username = username.trim();
         if (!users.containsKey(username)) return "Account not found.";

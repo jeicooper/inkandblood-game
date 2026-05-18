@@ -42,6 +42,14 @@ public class AdminManager {
         return userManager.getProfile(username);
     }
 
+    public String editProfile(String username,
+                              String firstName, String lastName,
+                              String middleInitial, String suffix,
+                              String yearSection, String studentId) {
+        return userManager.updateProfile(username, firstName, lastName,
+                middleInitial, suffix, yearSection, studentId);
+    }
+
     public String resetPassword(String username, String newPassword) {
         username = username.trim();
         if (!userManager.userExists(username))
