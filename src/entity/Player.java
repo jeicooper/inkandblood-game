@@ -21,6 +21,47 @@ public class Player extends  Entity{
     private int lastTileX = -1;
     private int lastTileY = -1;
 
+    private static final int[][] LOCATION_TILES = {
+            { 63, 18 },
+            { 63, 19 },
+            { 72, 29 },
+            { 73, 29 },
+            { 74, 29 },
+
+            { 49, 44 },
+            { 49, 45 },
+
+            { 22, 50 },
+            { 23, 50 },
+            { 24, 50 },
+            { 53, 74 },
+            { 53, 75 },
+
+            { 50, 32 },
+            { 51, 32 },
+            { 52, 32 },
+    };
+    private static final String[] LOCATION_TILE_NAMES = {
+            "The Rizal's Family Home",
+            "The Rizal's Family Home",
+            "The Rizal's Family Home",
+            "The Rizal's Family Home",
+            "The Rizal's Family Home",
+
+            "Ateneo Municipal De Manila",
+            "Ateneo Municipal De Manila",
+
+            "Banquet Hall",
+            "Banquet Hall",
+            "Banquet Hall",
+            "Jose's Dormitory",
+            "Jose's Dormitory",
+
+            "Fort Santiago",
+            "Fort Santiago",
+            "Fort Santiago",
+    };
+
     public ArrayList<Entity> inventory = new ArrayList<>();
     public final int maxInventorySize = 20;
 
@@ -158,13 +199,20 @@ public class Player extends  Entity{
                 spriteNum = (spriteNum == 1) ? 2 : 1;
                 spriteCounter = 0;
             }
+        }
 
-            int tileX = worldX / gp.tileSize;
-            int tileY = worldY / gp.tileSize;
-            if (tileX != lastTileX || tileY != lastTileY) {
-                System.out.println("Tile X: " + tileX + " | Tile Y: " + tileY);
-                lastTileX = tileX;
-                lastTileY = tileY;
+        int tileX = worldX / gp.tileSize;
+        int tileY = worldY / gp.tileSize;
+        if (tileX != lastTileX || tileY != lastTileY) {
+            System.out.println("Tile X: " + tileX + " | Tile Y: " + tileY);
+            lastTileX = tileX;
+            lastTileY = tileY;
+
+            for (int i = 0; i < LOCATION_TILES.length; i++) {
+                if (tileX == LOCATION_TILES[i][0] && tileY == LOCATION_TILES[i][1]) {
+                    gp.ui.showLocationPopup(LOCATION_TILE_NAMES[i]);
+                    break;
+                }
             }
         }
 

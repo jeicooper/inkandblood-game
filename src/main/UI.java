@@ -46,6 +46,10 @@ public class UI {
     private int     pickupTimer     = 0;
     private static final int PICKUP_DURATION = 120;
 
+    private String  locationPopupName  = "";
+    private int     locationPopupTimer = 0;
+    private static final int LOCATION_POPUP_DURATION = 120;
+
     public BufferedImage titleBackground;
     public BufferedImage cutsceneBG;
 
@@ -103,6 +107,11 @@ public class UI {
     public void showPickup(String itemName) {
         pickupItemName = itemName;
         pickupTimer    = PICKUP_DURATION;
+    }
+
+    public void showLocationPopup(String locationName) {
+        locationPopupName  = locationName;
+        locationPopupTimer = LOCATION_POPUP_DURATION;
     }
 
     public void openQuizPanel() {
@@ -186,6 +195,42 @@ public class UI {
                 g2.drawString(pickupItemName, boxX + 10, boxY + 23);
 
                 g2.setComposite(oldC);
+            }
+
+            if (locationPopupTimer > 0) {
+                locationPopupTimer--;
+
+                float alpha = locationPopupTimer < 60 ? locationPopupTimer / 60f : 1f;
+                Composite oldLC = g2.getComposite();
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+
+                Font locFont = maruMonica.deriveFont(Font.BOLD, 26f);
+                g2.setFont(locFont);
+                FontMetrics fm = g2.getFontMetrics();
+
+                int textW   = fm.stringWidth(locationPopupName);
+                int padding = 24;
+                int boxW    = textW + padding * 2;
+                int boxH    = 40;
+                int boxX    = gp.screenWidth / 2 - boxW / 2;
+                int boxY    = gp.screenHeight - boxH - gp.tileSize;
+
+                // Dark rounded background
+                g2.setColor(new Color(0, 0, 0, 190));
+                g2.fillRoundRect(boxX, boxY, boxW, boxH, 16, 16);
+
+                // Gold border
+                g2.setColor(new Color(255, 210, 80));
+                g2.setStroke(new BasicStroke(2f));
+                g2.drawRoundRect(boxX + 1, boxY + 1, boxW - 2, boxH - 2, 16, 16);
+
+                // Location name centered vertically in the box
+                g2.setColor(Color.white);
+                int nameX = gp.screenWidth / 2 - textW / 2;
+                int nameY = boxY + (boxH / 2) + (fm.getAscent() / 2) - 2;
+                g2.drawString(locationPopupName, nameX, nameY);
+
+                g2.setComposite(oldLC);
             }
         }
 
@@ -276,7 +321,7 @@ public class UI {
         if (currentQ <= QuestManager.QUEST2) {
             location    = " CALAMBA, LAGUNA";
         } else if (currentQ <= QuestManager.QUEST4) {
-            location    = " ATENEO MUNICIPAL DE MANILA";
+            location    = " MANILA";
         } else if (currentQ <= QuestManager.QUEST6){
             location    = " EUROPE";
         } else {
