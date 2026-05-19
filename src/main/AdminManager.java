@@ -82,8 +82,9 @@ public class AdminManager {
         java.util.List<String> usernames = getAllUsernames();
         if (usernames.isEmpty()) return "No accounts to export.";
 
-        // Use the same relative path as the .dat save files
         String exportPath = "saves" + File.separator + "user_export.xls";
+        String exportDate = new java.text.SimpleDateFormat("MMMM dd, yyyy  hh:mm a")
+                .format(new java.util.Date());
 
         try {
             File f = new File(exportPath);
@@ -93,41 +94,134 @@ public class AdminManager {
                     new java.io.OutputStreamWriter(new FileOutputStream(f),
                             java.nio.charset.StandardCharsets.UTF_8))) {
 
-                // SpreadsheetML — opens natively in Excel and LibreOffice, no library needed
                 pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 pw.println("<?mso-application progid=\"Excel.Sheet\"?>");
                 pw.println("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"");
                 pw.println(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\">");
-                pw.println("<Worksheet ss:Name=\"Students\">");
-                pw.println("<Table>");
 
-                // Header row
-                pw.println("<Row>");
+                pw.println("<Styles>");
+
+                pw.println("<Style ss:ID=\"title\">");
+                pw.println("  <Font ss:Bold=\"1\" ss:Size=\"15\" ss:Color=\"#1F3864\"/>");
+                pw.println("  <Alignment ss:Vertical=\"Center\"/>");
+                pw.println("</Style>");
+
+                pw.println("<Style ss:ID=\"meta\">");
+                pw.println("  <Font ss:Italic=\"1\" ss:Size=\"10\" ss:Color=\"#595959\"/>");
+                pw.println("  <Alignment ss:Vertical=\"Center\"/>");
+                pw.println("</Style>");
+
+                pw.println("<Style ss:ID=\"header\">");
+                pw.println("  <Font ss:Bold=\"1\" ss:Size=\"11\" ss:Color=\"#FFFFFF\"/>");
+                pw.println("  <Interior ss:Color=\"#1F3864\" ss:Pattern=\"Solid\"/>");
+                pw.println("  <Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/>");
+                pw.println("  <Borders>");
+                pw.println("    <Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#C9A227\"/>");
+                pw.println("  </Borders>");
+                pw.println("</Style>");
+
+                pw.println("<Style ss:ID=\"rowEven\">");
+                pw.println("  <Font ss:Size=\"10\" ss:Color=\"#1F3864\"/>");
+                pw.println("  <Interior ss:Color=\"#DCE6F1\" ss:Pattern=\"Solid\"/>");
+                pw.println("  <Alignment ss:Vertical=\"Center\"/>");
+                pw.println("  <Borders>");
+                pw.println("    <Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#BDD7EE\"/>");
+                pw.println("  </Borders>");
+                pw.println("</Style>");
+
+                pw.println("<Style ss:ID=\"rowOdd\">");
+                pw.println("  <Font ss:Size=\"10\" ss:Color=\"#1F3864\"/>");
+                pw.println("  <Interior ss:Color=\"#FFFFFF\" ss:Pattern=\"Solid\"/>");
+                pw.println("  <Alignment ss:Vertical=\"Center\"/>");
+                pw.println("  <Borders>");
+                pw.println("    <Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#BDD7EE\"/>");
+                pw.println("  </Borders>");
+                pw.println("</Style>");
+
+                pw.println("<Style ss:ID=\"progressEven\">");
+                pw.println("  <Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#375623\"/>");
+                pw.println("  <Interior ss:Color=\"#DCE6F1\" ss:Pattern=\"Solid\"/>");
+                pw.println("  <Alignment ss:Vertical=\"Center\"/>");
+                pw.println("  <Borders>");
+                pw.println("    <Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#BDD7EE\"/>");
+                pw.println("  </Borders>");
+                pw.println("</Style>");
+
+                pw.println("<Style ss:ID=\"progressOdd\">");
+                pw.println("  <Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#375623\"/>");
+                pw.println("  <Interior ss:Color=\"#FFFFFF\" ss:Pattern=\"Solid\"/>");
+                pw.println("  <Alignment ss:Vertical=\"Center\"/>");
+                pw.println("  <Borders>");
+                pw.println("    <Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#BDD7EE\"/>");
+                pw.println("  </Borders>");
+                pw.println("</Style>");
+
+                pw.println("</Styles>");
+
+                pw.println("<Worksheet ss:Name=\"Students\">");
+                pw.println("<Table ss:DefaultRowHeight=\"18\">");
+
+                // Column widths
+                pw.println("<Column ss:Width=\"90\"/>");   // Username
+                pw.println("<Column ss:Width=\"100\"/>");  // First Name
+                pw.println("<Column ss:Width=\"100\"/>");  // Last Name
+                pw.println("<Column ss:Width=\"70\"/>");   // M.I.
+                pw.println("<Column ss:Width=\"60\"/>");   // Suffix
+                pw.println("<Column ss:Width=\"80\"/>");   // Year & Section
+                pw.println("<Column ss:Width=\"110\"/>");  // Student ID
+                pw.println("<Column ss:Width=\"240\"/>");  // Game Progress
+
+                // Title row
+                pw.println("<Row ss:Height=\"28\">");
+                pw.println("  <Cell ss:StyleID=\"title\"><Data ss:Type=\"String\">Ink and Blood: Rizal's Adventure - Student Records</Data></Cell>");
+                pw.println("</Row>");
+
+                // Export date row
+                pw.println("<Row ss:Height=\"18\">");
+                pw.println("  <Cell ss:StyleID=\"meta\"><Data ss:Type=\"String\">Exported: " + exportDate + "</Data></Cell>");
+                pw.println("</Row>");
+
+                // Total count row
+                pw.println("<Row ss:Height=\"16\">");
+                pw.println("  <Cell ss:StyleID=\"meta\"><Data ss:Type=\"String\">Total Students: " + usernames.size() + "</Data></Cell>");
+                pw.println("</Row>");
+
+                // Blank spacer
+                pw.println("<Row ss:Height=\"10\"/>");
+
+                // Column header row
+                pw.println("<Row ss:Height=\"22\">");
                 for (String h : new String[]{
                         "Username", "First Name", "Last Name", "Middle Initial",
-                        "Suffix", "Year &amp; Section", "Student ID", "Game Progress"}) {
-                    pw.println("<Cell><Data ss:Type=\"String\">" + h + "</Data></Cell>");
+                        "Suffix", "Year & Section", "Student ID", "Game Progress"}) {
+                    pw.println("  <Cell ss:StyleID=\"header\"><Data ss:Type=\"String\">" + h + "</Data></Cell>");
                 }
                 pw.println("</Row>");
 
                 // Data rows
+                int rowNum = 0;
                 for (String username : usernames) {
                     UserManager.StudentProfile sp = getProfile(username);
                     String progress = getProgressLabel(username);
+                    boolean even = (rowNum % 2 == 0);
+                    String rowStyle      = even ? "rowEven"      : "rowOdd";
+                    String progressStyle = even ? "progressEven" : "progressOdd";
+                    rowNum++;
 
-                    pw.println("<Row>");
-                    pw.println(cell(username));
+                    pw.println("<Row ss:Height=\"18\">");
+                    pw.println("  " + styledCell(username, rowStyle));
                     if (sp != null) {
-                        pw.println(cell(sp.firstName));
-                        pw.println(cell(sp.lastName));
-                        pw.println(cell(sp.middleInitial));
-                        pw.println(cell(sp.suffix));
-                        pw.println(cell(sp.yearSection));
-                        pw.println(cell(sp.studentId));
+                        pw.println("  " + styledCell(sp.firstName,     rowStyle));
+                        pw.println("  " + styledCell(sp.lastName,      rowStyle));
+                        pw.println("  " + styledCell(sp.middleInitial, rowStyle));
+                        pw.println("  " + styledCell(sp.suffix,        rowStyle));
+                        pw.println("  " + styledCell(sp.yearSection,   rowStyle));
+                        pw.println("  " + styledCell(sp.studentId,     rowStyle));
                     } else {
-                        for (int i = 0; i < 6; i++) pw.println(cell("—"));
+                        for (int i = 0; i < 6; i++)
+                            pw.println("  " + styledCell("-", rowStyle));
                     }
-                    pw.println(cell(progress));
+                    pw.println("  " + styledCell(progress, progressStyle));
                     pw.println("</Row>");
                 }
 
@@ -163,6 +257,12 @@ public class AdminManager {
         } catch (Exception e) {
             return "Save file unreadable";
         }
+    }
+
+    private String styledCell(String value, String styleID) {
+        if (value == null) value = "";
+        value = value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+        return "<Cell ss:StyleID=\"" + styleID + "\"><Data ss:Type=\"String\">" + value + "</Data></Cell>";
     }
 
     private String cell(String value) {
