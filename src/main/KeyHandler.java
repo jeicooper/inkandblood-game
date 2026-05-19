@@ -60,6 +60,7 @@ public class KeyHandler implements KeyListener {
         //OPTION STATE
         else if (gp.gameState == gp.optionState) {
             optionState(code);
+            gp.stopMusic();
         }
         //QUEST STATE
         else if (gp.gameState == gp.questState) {

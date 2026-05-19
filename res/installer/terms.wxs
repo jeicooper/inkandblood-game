@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    terms.wxs  —  Ink and Blood: Rizal's Adventure
+    Custom WiX fragment: Terms and Conditions dialog
+
+    HOW TO USE:
+    1. Place this file in your --resource-dir folder (e.g. resources/installer/)
+    2. jpackage picks it up automatically when building an MSI/EXE
+    3. The dialog appears between WelcomeDlg and InstallDirDlg
+    4. The "Next" button is disabled until the user selects "I accept"
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Fragment>
+    <UI>
+
+      <!-- ═══════════════════════════════════════════════════════
+           TERMS AND CONDITIONS DIALOG
+           Size: 370 x 320  (wider than default to fit text)
+           ═══════════════════════════════════════════════════════ -->
+      <Dialog Id="InkBloodLicenseDlg"
+              Width="370" Height="320"
+              Title="Ink and Blood: Rizal&#8217;s Adventure &#8212; Terms and Conditions"
+              NoMinimize="yes">
+
+        <!-- ── Title bar ── -->
+        <Control Id="TitleLabel" Type="Text"
+                 X="15" Y="10" Width="340" Height="16"
+                 Transparent="yes" NoPrefix="yes">
+          <Text>{\WixUI_Font_Title}Terms and Conditions of Use</Text>
+        </Control>
+
+        <Control Id="SubtitleLabel" Type="Text"
+                 X="15" Y="26" Width="340" Height="12"
+                 Transparent="yes" NoPrefix="yes">
+          <Text>Please read the following agreement carefully before installing.</Text>
+        </Control>
+
+        <!-- ── Horizontal rule under title ── -->
+        <Control Id="HRule" Type="Line"
+                 X="0" Y="44" Width="370" Height="0" />
+
+        <!-- ════════════════════════════════════════════
+             SCROLLABLE LICENCE TEXT
+             All T&C content lives here as RTF/plain text
+             ════════════════════════════════════════════ -->
+        <Control Id="LicenseText" Type="ScrollableText"
+                 X="15" Y="50" Width="340" Height="180"
+                 Sunken="yes" TabSkip="no">
+          <Text>
+INK AND BLOOD: RIZAL&#8217;S ADVENTURE
+END-USER TERMS AND CONDITIONS (v1.0)
+Effective 2025 | Republic of the Philippines
+________________________________________
+
+1. ACCEPTANCE OF TERMS
+
+By installing, launching, or otherwise using Ink and Blood: Rizal&#8217;s Adventure (&#8220;the Game&#8221;), you (&#8220;User&#8221;) acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions (&#8220;Terms&#8221;). If you do not agree, you must cancel this installation immediately and remove any copies of the Game from your device.
+
+These Terms constitute a legally binding agreement between the User and the development team of Ink and Blood: Rizal&#8217;s Adventure (&#8220;the Developers&#8221;). Users who are minors (under 18) must have a parent or legal guardian review and consent on their behalf.
+
+________________________________________
+
+2. INTELLECTUAL PROPERTY AND GAME ASSETS
+
+All content within the Game &#8212; including but not limited to game maps, tile sets, character sprites, NPC designs, dialogue scripts, quest narratives, music, sound effects, user interface elements, artwork, and source code &#8212; is the exclusive intellectual property of the Developers and is protected under applicable copyright and intellectual property laws of the Republic of the Philippines.
+
+The following actions are expressly PROHIBITED without prior written authorization from the Developers:
+
+  - Copying, reproducing, or redistributing any game asset, image, audio file, map file, or source code in whole or in part.
+  - Modifying, altering, reverse-engineering, decompiling, or disassembling any component of the Game.
+  - Creating derivative works based on the Game&#8217;s assets, narrative, or design systems.
+  - Distributing modified versions of the Game under the same or a different name.
+  - Using game assets for commercial purposes or in any other software product.
+  - Uploading, streaming, or publishing extracted game content (art, audio, maps) without written permission.
+
+WARNING: Unauthorized reproduction or distribution of game assets constitutes copyright infringement and may be subject to civil and criminal legal action under Philippine law.
+
+________________________________________
+
+3. PROHIBITED CONDUCT
+
+Users are strictly prohibited from tampering with the Game&#8217;s internal data, systems, or files. This includes:
+
+  - Modifying save files (.dat files) to manipulate game progress, statistics, inventory, or quest states.
+  - Exploiting bugs, glitches, or unintended behavior to gain an advantage or bypass intended gameplay.
+  - Using third-party software, scripts, or memory editors to alter the Game&#8217;s runtime behavior.
+  - Attempting to access, read, or modify the users.properties, profiles.properties, or admin.properties configuration files.
+  - Sharing login credentials with other users or impersonating another registered user.
+  - Using the Game in any manner inconsistent with its intended educational purpose.
+
+________________________________________
+
+4. ACCOUNT MANAGEMENT AND ADMIN OVERSIGHT
+
+User accounts are created using verified student identification numbers and personal academic information. The following policies govern all account-related actions:
+
+  - Users may NOT independently modify their registered account details &#8212; including their name, student ID, year and section, or login credentials &#8212; without submitting a formal request to a designated system administrator.
+  - Account changes take effect ONLY after explicit approval by an authorized administrator through the Admin Reset panel.
+  - Attempts to directly edit account data files are considered a violation of these Terms and will result in account suspension or permanent deletion.
+  - Users may request a password reset or profile correction by contacting their supervising instructor or system administrator.
+  - Administrators retain the right to delete, reset, or suspend any account without prior notice if a violation of these Terms is confirmed.
+
+NOTE: Account credentials (username and password) are personal and confidential. The Developers are not liable for unauthorized access resulting from credential sharing by the User.
+
+________________________________________
+
+5. DATA COLLECTION AND CONSENT
+
+By creating an account and using the Game, you EXPRESSLY CONSENT to the collection, storage, and processing of the following categories of personal and academic data:
+
+  Personal Identity:
+    Data collected: First name, last name, middle initial, suffix.
+    Purpose: Account identification and display.
+
+  Academic Details:
+    Data collected: Student ID number, year and section.
+    Purpose: Account registration and administrative oversight.
+
+  Authentication:
+    Data collected: Hashed password (SHA-256 with salt). Passwords are NEVER stored in plain text.
+    Purpose: Secure login verification.
+
+  Game Progress:
+    Data collected: Quest states, inventory contents, player statistics (intellect, creativity, perception, charisma, age, EXP), world position, chapter progress, and cutscene flags.
+    Purpose: Save/load functionality and educational progress tracking.
+
+  NPC Interaction Log:
+    Data collected: Characters met and unlocked in the Character Almanac.
+    Purpose: Progress tracking and character discovery records.
+
+  System Preferences:
+    Data collected: Volume settings and fullscreen preference.
+    Purpose: User experience personalization.
+
+All data is stored LOCALLY on the device on which the Game is installed, within the saves/ directory. No data is transmitted to external servers or third parties unless explicitly stated in a future update to these Terms.
+
+________________________________________
+
+6. DATA USE AND RETENTION
+
+Collected data is used SOLELY for the following purposes:
+
+  - Enabling save and load functionality for individual user progress.
+  - Allowing authorized administrators to manage, audit, and reset student accounts.
+  - Supporting the educational objectives of the course for which the Game is deployed.
+
+Data will NOT be sold, leased, or shared with any commercial third party. Data will NOT be used for advertising, profiling, or any purpose unrelated to the educational deployment of the Game.
+
+User data is retained for the duration of the academic term or deployment period. Data may be deleted by an authorized administrator at any time, or upon a verified request by the User through proper administrative channels.
+
+________________________________________
+
+7. USER RIGHTS
+
+In accordance with Republic Act No. 10173 (Data Privacy Act of 2012), Users retain the following rights:
+
+  Right to Access: You may request a summary of the personal data stored in your account by contacting your administrator.
+
+  Right to Correction: You may request correction of inaccurate data through an authorized administrator.
+
+  Right to Erasure: You may request deletion of your account and all associated data through the admin reset process.
+
+  Right to Object: You may withdraw consent at any time by requesting account deletion; however, this will permanently terminate your access to the Game.
+
+________________________________________
+
+8. ENFORCEMENT AND PENALTIES
+
+Violation of any provision of these Terms may result in one or more of the following actions at the sole discretion of the Developers and/or supervising administrators:
+
+  - Immediate suspension or permanent deletion of the User&#8217;s account and all associated save data.
+  - Reporting of the violation to the relevant academic institution or instructor.
+  - Referral to appropriate disciplinary bodies in accordance with the institution&#8217;s code of conduct.
+  - Legal action for copyright infringement or unauthorized access to computer systems under applicable Philippine law.
+
+________________________________________
+
+9. AMENDMENTS TO THESE TERMS
+
+The Developers reserve the right to update or modify these Terms at any time. Continued use of the Game following any amendment constitutes acceptance of the revised Terms. Users will be notified of material changes at the next login session where reasonably practicable.
+
+________________________________________
+
+10. CONTACT AND INQUIRIES
+
+For questions, data requests, account correction requests, or to report a violation, please contact your designated course instructor or system administrator who manages the deployment of this Game within your academic institution.
+
+________________________________________
+
+By clicking "I accept the terms in the License Agreement" and proceeding with installation, you confirm that you have read, understood, and agree to all provisions stated above.
+          </Text>
+        </Control>
+
+        <!-- ── Horizontal rule above radio buttons ── -->
+        <Control Id="HRule2" Type="Line"
+                 X="0" Y="236" Width="370" Height="0" />
+
+        <!-- ════════════════════════════════════════════
+             ACCEPT / DECLINE RADIO GROUP
+             Property "EULA_ACCEPTED" must equal "Yes"
+             for the Next button to be enabled.
+             ════════════════════════════════════════════ -->
+        <Control Id="AcceptRadio" Type="RadioButtonGroup"
+                 X="15" Y="242" Width="340" Height="36"
+                 Property="EULA_ACCEPTED">
+          <RadioButtonGroup Property="EULA_ACCEPTED">
+            <RadioButton Text="I &amp;accept the terms in the License Agreement"
+                         Value="Yes" X="0" Y="0"  Width="320" Height="16" />
+            <RadioButton Text="I &amp;do not accept the terms in the License Agreement"
+                         Value="No"  X="0" Y="18" Width="320" Height="16" />
+          </RadioButtonGroup>
+        </Control>
+
+        <!-- ── Navigation buttons ── -->
+        <Control Id="BtnBack" Type="PushButton"
+                 X="180" Y="296" Width="56" Height="17"
+                 Text="&amp;Back">
+          <Publish Event="NewDialog" Value="WelcomeDlg">1</Publish>
+        </Control>
+
+        <!-- Next is disabled when EULA_ACCEPTED is not "Yes" -->
+        <Control Id="BtnNext" Type="PushButton"
+                 X="236" Y="296" Width="56" Height="17"
+                 Default="yes" Text="&amp;Next">
+          <!-- Only navigate forward when accepted -->
+          <Publish Event="NewDialog" Value="InstallDirDlg">
+            <![CDATA[EULA_ACCEPTED = "Yes"]]>
+          </Publish>
+          <!-- Visual enable/disable based on radio selection -->
+          <Condition Action="disable">
+            <![CDATA[EULA_ACCEPTED <> "Yes"]]>
+          </Condition>
+          <Condition Action="enable">
+            <![CDATA[EULA_ACCEPTED = "Yes"]]>
+          </Condition>
+        </Control>
+
+        <Control Id="BtnCancel" Type="PushButton"
+                 X="304" Y="296" Width="56" Height="17"
+                 Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+
+      </Dialog>
+      <!-- end InkBloodLicenseDlg -->
+
+
+      <!-- ═══════════════════════════════════════════════════════
+           WIRE THE DIALOG INTO THE INSTALL SEQUENCE
+           Placed after WelcomeDlg, before InstallDirDlg
+           ═══════════════════════════════════════════════════════ -->
+      <InstallUISequence>
+        <Show Dialog="InkBloodLicenseDlg" After="WelcomeDlg">NOT Installed</Show>
+      </InstallUISequence>
+
+      <!-- Also show during "Repair" / "Modify" flows if desired.
+           Remove the line below to skip T&C on re-runs. -->
+      <AdminUISequence>
+        <Show Dialog="InkBloodLicenseDlg" After="WelcomeDlg">NOT Installed</Show>
+      </AdminUISequence>
+
+
+      <!-- ═══════════════════════════════════════════════════════
+           PROPERTY: default value for the radio group
+           Set to "No" so Next is disabled by default
+           ═══════════════════════════════════════════════════════ -->
+
+    </UI>
+
+    <!-- Default the EULA property to "No" so the Next button
+         starts disabled until the user explicitly accepts. -->
+    <Property Id="EULA_ACCEPTED" Value="No" />
+
+  </Fragment>
+
+</Wix>

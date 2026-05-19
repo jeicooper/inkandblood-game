@@ -21,31 +21,42 @@ public class Player extends  Entity{
     private int lastTileX = -1;
     private int lastTileY = -1;
 
+    private static final String[] LOCATION_MAPS = {
+            "/maps/Chapter1.txt",
+            "/maps/Chapter2.txt",
+            "/maps/Chapter3.txt",
+            "/maps/Chapter4.txt",
+    };
+
     private static final int[][] LOCATION_TILES = {
-            { 63, 18 },
-            { 63, 19 },
-            { 72, 29 },
-            { 73, 29 },
-            { 74, 29 },
+            //chapter 1
+            { 63, 18, 0 },
+            { 63, 19, 0 },
+            { 72, 29, 0 },
+            { 73, 29, 0 },
+            { 74, 29, 0 },
 
-            {54, 21},
-            {54, 22},
-            {55, 22},
-            {56, 22},
-            {56, 21},
+            { 54, 21, 0 },
+            { 54, 22, 0 },
+            { 55, 22, 0 },
+            { 56, 22, 0 },
+            { 56, 21, 0 },
 
-            { 49, 44 },
-            { 49, 45 },
+            //chapter 2
+            { 49, 44, 1 },
+            { 49, 45, 1 },
 
-            { 22, 50 },
-            { 23, 50 },
-            { 24, 50 },
-            { 53, 74 },
-            { 53, 75 },
+            //chapter 3
+            { 22, 50, 2 },
+            { 23, 50, 2 },
+            { 24, 50, 2 },
+            { 53, 74, 2 },
+            { 53, 75, 2 },
 
-            { 50, 32 },
-            { 51, 32 },
-            { 52, 32 },
+            //chapter 4
+            { 50, 32, 3 },
+            { 51, 32, 3 },
+            { 52, 32, 3 },
     };
     private static final String[] LOCATION_TILE_NAMES = {
             "The Rizal's Family Home",
