@@ -125,6 +125,10 @@ public class UserManager {
         return new File(SAVES_DIR + File.separator + currentUser + ".dat");
     }
 
+    public File getSaveFileForUser(String username) {
+        return new File(SAVES_DIR + File.separator + username.trim() + ".dat");
+    }
+
     public java.util.Set<Object> getAllUsernames() { return users.keySet(); }
 
     public StudentProfile getProfile(String username) {
@@ -284,10 +288,6 @@ public class UserManager {
         try (OutputStream out = new FileOutputStream(PROFILE_FILE)) {
             profiles.store(out, "Ink & Blood — Student Profiles (DO NOT EDIT MANUALLY)");
         } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    public File getSaveFileForUser(String username) {
-        return new File(SAVES_DIR + File.separator + username.trim() + ".dat");
     }
 
     private static String encode(String s) {

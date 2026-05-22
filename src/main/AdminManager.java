@@ -239,7 +239,7 @@ public class AdminManager {
     }
 
     private String getProgressLabel(String username) {
-        File sf = new File("saves" + File.separator + username + ".dat");
+        File sf = userManager.getSaveFileForUser(username);
         if (!sf.exists()) return "No save data";
         try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(
                 new java.io.FileInputStream(sf))) {
