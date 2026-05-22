@@ -1151,7 +1151,7 @@ public class LogIn {
             drawProfileRow(g2, lx, ly, labelW, "Login Username:", sp.username);      ly += 10;
 
             // Save file indicator
-            File sf = new File("saves" + File.separator + sp.username + ".dat");
+            File sf = userManager.getSaveFileForUser(sp.username);
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
 
             if (sf.exists()) {

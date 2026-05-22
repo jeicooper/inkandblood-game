@@ -286,6 +286,10 @@ public class UserManager {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
+    public File getSaveFileForUser(String username) {
+        return new File(SAVES_DIR + File.separator + username.trim() + ".dat");
+    }
+
     private static String encode(String s) {
         try {
             return java.net.URLEncoder.encode(s == null ? "" : s, "UTF-8");
