@@ -123,11 +123,11 @@ public class CutsceneManager {
                     "but also to have a chance to live at the parish convent"},
 
             { "Four years in Dapitan. Despite my successes, the 22 language",
-                "I learned, I am not happy."},
+                    "I learned, I am not happy."},
 
             {"Loneliness haunts the quiet after work.",
                     "The death of Leonor Rivera left a void in my soul until",
-                            "Josephine Bracken arrived" },
+                    "Josephine Bracken arrived" },
 
             {"Dr. Blumentritt suggested an offer to trade my services",
                     "military doctor in Cuba in exchange for ending my exiles,",
@@ -140,7 +140,7 @@ public class CutsceneManager {
                     "for British protection.",
             },
             {
-                "Trusting Blanco’s 'word of honor,' I refused."
+                    "Trusting Blanco’s 'word of honor,' I refused."
             },
 
             {"He sees me as a threat to Spanish rule due to my influence",
@@ -555,6 +555,8 @@ public class CutsceneManager {
     }
 
     private void applyChapter2Changes() {
+        gp.currentMap         = CHAPTER2_MAP;
+        gp.currentSublocation = "MANILA";
         gp.tileM.loadMap(CHAPTER2_MAP);
         gp.player.loadSprite2(CHAPTER2_SPRITE);
         gp.player.worldX    = SPAWN_TILE_X  * gp.tileSize;
@@ -566,6 +568,8 @@ public class CutsceneManager {
     }
 
     private void applyEnrollment() {
+        gp.currentMap         = CHAPTER2_MAP;
+        gp.currentSublocation = "MANILA";
         gp.tileM.loadMap(CHAPTER2_MAP);
         gp.player.loadSprite2(CHAPTER2_SPRITE);
         gp.player.worldX    = SPAWN_TILE_X2 * gp.tileSize;
@@ -577,6 +581,8 @@ public class CutsceneManager {
     }
 
     private void applyChapter3Changes() {
+        gp.currentMap         = CHAPTER3_MAP;
+        gp.currentSublocation = "EUROPE";
         gp.tileM.loadMap(CHAPTER3_MAP);
         gp.player.loadSprite3(CHAPTER3_SPRITE);
         gp.player.worldX    = SPAWN_TILE_X3 * gp.tileSize;
@@ -591,6 +597,8 @@ public class CutsceneManager {
     }
 
     private void applyChapter4Changes() {
+        gp.currentMap         = CHAPTER4_MAP;
+        gp.currentSublocation = "INTRAMUROS";
         gp.tileM.loadMap(CHAPTER4_MAP);
         gp.player.worldX    = SPAWN_TILE_X4 * gp.tileSize;
         gp.player.worldY    = SPAWN_TILE_Y4 * gp.tileSize;
@@ -603,6 +611,8 @@ public class CutsceneManager {
     }
 
     private void applyFortSantiagoChanges() {
+        gp.currentMap         = DAPITAN;
+        gp.currentSublocation = "FORT SANTIAGO";
         gp.tileM.loadMap(DAPITAN);
         gp.player.worldX    = SPAWN_TILE_X5 * gp.tileSize;
         gp.player.worldY    = SPAWN_TILE_Y5 * gp.tileSize;
@@ -613,6 +623,8 @@ public class CutsceneManager {
     }
 
     public void startExecutionWalk() {
+        gp.currentMap         = CHAPTER4_MAP;
+        gp.currentSublocation = "BAGUMBAYAN";
         gp.tileM.loadMap(CHAPTER4_MAP);
         activeScene    = Scene.EXECUTION_WALK;
         ewPhase        = 0;

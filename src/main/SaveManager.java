@@ -263,10 +263,6 @@ public class SaveManager {
         }
     }
 
-    /**
-     * Applies the correct world state for the loaded quest.
-     * Returns true if music was already started internally (caller must skip playMusicForQuest).
-     */
     private boolean applyChapterState(QuestManager qm) {
 
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
@@ -276,11 +272,12 @@ public class SaveManager {
 
         // QUEST 7
         if (cq == QuestManager.QUEST7) {
+            gp.currentMap = "/maps/Chapter4.txt";
+            gp.currentSublocation = (qm.quest7Stage >= QuestManager.Q7_TALK_JOSEPHINE)
+                    ? "FORT SANTIAGO" : "INTRAMUROS";
             gp.tileM.loadMap("/maps/Chapter4.txt");
             gp.player.loadSprite3("");
             if (qm.quest7Stage >= QuestManager.Q7_DONE) {
-                // startQuest7EndCutscene leads to startExecutionWalk which plays soundURL[5].
-                // Signal to caller that music is already handled.
                 gp.cutsceneManager.startQuest7EndCutscene();
                 placePlayer(51, 36);
                 return true;
@@ -297,6 +294,8 @@ public class SaveManager {
 
         // QUEST 6
         else if (cq == QuestManager.QUEST6) {
+            gp.currentMap         = "/maps/Chapter3.txt";
+            gp.currentSublocation = "EUROPE";
             gp.tileM.loadMap("/maps/Chapter3.txt");
             gp.player.loadSprite3("");
             gp.aSetter.activateQuest6();
@@ -305,6 +304,8 @@ public class SaveManager {
 
         // QUEST 5
         else if (cq == QuestManager.QUEST5) {
+            gp.currentMap         = "/maps/Chapter3.txt";
+            gp.currentSublocation = "EUROPE";
             gp.tileM.loadMap("/maps/Chapter3.txt");
             gp.player.loadSprite3("");
             gp.aSetter.activateChapter3();
@@ -313,6 +314,8 @@ public class SaveManager {
 
         // QUEST 4
         else if (cq == QuestManager.QUEST4) {
+            gp.currentMap         = "/maps/Chapter2.txt";
+            gp.currentSublocation = "MANILA";
             gp.tileM.loadMap("/maps/Chapter2.txt");
             gp.player.loadSprite2("");
             gp.aSetter.activateQuest4();
@@ -321,6 +324,8 @@ public class SaveManager {
 
         // QUEST 3
         else if (cq == QuestManager.QUEST3) {
+            gp.currentMap         = "/maps/Chapter2.txt";
+            gp.currentSublocation = "MANILA";
             gp.tileM.loadMap("/maps/Chapter2.txt");
             gp.player.loadSprite2("");
             if (qm.quest3Stage >= QuestManager.TALK_PROFESSOR) {
@@ -334,6 +339,8 @@ public class SaveManager {
 
         // QUEST 2
         else if (cq == QuestManager.QUEST2) {
+            gp.currentMap         = "/maps/Chapter1.txt";
+            gp.currentSublocation = "CALAMBA, LAGUNA";
             gp.tileM.loadMap("/maps/Chapter1.txt");
             gp.npc[0]  = new entity.NPC_Teodora(gp);
             gp.npc[0].worldX  = 64 * gp.tileSize;
@@ -351,6 +358,8 @@ public class SaveManager {
 
         // QUEST 1
         else {
+            gp.currentMap         = "/maps/Chapter1.txt";
+            gp.currentSublocation = "CALAMBA, LAGUNA";
             gp.tileM.loadMap("/maps/Chapter1.txt");
             gp.aSetter.setNPC();
             placePlayer(64, 18);

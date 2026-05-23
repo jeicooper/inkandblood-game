@@ -232,7 +232,10 @@ public class Player extends  Entity{
             lastTileY = tileY;
 
             for (int i = 0; i < LOCATION_TILES.length; i++) {
-                if (tileX == LOCATION_TILES[i][0] && tileY == LOCATION_TILES[i][1]) {
+                int mapIndex = LOCATION_TILES[i][2];
+                if (tileX == LOCATION_TILES[i][0]
+                        && tileY == LOCATION_TILES[i][1]
+                        && gp.currentMap.equals(LOCATION_MAPS[mapIndex])) {
                     gp.ui.showLocationPopup(LOCATION_TILE_NAMES[i]);
                     break;
                 }

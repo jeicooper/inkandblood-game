@@ -313,21 +313,8 @@ public class UI {
         drawLocationLabel();
     }
     public void drawLocationLabel() {
-        int currentQ = gp.questManager.currentQuest;
-
-        String location;
-        String sublocation;
-
-        if (currentQ <= QuestManager.QUEST2) {
-            location    = " CALAMBA, LAGUNA";
-        } else if (currentQ <= QuestManager.QUEST4) {
-            location    = " MANILA";
-        } else if (currentQ <= QuestManager.QUEST6){
-            location    = " EUROPE";
-        } else {
-            location    = " INTRAMUROS";
-        }
-
+        String location = gp.currentSublocation;
+        if (location == null || location.isEmpty()) return;
 
         int labelX = gp.tileSize / 2;
         int labelY = gp.tileSize / 2 + gp.tileSize + 18;

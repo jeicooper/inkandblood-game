@@ -38,6 +38,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public boolean fullscreenOn = false;
     public int currentMusicIndex = 0;
+    public String currentMap         = "/maps/Chapter1.txt";
+    public String currentSublocation = "CALAMBA, LAGUNA";
 
     //FPS
     int fps = 60;
