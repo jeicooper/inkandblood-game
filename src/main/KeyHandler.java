@@ -60,7 +60,6 @@ public class KeyHandler implements KeyListener {
         //OPTION STATE
         else if (gp.gameState == gp.optionState) {
             optionState(code);
-            gp.stopMusic();
         }
         //QUEST STATE
         else if (gp.gameState == gp.questState) {
@@ -320,7 +319,7 @@ public class KeyHandler implements KeyListener {
 
     public void optionState(int code) {
         if (code == KeyEvent.VK_ESCAPE) {
-            gp.playMusic(0);
+            gp.playMusic(gp.currentMusicIndex);
             gp.gameState = gp.playState;
         }
         if (code == KeyEvent.VK_ENTER) {

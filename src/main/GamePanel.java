@@ -37,6 +37,7 @@ public class GamePanel extends JPanel implements Runnable {
     Graphics2D g2;
 
     public boolean fullscreenOn = false;
+    public int currentMusicIndex = 0;
 
     //FPS
     int fps = 60;
@@ -607,7 +608,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void playMusic(int i){
-
+        currentMusicIndex = i;
         music.setFile(i);
         music.play();
         music.loop();
