@@ -210,6 +210,7 @@ public class MiniMap {
         if (gp.gameState != gp.playState && gp.gameState != gp.dialogueState) return;
         if (gp.cutsceneManager.isExecutionWalkActive()) return;
         if (gp.cutsceneManager.isStatsScreenActive()) return;
+        if (gp.ui.quizPanelOpen) return;
 
         drawHUD(g2);
 

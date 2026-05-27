@@ -7,7 +7,7 @@ public class KeyHandler implements KeyListener {
 
     GamePanel gp;
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, qPressed, enterPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, fPressed, cPressed, qPressed, enterPressed, spacePressed;
 
     //DEBUGGING
     boolean checkDrawTime = false;
@@ -51,6 +51,9 @@ public class KeyHandler implements KeyListener {
                 }
             } else if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
                 gp.cutsceneManager.advance();
+            }
+            if (code == KeyEvent.VK_SPACE) {
+                spacePressed = true;
             }
         }
         //CHARACTER STATE
@@ -415,6 +418,9 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_ENTER) {
             enterPressed = false;
+        }
+        if (code == KeyEvent.VK_SPACE) {
+            spacePressed = false;
         }
     }
 }

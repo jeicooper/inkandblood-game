@@ -934,7 +934,8 @@ public class CutsceneManager {
 
     private void updateEndingScroll() {
         if (!esDone) {
-            esScrollY -= esSpeed;
+            float speed = gp.keyP.spacePressed ? esSpeed * 5f : esSpeed;
+            esScrollY -= speed;
 
             int lineH   = 28;
             int titleH  = 38;
