@@ -137,7 +137,9 @@ public class UI {
         if (gp.gameState == gp.playState){
 
             drawPlayerExp();
-            drawHints();
+            if (!gp.questManager.isQuestCompleted(QuestManager.QUEST1)) {
+                drawHints();
+            }
             drawQuestHUD();
 
             if (messageOn){
