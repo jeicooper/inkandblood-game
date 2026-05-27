@@ -63,6 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public NPCDatabase npcDatabase = new NPCDatabase(this, userManager);
     public NPCDexUI    npcDexUI    = new NPCDexUI(this, ui);
+    public MiniMap miniMap = new MiniMap(this);
 
     Thread gameThread;
 
@@ -105,7 +106,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         aSetter.setObject();
         aSetter.setNPC();
-//      playMusic(0);
 
         questManager.init();
         saveManager = new SaveManager(this, userManager);
@@ -208,6 +208,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             questManager.update();
             npcDexUI.tick();
+            miniMap.update();
         }
 
         if (gameState == dexState){
@@ -280,6 +281,7 @@ public class GamePanel extends JPanel implements Runnable {
             //UI
             npcDexUI.drawHUDIcon(g2);
             ui.draw(g2);
+            miniMap.draw(g2);
 
             //DEBUGGING
             if (keyP.checkDrawTime == true) {

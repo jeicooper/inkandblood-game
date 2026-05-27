@@ -11,7 +11,6 @@ public class QuestManager {
     private int cutsceneDelay = 0;
     private int cutsceneDelay1 = 0;
     private int cutsceneDelay2 = 0;
-    //    private int cutsceneDelay3 = 0;
     private int cutsceneDelay4 = 0;
     private int cutsceneDelay5 = 0;
     private int cutsceneDelay6 = 0;

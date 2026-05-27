@@ -229,6 +229,8 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_R) {
             gp.gameState = gp.dexState;
         }
+        // press M to open map
+        if (code == KeyEvent.VK_M) gp.miniMap.toggle();
 
         // Debugging
         if (code == KeyEvent.VK_T) {

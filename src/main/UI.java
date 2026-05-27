@@ -316,7 +316,7 @@ public class UI {
         String location = gp.currentSublocation;
         if (location == null || location.isEmpty()) return;
 
-        int labelX = gp.tileSize / 2;
+        int labelX = gp.tileSize / 2 + 10;
         int labelY = gp.tileSize / 2 + gp.tileSize + 18;
 
         // Shadow
@@ -1113,24 +1113,33 @@ public class UI {
         //Left Side
         int leftX = frameX + gp.tileSize;
         int leftY = frameY + gp.tileSize*2;
-        g2.drawString("Move", leftX, leftY); leftY += gp.tileSize;
-        g2.drawString("Confirm", leftX, leftY); leftY += gp.tileSize;
-        g2.drawString("Interact", leftX, leftY); leftY += gp.tileSize;
-        g2.drawString("Stats/Inventory", leftX, leftY); leftY += gp.tileSize;
-        g2.drawString("Pause", leftX, leftY); leftY += gp.tileSize;
-        g2.drawString("Quests", leftX, leftY); leftY += gp.tileSize;
-        g2.drawString("Options", leftX, leftY); leftY += gp.tileSize;
+        g2.drawString("Move", leftX, leftY); leftY += gp.tileSize/2 + 10;
+        g2.drawString("Confirm", leftX, leftY); leftY += gp.tileSize/2 + 10;
+        g2.drawString("Options", leftX, leftY); leftY += gp.tileSize/2 + 10;
+        g2.drawString("Interact", leftX, leftY); leftY += gp.tileSize/2 + 10;
+        g2.drawString("Stats/Inventory", leftX, leftY); leftY += gp.tileSize/2 + 10;
+        g2.drawString("Save Game", leftX, leftY); leftY += gp.tileSize/2 + 10;
+        g2.drawString("Quests", leftX, leftY); leftY += gp.tileSize/2 + 10;
+        g2.drawString("NPC Almanac", leftX, leftY); leftY += gp.tileSize/2 + 10;
+        g2.drawString("Map", leftX, leftY); leftY += gp.tileSize/2 + 10;
+
 
         //Right Side
-        int rightX = frameX + gp.tileSize*6;
+        int rightX = frameX + gp.tileSize*6 - 15;
         int rightY = frameY + gp.tileSize*2;
-        g2.drawString("WASD", rightX, rightY); rightY += gp.tileSize;
-        g2.drawString("Enter", rightX, rightY); rightY += gp.tileSize;
-        g2.drawString("F", rightX, rightY); rightY += gp.tileSize;
-        g2.drawString("C", rightX, rightY); rightY += gp.tileSize;
-        g2.drawString("P", rightX, rightY); rightY += gp.tileSize;
-        g2.drawString("Q", rightX, rightY); rightY += gp.tileSize;
-        g2.drawString("ESC", rightX, rightY); rightY += gp.tileSize;
+        g2.setColor(new Color(248, 207, 0));
+
+        g2.drawString("WASD", rightX, rightY); rightY += gp.tileSize/2 + 10;
+        g2.drawString("Enter", rightX, rightY); rightY += gp.tileSize/2 + 10;
+        g2.drawString("ESC", rightX, rightY); rightY += gp.tileSize/2 + 10;
+        g2.drawString("F", rightX, rightY); rightY += gp.tileSize/2 + 10;
+        g2.drawString("C", rightX, rightY); rightY += gp.tileSize/2 + 10;
+        g2.drawString("P", rightX, rightY); rightY += gp.tileSize/2 + 10;
+        g2.drawString("Q", rightX, rightY); rightY += gp.tileSize/2 + 10;
+        g2.drawString("R", rightX, rightY); rightY += gp.tileSize/2 + 10;
+        g2.drawString("M", rightX, rightY); rightY += gp.tileSize/2 + 10;
+
+
 
         textX = getXforCenter("Back");
         textY += gp.tileSize*8;

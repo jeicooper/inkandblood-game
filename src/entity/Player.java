@@ -4,7 +4,6 @@ import main.GamePanel;
 import main.KeyHandler;
 import main.QuestManager;
 import main.UtilityTool;
-import object.OBJ_Quil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
