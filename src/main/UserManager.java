@@ -28,9 +28,7 @@ public class UserManager {
     }
 
     public static String usernameFromStudentId(String studentId) {
-        String trimmed = studentId.trim();
-        if (trimmed.length() < 4) return trimmed;
-        return trimmed.substring(trimmed.length() - 4);
+        return studentId.trim().toUpperCase();
     }
 
     public static boolean isValidStudentId(String id) {
