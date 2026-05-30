@@ -13,15 +13,44 @@ public class LogIn {
 
     private final AdminManager adminManager;
     private int adminMode = 0;
+    // adminMode states:
+    //  1  = admin login        10 = admin registration
+    //  11 = admin dashboard     12 = create room        13 = room student list
+    //  2  = student search        3  = student profile     5  = edit profile
 
-    private final StringBuilder adminPassField = new StringBuilder();
     private final StringBuilder searchField    = new StringBuilder();
 
-    private boolean changingAdminPassword = false;
-    private final StringBuilder adminNewPw1Field = new StringBuilder();
-    private final StringBuilder adminNewPw2Field = new StringBuilder();
-    private boolean adminPwFocusOnConfirm = false;
-    private int adminChangePwStep = 0;
+    // Admin login (adminMode 1)
+    private final StringBuilder tLoginUserField = new StringBuilder();
+    private final StringBuilder tLoginPassField = new StringBuilder();
+    private int tLoginFocus = 0; // 0=user, 1=password, 2=Log In button
+
+    // Admin registration (adminMode 10)
+    private final StringBuilder tRegUserField = new StringBuilder();
+    private final StringBuilder tRegNameField = new StringBuilder();
+    private final StringBuilder tRegPw1Field  = new StringBuilder();
+    private final StringBuilder tRegPw2Field  = new StringBuilder();
+    private int tRegFocus = 0; // 0=user, 1=name, 2=password, 3=confirm
+
+    // Admin dashboard / room list (adminMode 11)
+    private java.util.List<AdminManager.Room> roomList = new java.util.ArrayList<>();
+    private int roomCursor       = 0;
+    private int roomScrollOffset = 0;
+
+    // Create room (adminMode 12)
+    private final StringBuilder roomCourseField = new StringBuilder();
+    private final StringBuilder roomYearField   = new StringBuilder();
+    private final StringBuilder roomSecField    = new StringBuilder();
+    private int roomFormFocus = 0; // 0=course, 1=year, 2=section
+
+    // Room student list (adminMode 13)
+    private AdminManager.Room selectedRoom = null;
+    private java.util.List<String> roomStudents = new java.util.ArrayList<>();
+    private int roomStuCursor = 0;
+    private int roomStuScroll = 0;
+
+    // Where a student profile (mode 3) returns to on ESC: 2 = search, 13 = room view
+    private int profileReturnMode = 2;
 
     private String adminError   = "";
     private String adminSuccess = "";
@@ -69,6 +98,10 @@ public class LogIn {
     private int signupStep    = 0;
     private int signupFocus   = 0;
 
+    // Sign-up account-type chooser (shown first on the Sign Up page)
+    private boolean signupChoosingType = true;
+    private int     signupTypeCursor   = 0; // 0 = student account, 1 = admin account
+
     // Personal Info
     private final StringBuilder fnField     = new StringBuilder();
     private final StringBuilder lnField     = new StringBuilder();
@@ -78,6 +111,7 @@ public class LogIn {
     // Acad Info
     private final StringBuilder ysField     = new StringBuilder();
     private final StringBuilder idField     = new StringBuilder();
+    private final StringBuilder roomField   = new StringBuilder(); // room code from instructor
 
     // Password Info
     private final StringBuilder pw1Field    = new StringBuilder();
@@ -140,6 +174,8 @@ public class LogIn {
                     break;
                 case 1: // Sign Up
                     mode = 2;
+                    signupChoosingType = true;
+                    signupTypeCursor   = 0;
                     signupStep  = 0;
                     signupFocus = 0;
                     clearSignupFields();
@@ -168,7 +204,9 @@ public class LogIn {
                 errorMessage = "";
             } else {
                 adminMode = 1;
-                adminPassField.setLength(0);
+                tLoginUserField.setLength(0);
+                tLoginPassField.setLength(0);
+                tLoginFocus  = 0;
                 searchField.setLength(0);
                 adminError   = "";
                 adminSuccess = "";
@@ -231,8 +269,28 @@ public class LogIn {
         if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
                 code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
 
+        // Account-type chooser: Student vs Admin
+        if (signupChoosingType) {
+            if (code == KeyEvent.VK_ESCAPE) { mode = 0; clearSignupFields(); return; }
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP)
+                signupTypeCursor = (signupTypeCursor - 1 + 2) % 2;
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN)
+                signupTypeCursor = (signupTypeCursor + 1) % 2;
+            if (code == KeyEvent.VK_ENTER) {
+                if (signupTypeCursor == 0) {       // Student account
+                    signupChoosingType = false;
+                    signupStep  = 0;
+                    signupFocus = 0;
+                    clearSignupFields();
+                } else {                           // Admin account
+                    enterAdminRegister();          // opens the admin registration form (adminMode 10)
+                }
+            }
+            return;
+        }
+
         if (code == KeyEvent.VK_ESCAPE) {
-            if (signupStep == 0) { mode = 0; clearSignupFields(); }
+            if (signupStep == 0) { signupChoosingType = true; signupTypeCursor = 0; }
             else                 { signupStep--; signupFocus = 0; }
             return;
         }
@@ -265,6 +323,9 @@ public class LogIn {
                     appendYearSectionChar(keyChar);
                 } else if (signupStep == 1 && signupFocus == 1) {
                     appendStudentIdChar(keyChar);
+                } else if (signupStep == 1 && signupFocus == 2) {
+                    if (Character.isLetterOrDigit(keyChar))
+                        active.append(Character.toUpperCase(keyChar));
                 } else {
                     active.append(keyChar);
                 }
@@ -350,6 +411,15 @@ public class LogIn {
             errorMessage = "That student ID is already registered.";
             return;
         }
+        String room = roomField.toString().trim().toUpperCase();
+        if (room.isEmpty()) {
+            errorMessage = "Room code is required. Ask your instructor for it.";
+            return;
+        }
+        if (!adminManager.roomExists(room)) {
+            errorMessage = "Room code not found. Check it with your instructor.";
+            return;
+        }
         signupStep  = 2;
         signupFocus = 0;
     }
@@ -365,6 +435,7 @@ public class LogIn {
                 sfxField.toString().trim(),
                 ysField.toString().trim(),
                 idField.toString().trim(),
+                roomField.toString().trim().toUpperCase(),
                 pw1Field.toString()
         );
 
@@ -388,51 +459,180 @@ public class LogIn {
         if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
                 code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
 
+        // ----- ESC routing (mode-aware) -----
         if (code == KeyEvent.VK_ESCAPE) {
-            if (adminMode == 3) {
-                if (confirmingDelete) {
-                    confirmingDelete = false;
-                } else if (resettingPassword) {
-                    resettingPassword = false;
-                    newPasswordField.setLength(0);
-                    confirmPasswordField.setLength(0);
-                    resetPwFocusOnConfirm = false;
-                    adminError = "";
-                } else {
-                    adminMode = 2;
-                    selectedAccount = null;
-                    selectedProfile = null;
-                }
-            } else {
-                adminMode = 0;
-                mode = 1;
+            switch (adminMode) {
+                case 3:
+                    if (confirmingDelete) {
+                        confirmingDelete = false;
+                    } else if (resettingPassword) {
+                        resettingPassword = false;
+                        newPasswordField.setLength(0);
+                        confirmPasswordField.setLength(0);
+                        resetPwFocusOnConfirm = false;
+                    } else {
+                        if (profileReturnMode == 13 && selectedRoom != null) {
+                            roomStudents = adminManager.getStudentsInRoom(selectedRoom.code);
+                            if (roomStuCursor >= roomStudents.size())
+                                roomStuCursor = Math.max(0, roomStudents.size() - 1);
+                        }
+                        adminMode = profileReturnMode;
+                        selectedAccount = null;
+                        selectedProfile = null;
+                    }
+                    break;
+                case 5:  adminMode = 3;  break;          // edit profile -> profile
+                case 2:  adminMode = 11; break;          // student search -> dashboard
+                case 12: adminMode = 11; break;          // create room  -> dashboard
+                case 13: adminMode = 11; break;          // room view    -> dashboard
+                case 10: adminMode = 0; mode = 2;        // register -> sign-up chooser
+                    signupChoosingType = true; signupTypeCursor = 1; break;
+                case 11: adminManager.logoutAdmin(); adminMode = 0; mode = 1; break;
+                case 1:
+                default: adminMode = 0; mode = 1; break;
             }
             return;
         }
 
+        // ===== Admin login (1) =====
         if (adminMode == 1) {
+            if (code == KeyEvent.VK_UP)   { tLoginFocus = (tLoginFocus - 1 + 3) % 3; return; }
+            if (code == KeyEvent.VK_DOWN) { tLoginFocus = (tLoginFocus + 1) % 3;     return; }
             if (code == KeyEvent.VK_BACK_SPACE) {
-                if (adminPassField.length() > 0) adminPassField.deleteCharAt(adminPassField.length() - 1);
+                StringBuilder a = (tLoginFocus == 0) ? tLoginUserField
+                        : (tLoginFocus == 1) ? tLoginPassField : null;
+                if (a != null && a.length() > 0) a.deleteCharAt(a.length() - 1);
                 return;
             }
             if (code == KeyEvent.VK_ENTER) {
-                if (adminManager.verifyAdmin(adminPassField.toString())) {
-                    adminMode = 2;
-                    adminPassField.setLength(0);
-                    searchField.setLength(0);
-                    refreshList("");
-                    listCursor = 0;
-                    listScrollOffset = 0;
-                } else {
-                    adminError = "Incorrect admin password.";
-                }
+                String err = adminManager.loginAdmin(tLoginUserField.toString(), tLoginPassField.toString());
+                if (err != null) adminError = err;
+                else             enterDashboard();
                 return;
             }
-            if (keyChar >= 20 && keyChar != 127 && adminPassField.length() < 20)
-                adminPassField.append(keyChar);
+            if (keyChar >= 20 && keyChar != 127) {
+                if (tLoginFocus == 0 && tLoginUserField.length() < 16)
+                    tLoginUserField.append(keyChar);
+                else if (tLoginFocus == 1 && tLoginPassField.length() < 20)
+                    tLoginPassField.append(keyChar);
+            }
             return;
         }
 
+        // ===== Admin registration (10) =====
+        if (adminMode == 10) {
+            if (code == KeyEvent.VK_UP)   { tRegFocus = (tRegFocus - 1 + 4) % 4; return; }
+            if (code == KeyEvent.VK_DOWN) { tRegFocus = (tRegFocus + 1) % 4;     return; }
+            if (code == KeyEvent.VK_BACK_SPACE) {
+                StringBuilder a = regField(tRegFocus);
+                if (a != null && a.length() > 0) a.deleteCharAt(a.length() - 1);
+                return;
+            }
+            if (code == KeyEvent.VK_ENTER) { submitAdminRegister(); return; }
+            if (keyChar >= 20 && keyChar != 127) {
+                StringBuilder a = regField(tRegFocus);
+                int lim = (tRegFocus == 0) ? 16 : (tRegFocus == 1) ? 30 : 20;
+                if (a != null && a.length() < lim) a.append(keyChar);
+            }
+            return;
+        }
+
+        // ===== Admin dashboard (11) =====
+        if (adminMode == 11) {
+            if (code == KeyEvent.VK_UP) {
+                if (roomCursor > 0) {
+                    roomCursor--;
+                    if (roomCursor < roomScrollOffset) roomScrollOffset--;
+                }
+                return;
+            }
+            if (code == KeyEvent.VK_DOWN) {
+                if (roomCursor < roomList.size() - 1) {
+                    roomCursor++;
+                    if (roomCursor >= roomScrollOffset + MAX_VISIBLE) roomScrollOffset++;
+                }
+                return;
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                if (!roomList.isEmpty()) openRoom(roomList.get(roomCursor));
+                return;
+            }
+            if (code == KeyEvent.VK_N) { enterCreateRoom(); return; }
+            if (code == KeyEvent.VK_A) {   // manage all students (search)
+                adminMode = 2;
+                searchField.setLength(0);
+                refreshList("");
+                listCursor = 0;
+                listScrollOffset = 0;
+                return;
+            }
+            if (code == KeyEvent.VK_X) {   // export all students
+                String err = adminManager.exportToExcel();
+                if (err == null) adminSuccess = "Exported all students to user_export.xls";
+                else             adminError   = err;
+                return;
+            }
+            return;
+        }
+
+        // ===== Create room (12) =====
+        if (adminMode == 12) {
+            if (code == KeyEvent.VK_UP)   { roomFormFocus = (roomFormFocus - 1 + 3) % 3; return; }
+            if (code == KeyEvent.VK_DOWN) { roomFormFocus = (roomFormFocus + 1) % 3;     return; }
+            if (code == KeyEvent.VK_BACK_SPACE) {
+                StringBuilder a = roomFormField(roomFormFocus);
+                if (a != null && a.length() > 0) a.deleteCharAt(a.length() - 1);
+                return;
+            }
+            if (code == KeyEvent.VK_ENTER) { submitCreateRoom(); return; }
+            if (keyChar >= 20 && keyChar != 127) {
+                StringBuilder a = roomFormField(roomFormFocus);
+                int lim = (roomFormFocus == 0) ? 30 : 6;
+                if (a != null && a.length() < lim) a.append(keyChar);
+            }
+            return;
+        }
+
+        // ===== Room student list (13) =====
+        if (adminMode == 13) {
+            if (code == KeyEvent.VK_UP) {
+                if (roomStuCursor > 0) {
+                    roomStuCursor--;
+                    if (roomStuCursor < roomStuScroll) roomStuScroll--;
+                }
+                return;
+            }
+            if (code == KeyEvent.VK_DOWN) {
+                if (roomStuCursor < roomStudents.size() - 1) {
+                    roomStuCursor++;
+                    if (roomStuCursor >= roomStuScroll + MAX_VISIBLE) roomStuScroll++;
+                }
+                return;
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                if (!roomStudents.isEmpty()) {
+                    selectedAccount = roomStudents.get(roomStuCursor);
+                    selectedProfile = adminManager.getProfile(selectedAccount);
+                    confirmingDelete  = false;
+                    resettingPassword = false;
+                    profileReturnMode = 13;
+                    adminMode = 3;
+                }
+                return;
+            }
+            if (code == KeyEvent.VK_X) {
+                if (selectedRoom != null) {
+                    String err = adminManager.exportRoomToExcel(selectedRoom.code);
+                    if (err == null) adminSuccess = "Exported room " + selectedRoom.code
+                            + " to room_" + selectedRoom.code + "_export.xls";
+                    else             adminError = err;
+                }
+                return;
+            }
+            return;
+        }
+
+        // ===== Student search (2) =====
         if (adminMode == 2) {
             if (code == KeyEvent.VK_BACK_SPACE) {
                 if (searchField.length() > 0) {
@@ -462,30 +662,15 @@ public class LogIn {
                     selectedAccount = filteredList.get(listCursor);
                     selectedProfile = adminManager.getProfile(selectedAccount);
                     confirmingDelete = false;
+                    profileReturnMode = 2;
                     adminMode = 3;
                 }
                 return;
             }
-
-            if (code == KeyEvent.VK_ALT) {
-                changingAdminPassword = true;
-                adminChangePwStep = 0;
-                adminPassField.setLength(0);
-                adminNewPw1Field.setLength(0);
-                adminNewPw2Field.setLength(0);
-                adminPwFocusOnConfirm = false;
-                adminError = "";
-                adminSuccess = "";
-                adminMode = 4;
-                return;
-            }
             if (code == KeyEvent.VK_X) {
                 String err = adminManager.exportToExcel();
-                if (err == null) {
-                    adminSuccess = "Exported! Saved as user_export.xls in your saves folder.";
-                } else {
-                    adminError = err;
-                }
+                if (err == null) adminSuccess = "Exported all students to user_export.xls";
+                else             adminError = err;
                 return;
             }
             if (keyChar >= 20 && keyChar != 127 && searchField.length() < 20) {
@@ -497,9 +682,9 @@ public class LogIn {
             return;
         }
 
+        // ===== Student profile (3) =====
         if (adminMode == 3) {
             if (resettingPassword) {
-                // Password reset form
                 if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN) {
                     resetPwFocusOnConfirm = !resetPwFocusOnConfirm;
                     return;
@@ -507,7 +692,6 @@ public class LogIn {
                 if (code == KeyEvent.VK_BACK_SPACE) {
                     StringBuilder active = resetPwFocusOnConfirm ? confirmPasswordField : newPasswordField;
                     if (active.length() > 0) active.deleteCharAt(active.length() - 1);
-                    adminError = "";
                     return;
                 }
                 if (code == KeyEvent.VK_ENTER) {
@@ -527,7 +711,6 @@ public class LogIn {
                             newPasswordField.setLength(0);
                             confirmPasswordField.setLength(0);
                             resetPwFocusOnConfirm = false;
-                            adminError = "";
                         }
                     }
                     return;
@@ -548,11 +731,8 @@ public class LogIn {
                     newPasswordField.setLength(0);
                     confirmPasswordField.setLength(0);
                     resetPwFocusOnConfirm = false;
-                    adminError = "";
-                    adminSuccess = "";
                 }
                 if (code == KeyEvent.VK_E && selectedAccount != null) {
-                    // Pre-populate edit fields from current profile
                     editOriginalUsername = selectedAccount;
                     editFnField.setLength(0);  editLnField.setLength(0);
                     editMiField.setLength(0);  editSfxField.setLength(0);
@@ -566,8 +746,6 @@ public class LogIn {
                         editIdField.append(selectedProfile.studentId);
                     }
                     editFocus = 0;
-                    adminError = "";
-                    adminSuccess = "";
                     adminMode = 5;
                 }
             } else {
@@ -577,99 +755,32 @@ public class LogIn {
                     selectedAccount = null;
                     selectedProfile = null;
                     confirmingDelete = false;
-                    adminMode = 2;
-                    refreshList(searchField.toString());
-                    listCursor = 0;
-                    listScrollOffset = 0;
-                }
-            }
-        }
-        if (adminMode == 4) {
-            if (code == KeyEvent.VK_ESCAPE) {
-                adminMode = 2;
-                changingAdminPassword = false;
-                adminPassField.setLength(0);
-                adminNewPw1Field.setLength(0);
-                adminNewPw2Field.setLength(0);
-                adminError = "";
-                return;
-            }
-            if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN) {
-                if (adminChangePwStep == 1) adminPwFocusOnConfirm = !adminPwFocusOnConfirm;
-                return;
-            }
-            if (code == KeyEvent.VK_BACK_SPACE) {
-                StringBuilder active = (adminChangePwStep == 0) ? adminPassField
-                        : adminPwFocusOnConfirm ? adminNewPw2Field : adminNewPw1Field;
-                if (active.length() > 0) active.deleteCharAt(active.length() - 1);
-                adminError = "";
-                return;
-            }
-            if (code == KeyEvent.VK_ENTER) {
-                if (adminChangePwStep == 0) {
-                    if (!adminManager.verifyAdmin(adminPassField.toString())) {
-                        adminError = "Current password is incorrect.";
+                    if (profileReturnMode == 13 && selectedRoom != null) {
+                        roomStudents = adminManager.getStudentsInRoom(selectedRoom.code);
+                        if (roomStuCursor >= roomStudents.size())
+                            roomStuCursor = Math.max(0, roomStudents.size() - 1);
+                        adminMode = 13;
                     } else {
-                        adminChangePwStep = 1;
-                        adminPwFocusOnConfirm = false;
-                        adminError = "";
-                    }
-                } else {
-                    // Confirm new password
-                    String np = adminNewPw1Field.toString();
-                    String cp = adminNewPw2Field.toString();
-                    if (np.length() < 8) {
-                        adminError = "Password must be at least 8 characters.";
-                    } else if (!np.equals(cp)) {
-                        adminError = "Passwords do not match.";
-                    } else {
-                        String err = adminManager.changeAdminPassword(adminPassField.toString(), np);
-                        if (err != null) {
-                            adminError = err;
-                        } else {
-                            adminMode = 2;
-                            changingAdminPassword = false;
-                            adminPassField.setLength(0);
-                            adminNewPw1Field.setLength(0);
-                            adminNewPw2Field.setLength(0);
-                            adminError = "";
-                            adminSuccess = "Admin password changed successfully!";
-                        }
+                        refreshList(searchField.toString());
+                        listCursor = 0;
+                        listScrollOffset = 0;
+                        adminMode = 2;
                     }
                 }
-                return;
             }
-            if (keyChar >= 20 && keyChar != 127) {
-                StringBuilder active = (adminChangePwStep == 0) ? adminPassField
-                        : adminPwFocusOnConfirm ? adminNewPw2Field : adminNewPw1Field;
-                if (active.length() < 20) active.append(keyChar);
-            }
+            return;
         }
 
+        // ===== Edit profile (5) =====
         if (adminMode == 5) {
-            if (code == KeyEvent.VK_ESCAPE) {
-                adminMode = 3;
-                adminError = "";
-                return;
-            }
-            if (code == KeyEvent.VK_UP) {
-                editFocus = (editFocus - 1 + 6) % 6;
-                return;
-            }
-            if (code == KeyEvent.VK_DOWN) {
-                editFocus = (editFocus + 1) % 6;
-                return;
-            }
+            if (code == KeyEvent.VK_UP)   { editFocus = (editFocus - 1 + 6) % 6; return; }
+            if (code == KeyEvent.VK_DOWN) { editFocus = (editFocus + 1) % 6;     return; }
             if (code == KeyEvent.VK_BACK_SPACE) {
                 StringBuilder f = activeEditField();
                 if (f != null && f.length() > 0) f.deleteCharAt(f.length() - 1);
-                adminError = "";
                 return;
             }
-            if (code == KeyEvent.VK_ENTER) {
-                submitEditProfile();
-                return;
-            }
+            if (code == KeyEvent.VK_ENTER) { submitEditProfile(); return; }
             if (keyChar >= 20 && keyChar != 127) {
                 StringBuilder f = activeEditField();
                 if (f == null) return;
@@ -680,6 +791,99 @@ public class LogIn {
                     else                     f.append(keyChar);
                 }
             }
+            return;
+        }
+    }
+
+    // ----- Admin / room flow helpers -----
+
+    private void enterAdminRegister() {
+        adminMode = 10;
+        tRegFocus = 0;
+        tRegUserField.setLength(0);
+        tRegNameField.setLength(0);
+        tRegPw1Field.setLength(0);
+        tRegPw2Field.setLength(0);
+        adminError = "";
+        adminSuccess = "";
+    }
+
+    private void submitAdminRegister() {
+        String u  = tRegUserField.toString().trim();
+        String nm = tRegNameField.toString().trim();
+        String p1 = tRegPw1Field.toString();
+        String p2 = tRegPw2Field.toString();
+        if (!p1.equals(p2)) { adminError = "Passwords do not match."; return; }
+        String err = adminManager.registerAdmin(u, nm, p1);
+        if (err != null) { adminError = err; return; }
+        // Auto-login the new admin
+        adminManager.loginAdmin(u, p1);
+        enterDashboard();
+        adminSuccess = "Admin account created. Welcome, " + adminManager.getCurrentAdminName() + "!";
+    }
+
+    private void enterDashboard() {
+        roomList = adminManager.getRoomsForCurrentAdmin();
+        roomCursor = 0;
+        roomScrollOffset = 0;
+        tLoginUserField.setLength(0);
+        tLoginPassField.setLength(0);
+        adminError = "";
+        adminSuccess = "";
+        adminMode = 11;
+    }
+
+    private void enterCreateRoom() {
+        roomCourseField.setLength(0);
+        roomYearField.setLength(0);
+        roomSecField.setLength(0);
+        roomFormFocus = 0;
+        adminError = "";
+        adminSuccess = "";
+        adminMode = 12;
+    }
+
+    private void submitCreateRoom() {
+        String course  = roomCourseField.toString().trim();
+        String year    = roomYearField.toString().trim();
+        String section = roomSecField.toString().trim();
+        if (course.isEmpty())  { adminError = "Course / subject is required."; return; }
+        if (year.isEmpty())    { adminError = "Year is required.";    return; }
+        if (section.isEmpty()) { adminError = "Section is required."; return; }
+        String code = adminManager.createRoom(course, year, section);
+        roomList = adminManager.getRoomsForCurrentAdmin();
+        roomCursor = 0;
+        roomScrollOffset = 0;
+        adminMode = 11;
+        adminSuccess = "Room created — give students this code:  " + code;
+    }
+
+    private void openRoom(AdminManager.Room room) {
+        selectedRoom = room;
+        roomStudents = adminManager.getStudentsInRoom(room.code);
+        roomStuCursor = 0;
+        roomStuScroll = 0;
+        adminError = "";
+        adminSuccess = "";
+        adminMode = 13;
+    }
+
+    private StringBuilder regField(int focus) {
+        switch (focus) {
+            case 0: return tRegUserField;
+            case 1: return tRegNameField;
+            case 2: return tRegPw1Field;
+            case 3: return tRegPw2Field;
+            default: return null;
+        }
+    }
+
+    private StringBuilder roomFormField(int focus) {
+        switch (focus) {
+            case 0: return roomCourseField;
+            case 1: return roomYearField;
+            case 2: return roomSecField;
+            default: return null;
         }
     }
 
@@ -806,7 +1010,54 @@ public class LogIn {
 
     // SIGN UP FORM
 
+    private void drawSignupTypeMenu(Graphics2D g2) {
+        int panelW = gp.tileSize * 10;
+        int panelH = gp.tileSize * 6;
+        int panelX = gp.screenWidth  / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        gp.ui.drawSubWindow(g2, panelX, panelY, panelW, panelH);
+
+        int cx = panelX + panelW / 2;
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 36f));
+        g2.setColor(GOLD);
+        String t = "Sign Up";
+        g2.drawString(t, cx - strW(g2, t) / 2, (int) (panelY + gp.tileSize * 1.2));
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
+        g2.setColor(LIGHT_GREY);
+        String sub = "Choose the kind of account to create.";
+        g2.drawString(sub, cx - strW(g2, sub) / 2, (int) (panelY + gp.tileSize * 1.2) + 28);
+
+        String[] items = { "Student Account", "Admin Account" };
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 30f));
+        int itemY = panelY + gp.tileSize * 2 + 36;
+        for (int i = 0; i < items.length; i++) {
+            boolean sel = (i == signupTypeCursor);
+            g2.setColor(sel ? GOLD : Color.white);
+            int ix = cx - strW(g2, items[i]) / 2;
+            g2.drawString(items[i], ix, itemY);
+            if (sel) g2.drawString(">", ix - gp.tileSize, itemY);
+            itemY += gp.tileSize;
+        }
+
+        // Short description of the highlighted choice
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
+        g2.setColor(new Color(150, 150, 150));
+        String desc = (signupTypeCursor == 0)
+                ? "For students — needs a room code from your instructor."
+                : "For teachers — create room codes and manage students.";
+        g2.drawString(desc, cx - strW(g2, desc) / 2, itemY + 6);
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ UP/DOWN ] Navigate    [ ENTER ] Select    [ ESC ] Back";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
+    }
+
     private void drawSignupForm(Graphics2D g2) {
+        if (signupChoosingType) { drawSignupTypeMenu(g2); return; }
+
         int panelW = gp.tileSize * 14;
         int panelH = gp.tileSize * 8;
         int panelX = gp.screenWidth  / 2 - panelW / 2;
@@ -858,25 +1109,42 @@ public class LogIn {
                 break;
             }
 
-            // ---- Step 1: Academic details — 2×2 equal grid ----
+            // ---- Step 1: Academic details ----
             case 1: {
                 // Row 1: Year & Section | Student ID
                 drawField(g2, "Year & Section * (X-X)",              ysField.toString(), false, signupFocus == 0,
                         col1X, row1Y, cellW);
                 drawField(g2, "Student ID *  (20XX-100-XXX(X))", idField.toString(), false, signupFocus == 1, col2X, row1Y, cellW);
 
-                // Live username preview sits below row 1 on the right column
+                // Row 2: Room Code | live username preview
+                drawField(g2, "Room Code *  (from instructor)", roomField.toString(), false, signupFocus == 2,
+                        col1X, row2Y, cellW);
+
                 String rawId = idField.toString().trim();
-                int previewY = row1Y + rowH + 10;
                 if (rawId.matches("20(0[5-9]|[12]\\d|3[0-5])-100-\\d{3,4}")) {
                     String derived = UserManager.usernameFromStudentId(rawId);
                     g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
                     g2.setColor(OK_GREEN);
-                    g2.drawString("Login username:  " + derived, col2X, previewY);
+                    g2.drawString("Login username:  " + derived, col2X, row2Y + 6);
                 } else if (!rawId.isEmpty()) {
                     g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
                     g2.setColor(DIM_GREY);
-                    g2.drawString("Enter full ID to see username", col2X, previewY);
+                    g2.drawString("Enter full ID to see username", col2X, row2Y + 6);
+                }
+
+                // Room code status under the room field
+                String room = roomField.toString().trim().toUpperCase();
+                int roomStatusY = row2Y + rowH + 8;
+                if (!room.isEmpty()) {
+                    g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
+                    if (adminManager.roomExists(room)) {
+                        AdminManager.Room r = adminManager.getRoom(room);
+                        g2.setColor(OK_GREEN);
+                        g2.drawString((r != null) ? "Room found: " + r.label() : "Room found", col1X, roomStatusY);
+                    } else {
+                        g2.setColor(ERROR_RED);
+                        g2.drawString("Room code not recognized yet", col1X, roomStatusY);
+                    }
                 }
                 break;
             }
@@ -962,35 +1230,11 @@ public class LogIn {
 
         gp.ui.drawSubWindow(g2, panelX, panelY, panelW, panelH);
 
-        if (adminMode == 1) {
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 30f));
-            g2.setColor(new Color(255, 100, 100));
-            String t = "Admin Access";
-            g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad);
-
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
-            g2.setColor(LIGHT_GREY);
-            String sub = "Enter the admin password to continue.";
-            g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 26);
-
-            int fieldW = panelW - pad * 2;
-            int fieldX = panelX + pad;
-            int fieldY = panelY + pad + 56;
-            drawField(g2, "Admin Password", getMaskedValue(adminPassField.toString()),
-                    true, true, fieldX, fieldY, fieldW);
-
-            if (!adminError.isEmpty()) {
-                g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 22f));
-                g2.setColor(ERROR_RED);
-                g2.drawString(adminError, cx - strW(g2, adminError) / 2, fieldY + gp.tileSize + 36);
-            }
-
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
-            g2.setColor(LIGHT_GREY);
-            String hint = "[ ENTER ] Confirm    [ ESC ] Cancel";
-            g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
-            return;
-        }
+        if (adminMode == 1)  { drawAdminLogin(g2, panelX, panelY, panelW, panelH, cx, pad);    return; }
+        if (adminMode == 10) { drawAdminRegister(g2, panelX, panelY, panelW, panelH, cx, pad); return; }
+        if (adminMode == 11) { drawDashboard(g2, panelX, panelY, panelW, panelH, cx, pad);       return; }
+        if (adminMode == 12) { drawCreateRoom(g2, panelX, panelY, panelW, panelH, cx, pad);      return; }
+        if (adminMode == 13) { drawRoomView(g2, panelX, panelY, panelW, panelH, cx, pad);        return; }
 
         if (adminMode == 2) {
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
@@ -1071,17 +1315,13 @@ public class LogIn {
 
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
             g2.setColor(LIGHT_GREY);
-            String hint = "[ UP/DOWN ] Navigate    [ ENTER ] View Profile    [ ESC ] Back";
+            String hint = "[ UP/DOWN ] Navigate    [ ENTER ] View Profile    [ ESC ] Back to Dashboard";
             g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
 
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 17f));
-            g2.setColor(new Color(100, 113, 255));
-            String chHint = "[ ALT ] Change Admin Password";
-            g2.drawString(chHint, panelX + pad, panelY + panelH - 36);
-
             g2.setColor(new Color(80, 220, 160));
-            String exHint = "[ X ] Export to Excel";
-            g2.drawString(exHint, panelX + panelW - pad - strW(g2, exHint), panelY + panelH - 36);
+            String exHint = "[ X ] Export All Students to Excel";
+            g2.drawString(exHint, panelX + panelW - gp.tileSize * 2, panelY + panelH - 36);
         }
 
         if (adminMode == 3) {
@@ -1092,15 +1332,309 @@ public class LogIn {
             }
         }
 
-        if (adminMode == 4) {
-            drawChangeAdminPasswordForm(g2, panelX, panelY, panelW, panelH, cx, pad);
-            return;
-        }
-
         if (adminMode == 5) {
             drawEditProfileForm(g2, panelX, panelY, panelW, panelH, cx, pad);
             return;
         }
+    }
+
+    // ===== Admin login (adminMode 1) =====
+    private void drawAdminLogin(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(255, 100, 100));
+        String t = "Admin Login";
+        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad);
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
+        g2.setColor(LIGHT_GREY);
+        String sub = "Log in to manage rooms and students.";
+        g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 26);
+
+        int fieldW = panelW - pad * 2;
+        int fieldX = panelX + pad;
+        int fieldY = panelY + pad + 64;
+
+        drawField(g2, "Username", tLoginUserField.toString(),
+                false, tLoginFocus == 0, fieldX, fieldY, fieldW);
+
+        fieldY += gp.tileSize + 22;
+        drawField(g2, "Password", getMaskedValue(tLoginPassField.toString()),
+                true, tLoginFocus == 1, fieldX, fieldY, fieldW);
+
+
+        if (!adminError.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(adminError, cx - strW(g2, adminError) / 2, panelY + panelH - 40);
+        }
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ UP/DOWN ] Switch    [ ENTER ] Log In    [ ESC ] Cancel";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
+    }
+
+    // ===== Admin registration (adminMode 10) =====
+    private void drawAdminRegister(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(255, 100, 100));
+        String t = "Register Admin Account";
+        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad - 4);
+
+        int fieldW = panelW - pad * 2;
+        int fieldX = panelX + pad;
+        int fieldY = panelY + pad + 36;
+        int step   = gp.tileSize + 14;
+
+        drawField(g2, "Username (3-16 chars)", tRegUserField.toString(),
+                false, tRegFocus == 0, fieldX, fieldY, fieldW);
+        fieldY += step;
+        drawField(g2, "Full Name", tRegNameField.toString(),
+                false, tRegFocus == 1, fieldX, fieldY, fieldW);
+        fieldY += step;
+        drawField(g2, "Password (min. 8 chars)", getMaskedValue(tRegPw1Field.toString()),
+                true, tRegFocus == 2, fieldX, fieldY, fieldW);
+        fieldY += step;
+        drawField(g2, "Confirm Password", getMaskedValue(tRegPw2Field.toString()),
+                true, tRegFocus == 3, fieldX, fieldY, fieldW);
+
+        if (tRegPw1Field.length() > 0 && tRegPw2Field.length() > 0) {
+            boolean match = tRegPw1Field.toString().equals(tRegPw2Field.toString());
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
+            g2.setColor(match ? OK_GREEN : ERROR_RED);
+            String m = match ? "Passwords match" : "Passwords do not match";
+            g2.drawString(m, cx - strW(g2, m) / 2, fieldY + gp.tileSize - 2);
+        }
+
+        if (!adminError.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 19f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(adminError, cx - strW(g2, adminError) / 2, panelY + panelH - 40);
+        }
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ UP/DOWN ] Switch field    [ ENTER ] Register    [ ESC ] Back";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
+    }
+
+    // ===== Admin dashboard / room list (adminMode 11) =====
+    private void drawDashboard(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 26f));
+        g2.setColor(new Color(255, 100, 100));
+        String name = adminManager.getCurrentAdminName();
+        String t = "Admin Dashboard" + (name != null && !name.isEmpty() ? " — " + name : "");
+        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad - 6);
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
+        g2.setColor(LIGHT_GREY);
+        String sub = "Your Rooms";
+        g2.drawString(sub, panelX + pad, panelY + pad + 24);
+
+        int cardX     = panelX + pad;
+        int cardW     = panelW - pad * 2;
+        int cardH     = gp.tileSize - 4;
+        int cardGap   = 6;
+        int cardStartY = panelY + pad + 40;
+
+        if (roomList.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 22f));
+            g2.setColor(new Color(150, 150, 150));
+            String none = "You have no rooms yet.";
+            g2.drawString(none, cx - strW(g2, none) / 2, cardStartY + cardH);
+            String none2 = "Press [ N ] to create your first room code.";
+            g2.drawString(none2, cx - strW(g2, none2) / 2, cardStartY + cardH + 30);
+        } else {
+            for (int i = 0; i < MAX_VISIBLE; i++) {
+                int idx = roomScrollOffset + i;
+                if (idx >= roomList.size()) break;
+
+                AdminManager.Room r = roomList.get(idx);
+                boolean sel = (idx == roomCursor);
+                int cardY   = cardStartY + i * (cardH + cardGap);
+
+                g2.setColor(sel ? new Color(180, 140, 40, 220) : new Color(40, 40, 40, 180));
+                g2.fillRoundRect(cardX, cardY, cardW, cardH, 8, 8);
+                g2.setColor(sel ? GOLD : DIM_GREY);
+                g2.setStroke(new BasicStroke(sel ? 2.5f : 1f));
+                g2.drawRoundRect(cardX, cardY, cardW, cardH, 8, 8);
+
+                g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 24f));
+                g2.setColor(sel ? Color.black : GOLD);
+                g2.drawString(r.code, cardX + 12, cardY + cardH - 8);
+
+                g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 21f));
+                g2.setColor(sel ? new Color(30, 20, 0) : Color.white);
+                g2.drawString(r.label(), cardX + 12 + strW(g2, r.code) + 30, cardY + cardH - 8);
+
+                int count = adminManager.countStudentsInRoom(r.code);
+                String cnt = count + (count == 1 ? " student" : " students");
+                g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
+                g2.setColor(sel ? new Color(60, 40, 0) : LIGHT_GREY);
+                g2.drawString(cnt, cardX + cardW - strW(g2, cnt) - 14, cardY + cardH - 8);
+            }
+
+            if (roomList.size() > MAX_VISIBLE) {
+                g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+                g2.setColor(LIGHT_GREY);
+                String sc = "";
+                if (roomScrollOffset > 0) sc += "▲ ";
+                if (roomScrollOffset + MAX_VISIBLE < roomList.size()) sc += "▼";
+                g2.drawString(sc.trim(), cx - strW(g2, sc.trim()) / 2,
+                        cardStartY + MAX_VISIBLE * (cardH + cardGap));
+            }
+        }
+
+        if (!adminSuccess.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 19f));
+            g2.setColor(OK_GREEN);
+            g2.drawString(adminSuccess, cx - strW(g2, adminSuccess) / 2, panelY + panelH - 40);
+        } else if (!adminError.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 19f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(adminError, cx - strW(g2, adminError) / 2, panelY + panelH - 40);
+        }
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 16f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ ENTER ] Open    [ N ] New Room    [ A ] Manage Students    [ X ] Export All    [ ESC ] Logout";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
+    }
+
+    // ===== Create room (adminMode 12) =====
+    private void drawCreateRoom(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
+        g2.setColor(new Color(255, 100, 100));
+        String t = "Create a Room";
+        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad);
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
+        g2.setColor(LIGHT_GREY);
+        String sub = "A room code will be generated for you to share with students.";
+        g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 26);
+
+        int fieldW = panelW - pad * 2;
+        int fieldX = panelX + pad;
+        int fieldY = panelY + pad + 64;
+        int step   = gp.tileSize + 22;
+
+        drawField(g2, "Course (e.g. BSIT)", roomCourseField.toString(),
+                false, roomFormFocus == 0, fieldX, fieldY, fieldW);
+        fieldY += step;
+        drawField(g2, "Year (e.g. 1)", roomYearField.toString(),
+                false, roomFormFocus == 1, fieldX, fieldY, fieldW);
+        fieldY += step;
+        drawField(g2, "Section (e.g. 2)", roomSecField.toString(),
+                false, roomFormFocus == 2, fieldX, fieldY, fieldW);
+
+        if (!adminSuccess.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 22f));
+            g2.setColor(OK_GREEN);
+            g2.drawString(adminSuccess, cx - strW(g2, adminSuccess) / 2, panelY + panelH - 40);
+        } else if (!adminError.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(adminError, cx - strW(g2, adminError) / 2, panelY + panelH - 40);
+        }
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ UP/DOWN ] Switch field    [ ENTER ] Create Room    [ ESC ] Back";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
+    }
+
+    // ===== Room student list (adminMode 13) =====
+    private void drawRoomView(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 26f));
+        g2.setColor(new Color(255, 100, 100));
+        String code = (selectedRoom != null) ? selectedRoom.code : "";
+        String t = "Room " + code;
+        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad - 6);
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
+        g2.setColor(LIGHT_GREY);
+        String lbl = (selectedRoom != null) ? selectedRoom.label() : "";
+        int count  = roomStudents.size();
+        String head = lbl + "    •    " + count + (count == 1 ? " student" : " students");
+        g2.drawString(head, cx - strW(g2, head) / 2, panelY + pad + 20);
+
+        int cardX     = panelX + pad;
+        int cardW     = panelW - pad * 2;
+        int cardH     = gp.tileSize - 4;
+        int cardGap   = 6;
+        int cardStartY = panelY + pad + 40;
+
+        if (roomStudents.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 22f));
+            g2.setColor(new Color(150, 150, 150));
+            String none = "No students have joined this room yet.";
+            g2.drawString(none, cx - strW(g2, none) / 2, cardStartY + cardH);
+        } else {
+            for (int i = 0; i < MAX_VISIBLE; i++) {
+                int idx = roomStuScroll + i;
+                if (idx >= roomStudents.size()) break;
+
+                String uname = roomStudents.get(idx);
+                boolean sel  = (idx == roomStuCursor);
+                int cardY    = cardStartY + i * (cardH + cardGap);
+
+                g2.setColor(sel ? new Color(180, 140, 40, 220) : new Color(40, 40, 40, 180));
+                g2.fillRoundRect(cardX, cardY, cardW, cardH, 8, 8);
+                g2.setColor(sel ? GOLD : DIM_GREY);
+                g2.setStroke(new BasicStroke(sel ? 2.5f : 1f));
+                g2.drawRoundRect(cardX, cardY, cardW, cardH, 8, 8);
+
+                UserManager.StudentProfile sp = adminManager.getProfile(uname);
+                String displayName = (sp != null) ? sp.displayName() : uname;
+                String section     = (sp != null) ? "  [" + sp.yearSection + "]" : "";
+
+                g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 22f));
+                g2.setColor(sel ? Color.black : Color.white);
+                g2.drawString(displayName, cardX + 12, cardY + cardH - 8);
+
+                g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
+                g2.setColor(sel ? new Color(60, 40, 0) : new Color(140, 140, 140));
+                g2.drawString(section, cardX + 48 + strW(g2, displayName) + 4, cardY + cardH - 8);
+            }
+
+            if (roomStudents.size() > MAX_VISIBLE) {
+                g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+                g2.setColor(LIGHT_GREY);
+                String sc = "";
+                if (roomStuScroll > 0) sc += "▲ ";
+                if (roomStuScroll + MAX_VISIBLE < roomStudents.size()) sc += "▼";
+                g2.drawString(sc.trim(), cx - strW(g2, sc.trim()) / 2,
+                        cardStartY + MAX_VISIBLE * (cardH + cardGap));
+            }
+        }
+
+        if (!adminSuccess.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 19f));
+            g2.setColor(OK_GREEN);
+            g2.drawString(adminSuccess, cx - strW(g2, adminSuccess) / 2, panelY + panelH - 40);
+        } else if (!adminError.isEmpty()) {
+            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 19f));
+            g2.setColor(ERROR_RED);
+            g2.drawString(adminError, cx - strW(g2, adminError) / 2, panelY + panelH - 40);
+        }
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
+        g2.setColor(LIGHT_GREY);
+        String hint = "[ ENTER ] View Student    [ X ] Export This Room    [ ESC ] Back to Dashboard";
+        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
+    }
+
+    // Small focusable button used on the admin-login screen
+    private void drawButton(Graphics2D g2, String label, int x, int y, int w, int h, boolean focused) {
+        g2.setColor(focused ? new Color(180, 140, 40, 230) : new Color(40, 40, 40, 190));
+        g2.fillRoundRect(x, y, w, h, 10, 10);
+        g2.setColor(focused ? GOLD : DIM_GREY);
+        g2.setStroke(new BasicStroke(focused ? 2.5f : 1.5f));
+        g2.drawRoundRect(x, y, w, h, 10, 10);
+
+        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 22f));
+        g2.setColor(focused ? Color.black : Color.white);
+        g2.drawString(label, x + (w - strW(g2, label)) / 2, y + h - 12);
     }
 
     private void drawProfileView(Graphics2D g2, int panelX, int panelY, int panelW, int panelH, int cx, int pad) {
@@ -1249,68 +1783,6 @@ public class LogIn {
         g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
     }
 
-    private void drawChangeAdminPasswordForm(Graphics2D g2, int panelX, int panelY,
-                                             int panelW, int panelH, int cx, int pad) {
-        g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 28f));
-        g2.setColor(new Color(255, 100, 100));
-        String t = "Change Admin Password";
-        g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad);
-
-        int fieldW = panelW - pad * 2;
-        int fieldX = panelX + pad;
-        int fieldY = panelY + pad + 56;
-
-        if (adminChangePwStep == 0) {
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
-            g2.setColor(LIGHT_GREY);
-            String sub = "Enter your current admin password to continue.";
-            g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 28);
-
-            drawField(g2, "Current Admin Password",
-                    getMaskedValue(adminPassField.toString()),
-                    true, true, fieldX, fieldY, fieldW);
-
-        } else {
-            // Step 2: enter new password
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 20f));
-            g2.setColor(LIGHT_GREY);
-            String sub = "Enter and confirm your new admin password.";
-            g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 28);
-
-            drawField(g2, "New Admin Password (min. 8 chars)",
-                    getMaskedValue(adminNewPw1Field.toString()),
-                    true, !adminPwFocusOnConfirm, fieldX, fieldY, fieldW);
-
-            fieldY += gp.tileSize + 32;
-
-            drawField(g2, "Confirm New Password",
-                    getMaskedValue(adminNewPw2Field.toString()),
-                    true, adminPwFocusOnConfirm, fieldX, fieldY, fieldW);
-
-            // Match indicator
-            if (adminNewPw1Field.length() > 0 && adminNewPw2Field.length() > 0) {
-                boolean match = adminNewPw1Field.toString().equals(adminNewPw2Field.toString());
-                g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 19f));
-                g2.setColor(match ? OK_GREEN : ERROR_RED);
-                String matchMsg = match ? "Passwords match" : "Passwords do not match";
-                g2.drawString(matchMsg, cx - strW(g2, matchMsg) / 2, fieldY + gp.tileSize + 30);
-            }
-        }
-
-        if (!adminError.isEmpty()) {
-            g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
-            g2.setColor(ERROR_RED);
-            g2.drawString(adminError, cx - strW(g2, adminError) / 2, panelY + panelH - 36);
-        }
-
-        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 17f));
-        g2.setColor(LIGHT_GREY);
-        String hint = adminChangePwStep == 0
-                ? "[ ENTER ] Verify    [ ESC ] Cancel"
-                : "[ UP/DOWN ] Switch field    [ ENTER ] Confirm    [ ESC ] Cancel";
-        g2.drawString(hint, cx - strW(g2, hint) / 2, panelY + panelH - 14);
-    }
-
     private void drawProfileRow(Graphics2D g2, int x, int y, int labelW, String label, String value) {
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 20f));
         g2.setColor(LIGHT_GREY);
@@ -1399,6 +1871,7 @@ public class LogIn {
         fnField.setLength(0);  lnField.setLength(0);
         miField.setLength(0);  sfxField.setLength(0);
         ysField.setLength(0);  idField.setLength(0);
+        roomField.setLength(0);
         pw1Field.setLength(0); pw2Field.setLength(0);
         signupStep  = 0;
         signupFocus = 0;
@@ -1407,7 +1880,7 @@ public class LogIn {
     private int fieldsInStep(int step) {
         switch (step) {
             case 0: return 4; // FN, LN, MI, Suffix
-            case 1: return 2; // Year&Section, ID
+            case 1: return 3; // Year&Section, ID, Room Code
             case 2: return 2; // Password, Confirm
             default: return 1;
         }
@@ -1426,6 +1899,7 @@ public class LogIn {
                 switch (signupFocus) {
                     case 0: return ysField;
                     case 1: return idField;
+                    case 2: return roomField;
                 }
             case 2:
                 switch (signupFocus) {
@@ -1443,6 +1917,7 @@ public class LogIn {
         if (step == 0 && focus == 3) return 3;   // Suffix
         if (step == 1 && focus == 0) return 3;   // Year & Section
         if (step == 1 && focus == 1) return 13;  // Student ID (2022-100-1234 = 13 chars)
+        if (step == 1 && focus == 2) return 6;   // Room code (6 chars)
         if (step == 2) return 13;                // Password
         return 20;
     }

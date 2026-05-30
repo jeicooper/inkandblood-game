@@ -3,29 +3,181 @@ package main;
 import java.io.*;
 import java.util.Properties;
 
+/**
+ * Single operations + data layer for the admin panel.
+ *
+ * An "admin" is the teacher. There is exactly one kind of privileged account:
+ * each admin registers a username + password (replacing the old single shared
+ * admin password) and, once logged in, can:
+ *   - create room codes (one per course / year / section) to hand to students,
+ *   - view and export the students grouped under those room codes,
+ *   - search / view / edit / reset / delete any student account,
+ *   - export all students.
+ *
+ * Student account data is delegated to {@link UserManager}. Everything else
+ * (admin accounts + room codes + their storage) lives directly in this class.
+ *
+ * Files (under ~/InkAndBlood/saves):
+ *   admins.properties        username  -> salt:hash
+ *   admin_names.properties   username  -> encoded full name
+ *   rooms.properties         ROOMCODE  -> owner|course|year|section|createdMillis
+ */
 public class AdminManager {
 
-    private static final String ADMIN_FILE =
+    private static final String SAVES_DIR =
             System.getProperty("user.home") + File.separator +
-                    "InkAndBlood" + File.separator + "saves" + File.separator + "admin.properties";
-    private static final String DEFAULT_ADMIN_PASSWORD = "adminpower";
+                    "InkAndBlood" + File.separator + "saves";
 
-    private final UserManager   userManager;
-    private final Properties    adminProps = new Properties();
+    private static final String ADMINS_FILE     = SAVES_DIR + File.separator + "admins.properties";
+    private static final String ADMIN_NAME_FILE = SAVES_DIR + File.separator + "admin_names.properties";
+    private static final String ROOMS_FILE       = SAVES_DIR + File.separator + "rooms.properties";
+
+    // Code generation alphabet — excludes easily-confused characters (0/O, 1/I).
+    private static final String CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    private static final int    CODE_LENGTH   = 6;
+
+    private final UserManager userManager;        // student accounts + hashing helpers
+    private final Properties  admins     = new Properties();
+    private final Properties  adminNames = new Properties();
+    private final Properties  rooms      = new Properties();
+
+    private String currentAdmin = null;
 
     public AdminManager(UserManager userManager) {
         this.userManager = userManager;
-        ensureAdminFile();
-        load();
+        ensureDir();
+        load(ADMINS_FILE,     admins);
+        load(ADMIN_NAME_FILE, adminNames);
+        load(ROOMS_FILE,      rooms);
     }
 
-    public boolean verifyAdmin(String password) {
-        String stored = adminProps.getProperty("admin_hash");
-        if (stored == null) return false;
-        String[] parts = stored.split(":", 2);
-        if (parts.length != 2) return false;
-        return parts[1].equals(userManager.hash(password, parts[0]));
+    // ===== Admin accounts =================================================
+
+    /** @return error message, or null on success. */
+    public String registerAdmin(String username, String fullName, String password) {
+        username = username == null ? "" : username.trim();
+        fullName = fullName == null ? "" : fullName.trim();
+        if (username.isEmpty())                 return "Username cannot be empty.";
+        if (!username.matches("[\\w]{3,16}"))   return "Username: 3-16 letters / numbers / underscore.";
+        if (fullName.isEmpty())                 return "Full name cannot be empty.";
+        if (password == null || password.length() < 8)
+            return "Password must be at least 8 characters.";
+        if (admins.containsKey(username))       return "An admin with that username already exists.";
+
+        String salt = userManager.generateSalt();
+        String hash = userManager.hash(password, salt);
+        admins.setProperty(username, salt + ":" + hash);
+        adminNames.setProperty(username, encode(fullName));
+        save(ADMINS_FILE,     admins,     "Ink & Blood — Admin Accounts");
+        save(ADMIN_NAME_FILE, adminNames, "Ink & Blood — Admin Names");
+        return null;
     }
+
+    /** @return error message, or null on success (sets the current admin). */
+    public String loginAdmin(String username, String password) {
+        username = username == null ? "" : username.trim();
+        if (!admins.containsKey(username)) return "Admin account not found.";
+        String stored = admins.getProperty(username);
+        String[] parts = stored.split(":", 2);
+        if (parts.length != 2) return "Corrupted account data.";
+        String actual = userManager.hash(password, parts[0]);
+        if (!parts[1].equals(actual)) return "Incorrect password.";
+        currentAdmin = username;
+        return null;
+    }
+
+    public void    logoutAdmin()        { currentAdmin = null; }
+    public String  getCurrentAdmin()    { return currentAdmin; }
+    public boolean isLoggedIn()         { return currentAdmin != null; }
+    public boolean adminExists(String username) {
+        return username != null && admins.containsKey(username.trim());
+    }
+
+    public String getCurrentAdminName() { return getAdminName(currentAdmin); }
+
+    public String getAdminName(String username) {
+        if (username == null) return "";
+        String raw = adminNames.getProperty(username.trim());
+        return raw == null ? username.trim() : decode(raw);
+    }
+
+    // ===== Room codes =====================================================
+
+    /** Creates a room owned by the current admin; returns the generated code (or null if not logged in). */
+    public String createRoom(String course, String year, String section) {
+        String owner = currentAdmin;
+        if (owner == null) return null;
+        String code = generateUniqueCode();
+        String value = encode(owner) + "|" + encode(course.trim()) + "|"
+                + encode(year.trim()) + "|" + encode(section.trim()) + "|"
+                + System.currentTimeMillis();
+        rooms.setProperty(code, value);
+        save(ROOMS_FILE, rooms, "Ink & Blood — Room Codes");
+        return code;
+    }
+
+    public boolean roomExists(String code) {
+        return code != null && rooms.containsKey(code.trim().toUpperCase());
+    }
+
+    public Room getRoom(String code) {
+        if (code == null) return null;
+        String raw = rooms.getProperty(code.trim().toUpperCase());
+        if (raw == null) return null;
+        String[] p = raw.split("\\|", -1);
+        Room r = new Room();
+        r.code    = code.trim().toUpperCase();
+        r.owner   = p.length > 0 ? decode(p[0]) : "";
+        r.course  = p.length > 1 ? decode(p[1]) : "";
+        r.year    = p.length > 2 ? decode(p[2]) : "";
+        r.section = p.length > 3 ? decode(p[3]) : "";
+        try { r.created = p.length > 4 ? Long.parseLong(p[4]) : 0L; }
+        catch (NumberFormatException e) { r.created = 0L; }
+        return r;
+    }
+
+    /** All rooms owned by the current admin, newest first. */
+    public java.util.List<Room> getRoomsForCurrentAdmin() {
+        java.util.List<Room> list = new java.util.ArrayList<>();
+        if (currentAdmin == null) return list;
+        String owner = currentAdmin.trim();
+        for (Object key : rooms.keySet()) {
+            Room r = getRoom(key.toString());
+            if (r != null && owner.equals(r.owner)) list.add(r);
+        }
+        list.sort((a, b) -> Long.compare(b.created, a.created));
+        return list;
+    }
+
+    public void deleteRoom(String code) {
+        if (code == null) return;
+        rooms.remove(code.trim().toUpperCase());
+        save(ROOMS_FILE, rooms, "Ink & Blood — Room Codes");
+    }
+
+    /** Sorted usernames assigned to a room code. */
+    public java.util.List<String> getStudentsInRoom(String code) {
+        return userManager.getUsernamesByRoom(code);
+    }
+
+    public int countStudentsInRoom(String code) {
+        return userManager.getUsernamesByRoom(code).size();
+    }
+
+    private String generateUniqueCode() {
+        java.security.SecureRandom rnd = new java.security.SecureRandom();
+        String code;
+        int guard = 0;
+        do {
+            StringBuilder sb = new StringBuilder(CODE_LENGTH);
+            for (int i = 0; i < CODE_LENGTH; i++)
+                sb.append(CODE_ALPHABET.charAt(rnd.nextInt(CODE_ALPHABET.length())));
+            code = sb.toString();
+        } while (rooms.containsKey(code) && ++guard < 1000);
+        return code;
+    }
+
+    // ===== Student operations =============================================
 
     public java.util.List<String> getAllUsernames() {
         java.util.List<String> list = new java.util.ArrayList<>();
@@ -62,27 +214,41 @@ public class AdminManager {
         if (!userManager.userExists(username))
             return "Account '" + username + "' not found.";
         userManager.deleteAccount(username);
-
-        try {
-            NPCDatabase.deleteForUser(username);
-        } catch (Exception ignored) {}
+        try { NPCDatabase.deleteForUser(username); } catch (Exception ignored) {}
         return "Account '" + username + "' has been deleted.";
     }
 
-    private void ensureAdminFile() {
-        File f = new File(ADMIN_FILE);
-        if (f.exists()) return;
-        String salt = userManager.generateSalt();
-        String hash = userManager.hash(DEFAULT_ADMIN_PASSWORD, salt);
-        adminProps.setProperty("admin_hash", salt + ":" + hash);
-        save();
+    // ===== Excel export ===================================================
+
+    /** Export every student account. */
+    public String exportToExcel() {
+        return writeWorkbook(getAllUsernames(),
+                "saves" + File.separator + "user_export.xls",
+                "Ink and Blood: Rizal's Adventure - Student Records",
+                "All Students");
     }
 
-    public String exportToExcel() {
-        java.util.List<String> usernames = getAllUsernames();
+    /** Export only the students belonging to one room code. */
+    public String exportRoomToExcel(String code) {
+        Room room = getRoom(code);
+        if (room == null) return "Room not found.";
+        java.util.List<String> students = getStudentsInRoom(code);
+        if (students.isEmpty()) return "No students in this room yet.";
+
+        String safe = code.replaceAll("[^A-Za-z0-9_-]", "");
+        String subtitle = "Room " + room.code
+                + (room.course.isEmpty()      ? "" : "  •  " + room.course)
+                + (room.yearSection().isEmpty() ? "" : "  •  " + room.yearSection());
+        return writeWorkbook(students,
+                "saves" + File.separator + "room_" + safe + "_export.xls",
+                "Ink and Blood: Rizal's Adventure - Student Records",
+                subtitle);
+    }
+
+    private String writeWorkbook(java.util.List<String> usernames,
+                                 String exportPath, String title, String subtitle) {
         if (usernames.isEmpty()) return "No accounts to export.";
 
-        String exportPath = "saves" + File.separator + "user_export.xls";
         String exportDate = new java.text.SimpleDateFormat("MMMM dd, yyyy  hh:mm a")
                 .format(new java.util.Date());
 
@@ -169,11 +335,17 @@ public class AdminManager {
                 pw.println("<Column ss:Width=\"60\"/>");   // Suffix
                 pw.println("<Column ss:Width=\"80\"/>");   // Year & Section
                 pw.println("<Column ss:Width=\"110\"/>");  // Student ID
+                pw.println("<Column ss:Width=\"80\"/>");   // Room Code
                 pw.println("<Column ss:Width=\"240\"/>");  // Game Progress
 
                 // Title row
                 pw.println("<Row ss:Height=\"28\">");
-                pw.println("  <Cell ss:StyleID=\"title\"><Data ss:Type=\"String\">Ink and Blood: Rizal's Adventure - Student Records</Data></Cell>");
+                pw.println("  <Cell ss:StyleID=\"title\"><Data ss:Type=\"String\">" + esc(title) + "</Data></Cell>");
+                pw.println("</Row>");
+
+                // Subtitle (which set of students this is)
+                pw.println("<Row ss:Height=\"18\">");
+                pw.println("  <Cell ss:StyleID=\"meta\"><Data ss:Type=\"String\">" + esc(subtitle) + "</Data></Cell>");
                 pw.println("</Row>");
 
                 // Export date row
@@ -193,7 +365,7 @@ public class AdminManager {
                 pw.println("<Row ss:Height=\"22\">");
                 for (String h : new String[]{
                         "Username", "First Name", "Last Name", "Middle Initial",
-                        "Suffix", "Year & Section", "Student ID", "Game Progress"}) {
+                        "Suffix", "Year & Section", "Student ID", "Room Code", "Game Progress"}) {
                     pw.println("  <Cell ss:StyleID=\"header\"><Data ss:Type=\"String\">" + h + "</Data></Cell>");
                 }
                 pw.println("</Row>");
@@ -217,8 +389,10 @@ public class AdminManager {
                         pw.println("  " + styledCell(sp.suffix,        rowStyle));
                         pw.println("  " + styledCell(sp.yearSection,   rowStyle));
                         pw.println("  " + styledCell(sp.studentId,     rowStyle));
+                        pw.println("  " + styledCell(sp.roomCode == null || sp.roomCode.isEmpty()
+                                ? "—" : sp.roomCode,                   rowStyle));
                     } else {
-                        for (int i = 0; i < 6; i++)
+                        for (int i = 0; i < 7; i++)
                             pw.println("  " + styledCell("-", rowStyle));
                     }
                     pw.println("  " + styledCell(progress, progressStyle));
@@ -260,40 +434,70 @@ public class AdminManager {
     }
 
     private String styledCell(String value, String styleID) {
+        return "<Cell ss:StyleID=\"" + styleID + "\"><Data ss:Type=\"String\">" + esc(value) + "</Data></Cell>";
+    }
+
+    private static String esc(String value) {
         if (value == null) value = "";
-        value = value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-        return "<Cell ss:StyleID=\"" + styleID + "\"><Data ss:Type=\"String\">" + value + "</Data></Cell>";
+        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
-    private String cell(String value) {
-        if (value == null) value = "";
-        value = value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-        return "<Cell><Data ss:Type=\"String\">" + value + "</Data></Cell>";
+    // ===== IO helpers =====================================================
+
+    private void ensureDir() {
+        File dir = new File(SAVES_DIR);
+        if (!dir.exists()) dir.mkdirs();
     }
 
-    public String changeAdminPassword(String currentPassword, String newPassword) {
-        if (!verifyAdmin(currentPassword))
-            return "Current password is incorrect.";
-        if (newPassword.length() < 8)
-            return "New password must be at least 8 characters.";
-
-        String salt = userManager.generateSalt();
-        String hash = userManager.hash(newPassword, salt);
-        adminProps.setProperty("admin_hash", salt + ":" + hash);
-        save();
-        return null; // null = success
-    }
-
-    private void load() {
-        File f = new File(ADMIN_FILE);
+    private void load(String path, Properties props) {
+        File f = new File(path);
         if (!f.exists()) return;
-        try (InputStream in = new FileInputStream(f)) { adminProps.load(in); }
+        try (InputStream in = new FileInputStream(f)) { props.load(in); }
         catch (IOException e) { e.printStackTrace(); }
     }
 
-    private void save() {
-        try (OutputStream out = new FileOutputStream(ADMIN_FILE)) {
-            adminProps.store(out, "Ink & Blood Admin — DO NOT SHARE");
-        } catch (IOException e) { e.printStackTrace(); }
+    private void save(String path, Properties props, String header) {
+        try (OutputStream out = new FileOutputStream(path)) { props.store(out, header); }
+        catch (IOException e) { e.printStackTrace(); }
+    }
+
+    private static String encode(String s) {
+        try { return java.net.URLEncoder.encode(s == null ? "" : s, "UTF-8"); }
+        catch (Exception e) { return s == null ? "" : s; }
+    }
+
+    private static String decode(String s) {
+        try { return java.net.URLDecoder.decode(s == null ? "" : s, "UTF-8"); }
+        catch (Exception e) { return s == null ? "" : s; }
+    }
+
+    // ===== Data holder ====================================================
+
+    public static class Room {
+        public String code;
+        public String owner;
+        public String course;
+        public String year;
+        public String section;
+        public long   created;
+
+        /** Short one-line label, e.g. "Rizal 101  •  1-2". */
+        public String label() {
+            StringBuilder sb = new StringBuilder();
+            if (course != null && !course.isEmpty()) sb.append(course);
+            String ys = yearSection();
+            if (!ys.isEmpty()) {
+                if (sb.length() > 0) sb.append("  •  ");
+                sb.append(ys);
+            }
+            return sb.length() == 0 ? "(unnamed room)" : sb.toString();
+        }
+
+        public String yearSection() {
+            String y = year    == null ? "" : year.trim();
+            String s = section == null ? "" : section.trim();
+            if (!y.isEmpty() && !s.isEmpty()) return y + "-" + s;
+            return (y + s).trim();
+        }
     }
 }

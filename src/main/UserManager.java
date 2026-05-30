@@ -28,7 +28,9 @@ public class UserManager {
     }
 
     public static String usernameFromStudentId(String studentId) {
-        return studentId.trim().toUpperCase();
+        String trimmed = studentId.trim();
+        if (trimmed.length() < 4) return trimmed;
+        return trimmed.substring(trimmed.length() - 4);
     }
 
     public static boolean isValidStudentId(String id) {
@@ -42,9 +44,17 @@ public class UserManager {
                 || s.matches("[1-4][-\\s]?[A-Za-z]");
     }
 
+    /** Backward-compatible overload (no room code). */
     public String createAccount(String firstName, String lastName, String middleInitial,
                                 String suffix, String yearSection, String studentId,
                                 String password) {
+        return createAccount(firstName, lastName, middleInitial, suffix,
+                yearSection, studentId, "", password);
+    }
+
+    public String createAccount(String firstName, String lastName, String middleInitial,
+                                String suffix, String yearSection, String studentId,
+                                String roomCode, String password) {
 
         firstName   = firstName.trim();
         lastName    = lastName.trim();
@@ -52,6 +62,7 @@ public class UserManager {
         suffix      = suffix.trim();
         yearSection = yearSection.trim();
         studentId   = studentId.trim().toUpperCase();
+        roomCode    = roomCode == null ? "" : roomCode.trim().toUpperCase();
 
         // --- Validation ---
         if (firstName.isEmpty())  return "First name cannot be empty.";
@@ -75,7 +86,8 @@ public class UserManager {
 
         String profileValue = encode(firstName) + "|" + encode(lastName) + "|"
                 + encode(middleInitial) + "|" + encode(suffix) + "|"
-                + encode(yearSection)   + "|" + encode(studentId);
+                + encode(yearSection)   + "|" + encode(studentId) + "|"
+                + encode(roomCode);
         profiles.setProperty(username, profileValue);
         saveProfiles();
 
@@ -142,6 +154,7 @@ public class UserManager {
         sp.suffix        = decode(p[3]);
         sp.yearSection   = decode(p[4]);
         sp.studentId     = decode(p[5]);
+        sp.roomCode      = (p.length >= 7) ? decode(p[6]) : "";
         return sp;
     }
 
@@ -165,6 +178,20 @@ public class UserManager {
     }
 
     public boolean userExists(String username)  { return users.containsKey(username.trim()); }
+
+    /** Returns sorted usernames whose profile is assigned to the given room code. */
+    public java.util.List<String> getUsernamesByRoom(String code) {
+        String target = (code == null) ? "" : code.trim().toUpperCase();
+        java.util.List<String> out = new java.util.ArrayList<>();
+        for (Object key : users.keySet()) {
+            String uname = key.toString();
+            StudentProfile sp = getProfile(uname);
+            String rc = (sp != null && sp.roomCode != null) ? sp.roomCode.trim().toUpperCase() : "";
+            if (rc.equals(target)) out.add(uname);
+        }
+        java.util.Collections.sort(out);
+        return out;
+    }
 
     public void deleteAccount(String username) {
         username = username.trim();
@@ -196,6 +223,11 @@ public class UserManager {
         if (!isValidStudentId(newStudentId))
             return "Invalid student ID. Format must be: 202X-100-XXXX";
 
+        // Preserve the student's existing room assignment across the edit.
+        String existingRoom = "";
+        StudentProfile existing = getProfile(username);
+        if (existing != null && existing.roomCode != null) existingRoom = existing.roomCode;
+
         String newUsername = usernameFromStudentId(newStudentId);
 
         if (!newUsername.equals(username)) {
@@ -224,7 +256,8 @@ public class UserManager {
 
         String profileValue = encode(firstName) + "|" + encode(lastName) + "|"
                 + encode(middleInitial) + "|" + encode(suffix) + "|"
-                + encode(yearSection)   + "|" + encode(newStudentId);
+                + encode(yearSection)   + "|" + encode(newStudentId) + "|"
+                + encode(existingRoom);
         profiles.setProperty(username, profileValue);
         saveProfiles();
         return null;
@@ -308,6 +341,7 @@ public class UserManager {
         public String suffix;
         public String yearSection;
         public String studentId;
+        public String roomCode = "";
 
         public String displayName() {
             StringBuilder sb = new StringBuilder();
