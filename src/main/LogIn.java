@@ -206,8 +206,8 @@ public class LogIn {
         if (code == KeyEvent.VK_ENTER) { submitLogin(); return; }
 
         if (keyChar >= 20 && keyChar != 127) {
-            if (!focusOnPassword && usernameField.length() < 4) {
-                if (Character.isDigit(keyChar)) usernameField.append(keyChar);
+            if (!focusOnPassword && usernameField.length() < 13) {
+                appendLoginIdChar(keyChar);
             } else if (focusOnPassword && passwordField.length() < 20) {
                 passwordField.append(keyChar);
             }
@@ -781,16 +781,11 @@ public class LogIn {
         String t = "Log In";
         g2.drawString(t, cx - strW(g2, t) / 2, panelY + pad);
 
-        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 18f));
-        g2.setColor(LIGHT_GREY);
-        String sub = "Username: last 4 digits of your Student ID";
-        g2.drawString(sub, cx - strW(g2, sub) / 2, panelY + pad + 24);
-
         int fieldW = panelW - pad * 2;
         int fieldX = panelX + pad;
         int fieldY = panelY + pad + 52;
 
-        drawField(g2, "ID Tail (4 digits)", usernameField.toString(),
+        drawField(g2, "Student ID", usernameField.toString(),
                 false, !focusOnPassword, fieldX, fieldY, fieldW);
 
         fieldY += gp.tileSize + 32;
@@ -1514,6 +1509,29 @@ public class LogIn {
         }
         editIdField.setLength(0);
         editIdField.append(formatted);
+    }
+
+    private void appendLoginIdChar(char c) {
+        if (!Character.isDigit(c)) return;
+        String raw = usernameField.toString().replaceAll("[^0-9]", "");
+        if (raw.length() >= 12) return;
+        String next = raw + c;
+        if (next.length() <= 4) {
+            if (next.length() >= 1 && next.charAt(0) != '2') return;
+            if (next.length() >= 2 && next.charAt(1) != '0') return;
+            if (next.length() == 4) {
+                int year = Integer.parseInt(next.substring(0, 4));
+                if (year < 2005 || year > 2035) return;
+            }
+        }
+        raw = next;
+        StringBuilder formatted = new StringBuilder();
+        for (int i = 0; i < raw.length(); i++) {
+            if (i == 4 || i == 7) formatted.append('-');
+            formatted.append(raw.charAt(i));
+        }
+        usernameField.setLength(0);
+        usernameField.append(formatted);
     }
 
     private void submitEditProfile() {
