@@ -327,8 +327,9 @@ public class GamePanel extends JPanel implements Runnable {
         ui.activeLetter = "";
         talkingTo = null;
 
-        // reset tile map to chapter 1
         tileM.loadMap("/maps/Chapter1.txt");
+        currentMap         = "/maps/Chapter1.txt";
+        currentSublocation = "CALAMBA, LAGUNA";
 
         // reset npc dex
         npcDatabase.reset();
@@ -410,9 +411,10 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    private static final float PERCEPTION_FULL = 15f;
-    private static final float TRAIL_MIN_ALPHA = 0.08f;
-    private static final float TRAIL_MAX_ALPHA = 0.85f;
+    private static final float PERCEPTION_FULL = 16f;
+
+    private static final float TRAIL_MIN_ALPHA = 0.05f;
+    private static final float TRAIL_MAX_ALPHA = 0.90f;
 
     private void drawQuestTrail(Graphics2D g2) {
         java.util.List<entity.Entity> targets = getQuestTargets();
