@@ -102,6 +102,9 @@ public class QuizPanel {
     private static final int QUIZ_SIZE = 10;
 
     private static final int INTELLECT_5050_THRESHOLD = 2;
+
+    private static final int AIDED_QUESTIONS = 2;
+    private final java.util.Set<Integer> aidedQuestions = new java.util.HashSet<>();
     private int eliminatedChoice = -1;
     private int singleEliminated = -1;
 
@@ -147,13 +150,24 @@ public class QuizPanel {
         score           = 0;
         correct         = new boolean[QUESTIONS.length];
         ui.quizPanelOpen = true;
+
+        // Choose which questions get the intellect aid (only if intellect qualifies).
+        aidedQuestions.clear();
+        if (gp.player.intellect >= INTELLECT_5050_THRESHOLD) {
+            java.util.List<Integer> all = new java.util.ArrayList<>();
+            for (int i = 0; i < QUIZ_SIZE; i++) all.add(i);
+            java.util.Collections.shuffle(all);
+            int n = Math.min(AIDED_QUESTIONS, QUIZ_SIZE);
+            for (int i = 0; i < n; i++) aidedQuestions.add(all.get(i));
+        }
+
         recomputeElimination();
     }
 
     private void recomputeElimination() {
         eliminatedChoice = -1;
-        if (gp.player.intellect < INTELLECT_5050_THRESHOLD) return;
         if (QUESTIONS == null || currentQuestion >= QUESTIONS.length) return;
+        if (!aidedQuestions.contains(currentQuestion)) return;
 
         java.util.List<Integer> wrong = new java.util.ArrayList<>();
         for (int i = 0; i < CHOICES[currentQuestion].length; i++) {
