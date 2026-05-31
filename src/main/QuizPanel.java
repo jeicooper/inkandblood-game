@@ -44,8 +44,8 @@ public class QuizPanel {
     private static final String[][] POOL_CHOICES = {
             //1
             { "Science is difficult.",
-              "Knowledge is power.",
-              "Time is Fleeting"
+                    "Knowledge is power.",
+                    "Time is Fleeting"
             },
 
             //2
@@ -66,8 +66,8 @@ public class QuizPanel {
 
             //5
             { "Professor",
-              "Headmaster",
-              "Registrar"},
+                    "Headmaster",
+                    "Registrar"},
 
             //6
             { "Carthaginians",
@@ -97,9 +97,13 @@ public class QuizPanel {
     };
 
     private static final int[] POOL_CORRECT = { 1, 0, 1, 1, 2,
-                                                2, 2, 0, 2, 2 };
+            2, 2, 0, 2, 2 };
 
     private static final int QUIZ_SIZE = 10;
+
+    private static final int INTELLECT_5050_THRESHOLD = 2;
+    private int eliminatedChoice = -1;
+    private int singleEliminated = -1;
 
     private String[]   QUESTIONS;
     private String[][] CHOICES;
@@ -143,6 +147,25 @@ public class QuizPanel {
         score           = 0;
         correct         = new boolean[QUESTIONS.length];
         ui.quizPanelOpen = true;
+        recomputeElimination();
+    }
+
+    private void recomputeElimination() {
+        eliminatedChoice = -1;
+        if (gp.player.intellect < INTELLECT_5050_THRESHOLD) return;
+        if (QUESTIONS == null || currentQuestion >= QUESTIONS.length) return;
+
+        java.util.List<Integer> wrong = new java.util.ArrayList<>();
+        for (int i = 0; i < CHOICES[currentQuestion].length; i++) {
+            if (i != CORRECT[currentQuestion]) wrong.add(i);
+        }
+        if (!wrong.isEmpty()) {
+            eliminatedChoice = wrong.get(new java.util.Random().nextInt(wrong.size()));
+        }
+        // Don't leave the cursor sitting on the dimmed choice.
+        if (selectedChoice == eliminatedChoice) {
+            selectedChoice = (selectedChoice + 1) % 3;
+        }
     }
 
     // KEY HANDLER
@@ -152,9 +175,13 @@ public class QuizPanel {
             if (!singleConfirmed) {
                 if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
                     singleSelected = (singleSelected - 1 + singleChoices.length) % singleChoices.length;
+                    if (singleSelected == singleEliminated)
+                        singleSelected = (singleSelected - 1 + singleChoices.length) % singleChoices.length;
                 }
                 if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
                     singleSelected = (singleSelected + 1) % singleChoices.length;
+                    if (singleSelected == singleEliminated)
+                        singleSelected = (singleSelected + 1) % singleChoices.length;
                 }
                 if (code == KeyEvent.VK_ENTER) {
                     singleConfirmed = true;
@@ -186,9 +213,11 @@ public class QuizPanel {
         if (!answerConfirmed) {
             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
                 selectedChoice = (selectedChoice - 1 + 3) % 3;
+                if (selectedChoice == eliminatedChoice) selectedChoice = (selectedChoice - 1 + 3) % 3;
             }
             if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
                 selectedChoice = (selectedChoice + 1) % 3;
+                if (selectedChoice == eliminatedChoice) selectedChoice = (selectedChoice + 1) % 3;
             }
             if (code == KeyEvent.VK_ENTER) {
                 answerConfirmed = true;
@@ -205,6 +234,7 @@ public class QuizPanel {
                     currentQuestion++;
                     selectedChoice  = 0;
                     answerConfirmed = false;
+                    recomputeElimination();
                 }
             }
 
@@ -265,9 +295,12 @@ public class QuizPanel {
         for (int i = 0; i < singleChoices.length; i++) {
             boolean isSelected = (i == singleSelected);
             boolean isCorrect  = (i == singleCorrect);
+            boolean dimmed     = (!singleConfirmed && i == singleEliminated);
 
             Color bg;
-            if (singleConfirmed) {
+            if (dimmed) {
+                bg = new Color(25, 25, 25, 120);
+            } else if (singleConfirmed) {
                 if (isCorrect)       bg = new Color(50, 180, 50, 180);
                 else if (isSelected) bg = new Color(200, 50, 50, 180);
                 else                 bg = new Color(40, 40, 40, 120);
@@ -280,12 +313,21 @@ public class QuizPanel {
             g2.fillRoundRect(panelX + pad - 6, rowY - 22, innerW + 12, choiceH, 10, 10);
 
             g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
-            if (isSelected && !singleConfirmed) {
+            if (isSelected && !singleConfirmed && !dimmed) {
                 g2.setColor(new Color(255, 220, 80));
                 g2.drawString(">", panelX + pad - 4, rowY);
             }
-            g2.setColor(Color.white);
-            g2.drawString("[" + labels[i] + "]  " + singleChoices[i], panelX + pad + 20, rowY);
+
+            String text = "[" + labels[i] + "]  " + singleChoices[i];
+            if (dimmed) {
+                g2.setColor(new Color(110, 110, 110));
+                g2.drawString(text, panelX + pad + 20, rowY);
+                int tw = g2.getFontMetrics().stringWidth(text);
+                g2.drawLine(panelX + pad + 20, rowY - 7, panelX + pad + 20 + tw, rowY - 7);
+            } else {
+                g2.setColor(Color.white);
+                g2.drawString(text, panelX + pad + 20, rowY);
+            }
         }
 
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 20f));
@@ -326,6 +368,13 @@ public class QuizPanel {
         g2.drawString("Question " + (currentQuestion + 1) + " / " + QUESTIONS.length,
                 px + pad, py + 35);
 
+        if (!answerConfirmed && eliminatedChoice >= 0) {
+            g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 16f));
+            g2.setColor(new Color(120, 200, 255));
+            String aid = "Intellect Perk: one wrong answer dimmed";
+            g2.drawString(aid, px + pw - pad - g2.getFontMetrics().stringWidth(aid), py + 35);
+        }
+
         g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
         g2.setColor(Color.white);
 
@@ -351,10 +400,13 @@ public class QuizPanel {
         for (int i = 0; i < CHOICES[currentQuestion].length; i++) {
             boolean isSelected = (i == selectedChoice);
             boolean isCorrect  = (i == CORRECT[currentQuestion]);
+            boolean dimmed     = (!answerConfirmed && i == eliminatedChoice);
 
             // Background highlight
             Color bg;
-            if (answerConfirmed) {
+            if (dimmed) {
+                bg = new Color(25, 25, 25, 120);
+            } else if (answerConfirmed) {
                 if (isCorrect) bg = new Color(50, 180, 50, 180);
                 else if (isSelected) bg = new Color(200, 50, 50, 180);
                 else bg = new Color(40, 40, 40, 120);
@@ -372,14 +424,21 @@ public class QuizPanel {
 
             // Cursor arrow
             g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
-            if (isSelected && !answerConfirmed) {
+            if (isSelected && !answerConfirmed && !dimmed) {
                 g2.setColor(new Color(255, 220, 80));
                 g2.drawString(">", px + pad - 4, rowY);
             }
 
-            g2.setColor(Color.white);
-            g2.drawString("[" + labels[i] + "]  " + CHOICES[currentQuestion][i],
-                    px + pad + 20, rowY);
+            String text = "[" + labels[i] + "]  " + CHOICES[currentQuestion][i];
+            if (dimmed) {
+                g2.setColor(new Color(110, 110, 110));
+                g2.drawString(text, px + pad + 20, rowY);
+                int tw = g2.getFontMetrics().stringWidth(text);
+                g2.drawLine(px + pad + 20, rowY - 7, px + pad + 20 + tw, rowY - 7); // strike-through
+            } else {
+                g2.setColor(Color.white);
+                g2.drawString(text, px + pad + 20, rowY);
+            }
         }
 
         // prompt
@@ -518,5 +577,15 @@ public class QuizPanel {
         singleConfirmed = false;
         ui.quizPanelOpen = true;
         gp.gameState = gp.playState;
+
+        singleEliminated = -1;
+        if (gp.player.intellect >= INTELLECT_5050_THRESHOLD) {
+            java.util.List<Integer> wrong = new java.util.ArrayList<>();
+            for (int i = 0; i < choices.length; i++) if (i != correctIndex) wrong.add(i);
+            if (!wrong.isEmpty())
+                singleEliminated = wrong.get(new java.util.Random().nextInt(wrong.size()));
+            if (singleSelected == singleEliminated)
+                singleSelected = (singleSelected + 1) % choices.length;
+        }
     }
 }

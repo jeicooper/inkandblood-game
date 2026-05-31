@@ -1691,7 +1691,7 @@ public class UI {
                     }
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("  Parts: " + gp.questManager.objectsCollected + "/7", LEFT_X, ly);
+                    g2.drawString("  Parts: " + gp.questManager.objectsCollected + "/" + gp.questManager.effectiveQuest5Objects(), LEFT_X, ly);
                     ly += HINT_H;
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
                 }
@@ -1760,7 +1760,7 @@ public class UI {
 
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("  Parts: " + gp.questManager.objectsCollected + "/4", RIGHT_X, ry);
+                    g2.drawString("  Parts: " + gp.questManager.q6ObjectsCollected + "/" + gp.questManager.effectiveQuest6Objects(), RIGHT_X, ry);
                     ry += HINT_H;
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
                 }
@@ -2152,7 +2152,7 @@ public class UI {
 
                 } else if (stage == QuestManager.COLLECT_OBJECTS) {
                     int done = gp.questManager.objectsCollected;
-                    g2.drawString("Manuscript: " + done + "/7", panelX + 12, panelY + 52);
+                    g2.drawString("Manuscript: " + done + "/" + gp.questManager.effectiveQuest5Objects(), panelX + 12, panelY + 52);
                 } else if (stage == QuestManager.TALK_MAXIMO) {
                     g2.setColor(Color.white);
                     g2.drawString("Talk to Maximo Viola.", panelX + 12, panelY + 52);
@@ -2196,7 +2196,7 @@ public class UI {
 
                 } else if (stage == QuestManager.COLLECT_OBJECTS_Q6) {
                     int done = gp.questManager.q6ObjectsCollected;
-                    g2.drawString("Manuscript: " + done + "/4", panelX + 12, panelY + 52);
+                    g2.drawString("Manuscript: " + done + "/" + gp.questManager.effectiveQuest6Objects(), panelX + 12, panelY + 52);
 
                 } else if (stage == QuestManager.RETURN_PACIANO) {
                     g2.drawString("Return to Kuya Paciano.", panelX + 12, panelY + 52);

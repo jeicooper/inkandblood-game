@@ -147,6 +147,21 @@ public class QuestManager {
     public int q6ObjectsCollected = 0;
     public boolean[] elFiliParts = new boolean[5];
 
+    // CREATIVITY STUDY AID: every CREATIVITY_PER_OBJECT points removes one required manuscript piece.
+    public static final int CREATIVITY_PER_OBJECT = 2;
+    public static final int QUEST5_MIN_OBJECTS = 3; // never drops below this
+    public static final int QUEST6_MIN_OBJECTS = 2;
+
+    public int effectiveQuest5Objects() {
+        int reduced = OBJECTS_REQUIRED - (gp.player.creativity / CREATIVITY_PER_OBJECT);
+        return Math.max(reduced, QUEST5_MIN_OBJECTS);
+    }
+
+    public int effectiveQuest6Objects() {
+        int reduced = Q6_OBJECTS_REQUIRED - (gp.player.creativity / CREATIVITY_PER_OBJECT);
+        return Math.max(reduced, QUEST6_MIN_OBJECTS);
+    }
+
     // QUEST 7
     public static final int Q7_TALK_GUARDIA = 0;
     public static final int Q7_TALK_JUDGE = 1;
@@ -575,7 +590,11 @@ public class QuestManager {
     public void onNoliDraftFound() {
         if (quest5Stage == FIND_LETTER) {
             quest5Stage = COLLECT_OBJECTS;
-            gp.ui.showMessage("Find objects around the room to write your manuscript.");
+            int need = effectiveQuest5Objects();
+            if (need < OBJECTS_REQUIRED)
+                gp.ui.showMessage("Your creativity guides you - only " + need + " pieces needed!");
+            else
+                gp.ui.showMessage("Find " + need + " objects to write your manuscript.");
         }
     }
 
@@ -583,7 +602,7 @@ public class QuestManager {
         if (manuscriptParts[index]) return;
         manuscriptParts[index] = true;
         objectsCollected++;
-        if (objectsCollected >= OBJECTS_REQUIRED) {
+        if (objectsCollected >= effectiveQuest5Objects()) {
             quest5Stage = TALK_MAXIMO;
             gp.ui.showMessage("Manuscript complete!");
         }
@@ -629,7 +648,11 @@ public class QuestManager {
     public void onElFiliDraftFound() {
         if (quest6Stage == FIND_DRAFT) {
             quest6Stage = COLLECT_OBJECTS_Q6;
-            gp.ui.showMessage("Find objects around the room to write your manuscript.");
+            int need = effectiveQuest6Objects();
+            if (need < Q6_OBJECTS_REQUIRED)
+                gp.ui.showMessage("Your creativity guides you - only " + need + " pieces needed!");
+            else
+                gp.ui.showMessage("Find " + need + " objects to write your manuscript.");
         }
     }
 
@@ -637,7 +660,7 @@ public class QuestManager {
         if (elFiliParts[index]) return;
         elFiliParts[index] = true;
         q6ObjectsCollected++;
-        if (q6ObjectsCollected >= Q6_OBJECTS_REQUIRED) {
+        if (q6ObjectsCollected >= effectiveQuest6Objects()) {
             quest6Stage = RETURN_PACIANO;
             gp.ui.showMessage("Manuscript Complete!");
         }

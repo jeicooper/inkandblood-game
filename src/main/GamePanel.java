@@ -424,7 +424,7 @@ public class GamePanel extends JPanel implements Runnable {
         float alpha = TRAIL_MIN_ALPHA + t * (TRAIL_MAX_ALPHA - TRAIL_MIN_ALPHA);
 
         int px = player.screenX + (tileSize / 2);
-        int py = player.screenY + (tileSize / 2);
+        int py = player.screenY + tileSize;
 
         Stroke    oldStroke    = g2.getStroke();
         Composite oldComposite = g2.getComposite();
@@ -437,7 +437,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         for (entity.Entity target : targets) {
             int tx = target.worldX - player.worldX + player.screenX + (tileSize / 2);
-            int ty = target.worldY - player.worldY + player.screenY + (tileSize / 2);
+            int ty = target.worldY - player.worldY + player.screenY + tileSize;
             g2.drawLine(px, py, tx, ty);
         }
 
@@ -474,8 +474,20 @@ public class GamePanel extends JPanel implements Runnable {
         // Quest 2
         if (questManager.isQuestActive(QuestManager.QUEST2)) {
             int stage = questManager.quest2Stage;
-            if (stage == QuestManager.JOSE_INACTIVE || stage == QuestManager.JOSE_WAITING) {
+            if (stage == QuestManager.JOSE_INACTIVE) {
                 if (npc[12] != null) targets.add(npc[12]);
+            } else if (stage == QuestManager.JOSE_WAITING) {
+                // Collection phase: point to the scattered art supplies.
+                // Once all are gathered, point back to Uncle Jose to turn them in.
+                if (questManager.hasAllArtSupplies()) {
+                    if (npc[12] != null) targets.add(npc[12]);
+                } else {
+                    for (int i = 0; i < obj.length; i++) {
+                        if (obj[i] != null && isArtSupplyObject(obj[i].name)) {
+                            targets.add(obj[i]);
+                        }
+                    }
+                }
             } else if (stage == QuestManager.JOSE_DONE || stage == QuestManager.MANUEL_RUNNING) {
                 if (npc[13] != null) targets.add(npc[13]);
             } else if (stage == QuestManager.MANUEL_DONE || stage == QuestManager.GREGORIO_WAITING) {
@@ -610,6 +622,17 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
         return targets;
+    }
+
+    private boolean isArtSupplyObject(String name) {
+        switch (name) {
+            case "Paint Bucket":
+            case "Paintbrush":
+            case "Canvas":
+                return true;
+            default:
+                return false;
+        }
     }
 
     private boolean isManuscriptObject(String name) {
