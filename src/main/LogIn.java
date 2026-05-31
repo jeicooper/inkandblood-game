@@ -265,7 +265,8 @@ public class LogIn {
     }
 
     private void submitLogin() {
-        String username = usernameField.toString().trim();
+        String id       = usernameField.toString().trim();
+        String username = UserManager.usernameFromStudentId(id);
         String password = passwordField.toString();
         String error    = userManager.login(username, password);
         if (error != null) { errorMessage = error; }

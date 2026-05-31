@@ -275,11 +275,13 @@ public class GamePanel extends JPanel implements Runnable {
                 drawCheckpoints(g2);
             }
 
+            drawQuestTrail(g2);
             //QUEST ARROW
             drawQuestArrow(g2);
 
             //UI
             npcDexUI.drawHUDIcon(g2);
+
             ui.draw(g2);
             miniMap.draw(g2);
 
@@ -408,6 +410,43 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    private static final float PERCEPTION_FULL = 15f;
+    private static final float TRAIL_MIN_ALPHA = 0.08f;
+    private static final float TRAIL_MAX_ALPHA = 0.85f;
+
+    private void drawQuestTrail(Graphics2D g2) {
+        java.util.List<entity.Entity> targets = getQuestTargets();
+        if (targets.isEmpty()) return;
+
+        float t = player.perception / PERCEPTION_FULL;
+        if (t < 0f) t = 0f;
+        if (t > 1f) t = 1f;
+        float alpha = TRAIL_MIN_ALPHA + t * (TRAIL_MAX_ALPHA - TRAIL_MIN_ALPHA);
+
+        int px = player.screenX + (tileSize / 2);
+        int py = player.screenY + (tileSize / 2);
+
+        Stroke    oldStroke    = g2.getStroke();
+        Composite oldComposite = g2.getComposite();
+        Object    oldAA        = g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        g2.setStroke(new BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)); // thin
+        g2.setColor(new Color(255, 220, 0)); // yellow (matches the quest arrow)
+
+        for (entity.Entity target : targets) {
+            int tx = target.worldX - player.worldX + player.screenX + (tileSize / 2);
+            int ty = target.worldY - player.worldY + player.screenY + (tileSize / 2);
+            g2.drawLine(px, py, tx, ty);
+        }
+
+        // Restore.
+        g2.setComposite(oldComposite);
+        g2.setStroke(oldStroke);
+        if (oldAA != null) g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAA);
+    }
+
     private java.util.List<entity.Entity> getQuestTargets() {
         java.util.List<entity.Entity> targets = new java.util.ArrayList<>();
 
@@ -416,11 +455,15 @@ public class GamePanel extends JPanel implements Runnable {
             if (questManager.quest1Stage == QuestManager.QUEST1_NOT_STARTED) {
                 if (npc[0] != null) targets.add(npc[0]);
             } else if (questManager.quest1Stage == QuestManager.QUEST1_STARTED) {
+                boolean anySiblingLeft = false;
                 for (int i = 0; i < npc.length; i++) {
                     if (npc[i] instanceof entity.NPC_Sibling) {
                         entity.NPC_Sibling s = (entity.NPC_Sibling) npc[i];
-                        if (!s.isFollowing) targets.add(s);
+                        if (!s.isFollowing) { targets.add(s); anySiblingLeft = true; }
                     }
+                }
+                if (!anySiblingLeft && !questManager.conchaVisited && npc[1] != null) {
+                    targets.add(npc[1]);
                 }
             } else if (questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
                 if (npc[0] != null) targets.add(npc[0]);

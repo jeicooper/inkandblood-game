@@ -120,7 +120,7 @@ public class Player extends  Entity{
         direction = "down";
 
         // PLAYER STATS
-        maxExp = 20; // 1 = halfexp
+        maxExp = 20;
         exp = 0;
 
         intellect = 0;
