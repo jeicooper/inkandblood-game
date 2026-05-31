@@ -98,7 +98,6 @@ public class LogIn {
     private int signupStep    = 0;
     private int signupFocus   = 0;
 
-    // Sign-up account-type chooser (shown first on the Sign Up page)
     private boolean signupChoosingType = true;
     private int     signupTypeCursor   = 0; // 0 = student account, 1 = admin account
 
@@ -158,7 +157,20 @@ public class LogIn {
         }
     }
 
+    private boolean isModifierKey(int code) {
+        return code == KeyEvent.VK_SHIFT
+                || code == KeyEvent.VK_CAPS_LOCK
+                || code == KeyEvent.VK_CONTROL
+                || code == KeyEvent.VK_ALT
+                || code == KeyEvent.VK_ALT_GRAPH
+                || code == KeyEvent.VK_META
+                || code == KeyEvent.VK_WINDOWS
+                || code == KeyEvent.VK_LEFT
+                || code == KeyEvent.VK_RIGHT;
+    }
+
     private void handleMenuKey(int code) {
+        if (isModifierKey(code)) return;
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             menuCursor = (menuCursor - 1 + 3) % 3;
         }
@@ -190,6 +202,7 @@ public class LogIn {
 
     // LOGIN TYPE SUB-MENU
     private void handleLoginTypeKey(int code) {
+        if (isModifierKey(code)) return;
         if (code == KeyEvent.VK_ESCAPE) { mode = 0; return; }
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             loginTypeCursor = (loginTypeCursor - 1 + 2) % 2;
@@ -225,8 +238,7 @@ public class LogIn {
         errorMessage = "";
 
         // Ignore modifier keys
-        if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
-                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
+        if (isModifierKey(code)) return;
 
         if (code == KeyEvent.VK_ESCAPE) { mode = 1; clearLoginFields(); return; }
 
@@ -266,8 +278,7 @@ public class LogIn {
         errorMessage = "";
 
         // Ignore modifier keys
-        if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
-                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
+        if (isModifierKey(code)) return;
 
         // Account-type chooser: Student vs Admin
         if (signupChoosingType) {
@@ -456,8 +467,7 @@ public class LogIn {
         adminSuccess = "";
 
         // Ignore modifier keys
-        if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CAPS_LOCK ||
-                code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) return;
+        if (isModifierKey(code)) return;
 
         // ----- ESC routing (mode-aware) -----
         if (code == KeyEvent.VK_ESCAPE) {
@@ -587,8 +597,12 @@ public class LogIn {
             if (code == KeyEvent.VK_ENTER) { submitCreateRoom(); return; }
             if (keyChar >= 20 && keyChar != 127) {
                 StringBuilder a = roomFormField(roomFormFocus);
-                int lim = (roomFormFocus == 0) ? 30 : 6;
-                if (a != null && a.length() < lim) a.append(keyChar);
+                if (a == null) return;
+                if (roomFormFocus == 0) {                 // Course: up to 6 characters
+                    if (a.length() < 6) a.append(keyChar);
+                } else {                                  // Year / Section: exactly 1 digit
+                    if (a.length() < 1 && Character.isDigit(keyChar)) a.append(keyChar);
+                }
             }
             return;
         }
@@ -850,6 +864,8 @@ public class LogIn {
         if (course.isEmpty())  { adminError = "Course / subject is required."; return; }
         if (year.isEmpty())    { adminError = "Year is required.";    return; }
         if (section.isEmpty()) { adminError = "Section is required."; return; }
+        if (!year.matches("\\d"))    { adminError = "Year must be a single digit (0-9).";    return; }
+        if (!section.matches("\\d")) { adminError = "Section must be a single digit (0-9)."; return; }
         String code = adminManager.createRoom(course, year, section);
         roomList = adminManager.getRoomsForCurrentAdmin();
         roomCursor = 0;
@@ -1321,7 +1337,7 @@ public class LogIn {
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 17f));
             g2.setColor(new Color(80, 220, 160));
             String exHint = "[ X ] Export All Students to Excel";
-            g2.drawString(exHint, panelX + panelW - gp.tileSize * 2, panelY + panelH - 36);
+            g2.drawString(exHint, cx - strW(g2, exHint) / 2, panelY + panelH - 36);
         }
 
         if (adminMode == 3) {
@@ -1521,10 +1537,10 @@ public class LogIn {
         drawField(g2, "Course (e.g. BSIT)", roomCourseField.toString(),
                 false, roomFormFocus == 0, fieldX, fieldY, fieldW);
         fieldY += step;
-        drawField(g2, "Year (e.g. 1)", roomYearField.toString(),
+        drawField(g2, "Year", roomYearField.toString(),
                 false, roomFormFocus == 1, fieldX, fieldY, fieldW);
         fieldY += step;
-        drawField(g2, "Section (e.g. 2)", roomSecField.toString(),
+        drawField(g2, "Section", roomSecField.toString(),
                 false, roomFormFocus == 2, fieldX, fieldY, fieldW);
 
         if (!adminSuccess.isEmpty()) {
