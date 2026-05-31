@@ -4,6 +4,18 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Initial assessment shown once, right after the player confirms "New Game"
+ * and before the intro cutscene. A narrator (elderly mentor) speaks first,
+ * instructs the player to take the assessment, reveals a fact after each
+ * answer, then delivers closing dialogue before the intro cutscene begins.
+ *
+ * The score is stored on QuestManager (assessmentScore) and surfaces on the
+ * ending stats screen.
+ *
+ * NOTE: questions are placeholders for now; choice "a" (index 0) is the
+ * correct answer for every question until real content is added.
+ */
 public class AssessmentPanel {
 
     private final GamePanel gp;
@@ -27,27 +39,25 @@ public class AssessmentPanel {
     private final String[] outroLines = {
             "There. The measure is taken.",
             "Remember these answers, child.",
-            "When your journey ends, we shall see how far you have come.",
+            "These information shall prove useful to you as you go along this journey",
             "Now... let the story of Pepe unfold."
     };
     private int narrationIndex = 0;
 
-
     public static final int ASSESSMENT_SIZE = 10;
     private static final int POOL_SIZE       = 10;
-    private static final int CORRECT_INDEX   = 0; // "a" is correct for every placeholder
 
     private final String[]   questions = new String[POOL_SIZE];
     private final String[][] choices   = new String[POOL_SIZE][3];
-
     private final String[]   facts     = new String[POOL_SIZE];
 
+    private final int[]      correctIdx = new int[POOL_SIZE];
 
     private int[] questionOrder = new int[ASSESSMENT_SIZE];
 
-    private int currentQuestion = 0; // position within questionOrder (0..ASSESSMENT_SIZE-1)
+    private int currentQuestion = 0;
     private int selectedChoice  = 0;
-    private boolean answerConfirmed = false; // true after [ENTER] -> shows result + fact
+    private boolean answerConfirmed = false;
     private int score = 0;
 
     // ---- Narrator sprite ----
@@ -56,18 +66,82 @@ public class AssessmentPanel {
     public AssessmentPanel(GamePanel gp, UI ui) {
         this.gp = gp;
         this.ui = ui;
-        buildPlaceholderContent();
+        buildQuestionContent();
         loadNarratorImage();
     }
 
-    private void buildPlaceholderContent() {
-        for (int i = 0; i < POOL_SIZE; i++) {
-            questions[i] = "Placeholder question " + (i + 1) + " — insert question here.";
-            choices[i][0] = "Placeholder answer A";
-            choices[i][1] = "Placeholder answer B";
-            choices[i][2] = "Placeholder answer C";
-            facts[i]      = "Did you know? Placeholder fact for question " + (i + 1) + ".";
-        }
+    private void buildQuestionContent() {
+        int q = 0;
+
+        questions[q] = "What's the full name of Jose Rizal?";
+        choices[q] = new String[]{ "Jose Protacio Rizal Mercado Y Alonso Realonda",
+                "Jose Protacio Rizal Mercado Y Realonda Alonso",
+                "Jose Protacio Rizal Alonso Y Mercado Realonda" };
+        correctIdx[q] = 0;
+        facts[q] = "The Rizal family's real last name is \"Mercado.\" They changed it to "
+                + "\"Rizal\" to avoid Spanish blacklisting.";
+        q++;
+
+        questions[q] = "When was Rizal born?";
+        choices[q] = new String[]{ "January 19, 1986", "December 30, 1896", "June 19, 1861" };
+        correctIdx[q] = 2;
+        facts[q] = "He was born in Calamba, Laguna.";
+        q++;
+
+        questions[q] = "How many siblings does Rizal have?";
+        choices[q] = new String[]{ "8", "11", "10" };
+        correctIdx[q] = 2;
+        facts[q] = "Rizal was the 8th among his siblings.";
+        q++;
+
+        questions[q] = "Which sibling of Rizal died at a young age?";
+        choices[q] = new String[]{ "Concepcion", "Olimpia", "Trinidad" };
+        correctIdx[q] = 0;
+        facts[q] = "Concepcion's death was Rizal's first experience of grief. The two were close "
+                + "as children, and her death from illness deeply devastated him.";
+        q++;
+
+        questions[q] = "When did Rizal die?";
+        choices[q] = new String[]{ "December 30, 1896", "January 19, 1986", "June 19, 1861" };
+        correctIdx[q] = 0;
+        facts[q] = "His death anniversary is a national holiday called \"Rizal Day,\" observed "
+                + "annually to commemorate his martyrdom as the country's national hero.";
+        q++;
+
+        questions[q] = "What law was created for Rizal?";
+        choices[q] = new String[]{ "RA 11313", "RA 1425", "RA 10931" };
+        correctIdx[q] = 1;
+        facts[q] = "The Catholic Church opposed the Rizal Law because it mandates reading Noli Me "
+                + "Tangere and El Filibusterismo, which contain passages critical of the church.";
+        q++;
+
+        questions[q] = "Who authored the Rizal Law?";
+        choices[q] = new String[]{ "Jinggoy Estrada", "Claro M. Recto", "Juan Ponce Enrile" };
+        correctIdx[q] = 1;
+        facts[q] = "The Rizal Law was approved on June 12, 1956. It integrated the study of the "
+                + "life and works of Dr. Jose Rizal into the tertiary-level curriculum.";
+        q++;
+
+        questions[q] = "Who sponsored the Rizal Law?";
+        choices[q] = new String[]{ "Diosdado Macapagal", "Manuel L. Quezon", "Jose P. Laurel" };
+        correctIdx[q] = 2;
+        facts[q] = "Section 5 of the law authorized three hundred thousand pesos from the National "
+                + "Treasury to carry out its purposes.";
+        q++;
+
+        questions[q] = "Who was recommended as a national hero other than Rizal?";
+        choices[q] = new String[]{ "Gabriela Silang", "Diego Silang", "Gregorio Del Pilar" };
+        correctIdx[q] = 0;
+        facts[q] = "Rizal was an American -sponsored hero. In 1901, Governor William Howard Taft "
+                + "suggested the Philippine Commission give the Filipinos a national hero.";
+        q++;
+
+        questions[q] = "Who was Rizal's first love?";
+        choices[q] = new String[]{ "Josephine Bracken", "Leonor Rivera", "Segunda Katigbak" };
+        correctIdx[q] = 2;
+        facts[q] = "Rizal's friend Mariano was Segunda Katigbak's brother; he introduced them to "
+                + "each other when they were teenagers.";
+        q++;
     }
 
     private void loadNarratorImage() {
@@ -141,7 +215,7 @@ public class AssessmentPanel {
             }
             if (code == java.awt.event.KeyEvent.VK_ENTER) {
                 answerConfirmed = true;
-                if (selectedChoice == CORRECT_INDEX) score++;
+                if (selectedChoice == correctIdx[qIndex()]) score++;
             }
         } else {
             if (code == java.awt.event.KeyEvent.VK_ENTER || code == java.awt.event.KeyEvent.VK_SPACE) {
@@ -162,7 +236,6 @@ public class AssessmentPanel {
         gp.cutsceneManager.startIntroCutscene();
     }
 
-    // ====================== DRAW ======================
     public void draw(Graphics2D g2) {
         int sw = gp.screenWidth;
         int sh = gp.screenHeight;
@@ -197,9 +270,9 @@ public class AssessmentPanel {
     }
 
     private int bubbleX()      { return 20; }
-    private int bubbleY()      { return 20; }
+    private int bubbleY()      { return 30; }
     private int bubbleW()      { return 320; }
-    private int bubbleH()      { return 350; }
+    private int bubbleH()      { return 300; }
     private int bubbleBottomY(){ return bubbleY() + bubbleH(); }
 
     private void drawNarrationBubble(Graphics2D g2, String text) {
@@ -223,8 +296,8 @@ public class AssessmentPanel {
         g2.drawLine(tx[0], ty[0], tx[2], ty[2]);
         g2.drawLine(tx[1], ty[1], tx[2], ty[2]);
 
-        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 20f));
-        g2.setColor(new Color(255, 235, 200));
+        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 27f));
+        g2.setColor(new Color(255, 255, 255));
         drawWrapped(g2, text, bx + 20, by + 38, bw - 40, 28);
 
         // continue hint
@@ -264,19 +337,18 @@ public class AssessmentPanel {
         g2.drawRoundRect(px, boxY, pw, ph, 28, 28);
 
         // Question text
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 30f));
         g2.setColor(Color.white);
-        int qy = boxY + 44;
+        int qy = boxY + 55;
         drawWrapped(g2, questions[qIndex()], px + 28, qy, pw - 56, 30);
 
-        // Choices (tighter grouping)
         String[] labels = { "a", "b", "c" };
         int choiceH = 50;
         int gap = 14;
         int choiceStartY = boxY + 132;
         for (int i = 0; i < 3; i++) {
             boolean isSel = (i == selectedChoice);
-            boolean isCorrect = (i == CORRECT_INDEX);
+            boolean isCorrect = (i == correctIdx[qIndex()]);
 
             Color bg;
             if (answerConfirmed) {
@@ -294,7 +366,7 @@ public class AssessmentPanel {
             g2.setStroke(new BasicStroke(2f));
             g2.drawRoundRect(px + 28, rowY, pw - 56, choiceH, 16, 16);
 
-            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 20f));
+            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 25f));
             g2.setColor(answerConfirmed && !isCorrect && !isSel ? new Color(180,180,180) : Color.white);
             g2.drawString(labels[i] + ".  " + choices[qIndex()][i],
                     px + 48, rowY + choiceH / 2 + 7);
