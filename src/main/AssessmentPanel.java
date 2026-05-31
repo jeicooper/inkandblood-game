@@ -10,9 +10,9 @@ public class AssessmentPanel {
     private final UI ui;
 
     // ---- Phases ----
-    private static final int PHASE_INTRO    = 0;
-    private static final int PHASE_QUESTION = 1;
-    private static final int PHASE_OUTRO    = 2;
+    private static final int PHASE_INTRO    = 0; // narrator speaks + instruction
+    private static final int PHASE_QUESTION = 1; // answering / revealing fact
+    private static final int PHASE_OUTRO    = 2; // closing narration
     private int phase = PHASE_INTRO;
 
     // ---- Narrator dialogue ----
@@ -32,16 +32,22 @@ public class AssessmentPanel {
     };
     private int narrationIndex = 0;
 
-    public static final int ASSESSMENT_SIZE = 15;
-    private static final int CORRECT_INDEX  = 0;
 
-    private final String[]   questions = new String[ASSESSMENT_SIZE];
-    private final String[][] choices   = new String[ASSESSMENT_SIZE][3];
-    private final String[]   facts     = new String[ASSESSMENT_SIZE];
+    public static final int ASSESSMENT_SIZE = 10;
+    private static final int POOL_SIZE       = 10;
+    private static final int CORRECT_INDEX   = 0; // "a" is correct for every placeholder
 
-    private int currentQuestion = 0;
+    private final String[]   questions = new String[POOL_SIZE];
+    private final String[][] choices   = new String[POOL_SIZE][3];
+
+    private final String[]   facts     = new String[POOL_SIZE];
+
+
+    private int[] questionOrder = new int[ASSESSMENT_SIZE];
+
+    private int currentQuestion = 0; // position within questionOrder (0..ASSESSMENT_SIZE-1)
     private int selectedChoice  = 0;
-    private boolean answerConfirmed = false;
+    private boolean answerConfirmed = false; // true after [ENTER] -> shows result + fact
     private int score = 0;
 
     // ---- Narrator sprite ----
@@ -55,7 +61,7 @@ public class AssessmentPanel {
     }
 
     private void buildPlaceholderContent() {
-        for (int i = 0; i < ASSESSMENT_SIZE; i++) {
+        for (int i = 0; i < POOL_SIZE; i++) {
             questions[i] = "Placeholder question " + (i + 1) + " — insert question here.";
             choices[i][0] = "Placeholder answer A";
             choices[i][1] = "Placeholder answer B";
@@ -80,8 +86,23 @@ public class AssessmentPanel {
         selectedChoice = 0;
         answerConfirmed = false;
         score = 0;
+        buildQuestionOrder();
         gp.gameState = gp.assessmentState;
         gp.inputDelay = 15;
+    }
+
+    private void buildQuestionOrder() {
+        java.util.List<Integer> pool = new java.util.ArrayList<>();
+        for (int i = 0; i < POOL_SIZE; i++) pool.add(i);
+        java.util.Collections.shuffle(pool);
+        questionOrder = new int[ASSESSMENT_SIZE];
+        for (int i = 0; i < ASSESSMENT_SIZE; i++) {
+            questionOrder[i] = pool.get(i % POOL_SIZE);
+        }
+    }
+
+    private int qIndex() {
+        return questionOrder[currentQuestion];
     }
 
     // ====================== INPUT ======================
@@ -137,7 +158,6 @@ public class AssessmentPanel {
     }
 
     private void finish() {
-
         gp.questManager.assessmentScore = score;
         gp.cutsceneManager.startIntroCutscene();
     }
@@ -158,7 +178,7 @@ public class AssessmentPanel {
         } else if (phase == PHASE_OUTRO) {
             drawNarrationBubble(g2, outroLines[Math.min(narrationIndex, outroLines.length - 1)]);
         } else {
-            drawNarrationBubble(g2, answerConfirmed ? facts[currentQuestion]
+            drawNarrationBubble(g2, answerConfirmed ? facts[qIndex()]
                     : "Take your time. Choose your answer.");
             drawQuizPanel(g2);
         }
@@ -166,8 +186,8 @@ public class AssessmentPanel {
 
     private void drawNarrator(Graphics2D g2) {
         int sz = gp.tileSize * 3;
-        int nx = 40;
-        int ny = gp.screenHeight - sz - 40;
+        int nx = 20;
+        int ny = bubbleBottomY() + 40;
         if (narratorImg != null) {
             g2.drawImage(narratorImg, nx, ny, sz, sz, null);
         } else {
@@ -176,83 +196,84 @@ public class AssessmentPanel {
         }
     }
 
+    private int bubbleX()      { return 20; }
+    private int bubbleY()      { return 20; }
+    private int bubbleW()      { return 320; }
+    private int bubbleH()      { return 350; }
+    private int bubbleBottomY(){ return bubbleY() + bubbleH(); }
+
     private void drawNarrationBubble(Graphics2D g2, String text) {
-        int bx = 40;
-        int by = 60;
-        int bw = 360;
-        int bh = gp.screenHeight - size3() - 160;
-        if (bh < 160) bh = 160;
+        int bx = bubbleX();
+        int by = bubbleY();
+        int bw = bubbleW();
+        int bh = bubbleH();
 
         g2.setColor(new Color(0, 0, 0, 210));
-        g2.fillRoundRect(bx, by, bw, bh, 24, 24);
+        g2.fillRoundRect(bx, by, bw, bh, 22, 22);
         g2.setColor(Color.white);
         g2.setStroke(new BasicStroke(3f));
-        g2.drawRoundRect(bx, by, bw, bh, 24, 24);
+        g2.drawRoundRect(bx, by, bw, bh, 22, 22);
 
         // little tail pointing down to the narrator
-        int[] tx = { bx + 50, bx + 90, bx + 60 };
-        int[] ty = { by + bh, by + bh, by + bh + 30 };
+        int[] tx = { bx + 50, bx + 86, bx + 58 };
+        int[] ty = { by + bh, by + bh, by + bh + 26 };
         g2.setColor(new Color(0, 0, 0, 210));
         g2.fillPolygon(tx, ty, 3);
         g2.setColor(Color.white);
         g2.drawLine(tx[0], ty[0], tx[2], ty[2]);
         g2.drawLine(tx[1], ty[1], tx[2], ty[2]);
 
-        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 22f));
+        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 20f));
         g2.setColor(new Color(255, 235, 200));
-        drawWrapped(g2, text, bx + 22, by + 44, bw - 44, 30);
+        drawWrapped(g2, text, bx + 20, by + 38, bw - 40, 28);
 
         // continue hint
-        g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 16f));
+        g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 15f));
         g2.setColor(new Color(170, 170, 170));
-        String hint = (phase == PHASE_QUESTION && !answerConfirmed)
-                ? "" : "[ ENTER ]";
+        String hint = (phase == PHASE_QUESTION && !answerConfirmed) ? "" : "[ ENTER ]";
         if (!hint.isEmpty())
-            g2.drawString(hint, bx + bw - 90, by + bh - 18);
+            g2.drawString(hint, bx + bw - 86, by + bh - 16);
     }
-
-    private int size3() { return gp.tileSize * 3 + 80; }
 
     private void drawQuizPanel(Graphics2D g2) {
         int sw = gp.screenWidth;
 
-        int pad = 30;
-        int pw = sw - 480 - pad;
-        int px = 440;
-        int py = 60;
-        int ph = gp.screenHeight - 120;
+        int pw = 600;
+        int px = 350;
+        int boxH = 400;
+        int boxY = (gp.screenHeight - boxH) / 2 + 20;
+        int ph = boxH;
 
-        // Title
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 30f));
+        // Title (above the box)
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 28f));
         g2.setColor(new Color(255, 210, 80));
         String title = "Initial Assessment";
-        g2.drawString(title, px + (pw - g2.getFontMetrics().stringWidth(title)) / 2, py + 6);
+        g2.drawString(title, px + (pw - g2.getFontMetrics().stringWidth(title)) / 2, boxY - 40);
 
-        // progress
-        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 18f));
+        // progress (above the box, left-aligned)
+        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 17f));
         g2.setColor(new Color(180, 180, 180));
         String prog = "Question " + (currentQuestion + 1) + " / " + ASSESSMENT_SIZE;
-        g2.drawString(prog, px, py + 34);
+        g2.drawString(prog, px, boxY - 14);
 
         // Panel
-        int boxY = py + 50;
         g2.setColor(new Color(0, 0, 0, 200));
-        g2.fillRoundRect(px, boxY, pw, ph - 50, 28, 28);
+        g2.fillRoundRect(px, boxY, pw, ph, 28, 28);
         g2.setColor(Color.white);
         g2.setStroke(new BasicStroke(3f));
-        g2.drawRoundRect(px, boxY, pw, ph - 50, 28, 28);
+        g2.drawRoundRect(px, boxY, pw, ph, 28, 28);
 
         // Question text
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 24f));
+        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
         g2.setColor(Color.white);
-        int qy = boxY + 50;
-        qy = drawWrapped(g2, questions[currentQuestion], px + 30, qy, pw - 60, 32);
+        int qy = boxY + 44;
+        drawWrapped(g2, questions[qIndex()], px + 28, qy, pw - 56, 30);
 
-        // Choices
+        // Choices (tighter grouping)
         String[] labels = { "a", "b", "c" };
-        int choiceH = 56;
-        int gap = 18;
-        int choiceStartY = boxY + 150;
+        int choiceH = 50;
+        int gap = 14;
+        int choiceStartY = boxY + 132;
         for (int i = 0; i < 3; i++) {
             boolean isSel = (i == selectedChoice);
             boolean isCorrect = (i == CORRECT_INDEX);
@@ -268,24 +289,24 @@ public class AssessmentPanel {
 
             int rowY = choiceStartY + i * (choiceH + gap);
             g2.setColor(bg);
-            g2.fillRoundRect(px + 30, rowY, pw - 60, choiceH, 18, 18);
+            g2.fillRoundRect(px + 28, rowY, pw - 56, choiceH, 16, 16);
             g2.setColor(Color.white);
             g2.setStroke(new BasicStroke(2f));
-            g2.drawRoundRect(px + 30, rowY, pw - 60, choiceH, 18, 18);
+            g2.drawRoundRect(px + 28, rowY, pw - 56, choiceH, 16, 16);
 
-            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 22f));
+            g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 20f));
             g2.setColor(answerConfirmed && !isCorrect && !isSel ? new Color(180,180,180) : Color.white);
-            g2.drawString(labels[i] + ".  " + choices[currentQuestion][i],
-                    px + 50, rowY + choiceH / 2 + 8);
+            g2.drawString(labels[i] + ".  " + choices[qIndex()][i],
+                    px + 48, rowY + choiceH / 2 + 7);
         }
 
-        // Footer hint
-        g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 16f));
+        // Footer hint (inside the box, near the bottom)
+        g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 15f));
         g2.setColor(new Color(170, 170, 170));
-        String hint = answerConfirmed
+        String fhint = answerConfirmed
                 ? (currentQuestion >= ASSESSMENT_SIZE - 1 ? "[ ENTER ] Finish" : "[ ENTER ] Next")
                 : "[ W ] / [ S ] choose    [ ENTER ] confirm";
-        g2.drawString(hint, px + 30, boxY + ph - 70);
+        g2.drawString(fhint, px + 28, boxY + ph - 22);
     }
 
     private int drawWrapped(Graphics2D g2, String text, int x, int y, int maxW, int lineH) {
