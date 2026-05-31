@@ -1084,8 +1084,10 @@ public class CutsceneManager {
         int    attempts   = gp.questManager.quizAttempts;
         int    medals     = gp.questManager.medalsEarned;
         int    npcMet     = gp.npcDatabase.getUnlockedCount();
+        int    assess     = gp.questManager.assessmentScore;
 
         String[][] rows = {
+                { "Initial Assessment", assess == -1 ? "—" : assess + " / " + AssessmentPanel.ASSESSMENT_SIZE },
                 { "Total Play Time", totalTime },
                 { "Quest 2 — Race Time", bootsTime },
                 { "First Quiz Score", firstScore  == -1 ? "—" : firstScore + " / 10" },

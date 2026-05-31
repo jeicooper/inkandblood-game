@@ -76,6 +76,10 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.dexState) {
             gp.npcDexUI.handleKey(code);
         }
+        //ASSESSMENT STATE
+        else if (gp.gameState == gp.assessmentState) {
+            gp.assessmentPanel.handleKey(code);
+        }
     }
 
     public void titleState(int code) {
@@ -390,7 +394,8 @@ public class KeyHandler implements KeyListener {
                 main.NPCDatabase.deleteForUser(gp.userManager.getCurrentUser());
                 gp.resetGame();
                 gp.ui.newGameConfirmCursor = 0;
-                gp.cutsceneManager.startIntroCutscene();
+                // Initial assessment plays first; it calls startIntroCutscene() when done.
+                gp.assessmentPanel.start();
             } else {
                 gp.gameState = gp.titleState;
                 gp.ui.titleScreenState = 0;

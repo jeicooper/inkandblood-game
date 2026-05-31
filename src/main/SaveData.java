@@ -73,4 +73,5 @@ public class SaveData implements Serializable {
     public int firstQuizScore = -1;
     public int quizAttempts;
     public int totalNPCMet;
+    public int assessmentScore = -1;
 }

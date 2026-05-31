@@ -64,6 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
     public NPCDatabase npcDatabase = new NPCDatabase(this, userManager);
     public NPCDexUI    npcDexUI    = new NPCDexUI(this, ui);
     public MiniMap miniMap = new MiniMap(this);
+    public AssessmentPanel assessmentPanel = new AssessmentPanel(this, ui);
 
     Thread gameThread;
 
@@ -91,6 +92,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int newGameConfirmState = 9;
     public int inputDelay = 10;
     public final int dexState = 11;
+    public final int assessmentState = 12;
 
 
     public GamePanel(){
@@ -238,6 +240,9 @@ public class GamePanel extends JPanel implements Runnable {
         else if (gameState == cutsceneState) {
             cutsceneManager.draw(g2);
         }
+        else if (gameState == assessmentState) {
+            assessmentPanel.draw(g2);
+        }
 
         //OTHERS
         else {
@@ -327,7 +332,9 @@ public class GamePanel extends JPanel implements Runnable {
         ui.activeLetter = "";
         talkingTo = null;
 
+        // reset tile map to chapter 1
         tileM.loadMap("/maps/Chapter1.txt");
+        // reset location tracking so the minimap/label aren't stuck on a prior chapter
         currentMap         = "/maps/Chapter1.txt";
         currentSublocation = "CALAMBA, LAGUNA";
 
@@ -411,8 +418,11 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // Perception at which the trail reaches full visibility.
+    // Perception actually maxes out near 16 (Q1 +2, Q5 +3, Q6 +6, Q7 +5).
     private static final float PERCEPTION_FULL = 16f;
-
+    // Alpha bounds (0f..1f). MIN is near-invisible so the trail is barely a whisper
+    // at low perception, then climbs toward MAX as perception grows.
     private static final float TRAIL_MIN_ALPHA = 0.05f;
     private static final float TRAIL_MAX_ALPHA = 0.90f;
 
@@ -426,7 +436,7 @@ public class GamePanel extends JPanel implements Runnable {
         float alpha = TRAIL_MIN_ALPHA + t * (TRAIL_MAX_ALPHA - TRAIL_MIN_ALPHA);
 
         int px = player.screenX + (tileSize / 2);
-        int py = player.screenY + tileSize;
+        int py = player.screenY + tileSize - 4; // at the feet (just above the sprite's bottom edge)
 
         Stroke    oldStroke    = g2.getStroke();
         Composite oldComposite = g2.getComposite();
@@ -439,7 +449,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         for (entity.Entity target : targets) {
             int tx = target.worldX - player.worldX + player.screenX + (tileSize / 2);
-            int ty = target.worldY - player.worldY + player.screenY + tileSize;
+            int ty = target.worldY - player.worldY + player.screenY + tileSize - 4; // target's feet
             g2.drawLine(px, py, tx, ty);
         }
 

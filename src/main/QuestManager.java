@@ -31,6 +31,7 @@ public class QuestManager {
     public long bootsEndTime = 0L;
     public int firstQuizScore = -1;
     public int quizAttempts = 0;
+    public int assessmentScore = -1; // initial pre-game assessment (out of AssessmentPanel.ASSESSMENT_SIZE)
 
 
     // QUEST IDS

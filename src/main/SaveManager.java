@@ -92,6 +92,7 @@ public class SaveManager {
         d.bootsEndTime   = qm.bootsEndTime;
         d.firstQuizScore = qm.firstQuizScore;
         d.quizAttempts   = qm.quizAttempts;
+        d.assessmentScore = qm.assessmentScore;
         d.totalNPCMet    = gp.npcDatabase.getUnlockedCount();
 
         try (ObjectOutputStream oos = new ObjectOutputStream(
@@ -185,6 +186,7 @@ public class SaveManager {
         qm.bootsEndTime   = d.bootsEndTime;
         qm.firstQuizScore = d.firstQuizScore;
         qm.quizAttempts   = d.quizAttempts;
+        qm.assessmentScore = d.assessmentScore;
 
         // UI
         gp.ui.questPageNum = d.questPageNum;
