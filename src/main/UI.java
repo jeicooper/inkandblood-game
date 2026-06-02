@@ -1219,7 +1219,7 @@ public class UI {
         // page header
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 39f));
         g2.setColor(Color.white);
-        String header = "Quests: [" + (questPageNum + 1) + "/5]";
+        String header = "Quests: [" + (questPageNum + 1) + "/6]";
         int x = getXforCenter(header);
         int y = frameY + gp.tileSize;
         g2.drawString(header, x, y);
@@ -1746,8 +1746,140 @@ public class UI {
             }
         }
 
-        // ===== PAGE 3: Chapter 3 =====
+        // ===== PAGE 3: QUEST_MEMORIES (Mga Alaala) =====
         else if (questPageNum == 3) {
+
+            boolean qmDone   = gp.questManager.isQuestCompleted(QuestManager.QUEST_MEMORIES);
+            boolean qmActive = gp.questManager.isQuestActive(QuestManager.QUEST_MEMORIES);
+            int     qmStage  = gp.questManager.questMemStage;
+
+            final int PAD        = gp.tileSize;
+            final int LEFT_X     = frameX + PAD;
+            final int TITLE_SIZE = 27;
+            final int DESC_SIZE  = 27;
+            final int BODY_SIZE  = 25;
+            final int HINT_SIZE  = 21;
+            final int LINE_H     = 27;
+            final int HINT_H     = 22;
+            final int TOP_Y      = frameY + gp.tileSize * 2;
+
+            int ly = TOP_Y;
+
+            Color qmColor = qmDone   ? new Color(100, 230, 100)
+                    : qmActive ? new Color(255, 220, 80)
+                    :            Color.gray;
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(qmColor);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_MEMORIES) + ":", LEFT_X, ly);
+            ly += LINE_H - 2;
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST_MEMORIES) + "\""
+                    + (qmDone ? " COMPLETE" : ""), LEFT_X, ly);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(qmActive || qmDone ? Color.lightGray : Color.gray);
+            ly += HINT_H + 2;
+            g2.drawString("Gather the memories that will fuel your pen.", LEFT_X, ly);
+
+            ly += LINE_H + 2;
+
+            if (!qmActive && !qmDone) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Quest 5 to unlock]", LEFT_X, ly);
+            } else {
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                // Step 1: Talk to Maximo
+                boolean s1 = qmDone || qmStage > QuestManager.QM_TALK_MAXIMO_FIRST;
+                g2.setColor(s1 ? new Color(80, 220, 80)
+                        : qmStage == QuestManager.QM_TALK_MAXIMO_FIRST ? Color.white : Color.gray);
+                g2.drawString("- Talk to Maximo Viola", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 2: Collect first 5 mementos
+                boolean s2active = qmStage == QuestManager.QM_COLLECT_5;
+                boolean s2done   = qmDone || qmStage > QuestManager.QM_COLLECT_5;
+                g2.setColor(s2done ? new Color(80, 220, 80)
+                        : s2active ? Color.white : Color.gray);
+                g2.drawString("- Collect 6 mementos", LEFT_X, ly);
+                ly += LINE_H;
+
+                if (s2active || s2done) {
+                    String[] first6 = {
+                            "Medical Books",
+                            "Letters and Postcards",
+                            "Dusty Manuscript",
+                            "Legal Docs",
+                            "Envelope",
+                            "Ophthalmoscope"
+                    };
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
+                    for (int i = 0; i < 6; i++) {
+                        boolean found = qmDone || gp.questManager.memFirstParts[i];
+                        g2.setColor(found ? new Color(80, 220, 80) : Color.white);
+                        g2.drawString((found ? "/ " : "- ") + first6[i], LEFT_X + 10, ly);
+                        ly += LINE_H - 2;
+                    }
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("  Found: " + gp.questManager.memFirstCollected + "/6", LEFT_X, ly);
+                    ly += HINT_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+                }
+
+                // Step 3: Return to Maximo (mid)
+                boolean s3 = qmDone || qmStage > QuestManager.QM_RETURN_MAXIMO_MID;
+                g2.setColor(s3 ? new Color(80, 220, 80)
+                        : qmStage == QuestManager.QM_RETURN_MAXIMO_MID ? Color.white : Color.gray);
+                g2.drawString("- Return to Maximo Viola", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 4: Collect next 3 mementos
+                boolean s4active = qmStage == QuestManager.QM_COLLECT_3;
+                boolean s4done   = qmDone || qmStage > QuestManager.QM_COLLECT_3;
+                g2.setColor(s4done ? new Color(80, 220, 80)
+                        : s4active ? Color.white : Color.gray);
+                g2.drawString("- Collect 3 more mementos", LEFT_X, ly);
+                ly += LINE_H;
+
+                if (s4active || s4done) {
+                    String[] second3 = {
+                            "Rosary Bead",
+                            "Poetry Draft",
+                            "Paciano's Note"
+                    };
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
+                    for (int i = 0; i < 3; i++) {
+                        boolean found = qmDone || gp.questManager.memSecondParts[i];
+                        g2.setColor(found ? new Color(80, 220, 80) : Color.white);
+                        g2.drawString((found ? "/ " : "- ") + second3[i], LEFT_X + 10, ly);
+                        ly += LINE_H - 2;
+                    }
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("  Found: " + gp.questManager.memSecondCollected + "/3", LEFT_X, ly);
+                    ly += HINT_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+                }
+
+                // Step 5: Return to Maximo (final)
+                boolean s5 = qmDone || qmStage == QuestManager.QM_RETURN_MAXIMO_FINAL;
+                g2.setColor(qmDone ? new Color(80, 220, 80)
+                        : s5 ? Color.white : Color.gray);
+                g2.drawString("- Return to Maximo Viola", LEFT_X, ly);
+
+                if (qmDone) {
+                    ly += LINE_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Quest complete!", LEFT_X, ly);
+                }
+            }
+        }
+
+        // ===== PAGE 4: Chapter 3 (Noli + El Fili) =====
+        else if (questPageNum == 4) {
 
             boolean q5done   = gp.questManager.isQuestCompleted(QuestManager.QUEST5);
             boolean q5active = gp.questManager.isQuestActive(QuestManager.QUEST5);
@@ -1793,7 +1925,7 @@ public class UI {
             if (!q5active && !q5done) {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                 g2.setColor(Color.gray);
-                g2.drawString("[Complete Ch.2 to unlock]", LEFT_X, ly);
+                g2.drawString("[Complete Quest 6 to unlock]", LEFT_X, ly);
             } else {
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
 
@@ -1911,8 +2043,8 @@ public class UI {
 
         }
 
-        // ===== PAGE 4: Chapter 4 =====
-        else if (questPageNum == 4) {
+        // ===== PAGE 5: Chapter 4 =====
+        else if (questPageNum == 5) {
             boolean q7done   = gp.questManager.isQuestCompleted(QuestManager.QUEST7);
             boolean q7active = gp.questManager.isQuestActive(QuestManager.QUEST7);
             int     q7stage  = gp.questManager.quest7Stage;
@@ -2012,7 +2144,7 @@ public class UI {
             g2.drawString("< PREV  [A]", frameX + gp.tileSize, btnY);
         }
 
-        if (questPageNum < 4) {
+        if (questPageNum < 5) {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
             g2.setColor(new Color(255, 220, 80));
             String next = "NEXT >  [D]";
@@ -2282,6 +2414,52 @@ public class UI {
                 } else if (stage == QuestManager.QUEST4_DONE) {
                     g2.setColor(new Color(100, 230, 100));
                     g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST4) + " Complete!", panelX + 12, panelY + 52);
+                }
+            }
+
+            // ===== QUEST_MEMORIES =====
+            else if (currentQ == QuestManager.QUEST_MEMORIES && gp.questManager.isQuestActive(QuestManager.QUEST_MEMORIES)) {
+
+                g2.setColor(new Color(255, 220, 80));
+                g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_MEMORIES) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST_MEMORIES), panelX + 12, panelY + 28);
+
+                g2.setColor(Color.white);
+                g2.setFont(g2.getFont().deriveFont(20F));
+
+                int memStage = gp.questManager.questMemStage;
+
+                if (memStage == QuestManager.QM_TALK_MAXIMO_FIRST) {
+                    g2.drawString("Talk to Maximo Viola.", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("He has something to ask of you.", panelX + 12, panelY + 72);
+
+                } else if (memStage == QuestManager.QM_COLLECT_5) {
+                    int found = gp.questManager.memFirstCollected;
+                    g2.drawString("Mementos: " + found + " / 6", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("Find mementos from your past.", panelX + 12, panelY + 72);
+
+                } else if (memStage == QuestManager.QM_RETURN_MAXIMO_MID) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Return to Maximo Viola!", panelX + 12, panelY + 52);
+
+                } else if (memStage == QuestManager.QM_COLLECT_3) {
+                    int found = gp.questManager.memSecondCollected;
+                    g2.drawString("Mementos: " + found + " / 3", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("Find 3 more mementos.", panelX + 12, panelY + 72);
+
+                } else if (memStage == QuestManager.QM_RETURN_MAXIMO_FINAL) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Return to Maximo Viola!", panelX + 12, panelY + 52);
+
+                } else if (memStage == QuestManager.QUEST_MEM_DONE) {
+                    g2.setColor(new Color(100, 230, 100));
+                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_MEMORIES) + " Complete!", panelX + 12, panelY + 52);
                 }
             }
 

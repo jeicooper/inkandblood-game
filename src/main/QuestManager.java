@@ -21,8 +21,10 @@ public class QuestManager {
 
     private boolean pendingChapter2Cutscene = false;
     private boolean pendingQuest4Cutscene = false;
+    private boolean pendingQuestMemoriesCutscene = false;
     private boolean pendingChapter3Cutscene = false;
     private boolean pendingQuest6StartCutscene = false;
+    private int cutsceneDelay3 = 0;
 
     //STATISTICS
     public long gameStartTime = 0L;
@@ -34,11 +36,12 @@ public class QuestManager {
     public int assessmentScore = -1;
 
 
-    public static final int QUEST1         = 0;
+    public static final int QUEST1          = 0;
     public static final int QUEST_HISTORY  = 1;
     public static final int QUEST2         = 2;
     public static final int QUEST3         = 3;
     public static final int QUEST4         = 4;
+    public static final int QUEST_MEMORIES = 8;  // NEW: between Quest4 and Quest5
     public static final int QUEST5         = 5;
     public static final int QUEST6         = 6;
     public static final int QUEST7         = 7;
@@ -133,6 +136,20 @@ public class QuestManager {
     public boolean[] disciplineAnswered = new boolean[5];
     public int disciplinesCompleted = 0;
 
+    // QUEST_MEMORIES (between Quest4 and Quest5)
+    public static final int QM_TALK_MAXIMO_FIRST   = 0;
+    public static final int QM_COLLECT_5           = 1;
+    public static final int QM_RETURN_MAXIMO_MID   = 2;
+    public static final int QM_COLLECT_3           = 3;
+    public static final int QM_RETURN_MAXIMO_FINAL = 4;
+    public static final int QUEST_MEM_DONE         = 5;
+
+    public int questMemStage = QM_TALK_MAXIMO_FIRST;
+    public int memFirstCollected  = 0;   // tracks batch-1 (6 objects)
+    public int memSecondCollected = 0;   // tracks batch-2 (3 objects)
+    public boolean[] memFirstParts  = new boolean[6];
+    public boolean[] memSecondParts = new boolean[3];
+
     // QUEST 5
     public static final int TALK_PEDRO = 0;
     public static final int TALK_CONSUELO = 1;
@@ -185,29 +202,31 @@ public class QuestManager {
 
     public static int questDisplayNumber(int questId) {
         switch (questId) {
-            case QUEST1:        return 1;
-            case QUEST_HISTORY: return 2;
-            case QUEST2:        return 3;
-            case QUEST3:        return 4;
-            case QUEST4:        return 5;
-            case QUEST5:        return 6;
-            case QUEST6:        return 7;
-            case QUEST7:        return 8;
-            default:            return questId + 1;
+            case QUEST1:          return 1;
+            case QUEST_HISTORY:   return 2;
+            case QUEST2:          return 3;
+            case QUEST3:          return 4;
+            case QUEST4:          return 5;
+            case QUEST_MEMORIES:  return 6;
+            case QUEST5:          return 7;
+            case QUEST6:          return 8;
+            case QUEST7:          return 9;
+            default:              return questId + 1;
         }
     }
 
     public static String questDisplayTitle(int questId) {
         switch (questId) {
-            case QUEST1:        return "Familya Rizal";
-            case QUEST_HISTORY: return "Ang Kasaysayan";
-            case QUEST2:        return "Pangangaral ng mga Tiyo";
-            case QUEST3:        return "Pagpasok sa Ateneo";
-            case QUEST4:        return "Ang Kampeon ng Roma";
-            case QUEST5:        return "Noli Me Tangere";
-            case QUEST6:        return "El Filibusterismo";
-            case QUEST7:        return "Ang Huling Araw";
-            default:            return "Quest " + questDisplayNumber(questId);
+            case QUEST1:          return "Familya Rizal";
+            case QUEST_HISTORY:   return "Ang Kasaysayan";
+            case QUEST2:          return "Pangangaral ng mga Tiyo";
+            case QUEST3:          return "Pagpasok sa Ateneo";
+            case QUEST4:          return "Ang Kampeon ng Roma";
+            case QUEST_MEMORIES:  return "Mga Alaala";
+            case QUEST5:          return "Noli Me Tangere";
+            case QUEST6:          return "El Filibusterismo";
+            case QUEST7:          return "Ang Huling Araw";
+            default:              return "Quest " + questDisplayNumber(questId);
         }
     }
 
@@ -281,15 +300,31 @@ public class QuestManager {
             }
         }
 
-        // TRANSITION TO CHAPTER 3
+        // TRANSITION TO CHAPTER 3 (starts Mga Alaala / Quest Memories)
         if (pendingChapter3Cutscene) {
             cutsceneDelay2--;
             if (cutsceneDelay2 <= 0) {
                 pendingChapter3Cutscene = false;
                 gp.cutsceneManager.startChapter3();
+                currentQuest = QUEST_MEMORIES;
+                questState[QUEST_MEMORIES] = STATE_ACTIVE;
+                questMemStage = QM_TALK_MAXIMO_FIRST;
+                gp.ui.questPageNum = 3;
+                // Assets placed at end of QUEST_MEMORIES_INTRO cutscene chain
+            }
+        }
+
+        // TRANSITION FROM QUEST_MEMORIES TO QUEST5
+        if (pendingQuestMemoriesCutscene) {
+            cutsceneDelay3--;
+            if (cutsceneDelay3 <= 0) {
+                pendingQuestMemoriesCutscene = false;
                 currentQuest = QUEST5;
                 questState[QUEST5] = STATE_ACTIVE;
-                gp.ui.questPageNum = 2;
+                quest5Stage = TALK_PEDRO;
+                gp.ui.questPageNum = 4;
+                gp.aSetter.activateChapter3();
+                gp.saveManager.save();
             }
         }
 
@@ -680,7 +715,61 @@ public class QuestManager {
         cutsceneDelay2 = 60;
     }
 
-    // ===== QUEST 5 =====
+    // ===== QUEST_MEMORIES =====
+    public void onMemMaximoFirstTalked() {
+        if (questMemStage == QM_TALK_MAXIMO_FIRST) {
+            questMemStage = QM_COLLECT_5;
+            gp.ui.showMessage("Find 6 mementos from your past.");
+        }
+    }
+
+    public void onMemFirstPartCollected(int index) {
+        if (index < 0 || index >= 6) return;
+        if (memFirstParts[index]) return;
+        memFirstParts[index] = true;
+        memFirstCollected++;
+        gp.ui.showMessage("Memento found! (" + memFirstCollected + "/6)");
+        if (memFirstCollected >= 6) {
+            questMemStage = QM_RETURN_MAXIMO_MID;
+            gp.ui.showMessage("Return to Maximo Viola.");
+        }
+    }
+
+    public void onMemMaximoMidTalked() {
+        if (questMemStage == QM_RETURN_MAXIMO_MID) {
+            questMemStage = QM_COLLECT_3;
+            gp.ui.showMessage("Find 3 more mementos.");
+        }
+    }
+
+    public void onMemSecondPartCollected(int index) {
+        if (index < 0 || index >= 3) return;
+        if (memSecondParts[index]) return;
+        memSecondParts[index] = true;
+        memSecondCollected++;
+        gp.ui.showMessage("Memento found! (" + memSecondCollected + "/3)");
+        if (memSecondCollected >= 3) {
+            questMemStage = QM_RETURN_MAXIMO_FINAL;
+            gp.ui.showMessage("Return to Maximo Viola.");
+        }
+    }
+
+    public void completeQuestMemories() {
+        if (questMemStage == QUEST_MEM_DONE) return;
+        questMemStage = QUEST_MEM_DONE;
+        questState[QUEST_MEMORIES] = STATE_COMPLETED;
+
+        gp.player.exp += 2;
+        gp.player.age += 1;
+        gp.player.perception += 2;
+        gp.player.creativity += 2;
+
+        gp.ui.showMessage("Quest " + questDisplayNumber(QUEST_MEMORIES) + ": Done!");
+
+        pendingQuestMemoriesCutscene = true;
+        cutsceneDelay3 = 60;
+        gp.saveManager.save();
+    }
     public void onPedroDone() {
         if (quest5Stage == TALK_PEDRO) quest5Stage = TALK_CONSUELO;
     }
@@ -735,7 +824,7 @@ public class QuestManager {
         quest6Stage = TALK_PACIANO_Q6;
         q6ObjectsCollected = 0;
         elFiliParts = new boolean[5];
-        gp.ui.questPageNum = 2;
+        gp.ui.questPageNum = 4;
         gp.aSetter.activateQuest6();
         gp.saveManager.save();
     }
@@ -804,7 +893,7 @@ public class QuestManager {
         currentQuest = QUEST7;
         questState[QUEST7] = STATE_ACTIVE;
         quest7Stage = Q7_TALK_GUARDIA;
-        gp.ui.questPageNum = 3;
+        gp.ui.questPageNum = 5;
         gp.aSetter.activateQuest7Intramuros();
         gp.saveManager.save();
     }
@@ -870,6 +959,8 @@ public class QuestManager {
         pendingQuest4Cutscene = v;      if (v) cutsceneDelay1 = 60; }
     public void setPendingChapter3Cutscene(boolean v) {
         pendingChapter3Cutscene = v;    if (v) cutsceneDelay2 = 60; }
+    public void setPendingQuestMemoriesCutscene(boolean v) {
+        pendingQuestMemoriesCutscene = v; if (v) cutsceneDelay3 = 60; }
     public void setPendingQuest6StartCutscene(boolean v) {
         pendingQuest6StartCutscene = v; if (v) cutsceneDelay4 = 60; }
     public void setPendingQuest7IntroCutscene(boolean v) {

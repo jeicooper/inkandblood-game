@@ -326,7 +326,7 @@ public class KeyHandler implements KeyListener {
             }
         }
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-            if (gp.ui.questPageNum < 3) {
+            if (gp.ui.questPageNum < 5) {
                 gp.ui.questPageNum++;
             }
         }

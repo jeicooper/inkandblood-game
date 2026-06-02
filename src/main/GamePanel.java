@@ -570,6 +570,31 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
 
+        // QUEST_MEMORIES
+        if (questManager.isQuestActive(QuestManager.QUEST_MEMORIES)) {
+            int memStage = questManager.questMemStage;
+
+            if (memStage == QuestManager.QM_TALK_MAXIMO_FIRST
+                    || memStage == QuestManager.QM_RETURN_MAXIMO_MID
+                    || memStage == QuestManager.QM_RETURN_MAXIMO_FINAL) {
+                if (npc[45] != null) targets.add(npc[45]);
+
+            } else if (memStage == QuestManager.QM_COLLECT_5) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && isMemFirstObject(obj[i].name)) {
+                        targets.add(obj[i]);
+                    }
+                }
+
+            } else if (memStage == QuestManager.QM_COLLECT_3) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && isMemSecondObject(obj[i].name)) {
+                        targets.add(obj[i]);
+                    }
+                }
+            }
+        }
+
         // Quest 5
         if (questManager.isQuestActive(QuestManager.QUEST5)) {
             int stage = questManager.quest5Stage;
@@ -694,6 +719,31 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    private boolean isMemFirstObject(String name) {
+        switch (name) {
+            case "Medical Books":
+            case "Letters and Postcards":
+            case "Dusty Manuscript":
+            case "Legal Docs":
+            case "Envelope":
+            case "Ophthalmoscope":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private boolean isMemSecondObject(String name) {
+        switch (name) {
+            case "Origami Crane":
+            case "Ship Ticket":
+            case "Medical Bag":
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public void drawToScreen(){
 
         Graphics g = getGraphics();
@@ -723,7 +773,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void playMusicForQuest(int quest) {
         stopMusic();
-        if (quest >= QuestManager.QUEST5) {
+        if (quest >= QuestManager.QUEST5 || quest == QuestManager.QUEST_MEMORIES) {
             playMusic(4);
         } else {
             playMusic(0);

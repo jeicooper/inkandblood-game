@@ -73,7 +73,7 @@ public class AssetSetter {
         return null;
     }
 
-     void activateQuestHistory() {
+    void activateQuestHistory() {
 
         gp.npc[2] = new NPC_Francisco(gp);
         gp.npc[2].worldX = 65 * gp.tileSize;
@@ -285,6 +285,63 @@ public class AssetSetter {
         gp.npc[42] = new NPC_Ferrando(gp);
         gp.npc[42].worldX = 31 * gp.tileSize;
         gp.npc[42].worldY = 55 * gp.tileSize;
+    }
+
+    public void activateQuestMemories() {
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        // Maximo Viola is in the same spot as Chapter3
+        gp.npc[45] = new NPC_Maximo(gp);
+        gp.npc[45].worldX = 32 * gp.tileSize;
+        gp.npc[45].worldY = 34 * gp.tileSize;
+
+
+        /*
+        * "Medical Books",
+                        "Letters and Postcards",
+                        "Dusty Manuscript",
+                        "Legal Docs",
+                        "Envelope",
+                        "Ophthalmoscope"
+        * */
+        // Batch 1
+        gp.obj[0] = new object.OBJ_MedicalBooks(gp);
+        gp.obj[0].worldX = 18 * gp.tileSize;
+        gp.obj[0].worldY = 47 * gp.tileSize;
+
+        gp.obj[1] = new object.OBJ_LettersPostcards(gp);
+        gp.obj[1].worldX = 22 * gp.tileSize;
+        gp.obj[1].worldY = 34 * gp.tileSize;
+
+        gp.obj[2] = new object.OBJ_DustyManuscript(gp);
+        gp.obj[2].worldX = 15 * gp.tileSize;
+        gp.obj[2].worldY = 41 * gp.tileSize;
+
+        gp.obj[3] = new object.OBJ_LegalDocs(gp);
+        gp.obj[3].worldX = 12 * gp.tileSize;
+        gp.obj[3].worldY = 35 * gp.tileSize;
+
+        gp.obj[4] = new object.OBJ_Envelope(gp);
+        gp.obj[4].worldX = 13 * gp.tileSize;
+        gp.obj[4].worldY = 48 * gp.tileSize;
+
+        gp.obj[5] = new object.OBJ_Ophthalmoscope(gp);
+        gp.obj[5].worldX = 10 * gp.tileSize;
+        gp.obj[5].worldY = 42 * gp.tileSize;
+
+        // Batch 2
+        gp.obj[6] = new object.OBJ_Origami(gp);
+        gp.obj[6].worldX = 17 * gp.tileSize;
+        gp.obj[6].worldY = 32 * gp.tileSize;
+
+        gp.obj[7] = new object.OBJ_Ticket(gp);
+        gp.obj[7].worldX = 20 * gp.tileSize;
+        gp.obj[7].worldY = 38 * gp.tileSize;
+
+        gp.obj[8] = new object.OBJ_MedicalBag(gp);
+        gp.obj[8].worldX = 24 * gp.tileSize;
+        gp.obj[8].worldY = 44 * gp.tileSize;
     }
 
     public void activateChapter3() {

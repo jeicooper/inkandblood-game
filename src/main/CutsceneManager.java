@@ -6,7 +6,7 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
+    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST_MEMORIES_INTRO, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
         EXECUTION_WALK, ENDING_SCROLL, STATS_SCREEN }
 
     private Scene activeScene = Scene.NONE;
@@ -69,6 +69,15 @@ public class CutsceneManager {
             },
             {"If the 'Walls of Wisdom' have turned into the bars of",
                     "a prison then I cannot stay. I must find a place where"," the sun of knowledge actually shines."}
+    };
+
+    private final String[][] questMemoriesIntroLines = {
+            { "The shores of Manila faded into the horizon long ago." },
+            { "I left my homeland not just to study, but to observe...",
+              "to gather the knowledge of the world." },
+            { "From 1882 to 1892, I became a wanderer." },
+            { "But before I can pour my soul into my writing,",
+                    "I must organize my mind." }
     };
 
     // QUEST 6 INTRO
@@ -350,6 +359,9 @@ public class CutsceneManager {
     public void startChapter3() {
         reset(Scene.CHAPTER3);
     }
+    public void startQuestMemoriesIntro() {
+        reset(Scene.QUEST_MEMORIES_INTRO);
+    }
     public void startQuest6StartCutscene() {
         reset(Scene.QUEST6_INTRO);
     }
@@ -492,6 +504,8 @@ public class CutsceneManager {
                 return chapter2Lines;
             case CHAPTER3:
                 return chapter3Lines;
+            case QUEST_MEMORIES_INTRO:
+                return questMemoriesIntroLines;
             case QUEST6_INTRO:
                 return quest6IntroLines;
             case CHAPTER4_INTRO:
@@ -530,7 +544,11 @@ public class CutsceneManager {
                 break;
             case CHAPTER3:
                 applyChapter3Changes();
-                gp.ui.questPageNum = 2;
+                reset(Scene.QUEST_MEMORIES_INTRO);
+                break;
+            case QUEST_MEMORIES_INTRO:
+                applyQuestMemoriesStart();
+                gp.ui.questPageNum = 3;
                 break;
             case QUEST6_INTRO:
                 gp.questManager.startQuest6();
@@ -592,7 +610,10 @@ public class CutsceneManager {
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
         gp.stopMusic();
         gp.playMusic(4);
-        gp.aSetter.activateChapter3();
+    }
+
+    private void applyQuestMemoriesStart() {
+        gp.aSetter.activateQuestMemories();
         gp.saveManager.save();
     }
 
