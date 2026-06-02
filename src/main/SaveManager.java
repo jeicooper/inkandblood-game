@@ -48,6 +48,11 @@ public class SaveManager {
         d.siblingsFound = qm.siblingsFound;
         d.conchaVisited = qm.conchaVisited;
 
+        // QUEST_HISTORY
+        d.questHistoryStage  = qm.questHistoryStage;
+        d.historyBooksFound  = qm.historyBooksFound;
+        d.historyBookPicked  = qm.historyBookPicked.clone();
+
         d.quest2Stage     = qm.quest2Stage;
         d.checkpointsHit  = qm.checkpointsHit;
         d.courseCompleted = qm.courseCompleted;
@@ -147,6 +152,11 @@ public class SaveManager {
         qm.siblingsFound = d.siblingsFound;
         qm.conchaVisited = d.conchaVisited;
 
+        // QUEST_HISTORY
+        qm.questHistoryStage  = d.questHistoryStage;
+        qm.historyBooksFound  = d.historyBooksFound;
+        qm.historyBookPicked  = d.historyBookPicked.clone();
+
         qm.quest2Stage     = d.quest2Stage;
         qm.checkpointsHit  = d.checkpointsHit;
         qm.courseCompleted = d.courseCompleted;
@@ -221,8 +231,16 @@ public class SaveManager {
 
     private void fixQuestProgression(QuestManager qm) {
 
+        // Quest 1 → QUEST_HISTORY
         if (qm.currentQuest == QuestManager.QUEST1
                 && qm.isQuestCompleted(QuestManager.QUEST1)) {
+            qm.currentQuest = QuestManager.QUEST_HISTORY;
+            qm.questState[QuestManager.QUEST_HISTORY] = QuestManager.STATE_ACTIVE;
+            gp.ui.questPageNum = 0;
+
+            // QUEST_HISTORY → Quest 2
+        } else if (qm.currentQuest == QuestManager.QUEST_HISTORY
+                && qm.isQuestCompleted(QuestManager.QUEST_HISTORY)) {
             qm.currentQuest = QuestManager.QUEST2;
             qm.questState[QuestManager.QUEST2] = QuestManager.STATE_ACTIVE;
             gp.ui.questPageNum = 0;
@@ -358,7 +376,27 @@ public class SaveManager {
             placePlayer(64, 18);
         }
 
-        // QUEST 1
+        // QUEST_HISTORY
+        else if (cq == QuestManager.QUEST_HISTORY) {
+            gp.currentMap         = "/maps/Chapter1.txt";
+            gp.currentSublocation = "CALAMBA, LAGUNA";
+            gp.tileM.loadMap("/maps/Chapter1.txt");
+            gp.aSetter.activateQuestHistory();
+            // Remove already-picked books from the world
+            for (int i = 0; i < qm.historyBookPicked.length; i++) {
+                if (qm.historyBookPicked[i]) {
+                    for (int j = 0; j < gp.obj.length; j++) {
+                        if (gp.obj[j] instanceof object.OBJ_HistoryBook) {
+                            object.OBJ_HistoryBook wb = (object.OBJ_HistoryBook) gp.obj[j];
+                            if (wb.bookIndex == i && wb.inWorld) { gp.obj[j] = null; break; }
+                        }
+                    }
+                }
+            }
+            placePlayer(64, 18);
+        }
+
+        // QUEST 1 (and fallback)
         else {
             gp.currentMap         = "/maps/Chapter1.txt";
             gp.currentSublocation = "CALAMBA, LAGUNA";
@@ -508,6 +546,10 @@ public class SaveManager {
             case "Old Letter":                 return new OBJ_OldLetter(gp);
             case "Worn Letter":                return new OBJ_WornLetter(gp);
             case "Mi Ultimo Adios":            return new OBJ_MiUltimoAdios(gp);
+            // History books (permanent inventory copies)
+            case "Kasaysayan Tomo I":   return new OBJ_HistoryBook(gp, 0, false);
+            case "Kasaysayan Tomo II":  return new OBJ_HistoryBook(gp, 1, false);
+            case "Kasaysayan Tomo III": return new OBJ_HistoryBook(gp, 2, false);
             default:
                 System.out.println("SaveManager: unknown item '" + name + "', skipping.");
                 return null;

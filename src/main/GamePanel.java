@@ -482,6 +482,26 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        // Quest History
+        if (questManager.isQuestActive(QuestManager.QUEST_HISTORY)) {
+            int stage = questManager.questHistoryStage;
+            if (stage == QuestManager.QH_TALK_FRANCISCO
+                    || stage == QuestManager.QH_RETURN_FRANCISCO) {
+                // Francisco is at npc[2]
+                if (npc[2] != null) targets.add(npc[2]);
+            } else if (stage == QuestManager.QH_COLLECT_BOOKS) {
+                // Point to uncollected history books in the world
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] instanceof object.OBJ_HistoryBook) {
+                        object.OBJ_HistoryBook wb = (object.OBJ_HistoryBook) obj[i];
+                        if (wb.inWorld && !questManager.historyBookPicked[wb.bookIndex]) {
+                            targets.add(obj[i]);
+                        }
+                    }
+                }
+            }
+        }
+
 
         // Quest 2
         if (questManager.isQuestActive(QuestManager.QUEST2)) {

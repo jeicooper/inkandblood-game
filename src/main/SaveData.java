@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 public class SaveData implements Serializable {
 
-    private static final long serialVersionUID = 2L;
+    // ── Bump the UID so old saves (without historyBook fields) are detected as
+    //    incompatible and gracefully discarded rather than causing a ClassCastException.
+    private static final long serialVersionUID = 3L;
 
     public int worldX, worldY;
     public int speed;
@@ -32,6 +34,12 @@ public class SaveData implements Serializable {
     public int  quest1Stage;
     public int  siblingsFound;
     public boolean conchaVisited;
+
+    // ── QUEST_HISTORY (inserted between Quest 1 and Quest 2) ──────────────────
+    public int     questHistoryStage  = 0;
+    public int     historyBooksFound  = 0;
+    public boolean[] historyBookPicked = new boolean[3];
+    // ──────────────────────────────────────────────────────────────────────────
 
     public int  quest2Stage;
     public int  checkpointsHit;

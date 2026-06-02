@@ -280,6 +280,12 @@ public class KeyHandler implements KeyListener {
                     gp.gameState = gp.playState;
                     gp.ui.activeLetter = "Mi Ultimo Adios";
                     gp.ui.showPoemPanel = true;
+                } else if (item.name.equals("History I")
+                        || item.name.equals("History II")
+                        || item.name.equals("History III")) {
+                    gp.gameState = gp.playState;
+                    gp.ui.activeLetter = item.name;
+                    gp.ui.showPoemPanel = true;
                 }
             }
         }
@@ -320,7 +326,7 @@ public class KeyHandler implements KeyListener {
             }
         }
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-            if (gp.ui.questPageNum < 3) {
+            if (gp.ui.questPageNum < 4) {
                 gp.ui.questPageNum++;
             }
         }

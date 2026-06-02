@@ -120,7 +120,7 @@ public class Player extends  Entity{
         direction = "down";
 
         // PLAYER STATS
-        maxExp = 20;
+        maxExp = 20; // 1 = halfexp
         exp = 0;
 
         intellect = 0;
@@ -302,6 +302,24 @@ public class Player extends  Entity{
     public void interactObject(int i) {
         if (i == 999) return;
         String objectName = gp.obj[i].name;
+
+        // HISTORY BOOKS (Quest History)
+        if (gp.obj[i] instanceof object.OBJ_HistoryBook) {
+            object.OBJ_HistoryBook hb = (object.OBJ_HistoryBook) gp.obj[i];
+            if (!gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY)
+                    || gp.questManager.questHistoryStage < QuestManager.QH_COLLECT_BOOKS) {
+                gp.ui.showMessage("Tatay hasn't asked me to read yet.");
+                return;
+            }
+
+            gp.ui.activeLetter = objectName;
+            gp.ui.showPoemPanel = true;
+            gp.gameState = gp.playState;
+            gp.playSE(1);
+
+            gp.questManager.onHistoryBookPickedUp(hb.bookIndex);
+            return;
+        }
 
         // NOLI DRAFT
         if (objectName.equals("Draft of Noli Me Tangere")) {

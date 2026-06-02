@@ -137,7 +137,9 @@ public class UI {
         if (gp.gameState == gp.playState){
 
             drawPlayerExp();
-            if (!gp.questManager.isQuestCompleted(QuestManager.QUEST1)) {
+            if (!gp.questManager.isQuestCompleted(QuestManager.QUEST1)
+                    && !gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY)
+                    && !gp.questManager.isQuestCompleted(QuestManager.QUEST_HISTORY)) {
                 drawHints();
             }
             drawQuestHUD();
@@ -159,9 +161,13 @@ public class UI {
                     drawLetterPanel();
                 } else if (activeLetter.equals("Draft of El Filibusterismo")) {
                     drawElFiliPanel();
-                }else if (activeLetter.equals("Mi Ultimo Adios")) {
+                } else if (activeLetter.equals("Mi Ultimo Adios")) {
                     drawMiUltimoAdiosPanel();
-                }else {
+                } else if (activeLetter.equals("Kasaysayan Tomo I")
+                        || activeLetter.equals("Kasaysayan Tomo II")
+                        || activeLetter.equals("Kasaysayan Tomo III")) {
+                    drawHistoryBookPanel();
+                } else {
                     drawPoemPanel();
                 }
             }
@@ -1213,13 +1219,146 @@ public class UI {
         // page header
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 39f));
         g2.setColor(Color.white);
-        String header = "Quests  [Chapter: " + (questPageNum + 1) + "/4]";
+        String header = "Quests  [Chapter: " + (questPageNum + 1) + "/5]";
         int x = getXforCenter(header);
         int y = frameY + gp.tileSize;
         g2.drawString(header, x, y);
 
-        // ===== Quest 1 page =====
+        // ===== PAGE 0: Quest 1 + Quest History (Chapter 1a) =====
         if (questPageNum == 0) {
+            boolean q1done  = gp.questManager.isQuestCompleted(QuestManager.QUEST1);
+            boolean qhActive = gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY);
+            boolean qhDone   = gp.questManager.isQuestCompleted(QuestManager.QUEST_HISTORY);
+            int     qhStage  = gp.questManager.questHistoryStage;
+
+            final int PAD     = gp.tileSize;
+            final int MID     = frameX + frameWidth / 2;
+            final int LEFT_X  = frameX + PAD;
+            final int RIGHT_X = MID + PAD / 2;
+            final int TITLE_SIZE = 27;
+            final int DESC_SIZE  = 27;
+            final int BODY_SIZE  = 25;
+            final int HINT_SIZE  = 21;
+            final int LINE_H     = 27;
+            final int HINT_H     = 22;
+            final int TOP_Y      = frameY + gp.tileSize * 2;
+
+            // ── LEFT: Quest 1 ──
+            int ly = TOP_Y;
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(q1done ? new Color(100, 230, 100) : new Color(255, 220, 80));
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST1) + ":", LEFT_X, ly);
+            ly += LINE_H - 2;
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST1) + "\"" + (q1done ? " COMPLETE" : ""), LEFT_X, ly);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(Color.lightGray);
+            ly += HINT_H + 2;
+            g2.drawString("Find all siblings and bring them home.", LEFT_X, ly);
+            ly += LINE_H + 2;
+
+            String[] siblingNames = {
+                    "Saturnina","Paciano","Narcisa","Olimpia","Lucia",
+                    "Maria","Josefa","Trinidad","Soledad","Concepcion"
+            };
+            boolean[] sibFound = new boolean[10];
+            for (int i = 0; i < gp.npc.length; i++) {
+                if (gp.npc[i] instanceof entity.NPC_Sibling) {
+                    entity.NPC_Sibling s = (entity.NPC_Sibling) gp.npc[i];
+                    for (int j = 0; j < 9; j++) {
+                        if (s.siblingName.contains(siblingNames[j])) { sibFound[j] = s.isFollowing; break; }
+                    }
+                }
+            }
+            sibFound[9] = !q1done && gp.questManager.conchaVisited;
+
+            final int SUB_LEFT  = LEFT_X;
+            final int SUB_RIGHT = LEFT_X + (MID - LEFT_X) / 2;
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+            int sibY = ly;
+            for (int i = 0; i < 10; i++) {
+                boolean found = q1done || sibFound[i];
+                g2.setColor(found ? new Color(80, 220, 80) : Color.white);
+                int cx = (i % 2 == 0) ? SUB_LEFT : SUB_RIGHT;
+                g2.drawString("- " + siblingNames[i], cx, sibY);
+                if (i % 2 == 1) sibY += LINE_H;
+            }
+            ly = sibY;
+            if (gp.questManager.quest1Stage == QuestManager.QUEST1_STARTED && !q1done) {
+                int found = gp.questManager.siblingsFound;
+                ly += 4;
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(new Color(200, 200, 100));
+                g2.drawString("Siblings found: " + found + "/" + (gp.questManager.SIBLINGS_REQUIRED + 1), LEFT_X, ly);
+                if (gp.questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
+                    ly += HINT_H;
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Return to Nanay Teodora!", LEFT_X, ly);
+                }
+            }
+
+            // ── RIGHT: Quest History ──
+            int ry = TOP_Y;
+            Color qhColor = qhDone   ? new Color(100, 230, 100)
+                    : qhActive ? new Color(255, 220, 80)
+                    :            Color.gray;
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(qhColor);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_HISTORY) + ":", RIGHT_X, ry);
+            ry += LINE_H - 2;
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST_HISTORY) + "\"" + (qhDone ? " COMPLETE" : ""), RIGHT_X, ry);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(qhActive || qhDone ? Color.lightGray : Color.gray);
+            ry += HINT_H + 2;
+            g2.drawString("Read the history books Tatay left.", RIGHT_X, ry);
+            ry += LINE_H + 2;
+
+            if (!qhActive && !qhDone) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Quest 1 to unlock]", RIGHT_X, ry);
+            } else {
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                // Talk to Francisco
+                boolean talkDone = qhDone || qhStage > QuestManager.QH_TALK_FRANCISCO;
+                g2.setColor(talkDone ? new Color(80, 220, 80) : Color.white);
+                g2.drawString("- Talk to Tatay Francisco", RIGHT_X, ry);
+                ry += LINE_H;
+
+                // Collect books
+                boolean booksDone = qhDone || qhStage > QuestManager.QH_COLLECT_BOOKS;
+                g2.setColor(booksDone ? new Color(80, 220, 80)
+                        : qhStage == QuestManager.QH_COLLECT_BOOKS ? Color.white : Color.gray);
+                g2.drawString("- Collect history books", RIGHT_X, ry);
+                ry += LINE_H - 2;
+                if (qhStage == QuestManager.QH_COLLECT_BOOKS) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("  Books: " + gp.questManager.historyBooksFound + "/3", RIGHT_X, ry);
+                    ry += HINT_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+                }
+
+                // Return to Francisco
+                boolean retDone = qhDone || qhStage > QuestManager.QH_RETURN_FRANCISCO;
+                g2.setColor(retDone ? new Color(80, 220, 80)
+                        : qhStage == QuestManager.QH_RETURN_FRANCISCO ? Color.white : Color.gray);
+                g2.drawString("- Return to Tatay Francisco", RIGHT_X, ry);
+                ry += LINE_H;
+
+                if (qhDone) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Ang kasaysayan ay natutunan mo na.", RIGHT_X, ry);
+                }
+            }
+        }
+
+        // ===== PAGE 1: Chapter 1 Art + Chapter 2 Enrollment (was page 0 right + page 1 left) =====
+        else if (questPageNum == 1) {
             boolean q1done    = gp.questManager.isQuestCompleted(QuestManager.QUEST1);
             boolean q2active  = gp.questManager.isQuestActive(QuestManager.QUEST2);
             boolean q2done    = gp.questManager.isQuestCompleted(QuestManager.QUEST2);
@@ -1243,9 +1382,9 @@ public class UI {
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q1done ? new Color(100, 230, 100) : new Color(255, 220, 80));
-            g2.drawString("Quest 1:", LEFT_X, ly);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST1) + ":", LEFT_X, ly);
             ly += LINE_H - 2;
-            g2.drawString("\"Familya Rizal\""
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST1) + "\""
                             + (q1done ? " COMPLETE" : ""),
                     LEFT_X, ly);
 
@@ -1318,9 +1457,9 @@ public class UI {
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q2color);
-            g2.drawString("Quest 2:", RIGHT_X, ry);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST2) + ":", RIGHT_X, ry);
             ry += LINE_H - 2;
-            g2.drawString("\"Pangangaral ng mga Tiyo\""
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST2) + "\""
                             + (q2done ? " COMPLETE" : ""),
                     RIGHT_X, ry);
 
@@ -1416,8 +1555,8 @@ public class UI {
             }
         }
 
-        // ===== Chapter 2 page =====
-        else if (questPageNum == 1) {
+        // ===== PAGE 2: Chapter 2 =====
+        else if (questPageNum == 2) {
 
             boolean q3done = gp.questManager.isQuestCompleted(QuestManager.QUEST3);
             boolean q3active = gp.questManager.isQuestActive(QuestManager.QUEST3);
@@ -1448,9 +1587,9 @@ public class UI {
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q3color);
-            g2.drawString("Quest 3:", LEFT_X, ly);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST3) + ":", LEFT_X, ly);
             ly += LINE_H - 2;
-            g2.drawString("\"Ang Bagong Simula\""
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST3) + "\""
                             + (q3done ? " COMPLETE" : ""),
                     LEFT_X, ly);
 
@@ -1521,9 +1660,9 @@ public class UI {
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q4color);
-            g2.drawString("Quest 4:", RIGHT_X, ry);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST4) + ":", RIGHT_X, ry);
             ry += LINE_H - 2;
-            g2.drawString("\"Ang Kampeon ng Roma\""
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST4) + "\""
                             + (q4done ? " COMPLETE" : ""),
                     RIGHT_X, ry);
 
@@ -1608,8 +1747,8 @@ public class UI {
             }
         }
 
-        // ===== Chapter 3 page =====
-        else if (questPageNum == 2) {
+        // ===== PAGE 3: Chapter 3 =====
+        else if (questPageNum == 3) {
 
             boolean q5done   = gp.questManager.isQuestCompleted(QuestManager.QUEST5);
             boolean q5active = gp.questManager.isQuestActive(QuestManager.QUEST5);
@@ -1640,9 +1779,9 @@ public class UI {
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q5color);
-            g2.drawString("Quest 5:", LEFT_X, ly);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST5) + ":", LEFT_X, ly);
             ly += LINE_H - 2;
-            g2.drawString("\"Noli Me Tangere\""
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST5) + "\""
                     + (q5done ? " COMPLETE" : ""), LEFT_X, ly);
 
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
@@ -1710,10 +1849,10 @@ public class UI {
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q6color);
-            g2.drawString("Quest 6:", RIGHT_X, ry);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST6) + ":", RIGHT_X, ry);
             ry += LINE_H - 2;
-            g2.drawString("\"El Filibusterismo\""
-                    + (q5done ? " COMPLETE" : ""), RIGHT_X, ry);
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST6) + "\""
+                    + (q6done ? " COMPLETE" : ""), RIGHT_X, ry);
 
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
             g2.setColor(q6active || q6done ? Color.lightGray : Color.gray);
@@ -1773,8 +1912,8 @@ public class UI {
 
         }
 
-        // ===== Chapter 4 page =====
-        else if (questPageNum == 3) {
+        // ===== PAGE 4: Chapter 4 =====
+        else if (questPageNum == 4) {
             boolean q7done   = gp.questManager.isQuestCompleted(QuestManager.QUEST7);
             boolean q7active = gp.questManager.isQuestActive(QuestManager.QUEST7);
             int     q7stage  = gp.questManager.quest7Stage;
@@ -1797,9 +1936,9 @@ public class UI {
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q7color);
-            g2.drawString("Quest 7:", LEFT_X, ly);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST7) + ":", LEFT_X, ly);
             ly += LINE_H - 2;
-            g2.drawString("\"Consummatum Est\""
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST7) + "\""
                     + (q7done ? " COMPLETE" : ""), LEFT_X, ly);
 
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
@@ -1874,7 +2013,7 @@ public class UI {
             g2.drawString("< PREV  [A]", frameX + gp.tileSize, btnY);
         }
 
-        if (questPageNum < 1) {
+        if (questPageNum < 4) {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
             g2.setColor(new Color(255, 220, 80));
             String next = "NEXT >  [D]";
@@ -1914,7 +2053,7 @@ public class UI {
             if (currentQ == main.QuestManager.QUEST1 && gp.questManager.isQuestActive(main.QuestManager.QUEST1)) {
 
                 g2.setColor(new Color(255, 220, 80));
-                g2.drawString("Familya Rizal", panelX + 12, panelY + 28);
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST1) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST1), panelX + 12, panelY + 28);
                 g2.setColor(Color.white);
                 g2.setFont(g2.getFont().deriveFont(20F));
 
@@ -1948,12 +2087,42 @@ public class UI {
 
             }
 
+            // ===== QUEST_HISTORY =====
+            else if (currentQ == QuestManager.QUEST_HISTORY && gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY)) {
+
+                g2.setColor(new Color(255, 220, 80));
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_HISTORY) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST_HISTORY), panelX + 12, panelY + 28);
+                g2.setColor(Color.white);
+                g2.setFont(g2.getFont().deriveFont(20F));
+
+                int qhStage = gp.questManager.questHistoryStage;
+
+                if (qhStage == QuestManager.QH_TALK_FRANCISCO) {
+                    g2.drawString("Talk to Tatay Francisco.", panelX + 12, panelY + 52);
+
+                } else if (qhStage == QuestManager.QH_COLLECT_BOOKS) {
+                    int found = gp.questManager.historyBooksFound;
+                    g2.drawString("History Books: " + found + " / 3", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("Find the books Tatay left for you.", panelX + 12, panelY + 72);
+
+                } else if (qhStage == QuestManager.QH_RETURN_FRANCISCO) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Return to Tatay Francisco!", panelX + 12, panelY + 52);
+
+                } else if (qhStage == QuestManager.QH_DONE) {
+                    g2.setColor(new Color(100, 230, 100));
+                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_HISTORY) + " Complete!", panelX + 12, panelY + 52);
+                }
+            }
+
             // ===== QUEST 2 =====
             else if (currentQ == QuestManager.QUEST2 && gp.questManager.isQuestActive(QuestManager.QUEST2)) {
 
                 g2.setColor(new Color(255, 220, 80));
                 g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
-                g2.drawString("Pangangaral ng mga Tiyo", panelX + 12, panelY + 28);
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST2) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST2), panelX + 12, panelY + 28);
 
                 g2.setColor(Color.white);
                 g2.setFont(g2.getFont().deriveFont(20F));
@@ -2019,7 +2188,7 @@ public class UI {
 
                 } else if (stage == QuestManager.GREGORIO_DONE) {
                     g2.setColor(new Color(100, 230, 100));
-                    g2.drawString("Quest 2 Complete!", panelX + 12, panelY + 52);
+                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST2) + " Complete!", panelX + 12, panelY + 52);
                 }
             }
 
@@ -2028,7 +2197,7 @@ public class UI {
 
                 g2.setColor(new Color(255, 220, 80));
                 g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
-                g2.drawString("Ang Bagong Simula", panelX + 12, panelY + 28);
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST3) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST3), panelX + 12, panelY + 28);
 
                 g2.setColor(Color.white);
                 g2.setFont(g2.getFont().deriveFont(20F));
@@ -2070,7 +2239,7 @@ public class UI {
 
                 } else if (stage == QuestManager.QUEST3_DONE) {
                     g2.setColor(new Color(100, 230, 100));
-                    g2.drawString("Quest 3 Complete!", panelX + 12, panelY + 52);
+                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST3) + " Complete!", panelX + 12, panelY + 52);
                 }
             }
 
@@ -2079,7 +2248,7 @@ public class UI {
 
                 g2.setColor(new Color(255, 220, 80));
                 g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
-                g2.drawString("Ang Kampeon ng Roma", panelX + 12, panelY + 28);
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST4) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST4), panelX + 12, panelY + 28);
 
                 g2.setColor(Color.white);
                 g2.setFont(g2.getFont().deriveFont(20F));
@@ -2113,7 +2282,7 @@ public class UI {
 
                 } else if (stage == QuestManager.QUEST4_DONE) {
                     g2.setColor(new Color(100, 230, 100));
-                    g2.drawString("Quest 4 Complete!", panelX + 12, panelY + 52);
+                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST4) + " Complete!", panelX + 12, panelY + 52);
                 }
             }
 
@@ -2122,7 +2291,7 @@ public class UI {
 
                 g2.setColor(new Color(255, 220, 80));
                 g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
-                g2.drawString("Noli Me Tangere", panelX + 12, panelY + 28);
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST5) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST5), panelX + 12, panelY + 28);
 
                 g2.setColor(Color.white);
                 g2.setFont(g2.getFont().deriveFont(20F));
@@ -2163,7 +2332,7 @@ public class UI {
 
                 } else if (stage == QuestManager.QUEST5_DONE) {
                     g2.setColor(new Color(100, 230, 100));
-                    g2.drawString("Quest 5 Complete!", panelX + 12, panelY + 52);
+                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST5) + " Complete!", panelX + 12, panelY + 52);
                 }
             }
 
@@ -2172,7 +2341,7 @@ public class UI {
 
                 g2.setColor(new Color(255, 220, 80));
                 g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
-                g2.drawString("El Filibusterismo", panelX + 12, panelY + 28);
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST6) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST6), panelX + 12, panelY + 28);
 
                 g2.setColor(Color.white);
                 g2.setFont(g2.getFont().deriveFont(20F));
@@ -2211,7 +2380,7 @@ public class UI {
 
                 } else if (stage == QuestManager.QUEST6_DONE) {
                     g2.setColor(new Color(100, 230, 100));
-                    g2.drawString("Quest 6 Complete!", panelX + 12, panelY + 52);
+                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST6) + " Complete!", panelX + 12, panelY + 52);
                 }
             }
 
@@ -2220,7 +2389,7 @@ public class UI {
 
                 g2.setColor(new Color(255, 220, 80));
                 g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
-                g2.drawString("Consummatum Est", panelX + 12, panelY + 28);
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST7) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST7), panelX + 12, panelY + 28);
 
                 g2.setColor(Color.white);
                 g2.setFont(g2.getFont().deriveFont(20F));
@@ -2265,6 +2434,137 @@ public class UI {
         }
 
     }
+    /** Renders the readable panel for any of the 3 history book items. */
+    public void drawHistoryBookPanel() {
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int panelW = gp.tileSize * 15;
+        int panelH = gp.tileSize * 10;
+        int panelX = gp.screenWidth  / 2 - panelW / 2;
+        int panelY = gp.screenHeight / 2 - panelH / 2;
+        drawSubWindow(panelX, panelY, panelW, panelH);
+
+        // Determine which tomo
+        String tomoLabel;
+        String[] leftLines;
+        String[] rightLines;
+
+        if (activeLetter.equals("Kasaysayan Tomo I")) {
+            tomoLabel = "Kasaysayan — Tomo I";
+            leftLines = new String[]{
+                    "Sa simula, ang Pilipinas ay binubuo ng",
+                    "libu-libong pulo, ang bawat isa ay may",
+                    "sariling kultura at wika. Ang mga",
+                    "katutubo ay namuhay nang maayos sa",
+                    "pamamagitan ng kalakalan at pagtutulungan.",
+                    "",
+                    "Ang pagdating ng mga Espanyol noong 1565",
+                    "sa pamumuno ni Miguel Lopez de Legazpi",
+                    "ay nagbago ng takbo ng kasaysayan.",
+                    "Ang mga pulo ay pinag-isa sa ilalim ng",
+                    "isang pamahalaang kolonyal."
+            };
+            rightLines = new String[]{
+                    "Ang Maynila ay naging kabisera ng",
+                    "Pilipinas sa ilalim ng pananakop.",
+                    "Ang mga Pilipino ay sapilitang nagbayad",
+                    "ng buwis at nagtatrabaho para sa mga",
+                    "Espanyol sa pamamagitan ng encomienda.",
+                    "",
+                    "Ngunit ang puso ng bayan ay hindi",
+                    "nabili. Sa ilalim ng panlabas na kadena,",
+                    "ang pagmamahal sa kalayaan ay lihim na",
+                    "lumago sa puso ng bawat Pilipino."
+            };
+        } else if (activeLetter.equals("Kasaysayan Tomo II")) {
+            tomoLabel = "Kasaysayan — Tomo II";
+            leftLines = new String[]{
+                    "Ang simbahan ay naging isa sa pinaka-",
+                    "makapangyarihang institusyon sa buong",
+                    "kolonyal na panahon. Ang mga prayle ay",
+                    "nagtatag ng mga paaralan, simbahan,",
+                    "at ospital — ngunit sila rin ang",
+                    "nagtataguyod ng kontrol sa mga Pilipino.",
+                    "",
+                    "Ang edukasyon ay limitado lamang.",
+                    "Karamihan sa mga Pilipino ay hindi",
+                    "pinapayagan na matuto ng higit pa",
+                    "sa simpleng pagbabasa at panalangin."
+            };
+            rightLines = new String[]{
+                    "Ang mga Pilipinong may kakayahan ay",
+                    "sinabing 'mas mababa' kaysa sa mga",
+                    "Espanyol — isang kasinungalingang",
+                    "paulit-ulit na itinuro hanggang sa",
+                    "tanggapin ng ilan bilang katotohanan.",
+                    "",
+                    "Ngunit ang ilang pamilya, tulad ng",
+                    "ating sarili, ay naniniwala na ang",
+                    "kaalaman ay isang sandata. Huwag",
+                    "hayaang ang kamangmangan ang maging",
+                    "tanikala ng ating mga paa."
+            };
+        } else {
+            // Kasaysayan Tomo III
+            tomoLabel = "Kasaysayan — Tomo III";
+            leftLines = new String[]{
+                    "Ang siglo XIX ay nagdala ng bagong",
+                    "hangin sa Pilipinas. Ang liberalismo",
+                    "mula sa Europa ay dahan-dahang pumasok",
+                    "sa mga palengke, opisina, at tahanan.",
+                    "Ang mga ilustrado — ang mga Pilipinong",
+                    "nakapag-aral — ay nagsimulang mangarap",
+                    "ng mas makatarungang lipunan.",
+                    "",
+                    "Ang pag-usbong ng gitnang uri ay",
+                    "nagbigay ng pag-asa. Ang mga anak ng",
+                    "mga magsasaka at mangangalakal ay"
+            };
+            rightLines = new String[]{
+                    "nakapag-aral sa mga kolehiyo at",
+                    "unibersidad — at nagsimulang magtanong:",
+                    "Bakit tayo hindi pantay sa mata ng batas?",
+                    "",
+                    "Ang mga tanong na ito ay hindi paghimagsik",
+                    "kundi pag-aaral. At ang pag-aaral,",
+                    "sabi ng iyong Tatay, ay ang unang",
+                    "hakbang patungo sa kalayaan.",
+                    "",
+                    "Basahin mo nang mabuti, Pepe.",
+                    "Ang kasaysayan ay ikaw na rin."
+            };
+        }
+
+        // Title
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28F));
+        g2.setColor(new Color(255, 220, 80));
+        int titleX = getXforCenter(tomoLabel);
+        g2.drawString(tomoLabel, titleX, panelY + 44);
+
+        // Body
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+        g2.setColor(Color.white);
+        int leftX  = panelX + 25;
+        int rightX = panelX + panelW / 2 + 10;
+        int startY = panelY + 82;
+        int lineH  = 23;
+
+        for (String line : leftLines)  { g2.drawString(line, leftX,  startY); startY += lineH; }
+        startY = panelY + 82;
+        for (String line : rightLines) { g2.drawString(line, rightX, startY); startY += lineH; }
+
+        // Close prompt
+        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+        g2.setColor(new Color(200, 200, 200));
+        g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
+
+        if (gp.keyP.enterPressed) {
+            gp.keyP.enterPressed = false;
+            showPoemPanel = false;
+        }
+    }
+
     public void drawPoemPanel() {
         g2.setColor(new Color(0, 0, 0, 180));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);

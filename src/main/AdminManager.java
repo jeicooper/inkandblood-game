@@ -419,13 +419,14 @@ public class AdminManager {
                 new java.io.FileInputStream(sf))) {
             main.SaveData sd = (main.SaveData) ois.readObject();
             switch (sd.currentQuest) {
-                case 0: return "Chapter 1 — Quest 1: Find the Siblings";
-                case 1: return "Chapter 1 — Quest 2: Art and Writing";
-                case 2: return "Chapter 2 — Quest 3: Enrollment at Ateneo";
-                case 3: return "Chapter 2 — Quest 4: The Competitions";
-                case 4: return "Chapter 3 — Quest 5: Writing Noli Me Tangere";
-                case 5: return "Chapter 3 — Quest 6: El Filibusterismo";
-                case 6: return "Chapter 4 — Quest 7: The Final Days";
+                case 0: return "Chapter 1 — Quest 1: Familya Rizal";
+                case 1: return "Chapter 1 — Quest 2: Ang Kasaysayan";
+                case 2: return "Chapter 1 — Quest 3: Pangangaral ng mga Tiyo";
+                case 3: return "Chapter 2 — Quest 4: Pagpasok sa Ateneo";
+                case 4: return "Chapter 2 — Quest 5: Ang Kampeon ng Roma";
+                case 5: return "Chapter 3 — Quest 6: Noli Me Tangere";
+                case 6: return "Chapter 3 — Quest 7: El Filibusterismo";
+                case 7: return "Chapter 4 — Quest 8: Ang Huling Araw";
                 default: return "Quest " + (sd.currentQuest + 1);
             }
         } catch (Exception e) {

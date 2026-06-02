@@ -31,17 +31,17 @@ public class QuestManager {
     public long bootsEndTime = 0L;
     public int firstQuizScore = -1;
     public int quizAttempts = 0;
-    public int assessmentScore = -1; // initial pre-game assessment (out of AssessmentPanel.ASSESSMENT_SIZE)
+    public int assessmentScore = -1;
 
 
-    // QUEST IDS
-    public static final int QUEST1 = 0;
-    public static final int QUEST2 = 1;
-    public static final int QUEST3 = 2;
-    public static final int QUEST4 = 3;
-    public static final int QUEST5 = 4;
-    public static final int QUEST6 = 5;
-    public static final int QUEST7 = 6;
+    public static final int QUEST1         = 0;
+    public static final int QUEST_HISTORY  = 1;
+    public static final int QUEST2         = 2;
+    public static final int QUEST3         = 3;
+    public static final int QUEST4         = 4;
+    public static final int QUEST5         = 5;
+    public static final int QUEST6         = 6;
+    public static final int QUEST7         = 7;
 
 
     //STATES
@@ -53,8 +53,8 @@ public class QuestManager {
     public int[] questState = new int[10];
 
     // QUEST 1
-    public static final int QUEST1_NOT_STARTED = 0;
-    public static final int QUEST1_STARTED = 1;
+    public static final int QUEST1_NOT_STARTED   = 0;
+    public static final int QUEST1_STARTED       = 1;
     public static final int QUEST1_RETURN_TEODORA = 2;
     public int quest1Stage = QUEST1_NOT_STARTED;
 
@@ -62,9 +62,19 @@ public class QuestManager {
     public final int SIBLINGS_REQUIRED = 9;
     public boolean conchaVisited = false;
 
-
     private int debugTimer = 0;
     public boolean quest0JustCompleted = false;
+
+    public static final int QH_TALK_FRANCISCO   = 0;
+    public static final int QH_COLLECT_BOOKS    = 1;
+    public static final int QH_RETURN_FRANCISCO = 2;
+    public static final int QH_DONE             = 3;
+
+    public static final int HISTORY_BOOKS_REQUIRED = 3;
+
+    public int     questHistoryStage  = QH_TALK_FRANCISCO;
+    public int     historyBooksFound  = 0;
+    public boolean[] historyBookPicked = new boolean[HISTORY_BOOKS_REQUIRED];
 
     // QUEST 2
     public static final int JOSE_INACTIVE = 0;
@@ -112,7 +122,7 @@ public class QuestManager {
     public static final int TALK_PROFESSOR_Q4 = 0;
     public static final int TALK_MARIANO = 1;
     public static final int TALK_RECTOR = 2;
-    public static final int DISCIPLINES_ACTIVE = 3;  // all 5 judges available
+    public static final int DISCIPLINES_ACTIVE = 3;
     public static final int TALK_RECTOR_END = 4;
     public static final int QUEST4_DONE = 5;
     public static final int MEDALS_REQUIRED = 5;
@@ -148,9 +158,8 @@ public class QuestManager {
     public int q6ObjectsCollected = 0;
     public boolean[] elFiliParts = new boolean[5];
 
-    // CREATIVITY STUDY AID: every CREATIVITY_PER_OBJECT points removes one required manuscript piece.
     public static final int CREATIVITY_PER_OBJECT = 2;
-    public static final int QUEST5_MIN_OBJECTS = 3; // never drops below this
+    public static final int QUEST5_MIN_OBJECTS = 3;
     public static final int QUEST6_MIN_OBJECTS = 2;
 
     public int effectiveQuest5Objects() {
@@ -164,15 +173,43 @@ public class QuestManager {
     }
 
     // QUEST 7
-    public static final int Q7_TALK_GUARDIA = 0;
-    public static final int Q7_TALK_JUDGE = 1;
+    public static final int Q7_TALK_GUARDIA   = 0;
+    public static final int Q7_TALK_JUDGE     = 1;
     public static final int Q7_TALK_JOSEPHINE = 2;
     public static final int Q7_INTERACT_PAPER = 3;
     public static final int Q7_INTERACT_STOVE = 4;
     public static final int Q7_TALK_TRINIDAD  = 5;
-    public static final int Q7_DONE = 6;
+    public static final int Q7_DONE           = 6;
 
     public int quest7Stage = Q7_TALK_GUARDIA;
+
+    public static int questDisplayNumber(int questId) {
+        switch (questId) {
+            case QUEST1:        return 1;
+            case QUEST_HISTORY: return 2;
+            case QUEST2:        return 3;
+            case QUEST3:        return 4;
+            case QUEST4:        return 5;
+            case QUEST5:        return 6;
+            case QUEST6:        return 7;
+            case QUEST7:        return 8;
+            default:            return questId + 1;
+        }
+    }
+
+    public static String questDisplayTitle(int questId) {
+        switch (questId) {
+            case QUEST1:        return "Familya Rizal";
+            case QUEST_HISTORY: return "Ang Kasaysayan";
+            case QUEST2:        return "Pangangaral ng mga Tiyo";
+            case QUEST3:        return "Pagpasok sa Ateneo";
+            case QUEST4:        return "Ang Kampeon ng Roma";
+            case QUEST5:        return "Noli Me Tangere";
+            case QUEST6:        return "El Filibusterismo";
+            case QUEST7:        return "Ang Huling Araw";
+            default:            return "Quest " + questDisplayNumber(questId);
+        }
+    }
 
     // CONSTRUCTOR
     public QuestManager(GamePanel gp) {
@@ -202,6 +239,9 @@ public class QuestManager {
     public void update() {
         if (currentQuest == QUEST1 && questState[QUEST1] == STATE_ACTIVE) {
             updateQuest1();
+        }
+        if (currentQuest == QUEST_HISTORY && questState[QUEST_HISTORY] == STATE_ACTIVE) {
+            updateQuestHistory();
         }
         if (currentQuest == QUEST2 && questState[QUEST2] == STATE_ACTIVE){
             updateQuest2();
@@ -317,7 +357,7 @@ public class QuestManager {
 
     public void completeQuest1FromTeodora() {
         questState[QUEST1] = STATE_COMPLETED;
-        gp.ui.showMessage("Quest 1: Done!");
+        gp.ui.showMessage("Quest " + questDisplayNumber(QUEST1) + ": Done!");
 
         //STATS GAINED
         gp.player.exp += 3;
@@ -330,12 +370,83 @@ public class QuestManager {
             }
         }
 
+        // ── Transition to QUEST_HISTORY instead of QUEST2 ──
+        currentQuest = QUEST_HISTORY;
+        questState[QUEST_HISTORY] = STATE_ACTIVE;
+        questHistoryStage = QH_TALK_FRANCISCO;
+        historyBooksFound = 0;
+        historyBookPicked = new boolean[HISTORY_BOOKS_REQUIRED];
+
+        gp.aSetter.activateQuestHistory();
+        gp.saveManager.save();
+    }
+
+    // ===== QUEST_HISTORY =====
+    private void updateQuestHistory() {
+        // Nothing to poll each frame; driven entirely by interaction events
+    }
+
+    /** Called when Francisco's opening dialogue finishes. */
+    public void onFranciscoHistoryTalked() {
+        if (questHistoryStage == QH_TALK_FRANCISCO) {
+            questHistoryStage = QH_COLLECT_BOOKS;
+            gp.ui.showMessage("Find the 3 history books Tatay left for you!");
+        }
+    }
+
+    /** Called when a history book world-object is interacted with. */
+    public void onHistoryBookPickedUp(int bookIndex) {
+        if (historyBookPicked[bookIndex]) return;
+        historyBookPicked[bookIndex] = true;
+        historyBooksFound++;
+
+        // Add permanently to inventory
+        object.OBJ_HistoryBook book = new object.OBJ_HistoryBook(gp, bookIndex, false);
+        gp.player.inventory.add(book);
+
+        gp.ui.showMessage("Kasaysayan Tomo " + toRoman(bookIndex + 1)
+                + " collected! (" + historyBooksFound + "/" + HISTORY_BOOKS_REQUIRED + ")");
+
+        // Remove the world object
+        for (int i = 0; i < gp.obj.length; i++) {
+            if (gp.obj[i] instanceof object.OBJ_HistoryBook) {
+                object.OBJ_HistoryBook wb = (object.OBJ_HistoryBook) gp.obj[i];
+                if (wb.bookIndex == bookIndex && wb.inWorld) {
+                    gp.obj[i] = null;
+                    break;
+                }
+            }
+        }
+
+        if (historyBooksFound >= HISTORY_BOOKS_REQUIRED) {
+            questHistoryStage = QH_RETURN_FRANCISCO;
+            gp.ui.showMessage("All 3 books found! Return to Tatay Francisco.");
+        }
+    }
+
+    /** Called when Francisco's completion dialogue fires. */
+    public void completeQuestHistory() {
+        if (questHistoryStage == QH_DONE) return;
+        questHistoryStage = QH_DONE;
+        questState[QUEST_HISTORY] = STATE_COMPLETED;
+
+        //STATS GAINED
+        gp.player.exp += 2;
+        gp.player.intellect += 3;
+
+        gp.ui.showMessage("Quest " + questDisplayNumber(QUEST_HISTORY) + ": Done!");
+
+        // Transition to QUEST2
         currentQuest = QUEST2;
         questState[QUEST2] = STATE_ACTIVE;
         quest2Stage = JOSE_INACTIVE;
 
         gp.aSetter.activateQuest2();
         gp.saveManager.save();
+    }
+
+    private String toRoman(int n) {
+        switch (n) { case 1: return "I"; case 2: return "II"; case 3: return "III"; default: return String.valueOf(n); }
     }
 
     // ===== QUEST 2 =====
@@ -444,7 +555,7 @@ public class QuestManager {
         gp.player.exp += 4;
         gp.player.age += 3;
 
-        gp.ui.showMessage("Quest 2: Done!");
+        gp.ui.showMessage("Quest " + questDisplayNumber(QUEST2) + ": Done!");
         pendingChapter2Cutscene = true;
         cutsceneDelay = 60;
         gp.saveManager.save();
@@ -466,7 +577,6 @@ public class QuestManager {
 
     public void onEnrollmentCutsceneDone() {
         quest3Stage = TALK_PROFESSOR;
-
     }
 
     public void onProfessorDone() {
@@ -503,7 +613,7 @@ public class QuestManager {
         gp.player.intellect += 3;
         gp.player.age += 5;
 
-        gp.ui.showMessage("You received a Sobresaliente medal! Quest 3: Done!");
+        gp.ui.showMessage("You received a Sobresaliente medal! Quest " + questDisplayNumber(QUEST3) + ": Done!");
 
         quest3Stage = QUEST3_DONE;
         questState[QUEST3] = STATE_COMPLETED;
@@ -527,12 +637,10 @@ public class QuestManager {
     }
 
     public void onProfessorQ4Done() {
-
         if (quest4Stage == TALK_PROFESSOR_Q4) quest4Stage = TALK_MARIANO;
     }
 
     public void onMarianoDone() {
-
         if (quest4Stage == TALK_MARIANO) quest4Stage = TALK_RECTOR;
     }
 
@@ -545,7 +653,7 @@ public class QuestManager {
     }
 
     public void onDisciplineResult(int disciplineIndex, boolean correct) {
-        if (disciplineAnswered[disciplineIndex]) return; // guard against repeat
+        if (disciplineAnswered[disciplineIndex]) return;
 
         disciplineAnswered[disciplineIndex] = true;
         disciplinesCompleted++;
@@ -554,8 +662,6 @@ public class QuestManager {
             disciplineMedalEarned[disciplineIndex] = true;
             medalsEarned++;
             gp.ui.showMessage("Medal earned! (" + medalsEarned + "/" + MEDALS_REQUIRED + ")");
-        } else {
-
         }
 
         if (disciplinesCompleted >= 5) {
@@ -573,7 +679,7 @@ public class QuestManager {
         gp.player.intellect += 3;
         gp.player.age += 7;
 
-        gp.ui.showMessage("Noli Me Tangere Begins! Quest 4: Done!");
+        gp.ui.showMessage("Noli Me Tangere Begins! Quest " + questDisplayNumber(QUEST4) + ": Done!");
 
         pendingChapter3Cutscene = true;
         cutsceneDelay2 = 60;
@@ -620,7 +726,7 @@ public class QuestManager {
         gp.player.perception +=3;
         gp.player.charisma +=2;
 
-        gp.ui.showMessage("El Filibusterismo begins!  Quest 5: Done!");
+        gp.ui.showMessage("El Filibusterismo begins! Quest " + questDisplayNumber(QUEST5) + ": Done!");
 
         pendingQuest6StartCutscene = true;
         cutsceneDelay4 = 60;
@@ -666,6 +772,7 @@ public class QuestManager {
             gp.ui.showMessage("Manuscript Complete!");
         }
     }
+
     public void giveElFiliBook() {
         object.OBJ_Draft2 book = new object.OBJ_Draft2(gp);
         gp.player.inventory.add(book);
@@ -676,7 +783,6 @@ public class QuestManager {
             completeQuest6();
         }
     }
-
 
     public void completeQuest6() {
         if (quest6Stage == QUEST6_DONE) return;
@@ -691,7 +797,7 @@ public class QuestManager {
         gp.player.creativity += 8;
         gp.player.charisma += 5;
 
-        gp.ui.showMessage("Quest 6: Done!");
+        gp.ui.showMessage("Quest " + questDisplayNumber(QUEST6) + ": Done!");
 
         pendingQuest7IntroCutscene = true;
         cutsceneDelay4 = 60;

@@ -1706,14 +1706,15 @@ public class LogIn {
                 try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.FileInputStream(sf))) {
                     SaveData sd = (SaveData) ois.readObject();
                     switch (sd.currentQuest) {
-                        case 0: questLabel = "Chapter 1 — Quest 1: Find the Siblings";      break;
-                        case 1: questLabel = "Chapter 1 — Quest 2: Art and Writing";         break;
-                        case 2: questLabel = "Chapter 2 — Quest 3: Enrollment at Ateneo";    break;
-                        case 3: questLabel = "Chapter 2 — Quest 4: The Competitions";        break;
-                        case 4: questLabel = "Chapter 3 — Quest 5: Writing Noli Me Tangere"; break;
-                        case 5: questLabel = "Chapter 3 — Quest 6: El Filibusterismo";       break;
-                        case 6: questLabel = "Chapter 4 — Quest 7: The Final Days";          break;
-                        default: questLabel = "Quest " + (sd.currentQuest + 1);              break;
+                        case 0: questLabel = "Chapter 1 — Quest 1: Familya Rizal";            break;
+                        case 1: questLabel = "Chapter 1 — Quest 2: Ang Kasaysayan";               break;
+                        case 2: questLabel = "Chapter 1 — Quest 3: Pangangaral ng mga Tiyo";      break;
+                        case 3: questLabel = "Chapter 2 — Quest 4: Pagpasok sa Ateneo";            break;
+                        case 4: questLabel = "Chapter 2 — Quest 5: Ang Kampeon ng Roma";           break;
+                        case 5: questLabel = "Chapter 3 — Quest 6: Noli Me Tangere";               break;
+                        case 6: questLabel = "Chapter 3 — Quest 7: El Filibusterismo";             break;
+                        case 7: questLabel = "Chapter 4 — Quest 8: Ang Huling Araw";              break;
+                        default: questLabel = "Quest " + QuestManager.questDisplayNumber(sd.currentQuest); break;
                     }
                 } catch (Exception e) {
                     questLabel = "Save file unreadable";
