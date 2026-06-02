@@ -78,75 +78,74 @@ public class AssessmentPanel {
                 "Jose Protacio Rizal Mercado Y Realonda Alonso",
                 "Jose Protacio Rizal Alonso Y Mercado Realonda" };
         correctIdx[q] = 0;
-        facts[q] = "The Rizal family's real last name is \"Mercado.\" They changed it to "
-                + "\"Rizal\" to avoid Spanish blacklisting.";
+        facts[q] = "The Rizal family's real last name is **\"Mercado.\"** They changed it to \"Rizal\" to avoid Spanish blacklisting.";
         q++;
 
         questions[q] = "When was Rizal born?";
         choices[q] = new String[]{ "January 19, 1986", "December 30, 1896", "June 19, 1861" };
         correctIdx[q] = 2;
-        facts[q] = "He was born in Calamba, Laguna.";
+        facts[q] = "He was born in **Calamba, Laguna**.";
         q++;
 
         questions[q] = "How many siblings does Rizal have?";
         choices[q] = new String[]{ "8", "11", "10" };
         correctIdx[q] = 2;
-        facts[q] = "Rizal was the 8th among his siblings.";
+        facts[q] = "Rizal was the **7th** among his siblings.";
         q++;
 
         questions[q] = "Which sibling of Rizal died at a young age?";
         choices[q] = new String[]{ "Concepcion", "Olimpia", "Trinidad" };
         correctIdx[q] = 0;
-        facts[q] = "Concepcion's death was Rizal's first experience of grief. The two were close "
-                + "as children, and her death from illness deeply devastated him.";
+        facts[q] = "Concepcion's death was Rizal's **first experience of grief**. The two were close as children, and her death from illness deeply" +
+                " devastated him.";
         q++;
 
         questions[q] = "When did Rizal die?";
         choices[q] = new String[]{ "December 30, 1896", "January 19, 1986", "June 19, 1861" };
         correctIdx[q] = 0;
-        facts[q] = "His death anniversary is a national holiday called \"Rizal Day,\" observed "
-                + "annually to commemorate his martyrdom as the country's national hero.";
+        facts[q] = "His death anniversary is **a national holiday called \"Rizal Day**,\" observed annually to commemorate his martyrdom as the " +
+                "country's national hero.";
         q++;
 
         questions[q] = "What law was created for Rizal?";
         choices[q] = new String[]{ "RA 11313", "RA 1425", "RA 10931" };
         correctIdx[q] = 1;
-        facts[q] = "The Catholic Church opposed the Rizal Law because it mandates reading Noli Me "
+        facts[q] = "The Catholic Church **opposed the Rizal Law** because it mandates reading Noli Me "
                 + "Tangere and El Filibusterismo, which contain passages critical of the church.";
         q++;
 
         questions[q] = "Who authored the Rizal Law?";
-        choices[q] = new String[]{ "Jinggoy Estrada", "Claro M. Recto", "Juan Ponce Enrile" };
+        choices[q] = new String[]{ "Bato Dela Rosa", "Claro M. Recto", "Juan Ponce Enrile" };
         correctIdx[q] = 1;
-        facts[q] = "The Rizal Law was approved on June 12, 1956. It integrated the study of the "
+        facts[q] = "The Rizal Law was **approved on June 12, 1956**. It integrated the study of the "
                 + "life and works of Dr. Jose Rizal into the tertiary-level curriculum.";
         q++;
 
         questions[q] = "Who sponsored the Rizal Law?";
         choices[q] = new String[]{ "Diosdado Macapagal", "Manuel L. Quezon", "Jose P. Laurel" };
         correctIdx[q] = 2;
-        facts[q] = "Section 5 of the law authorized three hundred thousand pesos from the National "
+        facts[q] = "Section 5 of the law **authorized three hundred thousand pesos** from the National "
                 + "Treasury to carry out its purposes.";
         q++;
 
         questions[q] = "Who was recommended as a national hero other than Rizal?";
         choices[q] = new String[]{ "Gabriela Silang", "Diego Silang", "Gregorio Del Pilar" };
         correctIdx[q] = 0;
-        facts[q] = "Rizal was an American -sponsored hero. In 1901, Governor William Howard Taft "
+        facts[q] = "Rizal was an **American -sponsored hero**. In 1901, Governor William Howard Taft "
                 + "suggested the Philippine Commission give the Filipinos a national hero.";
         q++;
 
         questions[q] = "Who was Rizal's first love?";
         choices[q] = new String[]{ "Josephine Bracken", "Leonor Rivera", "Segunda Katigbak" };
         correctIdx[q] = 2;
-        facts[q] = "Rizal's friend Mariano was Segunda Katigbak's brother; he introduced them to "
+        facts[q] = "Rizal's friend **Mariano was Segunda Katigbak's brother**; he introduced them to "
                 + "each other when they were teenagers.";
         q++;
     }
 
     private void loadNarratorImage() {
         try {
-            var stream = getClass().getResourceAsStream("/npc/rector/rector_down_1.png");
+            var stream = getClass().getResourceAsStream("/npc/narrator.png");
             if (stream != null) narratorImg = ImageIO.read(stream);
         } catch (Exception e) {
             narratorImg = null;
@@ -296,9 +295,7 @@ public class AssessmentPanel {
         g2.drawLine(tx[0], ty[0], tx[2], ty[2]);
         g2.drawLine(tx[1], ty[1], tx[2], ty[2]);
 
-        g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, 27f));
-        g2.setColor(new Color(255, 255, 255));
-        drawWrapped(g2, text, bx + 20, by + 38, bw - 40, 28);
+        drawWrapped(g2, text, bx + 20, by + 38, bw - 40, 32, 24f);
 
         // continue hint
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 15f));
@@ -337,10 +334,9 @@ public class AssessmentPanel {
         g2.drawRoundRect(px, boxY, pw, ph, 28, 28);
 
         // Question text
-        g2.setFont(ui.maruMonica.deriveFont(Font.BOLD, 30f));
-        g2.setColor(Color.white);
         int qy = boxY + 55;
-        drawWrapped(g2, questions[qIndex()], px + 28, qy, pw - 56, 30);
+        drawWrapped(g2, questions[qIndex()], px + 28, qy, pw - 56, 34, 30f);
+
 
         String[] labels = { "a", "b", "c" };
         int choiceH = 50;
@@ -382,22 +378,63 @@ public class AssessmentPanel {
     }
 
     private int drawWrapped(Graphics2D g2, String text, int x, int y, int maxW, int lineH) {
-        String[] words = text.split(" ");
-        StringBuilder line = new StringBuilder();
-        for (String word : words) {
-            String test = line.length() == 0 ? word : line + " " + word;
-            if (g2.getFontMetrics().stringWidth(test) > maxW) {
-                g2.drawString(line.toString(), x, y);
-                y += lineH;
-                line = new StringBuilder(word);
-            } else {
-                line = new StringBuilder(test);
+        return drawWrapped(g2, text, x, y, maxW, lineH, 20f); // default size
+    }
+
+    private int drawWrapped(Graphics2D g2, String text, int x, int y, int maxW, int lineH, float fontSize) {
+        String[] segments = text.split("\\*\\*");
+
+        java.util.List<String[]> tokens = new java.util.ArrayList<>();
+        for (int s = 0; s < segments.length; s++) {
+            boolean highlight = (s % 2 == 1);
+            for (String word : segments[s].split(" ")) {
+                if (!word.isEmpty()) tokens.add(new String[]{ word, String.valueOf(highlight) });
             }
         }
-        if (line.length() > 0) {
-            g2.drawString(line.toString(), x, y);
+
+        StringBuilder line = new StringBuilder();
+        java.util.List<String[]> lineTokens = new java.util.ArrayList<>();
+
+        for (String[] token : tokens) {
+            String word = token[0];
+            g2.setFont(ui.maruMonica.deriveFont(Font.PLAIN, fontSize));
+            String test = line.length() == 0 ? word : line + " " + word;
+
+            if (g2.getFontMetrics().stringWidth(test) > maxW) {
+                drawHighlightedLine(g2, lineTokens, x, y, fontSize);
+                y += lineH;
+                lineTokens.clear();
+                line = new StringBuilder(word);
+            } else {
+                if (line.length() > 0) line.append(" ");
+                line.append(word);
+            }
+            lineTokens.add(new String[]{ word, String.valueOf(token[1]) });
+        }
+
+        if (!lineTokens.isEmpty()) {
+            drawHighlightedLine(g2, lineTokens, x, y, fontSize);
             y += lineH;
         }
         return y;
+    }
+
+    private void drawHighlightedLine(Graphics2D g2, java.util.List<String[]> tokens, int x, int y, float fontSize) {
+        Font normalFont      = ui.maruMonica.deriveFont(Font.BOLD, fontSize);   // BOLD for narrator
+        Font boldFont        = ui.maruMonica.deriveFont(Font.BOLD, fontSize);
+        Color normalColor    = new Color(255, 255, 255);
+        Color highlightColor = new Color(255, 220, 80);
+
+        int drawX = x;
+        for (int i = 0; i < tokens.size(); i++) {
+            String word = tokens.get(i)[0];
+            boolean highlight = Boolean.parseBoolean(tokens.get(i)[1]);
+            String wordWithSpace = (i < tokens.size() - 1) ? word + " " : word;
+
+            g2.setFont(highlight ? boldFont : normalFont);
+            g2.setColor(highlight ? highlightColor : normalColor);
+            g2.drawString(wordWithSpace, drawX, y);
+            drawX += g2.getFontMetrics().stringWidth(wordWithSpace);
+        }
     }
 }

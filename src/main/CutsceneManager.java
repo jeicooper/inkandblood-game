@@ -186,7 +186,7 @@ public class CutsceneManager {
     private static final String[][] ENDING_CONTENT = {
             // ── SECTION 1 ──
             { "§ THE LEGACY OF JOSE RIZAL §",
-                    "Jose Protacio Rizal Mercado y Alonzo Realonda was born on June 19, 1861",
+                    "Jose Protacio Rizal Mercado y Alonzo Realonda was born on **June 19, 1861**",
                     "in Calamba, Laguna. He was the seventh of eleven children of Francisco",
                     "Mercado Rizal and Teodora Alonzo Realonda — a family that nurtured in him",
                     "a lifelong love of learning, faith, and country."
@@ -194,57 +194,57 @@ public class CutsceneManager {
             // ── SECTION 2  ──
             { "§ THE SCHOLAR §",
                     "Rizal excelled at every institution he attended. At Ateneo Municipal de Manila,",
-                    "he earned the title 'Sobresaliente' — the highest academic distinction —",
+                    "he earned the title **'Sobresaliente'** — the highest academic distinction —",
                     "and collected five gold medals across all disciplines.",
                     "He later studied philosophy, medicine, and the arts across Europe,",
-                    "mastering over twenty languages in his lifetime."
+                    "mastering over **twenty languages** in his lifetime."
             },
             // ── SECTION 3 ──
             { "§ THE WRITER §",
                     "From the cold of Europe, Rizal wrote two novels that would shake an empire.",
-                    "Noli Me Tangere (1887) exposed the corruption of the colonial church",
+                    "**Noli Me Tangere (1887)** exposed the corruption of the colonial church",
                     "and the suffering of the Filipino people under Spanish rule.",
-                    "El Filibusterismo (1891), its darker sequel, was a cry for reform —",
+                    "**El Filibusterismo (1891)**, its darker sequel, was a cry for reform —",
                     "dedicated to the martyred priests Gomez, Burgos, and Zamora (GOMBURZA).",
                     "Both books were banned in the Philippines. Owning a copy",
                     "was a death warrant."
             },
             // ── SECTION 4 ──
             { "§ LA LIGA FILIPINA §",
-                    "On June 26, 1892, Rizal returned to the Philippines and founded",
-                    "La Liga Filipina — a civic organization that called for unity,",
+                    "On **June 26, 1892**, Rizal returned to the Philippines and **founded",
+                    "La Liga Filipina** — a civic organization that called for unity,",
                     "mutual protection, and peaceful reform.",
                     "Three days later, on July 7, 1892, he was arrested.",
                     "The charges: illegal association, rebellion, and sedition."
             },
             // ── SECTION 5 ──
             { "§ EXILE IN DAPITAN §",
-                    "Rizal was exiled to Dapitan, Zamboanga del Norte for four years.",
+                    "Rizal was **exiled to Dapitan, Zamboanga del Norte for four years**.",
                     "Despite his isolation, he practiced medicine, built a school,",
                     "introduced clean water to the community, and continued his scientific work.",
-                    "It was here that Josephine Bracken entered his life —",
+                    "It was here that **Josephine Bracken** entered his life —",
                     "his companion until the very end."
             },
             // ── SECTION 6 ──
             { "§ THE TRIAL §",
-                    "On December 26, 1896, Rizal stood before the judge of Cuartel de Espana.",
+                    "On **December 26, 1896**, Rizal stood before the judge of Cuartel de Espana.",
                     "He was found guilty of rebellion, sedition, and illegal association.",
                     "The sentence: death by firing squad.",
-                    "He was 35 years old."
+                    "He was **35 years old**."
             },
             // ── SECTION 7 ──
             { "§ MI ULTIMO ADIOS §",
-                    "On the night before his execution, Rizal hid his final poem",
-                    "inside an alcohol stove and passed it to his sister Trinidad.",
+                    "On the night before his execution, **Rizal hid his final poem",
+                    "inside an alcohol stove** and passed it to his sister Trinidad.",
                     "Mi Ultimo Adios — My Last Farewell — is considered one of the",
                     "greatest works in Philippine literature.",
                     "It was a love letter to the country he died for."
             },
             // ── SECTION 8 ──
             { "§ HIS ENDURING LEGACY",
-                    "Jose Rizal was proclaimed the National Hero of the Philippines",
-                    "by Governor-General William Howard Taft and the Philippine Commission",
-                    "through Act No. 137 on July 31, 1901.",
+                    "Jose Rizal was **proclaimed the National Hero of the Philippines",
+                    "by Governor-General William Howard Taft** and the Philippine Commission",
+                    "through **Act No. 137 on July 31, 1901**.",
                     "His face appears on the Philippine one-peso coin.",
                     "December 30 is celebrated as Rizal Day — a national holiday.",
                     "His childhood home in Calamba stands as a national shrine.",
@@ -254,11 +254,11 @@ public class CutsceneManager {
             // ── CLOSING ──
             { "",
                     "``I only wanted my people to learn how to weep for their country. But as the",
-                    "'Social Cancer' became more than a metaphor, the ink had to change. I heard",
+                    "**'Social Cancer'** became more than a metaphor, the ink had to change. I heard",
                     "the whispers of reform turn into blueprints for revolution. I wrote El",
                     "Filibusterismo to teach them how to fight. I do not regret a single letter.",
-                    "For some truths are too heavy to carry alone, they must be written down,",
-                    "passed on, and ignited.``",
+                    "For some **truths are too heavy to carry alone, they must be written down,",
+                    "passed on, and ignited.**``",
                     "",
                     "— Jose Rizal"
             },
@@ -995,21 +995,14 @@ public class CutsceneManager {
             g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 28f));
             g2.setColor(Color.white);
             for (int i = 1; i < section.length; i++) {
-
                 String line = section[i];
-
                 if (currentY > -lineH && currentY < sh + lineH) {
-
-                    if (line.startsWith("\"") || line.startsWith("—")) {
-
-                        g2.setFont(gp.ui.maruMonica.deriveFont(Font.ITALIC, 22f));
-                        g2.setColor(new Color(200, 200, 200));
-                    } else {
-                        g2.setFont(gp.ui.maruMonica.deriveFont(Font.PLAIN, 20f));
-                        g2.setColor(Color.white);
-                    }
-                    int lw = g2.getFontMetrics().stringWidth(line);
-                    g2.drawString(line, sw / 2 - lw / 2, (int)currentY);
+                    boolean isQuote = line.startsWith("\"") || line.startsWith("—");
+                    Font baseFont = isQuote
+                            ? gp.ui.maruMonica.deriveFont(Font.ITALIC, 22f)
+                            : gp.ui.maruMonica.deriveFont(Font.PLAIN, 20f);
+                    Color baseColor = isQuote ? new Color(200, 200, 200) : Color.white;
+                    drawScrollLine(g2, line, sw, (int)currentY, baseFont, baseColor);
                 }
                 currentY += lineH;
             }
@@ -1140,6 +1133,29 @@ public class CutsceneManager {
         long hours   = ms / (1000 * 60 * 60);
         if (hours > 0) return String.format("%dh %02dm %02ds", hours, minutes, seconds);
         return String.format("%dm %02ds", minutes, seconds);
+    }
+
+    private void drawScrollLine(Graphics2D g2, String text, int sw, int y, Font baseFont, Color baseColor) {
+        Font highlightFont  = baseFont.deriveFont(Font.BOLD, baseFont.getSize2D());
+        Color highlightColor = new Color(255, 220, 80); // gold
+
+        String[] segments = text.split("\\*\\*");
+
+        int totalW = 0;
+        for (int s = 0; s < segments.length; s++) {
+            boolean hl = (s % 2 == 1);
+            g2.setFont(hl ? highlightFont : baseFont);
+            totalW += g2.getFontMetrics().stringWidth(segments[s]);
+        }
+
+        int drawX = sw / 2 - totalW / 2;
+        for (int s = 0; s < segments.length; s++) {
+            boolean hl = (s % 2 == 1);
+            g2.setFont(hl ? highlightFont : baseFont);
+            g2.setColor(hl ? highlightColor : baseColor);
+            g2.drawString(segments[s], drawX, y);
+            drawX += g2.getFontMetrics().stringWidth(segments[s]);
+        }
     }
 
     public boolean isStatsScreenActive() {
