@@ -380,9 +380,8 @@ public class SaveManager {
                     }
                 }
             }
-            // Remove already-collected second-batch objects
             if (qm2.questMemStage >= QuestManager.QM_COLLECT_3) {
-                String[] second3 = {"Origami","Ship Ticket","Medical Bag"};
+                String[] second3 = {"Origami Crane", "Ship Ticket", "Medical Bag"};
                 for (int bi = 0; bi < 3; bi++) {
                     if (qm2.memSecondParts[bi]) {
                         for (int oi = 0; oi < gp.obj.length; oi++) {

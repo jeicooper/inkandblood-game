@@ -327,8 +327,8 @@ public class AssetSetter {
         gp.obj[4].worldY = 48 * gp.tileSize;
 
         gp.obj[5] = new object.OBJ_Ophthalmoscope(gp);
-        gp.obj[5].worldX = 10 * gp.tileSize;
-        gp.obj[5].worldY = 42 * gp.tileSize;
+        gp.obj[5].worldX = 34 * gp.tileSize;
+        gp.obj[5].worldY = 45 * gp.tileSize;
 
         // Batch 2
         gp.obj[6] = new object.OBJ_Origami(gp);

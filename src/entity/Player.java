@@ -388,45 +388,41 @@ public class Player extends  Entity{
             return;
         }
 
-        // QUEST_MEMORIES — Batch 1 (5 mementos)
+        // QUEST_MEMORIES — Batch 1 (6 mementos)
         int memFirstIndex = getMemFirstIndex(objectName);
         if (memFirstIndex >= 0 &&
                 gp.questManager.currentQuest == QuestManager.QUEST_MEMORIES &&
                 gp.questManager.questMemStage == QuestManager.QM_COLLECT_5) {
-
-
-
-
             String[] messages = {
                     //Medical Books
-                    "During my time in Spain from 1882 to 1885,I observed life and culture,\n" +
+                    "During my time in Spain from 1882 to 1885, I observed life and culture,\n" +
                     "joined the Circulo Hispano Filipino, and enrolled at the Universidad\n" +
                     "Central de Madrid to study medicine and Philosophy and Letters.",
 
                     //Letters and Postcards
                     "While on the Grand Tour of Europe in 1887, I toured around different\n" +
-                    "places and  sceneries, but the most profound moment was finally meeting\n" +
-                    "my true brother of the soul, Ferdinand Blumentritt.",
+                    "places and  sceneries, but the most profound moment was finally\n " +
+                    "meeting my true brother of the soul, Ferdinand Blumentritt.",
 
                     //Dusty Manuscript
-                    "In London from 1888 to 1889, I worked to improve in the English Language\n" +
-                    "and labored to annotate Morga's work, the Sucesos de las Islas Filipinas,\n" +
-                    "to prove the richness of our history.",
+                    "In London from 1888 to 1889, I worked to improve in the English\n" +
+                    "Language and labored to annotate Morga's work, the Sucesos de las\n" +
+                    "Islas Filipinas, to prove the richness of our history.",
 
                     //Legal Docs
-                    "Starting in Brussels in 1890 where I received bad news about my family, I\n" +
-                    "rushed to Madrid from 1890 to 1891 to seek legal means for them and the\n" +
-                    "Calamba Tenants.",
+                    "Starting in Brussels in 1890 where I received bad news about my\nfamily, I" +
+                    "rushed to Madrid from 1890 to 1891 to seek legal means\n" +
+                    " for them and the Calamba Tenants.",
 
                     //Envelope
                     "It was also during my stay in Madrid from 1890 to 1891 that I suffered\n" +
-                    "the heartbreaking blow of discovering that my Leonor Rivera had gotten\n" +
-                    "married to a British Engineer.",
+                    "the heartbreaking blow of discovering that my Leonor Rivera had\n" +
+                    "gotten married to a British Engineer.",
 
                     //Ophthalmoscope
                     "From 1885 to 1887, traveling from Paris to Berlin, I worked as an\n" +
-                    "assistant to Dr. Louis de Wrecker to improve my knowledge in ophthalmology\n" +
-                            "so I could cure my mother's failing eyesight."
+                    "assistant to Dr. Louis de Wrecker to improve my knowledge in\n" +
+                            "ophthalmology so I could cure my mother's failing eyesight."
             };
             gp.ui.currentDialogue = messages[memFirstIndex];
             gp.ui.currentSpeakerName = "Jose Rizal";
@@ -444,9 +440,9 @@ public class Player extends  Entity{
             String[] messages = {
                     "In Japan in 1888, I met O-Sei-San, a girl full of beauty, charm, and\nmodesty who patiently taught me Nihonggo.",
 
-                    "During my tour of the USA in 1888, we were quarantined due to a\nCholera outbreak and the illusion of equality was shattered by the rampant racial prejudice I\nwitnessed.",
+                    "During my tour of the USA in 1888, we were quarantined due to a\nCholera outbreak and the illusion of equality was shattered by the\nrampant racial prejudice I witnessed.",
 
-                    "In Hongkong from 1891 to 1892, I found a brief moment of peace working\nas an Ophthalmic Surgeon and was even able to spend a blessed Christmas with my family."
+                    "In Hongkong from 1891 to 1892, I found a brief moment of peace\nworking as an Ophthalmic Surgeon and was even able to spend\na blessed Christmas with my family."
             };
             gp.ui.currentDialogue = messages[memSecondIndex];
             gp.ui.currentSpeakerName = "Jose Rizal";
@@ -541,22 +537,22 @@ public class Player extends  Entity{
 
     private int getMemFirstIndex(String name) {
         switch (name) {
-            case "Ateneo Medal":       return 0;
-            case "Childhood Sketch":   return 1;
-            case "Old Boot":           return 2;
-            case "Pressed Sampaguita": return 3;
-            case "Mother's Letter":    return 4;
-            case "Clay Sculpture":     return 5;
-            default:                   return -1;
+            case "Medical Books":         return 0;
+            case "Letters and Postcards": return 1;
+            case "Dusty Manuscript":      return 2;
+            case "Legal Docs":            return 3;
+            case "Envelope":              return 4;
+            case "Ophthalmoscope":        return 5;
+            default:                      return -1;
         }
     }
 
     private int getMemSecondIndex(String name) {
         switch (name) {
-            case "Rosary Bead":    return 0;
-            case "Poetry Draft":   return 1;
-            case "Paciano's Note": return 2;
-            default:               return -1;
+            case "Origami Crane": return 0;
+            case "Ship Ticket":   return 1;
+            case "Medical Bag":   return 2;
+            default:              return -1;
         }
     }
 

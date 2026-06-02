@@ -1845,9 +1845,9 @@ public class UI {
 
                 if (s4active || s4done) {
                     String[] second3 = {
-                            "Rosary Bead",
-                            "Poetry Draft",
-                            "Paciano's Note"
+                            "Origami Crane",
+                            "Ship Ticket",
+                            "Medical Bag"
                     };
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
                     for (int i = 0; i < 3; i++) {

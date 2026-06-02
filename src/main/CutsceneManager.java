@@ -433,8 +433,14 @@ public class CutsceneManager {
             alpha -= FADE_SPEED;
             if (alpha <= 0f) {
                 alpha = 0f;
-                if (!applied) { applied = true; applyEndOfScene(); }
-                if (activeScene != Scene.EXECUTION_WALK) {
+                if (!applied) {
+                    applied = true;
+                    Scene sceneBefore = activeScene;
+                    applyEndOfScene();
+                    if (activeScene == sceneBefore && activeScene != Scene.EXECUTION_WALK) {
+                        gp.gameState = gp.playState;
+                    }
+                } else if (activeScene != Scene.EXECUTION_WALK) {
                     gp.gameState = gp.playState;
                 }
             }
