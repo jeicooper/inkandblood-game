@@ -285,6 +285,7 @@ public class Player extends  Entity{
             if (getManuscriptIndexQ6(objectName) >= 0) return;
             if (objectName.equals("Draft of Noli Me Tangere")) return;
             if (objectName.equals("Draft of El Filibusterismo")) return;
+            if (gp.obj[i] instanceof object.OBJ_HistoryBook) return;
 
             if (inventory.size() != maxInventorySize) {
 
@@ -312,12 +313,12 @@ public class Player extends  Entity{
                 return;
             }
 
-            gp.ui.activeLetter = objectName;
-            gp.ui.showPoemPanel = true;
-            gp.gameState = gp.playState;
             gp.playSE(1);
 
             gp.questManager.onHistoryBookPickedUp(hb.bookIndex);
+            gp.gameState = gp.playState;
+            gp.ui.activeLetter = objectName;
+            gp.ui.showPoemPanel = true;
             return;
         }
 

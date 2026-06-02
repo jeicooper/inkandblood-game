@@ -163,9 +163,9 @@ public class UI {
                     drawElFiliPanel();
                 } else if (activeLetter.equals("Mi Ultimo Adios")) {
                     drawMiUltimoAdiosPanel();
-                } else if (activeLetter.equals("Kasaysayan Tomo I")
-                        || activeLetter.equals("Kasaysayan Tomo II")
-                        || activeLetter.equals("Kasaysayan Tomo III")) {
+                } else if (activeLetter.equals("History I")
+                        || activeLetter.equals("History II")
+                        || activeLetter.equals("History III")) {
                     drawHistoryBookPanel();
                 } else {
                     drawPoemPanel();
@@ -1219,12 +1219,11 @@ public class UI {
         // page header
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 39f));
         g2.setColor(Color.white);
-        String header = "Quests  [Chapter: " + (questPageNum + 1) + "/5]";
+        String header = "Quests: [" + (questPageNum + 1) + "/5]";
         int x = getXforCenter(header);
         int y = frameY + gp.tileSize;
         g2.drawString(header, x, y);
 
-        // ===== PAGE 0: Quest 1 + Quest History (Chapter 1a) =====
         if (questPageNum == 0) {
             boolean q1done  = gp.questManager.isQuestCompleted(QuestManager.QUEST1);
             boolean qhActive = gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY);
@@ -2450,89 +2449,107 @@ public class UI {
         String[] leftLines;
         String[] rightLines;
 
-        if (activeLetter.equals("Kasaysayan Tomo I")) {
-            tomoLabel = "Kasaysayan — Tomo I";
+        if (activeLetter.equals("History I")) {
+            tomoLabel = "History I The Socio-Political Landscape";
             leftLines = new String[]{
-                    "Sa simula, ang Pilipinas ay binubuo ng",
-                    "libu-libong pulo, ang bawat isa ay may",
-                    "sariling kultura at wika. Ang mga",
-                    "katutubo ay namuhay nang maayos sa",
-                    "pamamagitan ng kalakalan at pagtutulungan.",
+                    "During the 19th century, the Spanish colonial",
+                    "socio-economic policies heavily burdened native",
+                    "Filipinos. Key systems included Reduccion, Polo y",
+                    "Servicio, and Bandala. The multifaceted taxation",
+                    "system required anyone aged 18 and above to",
+                    "pay the Cedula annually alongside the ",
+                    "Sanctorum (church tax) and the Tribute", "(paid in cash or kind).",
                     "",
-                    "Ang pagdating ng mga Espanyol noong 1565",
-                    "sa pamumuno ni Miguel Lopez de Legazpi",
-                    "ay nagbago ng takbo ng kasaysayan.",
-                    "Ang mga pulo ay pinag-isa sa ilalim ng",
-                    "isang pamahalaang kolonyal."
+                    " For 150 years, the economy revolved around the",
+                    "restrictive Galleon Trade between Manila and",
+                    "Acapulco, Mexico. In this highly lucrative",
+                    "network, silver was the primary payment,",
+                    "and trade tickets were called Boletas."
             };
             rightLines = new String[]{
-                    "Ang Maynila ay naging kabisera ng",
-                    "Pilipinas sa ilalim ng pananakop.",
-                    "Ang mga Pilipino ay sapilitang nagbayad",
-                    "ng buwis at nagtatrabaho para sa mga",
-                    "Espanyol sa pamamagitan ng encomienda.",
-                    "",
-                    "Ngunit ang puso ng bayan ay hindi",
-                    "nabili. Sa ilalim ng panlabas na kadena,",
-                    "ang pagmamahal sa kalayaan ay lihim na",
-                    "lumago sa puso ng bawat Pilipino."
+                    "The global landscape shifted when the opening",
+                    "of the Suez Canal created a direct route",
+                    "between Europe and Asia, shortening travel",
+                    "to the Philippines. Spurred by the Industrial",
+                    "Revolution, Spain opened the Philippine economy",
+                    "to world commerce. The archipelago became",
+                    "a supplier of raw materials through cash-crop",
+                    "agriculture. While this generated enough wealth",
+                    "for elite families to send their sons to Europe",
+                    "for education, exposure to Western societies",
+                    "ultimately left these educated Filipinos","disenchanted with Spanish colonial rule."
+
             };
-        } else if (activeLetter.equals("Kasaysayan Tomo II")) {
-            tomoLabel = "Kasaysayan — Tomo II";
+        }
+
+        else if (activeLetter.equals("History II")) {
+            tomoLabel = "History II The Socio-Economic Landscape";
             leftLines = new String[]{
-                    "Ang simbahan ay naging isa sa pinaka-",
-                    "makapangyarihang institusyon sa buong",
-                    "kolonyal na panahon. Ang mga prayle ay",
-                    "nagtatag ng mga paaralan, simbahan,",
-                    "at ospital — ngunit sila rin ang",
-                    "nagtataguyod ng kontrol sa mga Pilipino.",
+                    "The society imposed by the Spaniards was",
+                    "rigidly structured and deeply unequal. At the",
+                    "core of social life was a strict racial hierarchy.",
                     "",
-                    "Ang edukasyon ay limitado lamang.",
-                    "Karamihan sa mga Pilipino ay hindi",
-                    "pinapayagan na matuto ng higit pa",
-                    "sa simpleng pagbabasa at panalangin."
+                    "At the very top were the Peninsulares (Spaniards",
+                    "born in Spain), followed by the Insulares",
+                    "(Spaniards born in the Philippines). Below them",
+                    "were the Mestizos, then the Native Filipinos,",
+                    "and finally, at the bottom of the pyramid, the",
+                    "Indios",
+                    "",
+                    "The political structure was similarly hierarchical.",
+                    "The highest authority in the colony was the",
+                    "Governor-General. Beneath him were the Alcalde",
+                    "Mayor, who governed the Alcaldia (provinces);",
+                    "the Gobernadorcillo, who oversaw the Pueblo",
+                    "(towns)",
             };
             rightLines = new String[]{
-                    "Ang mga Pilipinong may kakayahan ay",
-                    "sinabing 'mas mababa' kaysa sa mga",
-                    "Espanyol — isang kasinungalingang",
-                    "paulit-ulit na itinuro hanggang sa",
-                    "tanggapin ng ilan bilang katotohanan.",
+                    "and the Cabeza de Barangay, who managed the",
+                    "Barrio (villages). Because the Governor-General",
+                    "and other top officials held an immense",
+                    "amount of power, abuse was common.",
                     "",
-                    "Ngunit ang ilang pamilya, tulad ng",
-                    "ating sarili, ay naniniwala na ang",
-                    "kaalaman ay isang sandata. Huwag",
-                    "hayaang ang kamangmangan ang maging",
-                    "tanikala ng ating mga paa."
+
+                    "To investigate these abuses and maintain a",
+                    "system of checks and balances, the Spanish",
+                    "Crown created oversight bodies such as the",
+                    "Residencia, the Visitador, and the Royal",
+                    "Audencia"
             };
-        } else {
-            // Kasaysayan Tomo III
-            tomoLabel = "Kasaysayan — Tomo III";
+        }
+
+        else {
+            // History III
+            tomoLabel = "History III Socio-Polical Policies by the Spaniards";
             leftLines = new String[]{
-                    "Ang siglo XIX ay nagdala ng bagong",
-                    "hangin sa Pilipinas. Ang liberalismo",
-                    "mula sa Europa ay dahan-dahang pumasok",
-                    "sa mga palengke, opisina, at tahanan.",
-                    "Ang mga ilustrado — ang mga Pilipinong",
-                    "nakapag-aral — ay nagsimulang mangarap",
-                    "ng mas makatarungang lipunan.",
+                    "Education during this era was highly controlled",
+                    "and segregated by gender. For higher education,",
+                    "the University of Santo Tomas (UST) was the",
+                    "existing institution in the Philippines. Secondary",
+                    "education was divided: schools for boys included",
+                    "the Colegio de Santo Tomas, Colegio de San Juan",
+                    "de Letran, and Ateneo Municipal; while schools",
+                    "for girls included Santa Isabel, La Concordia,",
+                    "Santa Rosa, and Santa Catalina.",
                     "",
-                    "Ang pag-usbong ng gitnang uri ay",
-                    "nagbigay ng pag-asa. Ang mga anak ng",
-                    "mga magsasaka at mangangalakal ay"
+                    "A major turning point was the Educational Decree",
+                    "of 1863. This decree mandated the establishment",
+                    "of at least one primary school for boys and one for",
+                    "girls in every major town. It also ordered the",
+                    "establishment",
+
             };
             rightLines = new String[]{
-                    "nakapag-aral sa mga kolehiyo at",
-                    "unibersidad — at nagsimulang magtanong:",
-                    "Bakit tayo hindi pantay sa mata ng batas?",
-                    "",
-                    "Ang mga tanong na ito ay hindi paghimagsik",
-                    "kundi pag-aaral. At ang pag-aaral,",
-                    "sabi ng iyong Tatay, ay ang unang",
-                    "hakbang patungo sa kalayaan.",
-                    "",
-                    "Basahin mo nang mabuti, Pepe.",
-                    "Ang kasaysayan ay ikaw na rin."
+                    "of a Teacher Training School, placed the public",
+                    "school system under government supervision,",
+                    "and required the use of Spanish as the medium ",
+                    "of instruction in all schools. Despite these ",
+                    "reforms, the educational system during the Spanish",
+                    "period suffered from severe defects. It was",
+                    "characterized by an overemphasis on religion, a ",
+                    "complete absence of academic freedom, pervasive ",
+                    "racial discrimination, and a highly",
+                    "limited curriculum."
             };
         }
 

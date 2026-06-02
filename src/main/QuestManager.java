@@ -383,18 +383,14 @@ public class QuestManager {
 
     // ===== QUEST_HISTORY =====
     private void updateQuestHistory() {
-        // Nothing to poll each frame; driven entirely by interaction events
     }
 
-    /** Called when Francisco's opening dialogue finishes. */
     public void onFranciscoHistoryTalked() {
         if (questHistoryStage == QH_TALK_FRANCISCO) {
             questHistoryStage = QH_COLLECT_BOOKS;
-            gp.ui.showMessage("Find the 3 history books Tatay left for you!");
         }
     }
 
-    /** Called when a history book world-object is interacted with. */
     public void onHistoryBookPickedUp(int bookIndex) {
         if (historyBookPicked[bookIndex]) return;
         historyBookPicked[bookIndex] = true;
@@ -404,7 +400,7 @@ public class QuestManager {
         object.OBJ_HistoryBook book = new object.OBJ_HistoryBook(gp, bookIndex, false);
         gp.player.inventory.add(book);
 
-        gp.ui.showMessage("Kasaysayan Tomo " + toRoman(bookIndex + 1)
+        gp.ui.showMessage("History " + toRoman(bookIndex + 1)
                 + " collected! (" + historyBooksFound + "/" + HISTORY_BOOKS_REQUIRED + ")");
 
         // Remove the world object
@@ -424,7 +420,6 @@ public class QuestManager {
         }
     }
 
-    /** Called when Francisco's completion dialogue fires. */
     public void completeQuestHistory() {
         if (questHistoryStage == QH_DONE) return;
         questHistoryStage = QH_DONE;

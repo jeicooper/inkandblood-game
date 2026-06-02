@@ -546,10 +546,9 @@ public class SaveManager {
             case "Old Letter":                 return new OBJ_OldLetter(gp);
             case "Worn Letter":                return new OBJ_WornLetter(gp);
             case "Mi Ultimo Adios":            return new OBJ_MiUltimoAdios(gp);
-            // History books (permanent inventory copies)
-            case "Kasaysayan Tomo I":   return new OBJ_HistoryBook(gp, 0, false);
-            case "Kasaysayan Tomo II":  return new OBJ_HistoryBook(gp, 1, false);
-            case "Kasaysayan Tomo III": return new OBJ_HistoryBook(gp, 2, false);
+            case "History I":   return new OBJ_HistoryBook(gp, 0, false);
+            case "History II":  return new OBJ_HistoryBook(gp, 1, false);
+            case "History III": return new OBJ_HistoryBook(gp, 2, false);
             default:
                 System.out.println("SaveManager: unknown item '" + name + "', skipping.");
                 return null;

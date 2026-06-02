@@ -52,7 +52,7 @@ public class NPC_Francisco extends Entity {
             if (dialogueStage == 0) {
                 dialogues[0] = "Pepe, now that your siblings are settled, it is time\nyou focused on your studies.";
                 dialogues[1] = "A man without knowledge of his history is like a tree\nwithout roots.";
-                dialogues[2] = "I left three history books scattered around the house and\nyard for you to find and read.";
+                dialogues[2] = "I left three history books scattered around the library\nfor you to find and read.";
                 dialogues[3] = "Find them, Pepe. Read them carefully. They will serve\nyou well in the years ahead.";
                 dialogues[4] = null;
                 super.speak();

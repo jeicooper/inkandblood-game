@@ -211,6 +211,7 @@ public class MiniMap {
         if (gp.cutsceneManager.isExecutionWalkActive()) return;
         if (gp.cutsceneManager.isStatsScreenActive()) return;
         if (gp.ui.quizPanelOpen) return;
+        if (gp.ui.showPoemPanel) return;
 
         drawHUD(g2);
 
