@@ -286,6 +286,16 @@ public class KeyHandler implements KeyListener {
                     gp.gameState = gp.playState;
                     gp.ui.activeLetter = item.name;
                     gp.ui.showPoemPanel = true;
+                } else if (item.name.equals("Records for Qualification of a Hero")) {
+                    gp.gameState = gp.playState;
+                    gp.ui.activeLetter = item.name;
+                    gp.ui.bookPage = 0;
+                    gp.ui.showPoemPanel = true;
+                } else if (item.name.equals("Republic Act No. 1425")) {
+                    gp.gameState = gp.playState;
+                    gp.ui.activeLetter = item.name;
+                    gp.ui.bookPage = 0;
+                    gp.ui.showPoemPanel = true;
                 }
             }
         }

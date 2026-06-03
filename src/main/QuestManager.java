@@ -442,6 +442,11 @@ public class QuestManager {
         }
     }
 
+    public void giveAssessmentBooks() {
+        gp.player.inventory.add(new object.OBJ_Book1(gp));
+        gp.player.inventory.add(new object.OBJ_Book2(gp));
+    }
+
     // ===== QUEST 1 =====
     private void updateQuest1() {
 

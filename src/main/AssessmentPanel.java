@@ -71,10 +71,10 @@ public class AssessmentPanel {
     };
     private final String[] outroLines = {
             "There. The measure is taken.",
-            "Remember these answers, child.",
-            "These information shall prove useful to you as you go along this journey",
-            "Now... let the story of Pepe unfold."
+            "Now, take these 2 books. I will place them in your inventory.",
+            "This information shall prove useful to you as you go along this journey."
     };
+    private boolean outroBooksGiven = false;
     private int narrationIndex = 0;
 
     public static final int ASSESSMENT_SIZE = 10;
@@ -204,6 +204,7 @@ public class AssessmentPanel {
         selectedChoice = 0;
         answerConfirmed = false;
         score = 0;
+        outroBooksGiven = false;
         buildQuestionOrder();
         gp.gameState = gp.assessmentState;
         gp.inputDelay = 15;
@@ -256,6 +257,9 @@ public class AssessmentPanel {
                 } else {
                     finish();
                 }
+            } else if (!isIntro && narrationIndex == 1 && !outroBooksGiven) {
+                outroBooksGiven = true;
+                gp.questManager.giveAssessmentBooks();
             }
         }
     }
