@@ -351,7 +351,9 @@ public class CutsceneManager {
     private int   currentLine = 0;
     private int   fadeState   = 0;
     private float alpha       = 0f;
-    private static final float FADE_SPEED = 0.03f;
+    private float blackAlpha  = 1f;
+    private static final float FADE_SPEED       = 0.04f;
+    private static final float BLACK_FADE_SPEED = 0.018f;
     private boolean applied = false;
 
     // MAP SPAWNS
@@ -471,21 +473,29 @@ public class CutsceneManager {
         }
 
         if (fadeState == 0) {
-            alpha += FADE_SPEED;
-            if (alpha >= 1f) { alpha = 1f; fadeState = 1; }
+            blackAlpha -= BLACK_FADE_SPEED;
+            if (blackAlpha <= 0f) {
+                blackAlpha = 0f;
+                alpha += FADE_SPEED;
+                if (alpha >= 1f) { alpha = 1f; fadeState = 1; }
+            }
         } else if (fadeState == 2) {
             alpha -= FADE_SPEED;
             if (alpha <= 0f) {
                 alpha = 0f;
-                if (!applied) {
-                    applied = true;
-                    Scene sceneBefore = activeScene;
-                    applyEndOfScene();
-                    if (activeScene == sceneBefore && activeScene != Scene.EXECUTION_WALK) {
+                blackAlpha += BLACK_FADE_SPEED;
+                if (blackAlpha >= 1f) {
+                    blackAlpha = 1f;
+                    if (!applied) {
+                        applied = true;
+                        Scene sceneBefore = activeScene;
+                        applyEndOfScene();
+                        if (activeScene == sceneBefore && activeScene != Scene.EXECUTION_WALK) {
+                            gp.gameState = gp.playState;
+                        }
+                    } else if (activeScene != Scene.EXECUTION_WALK) {
                         gp.gameState = gp.playState;
                     }
-                } else if (activeScene != Scene.EXECUTION_WALK) {
-                    gp.gameState = gp.playState;
                 }
             }
         }
@@ -549,6 +559,13 @@ public class CutsceneManager {
             g2.drawString(prompt, gp.screenWidth / 2 - pw / 2, gp.screenHeight - gp.tileSize);
         }
         g2.setComposite(old);
+
+        if (blackAlpha > 0f) {
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, blackAlpha));
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+            g2.setComposite(old);
+        }
     }
 
     private String[][] activeLines() {
@@ -1313,6 +1330,7 @@ public class CutsceneManager {
         currentLine = 0;
         fadeState   = 0;
         alpha       = 0f;
+        blackAlpha  = 1f;
         applied     = false;
         gp.gameState = gp.cutsceneState;
     }
