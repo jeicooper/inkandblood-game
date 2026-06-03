@@ -365,7 +365,7 @@ public class CutsceneManager {
     private static final Color GUARD_DIALOGUE_COLOR = new Color(220, 60, 60);
     private static final Color RIZAL_DIALOGUE_COLOR = new Color(255, 220, 100);
 
-    public CutsceneManager(GamePanel gp) { this.gp = gp; }
+    // ── core fade state ──────────────────────────────────────────────────────
 
     public void startIntroCutscene() {
         reset(Scene.INTRO);
@@ -495,8 +495,17 @@ public class CutsceneManager {
             return;
         }
 
-        g2.setColor(Color.black);
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        // ── background: image with dark overlay, or plain black ──────────────
+        java.awt.image.BufferedImage bg = activeBg();
+        if (bg != null) {
+            g2.drawImage(bg, 0, 0, gp.screenWidth, gp.screenHeight, null);
+            // dark overlay so white text stays readable over any image
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        } else {
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        }
 
         String[][] lines = activeLines();
         if (currentLine >= lines.length) return;
@@ -796,6 +805,53 @@ public class CutsceneManager {
             System.out.println("CutsceneManager: could not load " + path);
             return null;
         }
+    }
+
+    private java.awt.image.BufferedImage bgIntro;
+    private java.awt.image.BufferedImage bgChapter2;
+    private java.awt.image.BufferedImage bgQuest4;
+    private java.awt.image.BufferedImage bgChapter3;
+    private java.awt.image.BufferedImage bgMemories;
+    private java.awt.image.BufferedImage bgQuest6;
+    private java.awt.image.BufferedImage bgChapter4;
+
+    private java.awt.image.BufferedImage loadBg(String path) {
+        try {
+            java.io.InputStream is = getClass().getResourceAsStream(path);
+            if (is == null) {
+                System.out.println("CutsceneManager: bg not found – " + path);
+                return null;
+            }
+            return javax.imageio.ImageIO.read(is);
+        } catch (Exception e) {
+            System.out.println("CutsceneManager: bg error – " + path);
+            return null;
+        }
+    }
+
+    private java.awt.image.BufferedImage activeBg() {
+        switch (activeScene) {
+            case INTRO:               return bgIntro;
+            case CHAPTER2:            return bgChapter2;
+            case QUEST4:              return bgQuest4;
+            case CHAPTER3:            return bgChapter3;
+            case QUEST_MEMORIES_INTRO:return bgMemories;
+            case QUEST6_INTRO:        return bgQuest6;
+            case CHAPTER4_INTRO:      return bgChapter4;
+            default:                  return null;
+        }
+    }
+
+    public CutsceneManager(GamePanel gp) {
+        this.gp = gp;
+
+        bgIntro    = loadBg("/cutscenes/1.png");
+        bgChapter2 = loadBg("/cutscenes/2.png");
+        bgQuest4   = loadBg("/cutscenes/3.png");
+        bgChapter3 = loadBg("/cutscenes/4.png");
+        bgMemories = loadBg("/cutscenes/5.png");
+        bgQuest6   = loadBg("/cutscenes/6.png");
+        bgChapter4 = loadBg("/cutscenes/7.png");
     }
 
     private void showDialogue(String text, boolean isRizal, int durationTicks) {

@@ -984,8 +984,8 @@ public class QuestManager {
     }
 
     public void onMarceloMalolosDone() {
-        // Marcelo finishes talking about the letter
         quest8Stage = Q8_FIND_CENTURY;
+        gp.aSetter.spawnCenturyHence();
     }
 
     public void onCenturyPickup() {
@@ -997,6 +997,7 @@ public class QuestManager {
 
     public void onMarceloCenturyDone() {
         quest8Stage = Q8_FIND_INDOLENCE;
+        gp.aSetter.spawnIndolenceEssay();
     }
 
     public void onIndolencePickup() {
