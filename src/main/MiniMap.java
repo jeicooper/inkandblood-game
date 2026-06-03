@@ -354,28 +354,48 @@ public class MiniMap {
         int lw = g2.getFontMetrics().stringWidth(label);
         g2.drawString(label, sw / 2 - lw / 2, mapY - 8);
 
-        // ── terrain ──
         g2.setClip(mapX, mapY, mapW, mapH);
-        g2.drawImage(currentEntry.image, mapX, mapY, mapW, mapH, null);
+
+        int worldCols = currentEntry.cols;
+        int worldRows = currentEntry.rows;
+
+        float visibleCols = worldCols * 0.55f;
+        float visibleRows = worldRows * 0.55f;
+
+        float imgW = worldCols * CELL;
+        float imgH = worldRows * CELL;
+
+        float pxInImg = (gp.player.worldX / (float) gp.tileSize) * CELL;
+        float pyInImg = (gp.player.worldY / (float) gp.tileSize) * CELL;
+
+        float srcW = visibleCols * CELL;
+        float srcH = visibleRows * CELL;
+
+        float srcX = Math.max(0, Math.min(pxInImg - srcW / 2f, imgW - srcW));
+        float srcY = Math.max(0, Math.min(pyInImg - srcH / 2f, imgH - srcH));
+
+        float tileW = (float) mapW / visibleCols;
+        float tileH = (float) mapH / visibleRows;
+
+        g2.drawImage(currentEntry.image,
+                mapX, mapY, mapX + mapW, mapY + mapH,
+                (int) srcX, (int) srcY, (int)(srcX + srcW), (int)(srcY + srcH),
+                null);
 
         g2.setColor(new Color(255, 255, 255, 10));
         g2.setStroke(new BasicStroke(0.5f));
-        int worldCols = currentEntry.cols;
-        int worldRows = currentEntry.rows;
-        float tileW = (float) mapW / worldCols;
-        float tileH = (float) mapH / worldRows;
         for (int c = 0; c <= worldCols; c += 10) {
-            int gx = mapX + (int)(c * tileW);
+            int gx = mapX + (int)((c * CELL - srcX) * (mapW / srcW));
             g2.drawLine(gx, mapY, gx, mapY + mapH);
         }
         for (int r = 0; r <= worldRows; r += 10) {
-            int gy = mapY + (int)(r * tileH);
+            int gy = mapY + (int)((r * CELL - srcY) * (mapH / srcH));
             g2.drawLine(mapX, gy, mapX + mapW, gy);
         }
 
         // ── viewport rectangle ──
-        float pxFull = mapX + (gp.player.worldX / (float) gp.tileSize) * tileW;
-        float pyFull = mapY + (gp.player.worldY / (float) gp.tileSize) * tileH;
+        float pxFull = mapX + (pxInImg - srcX) * (mapW / srcW);
+        float pyFull = mapY + (pyInImg - srcY) * (mapH / srcH);
         float vHalfW = (VIEW_COLS / 2f) * tileW;
         float vHalfH = (VIEW_ROWS / 2f) * tileH;
         g2.setColor(VIEWPORT_COL);
@@ -389,8 +409,10 @@ public class MiniMap {
         // ── NPC dots ──
         for (int i = 0; i < gp.npc.length; i++) {
             if (gp.npc[i] == null) continue;
-            float nx = mapX + (gp.npc[i].worldX / (float) gp.tileSize) * tileW;
-            float ny = mapY + (gp.npc[i].worldY / (float) gp.tileSize) * tileH;
+            float nxImg = (gp.npc[i].worldX / (float) gp.tileSize) * CELL;
+            float nyImg = (gp.npc[i].worldY / (float) gp.tileSize) * CELL;
+            float nx = mapX + (nxImg - srcX) * (mapW / srcW);
+            float ny = mapY + (nyImg - srcY) * (mapH / srcH);
             if (nx < mapX || nx > mapX + mapW || ny < mapY || ny > mapY + mapH) continue;
             g2.setColor(NPC_COL);
             g2.fillOval((int) nx - 3, (int) ny - 3, 6, 6);
@@ -404,8 +426,10 @@ public class MiniMap {
         // ── object dots ──
         for (int i = 0; i < gp.obj.length; i++) {
             if (gp.obj[i] == null) continue;
-            float ox = mapX + (gp.obj[i].worldX / (float) gp.tileSize) * tileW;
-            float oy = mapY + (gp.obj[i].worldY / (float) gp.tileSize) * tileH;
+            float oxImg = (gp.obj[i].worldX / (float) gp.tileSize) * CELL;
+            float oyImg = (gp.obj[i].worldY / (float) gp.tileSize) * CELL;
+            float ox = mapX + (oxImg - srcX) * (mapW / srcW);
+            float oy = mapY + (oyImg - srcY) * (mapH / srcH);
             if (ox < mapX || ox > mapX + mapW || oy < mapY || oy > mapY + mapH) continue;
             g2.setColor(OBJ_COL);
             g2.fillRect((int) ox - 3, (int) oy - 3, 6, 6);

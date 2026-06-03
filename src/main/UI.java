@@ -30,7 +30,6 @@ public class UI {
     public String currentDialogue = "";
     public String currentSpeakerName = "";
     public String activeLetter = "";
-    public int bookPage = 0;
 
     int msgCounter = 0;
     public int commandNum = 0;
@@ -159,10 +158,6 @@ public class UI {
                     drawElFiliPanel();
                 } else if (activeLetter.equals("Mi Ultimo Adios")) {
                     drawMiUltimoAdiosPanel();
-                } else if (activeLetter.equals("Records for Qualification of a Hero")) {
-                    drawBook1Panel();
-                } else if (activeLetter.equals("Republic Act No. 1425")) {
-                    drawBook2Panel();
                 } else {
                     drawPoemPanel();
                 }
@@ -179,7 +174,9 @@ public class UI {
                 Composite oldC = g2.getComposite();
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 
-                int boxW = 220;
+                g2.setFont(maruMonica.deriveFont(Font.BOLD, 20f));
+                int textW = g2.getFontMetrics().stringWidth(pickupItemName);
+                int boxW = textW + 24;
                 int boxH = 36;
                 int boxX = 14;
                 int boxY = (int) (gp.screenHeight - (gp.tileSize*3.5));
@@ -194,9 +191,8 @@ public class UI {
                 g2.drawRoundRect(boxX, boxY, boxW, boxH, 10, 10);
 
                 // Text
-                g2.setFont(maruMonica.deriveFont(Font.BOLD, 20f));
                 g2.setColor(Color.white);
-                g2.drawString(pickupItemName, boxX + 10, boxY + 23);
+                g2.drawString(pickupItemName, boxX + 12, boxY + 23);
 
                 g2.setComposite(oldC);
             }
@@ -2969,144 +2965,6 @@ public class UI {
         for (String line : right) { g2.drawString(line, rightX, startY); startY += lineH; }
 
         // prompt
-        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-        g2.setColor(new Color(200, 200, 200));
-        g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
-
-        if (gp.keyP.enterPressed) {
-            gp.keyP.enterPressed = false;
-            showPoemPanel = false;
-        }
-    }
-
-    public void drawBook1Panel() {
-        g2.setColor(new Color(0, 0, 0, 180));
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-
-        int panelW = gp.tileSize * 15;
-        int panelH = gp.tileSize * 10;
-        int panelX = gp.screenWidth  / 2 - panelW / 2;
-        int panelY = gp.screenHeight / 2 - panelH / 2;
-        drawSubWindow(panelX, panelY, panelW, panelH);
-
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 26F));
-        g2.setColor(new Color(255, 220, 80));
-        String title = "Records for Qualification of a Hero";
-        g2.drawString(title, panelX + panelW / 2 - g2.getFontMetrics().stringWidth(title) / 2, panelY + 40);
-
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
-        g2.setColor(Color.white);
-        int leftX  = panelX + 25;
-        int rightX = panelX + panelW / 2 + 10;
-        int startY = panelY + 75;
-        int lineH  = 22;
-
-        String[] left = {
-                "It is Governor William Howard Taft who suggested",
-                "to the Philippine Commission to give the Filipinos",
-                "a national hero.",
-                "",
-                "Forbes noted that the Americans heavily favored",
-                "Rizal because he was never advocated",
-                "\"INDEPENDENCE\". He promoted peaceful, internal",
-                "reforms through education and public awareness,",
-                "rather than fighting for independence or armed ",
-                "rebellion.",
-                "",
-                "Qualification for National Hero:",
-                "  \u00b7 The person must be a Filipino",
-                "  \u00b7 The person must be dead",
-                "  \u00b7 Must have a solid sense of patriotism",
-                "  \u00b7 The person must be a calm thinker",
-                "  \u00b7 Died dramatically",
-        };
-        String[] right = {
-                "List of Recommended National Heroes:",
-                "",
-                "  1.  Jose Rizal",
-                "  2.  Sultan Kudarat",
-                "  3.  Andres Bonifacio",
-                "  4.  Melchora Aquino",
-                "  5.  Emilio Aguinaldo",
-                "  6.  Gabriela Silang",
-                "  7.  Marcelo H. Del Pilar",
-                "  8.  Apolinario Mabini",
-                "  9.  Juan Luna",
-        };
-
-        for (String line : left)  { g2.drawString(line, leftX,  startY); startY += lineH; }
-        startY = panelY + 75;
-        for (String line : right) { g2.drawString(line, rightX, startY); startY += lineH; }
-
-        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-        g2.setColor(new Color(200, 200, 200));
-        g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
-
-        if (gp.keyP.enterPressed) {
-            gp.keyP.enterPressed = false;
-            showPoemPanel = false;
-        }
-    }
-
-    public void drawBook2Panel() {
-        g2.setColor(new Color(0, 0, 0, 180));
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-
-        int panelW = gp.tileSize * 15;
-        int panelH = gp.tileSize * 10;
-        int panelX = gp.screenWidth  / 2 - panelW / 2;
-        int panelY = gp.screenHeight / 2 - panelH / 2;
-        drawSubWindow(panelX, panelY, panelW, panelH);
-
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 26F));
-        g2.setColor(new Color(255, 220, 80));
-        String title = "Republic Act No. 1425  (The Rizal Law)";
-        g2.drawString(title, panelX + panelW / 2 - g2.getFontMetrics().stringWidth(title) / 2, panelY + 40);
-
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
-        g2.setColor(Color.white);
-        int leftX  = panelX + 25;
-        int rightX = panelX + panelW / 2 + 10;
-        int startY = panelY + 75;
-        int lineH  = 22;
-
-        String[] left = {
-                "Officially approved on June 12, 1956. Authored",
-                "by Claro M. Recto, sponsored by Jose P. Laurel.",
-                "It faced heavy Catholic Church opposition due to",
-                "anti-church passages in Rizal's novels.",
-                "",
-                "Section 1: All public and private schools, colleges,",
-                "and universities are mandated to teach courses ",
-                "on Rizal's life, works, and writings, specifically",
-                "Noli Me Tangere and El Filibusterismo.",
-                "",
-                "Section 2: All school libraries must keep an ",
-                "adequate supply of the original, unexpurgated ",
-                "(uncensored) editions of Rizal's novels and ",
-                "other works.",
-        };
-        String[] right = {
-                "Section 3: The government must translate Rizal's",
-                "writings into English, Tagalog, and major dialects,",
-                "printing them in cheap editions distributed for free.",
-                "",
-                "Section 4: Public school teachers and personnel",
-                "are strictly prohibited from discussing",
-                "religious doctrines.",
-                "",
-                "Section 5: A budget of three hundred thousand",
-                "pesos is allocated to execute the purposes",
-                "of this law.",
-                "",
-                "Section 6: The law takes effect immediately",
-                "upon its approval.",
-        };
-
-        for (String line : left)  { g2.drawString(line, leftX,  startY); startY += lineH; }
-        startY = panelY + 75;
-        for (String line : right) { g2.drawString(line, rightX, startY); startY += lineH; }
-
         g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
         g2.setColor(new Color(200, 200, 200));
         g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
