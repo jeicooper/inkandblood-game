@@ -355,7 +355,7 @@ public class QuestManager {
                 questState[QUEST4] = STATE_ACTIVE;
                 quest4Stage = TALK_PROFESSOR_Q4;
 
-                gp.ui.questPageNum = 2;
+                gp.ui.questPageNum = 1; // page 1: Q3+Q4
             }
         }
 
@@ -368,7 +368,7 @@ public class QuestManager {
                 currentQuest = QUEST_MEMORIES;
                 questState[QUEST_MEMORIES] = STATE_ACTIVE;
                 questMemStage = QM_TALK_MAXIMO_FIRST;
-                gp.ui.questPageNum = 3;
+                gp.ui.questPageNum = 2; // page 2: Q5+Q6 (Memories+Keepsakes)
             }
         }
 
@@ -381,7 +381,7 @@ public class QuestManager {
                 currentQuest = QUEST_KEEPSAKES;
                 questState[QUEST_KEEPSAKES] = STATE_ACTIVE;
                 questKsStage = QK_INTERACT_BOX;
-                gp.ui.questPageNum = 4;
+                gp.ui.questPageNum = 2; // page 2: Q5+Q6 (Memories+Keepsakes)
                 gp.aSetter.activateQuestKeepsakes();
                 gp.saveManager.save();
             }
@@ -671,7 +671,7 @@ public class QuestManager {
         disciplinesCompleted = 0;
         disciplineMedalEarned = new boolean[5];
         disciplineAnswered = new boolean[5];
-        gp.ui.questPageNum = 1;
+        gp.ui.questPageNum = 1; // page 1: Q3+Q4
         gp.aSetter.activateQuest4();
     }
 
@@ -834,7 +834,7 @@ public class QuestManager {
         quest6Stage = TALK_PACIANO_Q6;
         q6ObjectsCollected = 0;
         elFiliParts = new boolean[5];
-        gp.ui.questPageNum = 6;
+        gp.ui.questPageNum = 4; // page 4: Q9+Q10
         gp.aSetter.activateQuest6();
         gp.saveManager.save();
     }
@@ -903,7 +903,7 @@ public class QuestManager {
         currentQuest = QUEST7;
         questState[QUEST7] = STATE_ACTIVE;
         quest7Stage = Q7_TALK_GUARDIA;
-        gp.ui.questPageNum = 7;
+        gp.ui.questPageNum = 4; // page 4: Q9+Q10
         gp.aSetter.activateQuest7Intramuros();
         gp.saveManager.save();
     }
@@ -961,7 +961,7 @@ public class QuestManager {
         currentQuest = QUEST8;
         questState[QUEST8] = STATE_ACTIVE;
         quest8Stage  = Q8_CUTSCENE;
-        gp.ui.questPageNum = 5;
+        gp.ui.questPageNum = 3; // page 3: Q7+Q8 (Liham+Noli)
         gp.aSetter.activateQuest8();
         pendingQuest8Cutscene = true;
         cutsceneDelay9 = 60;
@@ -1025,7 +1025,7 @@ public class QuestManager {
         currentQuest = QUEST5;
         questState[QUEST5] = STATE_ACTIVE;
         quest5Stage = TALK_PEDRO;
-        gp.ui.questPageNum = 6;
+        gp.ui.questPageNum = 3; // page 3: Q7+Q8 (Liham+Noli)
         gp.aSetter.activateChapter3();
         gp.saveManager.save();
     }

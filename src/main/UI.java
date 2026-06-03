@@ -1205,88 +1205,22 @@ public class UI {
         int frameY = gp.tileSize/2;
         int frameWidth  = gp.tileSize * 18;
         int frameHeight = gp.tileSize * 11;
+
+        // Full-screen dim so the game world doesn't show through
+        g2.setColor(new Color(0, 0, 0, 160));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
         // page header
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 24f));
         g2.setColor(Color.white);
-        String header = "Page: [" + (questPageNum + 1) + "/8]";
+        String header = "Page: [" + (questPageNum + 1) + "/5]";
         int x = getXforCenter(header);
         int y = frameY + gp.tileSize;
         g2.drawString(header, x, y);
 
         if (questPageNum == 0) {
-            boolean q1done  = gp.questManager.isQuestCompleted(QuestManager.QUEST1);
-
-            final int PAD     = gp.tileSize;
-            final int MID     = frameX + frameWidth / 2;
-            final int LEFT_X  = frameX + PAD;
-            final int RIGHT_X = MID + PAD / 2;
-            final int TITLE_SIZE = 27;
-            final int DESC_SIZE  = 27;
-            final int BODY_SIZE  = 25;
-            final int HINT_SIZE  = 21;
-            final int LINE_H     = 27;
-            final int HINT_H     = 22;
-            final int TOP_Y      = frameY + gp.tileSize * 2;
-
-            // ── LEFT: Quest 1 ──
-            int ly = TOP_Y;
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
-            g2.setColor(q1done ? new Color(100, 230, 100) : new Color(255, 220, 80));
-            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST1) + ":", LEFT_X, ly);
-            ly += LINE_H - 2;
-            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST1) + "\"" + (q1done ? " COMPLETE" : ""), LEFT_X, ly);
-
-            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
-            g2.setColor(Color.lightGray);
-            ly += HINT_H + 2;
-            g2.drawString("Find all siblings and bring them home.", LEFT_X, ly);
-            ly += LINE_H + 2;
-
-            String[] siblingNames = {
-                    "Saturnina","Paciano","Narcisa","Olimpia","Lucia",
-                    "Maria","Josefa","Trinidad","Soledad","Concepcion"
-            };
-            boolean[] sibFound = new boolean[10];
-            for (int i = 0; i < gp.npc.length; i++) {
-                if (gp.npc[i] instanceof entity.NPC_Sibling) {
-                    entity.NPC_Sibling s = (entity.NPC_Sibling) gp.npc[i];
-                    for (int j = 0; j < 9; j++) {
-                        if (s.siblingName.contains(siblingNames[j])) { sibFound[j] = s.isFollowing; break; }
-                    }
-                }
-            }
-            sibFound[9] = !q1done && gp.questManager.conchaVisited;
-
-            final int SUB_LEFT  = LEFT_X;
-            final int SUB_RIGHT = LEFT_X + (MID - LEFT_X) / 2;
-            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
-            int sibY = ly;
-            for (int i = 0; i < 10; i++) {
-                boolean found = q1done || sibFound[i];
-                g2.setColor(found ? new Color(80, 220, 80) : Color.white);
-                int cx = (i % 2 == 0) ? SUB_LEFT : SUB_RIGHT;
-                g2.drawString("- " + siblingNames[i], cx, sibY);
-                if (i % 2 == 1) sibY += LINE_H;
-            }
-            ly = sibY;
-            if (gp.questManager.quest1Stage == QuestManager.QUEST1_STARTED && !q1done) {
-                int found = gp.questManager.siblingsFound;
-                ly += 4;
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
-                g2.setColor(new Color(200, 200, 100));
-                g2.drawString("Siblings found: " + found + "/" + (gp.questManager.SIBLINGS_REQUIRED + 1), LEFT_X, ly);
-                if (gp.questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
-                    ly += HINT_H;
-                    g2.setColor(new Color(100, 255, 100));
-                    g2.drawString("Return to Nanay Teodora!", LEFT_X, ly);
-                }
-            }
-
-        }
-
-        else if (questPageNum == 1) {
             boolean q1done    = gp.questManager.isQuestCompleted(QuestManager.QUEST1);
             boolean q2active  = gp.questManager.isQuestActive(QuestManager.QUEST2);
             boolean q2done    = gp.questManager.isQuestCompleted(QuestManager.QUEST2);
@@ -1307,6 +1241,8 @@ public class UI {
             final int TOP_Y = frameY + gp.tileSize*2;
 
             int ly = TOP_Y;
+            // clip left column
+            g2.setClip(frameX, frameY, MID - frameX, frameHeight);
 
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q1done ? new Color(100, 230, 100) : new Color(255, 220, 80));
@@ -1377,6 +1313,8 @@ public class UI {
                 }
             }
 
+            // switch to right-column clip
+            g2.setClip(MID, frameY, frameX + frameWidth - MID, frameHeight);
             int ry = TOP_Y;
 
             Color q2color = q2done   ? new Color(100, 230, 100)
@@ -1481,10 +1419,11 @@ public class UI {
                     g2.drawString("All lessons complete!", RIGHT_X, ry);
                 }
             }
+            g2.setClip(null);
         }
 
-        // ===== PAGE 2: Chapter 2 =====
-        else if (questPageNum == 2) {
+        // ===== PAGE 1: Chapter 2 (Quest 3 + Quest 4) =====
+        else if (questPageNum == 1) {
 
             boolean q3done = gp.questManager.isQuestCompleted(QuestManager.QUEST3);
             boolean q3active = gp.questManager.isQuestActive(QuestManager.QUEST3);
@@ -1508,6 +1447,8 @@ public class UI {
 
             final int TOP_Y = frameY + gp.tileSize*2;
             int ly = TOP_Y;
+            // clip left column
+            g2.setClip(frameX, frameY, MID - frameX, frameHeight);
 
             Color q3color = q3done   ? new Color(100, 230, 100)
                     : q3active ? new Color(255, 220, 80)
@@ -1580,6 +1521,8 @@ public class UI {
                 g2.drawString("- Return to Fr. Ferrando", LEFT_X, ly);
             }
 
+            // switch to right-column clip
+            g2.setClip(MID, frameY, frameX + frameWidth - MID, frameHeight);
             int ry = TOP_Y;
 
             Color q4color = q4done   ? new Color(100, 230, 100)
@@ -1673,17 +1616,24 @@ public class UI {
                     g2.drawString("  Go back to Fr. Rector!", RIGHT_X, ry);
                 }
             }
+            g2.setClip(null);
         }
 
-        // ===== PAGE 3: QUEST_MEMORIES (Mga Alaala) =====
-        else if (questPageNum == 3) {
+        // ===== PAGE 2: Quest 5 (Mga Alaala) LEFT + Quest 6 (Mga Lihim ng Puso) RIGHT =====
+        else if (questPageNum == 2) {
 
             boolean qmDone   = gp.questManager.isQuestCompleted(QuestManager.QUEST_MEMORIES);
             boolean qmActive = gp.questManager.isQuestActive(QuestManager.QUEST_MEMORIES);
             int     qmStage  = gp.questManager.questMemStage;
 
+            boolean qkDone   = gp.questManager.isQuestCompleted(QuestManager.QUEST_KEEPSAKES);
+            boolean qkActive = gp.questManager.isQuestActive(QuestManager.QUEST_KEEPSAKES);
+            int     qkStage  = gp.questManager.questKsStage;
+
             final int PAD        = gp.tileSize;
+            final int MID        = frameX + frameWidth / 2;
             final int LEFT_X     = frameX + PAD;
+            final int RIGHT_X    = MID + PAD / 2;
             final int TITLE_SIZE = 27;
             final int DESC_SIZE  = 27;
             final int BODY_SIZE  = 25;
@@ -1692,57 +1642,44 @@ public class UI {
             final int HINT_H     = 22;
             final int TOP_Y      = frameY + gp.tileSize * 2;
 
+            // ── LEFT: Quest 5 — Mga Alaala ──
             int ly = TOP_Y;
-
+            // clip left column
+            g2.setClip(frameX, frameY, MID - frameX, frameHeight);
             Color qmColor = qmDone   ? new Color(100, 230, 100)
                     : qmActive ? new Color(255, 220, 80)
                     :            Color.gray;
-
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(qmColor);
             g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_MEMORIES) + ":", LEFT_X, ly);
             ly += LINE_H - 2;
             g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST_MEMORIES) + "\""
                     + (qmDone ? " COMPLETE" : ""), LEFT_X, ly);
-
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
             g2.setColor(qmActive || qmDone ? Color.lightGray : Color.gray);
             ly += HINT_H + 2;
             g2.drawString("Gather the memories that will fuel your pen.", LEFT_X, ly);
-
             ly += LINE_H + 2;
 
             if (!qmActive && !qmDone) {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                 g2.setColor(Color.gray);
-                g2.drawString("[Complete Quest 5 to unlock]", LEFT_X, ly);
+                g2.drawString("[Complete Quest 4 to unlock]", LEFT_X, ly);
             } else {
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
-
-                // Step 1: Talk to Maximo
                 boolean s1 = qmDone || qmStage > QuestManager.QM_TALK_MAXIMO_FIRST;
                 g2.setColor(s1 ? new Color(80, 220, 80)
                         : qmStage == QuestManager.QM_TALK_MAXIMO_FIRST ? Color.white : Color.gray);
                 g2.drawString("- Talk to Maximo Viola", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 2: Collect first 5 mementos
                 boolean s2active = qmStage == QuestManager.QM_COLLECT_5;
                 boolean s2done   = qmDone || qmStage > QuestManager.QM_COLLECT_5;
-                g2.setColor(s2done ? new Color(80, 220, 80)
-                        : s2active ? Color.white : Color.gray);
+                g2.setColor(s2done ? new Color(80, 220, 80) : s2active ? Color.white : Color.gray);
                 g2.drawString("- Collect 6 mementos", LEFT_X, ly);
                 ly += LINE_H;
-
                 if (s2active || s2done) {
-                    String[] first6 = {
-                            "Medical Books",
-                            "Letters and Postcards",
-                            "Dusty Manuscript",
-                            "Legal Docs",
-                            "Envelope",
-                            "Ophthalmoscope"
-                    };
+                    String[] first6 = {"Medical Books","Letters and Postcards","Dusty Manuscript","Legal Docs","Envelope","Ophthalmoscope"};
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
                     for (int i = 0; i < 6; i++) {
                         boolean found = qmDone || gp.questManager.memFirstParts[i];
@@ -1757,27 +1694,19 @@ public class UI {
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
                 }
 
-                // Step 3: Return to Maximo (mid)
                 boolean s3 = qmDone || qmStage > QuestManager.QM_RETURN_MAXIMO_MID;
                 g2.setColor(s3 ? new Color(80, 220, 80)
                         : qmStage == QuestManager.QM_RETURN_MAXIMO_MID ? Color.white : Color.gray);
                 g2.drawString("- Return to Maximo Viola", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 4: Collect next 3 mementos
                 boolean s4active = qmStage == QuestManager.QM_COLLECT_3;
                 boolean s4done   = qmDone || qmStage > QuestManager.QM_COLLECT_3;
-                g2.setColor(s4done ? new Color(80, 220, 80)
-                        : s4active ? Color.white : Color.gray);
+                g2.setColor(s4done ? new Color(80, 220, 80) : s4active ? Color.white : Color.gray);
                 g2.drawString("- Collect 3 more mementos", LEFT_X, ly);
                 ly += LINE_H;
-
                 if (s4active || s4done) {
-                    String[] second3 = {
-                            "Origami Crane",
-                            "Ship Ticket",
-                            "Medical Bag"
-                    };
+                    String[] second3 = {"Origami Crane","Ship Ticket","Medical Bag"};
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
                     for (int i = 0; i < 3; i++) {
                         boolean found = qmDone || gp.questManager.memSecondParts[i];
@@ -1792,12 +1721,9 @@ public class UI {
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
                 }
 
-                // Step 5: Return to Maximo (final)
-                boolean s5 = qmDone || qmStage == QuestManager.QM_RETURN_MAXIMO_FINAL;
-                g2.setColor(qmDone ? new Color(80, 220, 80)
-                        : s5 ? Color.white : Color.gray);
+                boolean s5 = qmDone || qmStage >= QuestManager.QM_RETURN_MAXIMO_FINAL;
+                g2.setColor(s5 ? new Color(80, 220, 80) : Color.gray);
                 g2.drawString("- Return to Maximo Viola", LEFT_X, ly);
-
                 if (qmDone) {
                     ly += LINE_H;
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
@@ -1805,113 +1731,93 @@ public class UI {
                     g2.drawString("Quest complete!", LEFT_X, ly);
                 }
             }
-        }
 
-        else if (questPageNum == 4) {
-
-            boolean qkDone   = gp.questManager.isQuestCompleted(QuestManager.QUEST_KEEPSAKES);
-            boolean qkActive = gp.questManager.isQuestActive(QuestManager.QUEST_KEEPSAKES);
-            int     qkStage  = gp.questManager.questKsStage;
-
-            final int PAD        = gp.tileSize;
-            final int LEFT_X     = frameX + PAD;
-            final int TITLE_SIZE = 27;
-            final int DESC_SIZE  = 27;
-            final int BODY_SIZE  = 25;
-            final int HINT_SIZE  = 21;
-            final int LINE_H     = 27;
-            final int HINT_H     = 22;
-            final int TOP_Y      = frameY + gp.tileSize * 2;
-
-            int ly = TOP_Y;
-
+            // ── RIGHT: Quest 6 — Mga Lihim ng Puso ──
+            // switch to right-column clip
+            g2.setClip(MID, frameY, frameX + frameWidth - MID, frameHeight);
+            int ry = TOP_Y;
             Color qkColor = qkDone   ? new Color(100, 230, 100)
                     : qkActive ? new Color(255, 220, 80)
                     :            Color.gray;
-
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(qkColor);
-            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_KEEPSAKES) + ":", LEFT_X, ly);
-            ly += LINE_H - 2;
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_KEEPSAKES) + ":", RIGHT_X, ry);
+            ry += LINE_H - 2;
             g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST_KEEPSAKES) + "\""
-                    + (qkDone ? " COMPLETE" : ""), LEFT_X, ly);
-
+                    + (qkDone ? " COMPLETE" : ""), RIGHT_X, ry);
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
             g2.setColor(qkActive || qkDone ? Color.lightGray : Color.gray);
-            ly += HINT_H + 2;
-            g2.drawString("Before the novel — revisit the faces that shaped the heart.", LEFT_X, ly);
-
-            ly += LINE_H + 2;
+            ry += HINT_H + 2;
+            g2.drawString("Revisit the faces that shaped the heart.", RIGHT_X, ry);
+            ry += LINE_H + 2;
 
             if (!qkActive && !qkDone) {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                 g2.setColor(Color.gray);
-                g2.drawString("[Complete Quest 6 to unlock]", LEFT_X, ly);
+                g2.drawString("[Complete Quest 5 to unlock]", RIGHT_X, ry);
             } else {
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
 
-                // Step 1: Open the box
                 boolean s1done = qkDone || qkStage > QuestManager.QK_INTERACT_BOX;
                 g2.setColor(s1done ? new Color(80, 220, 80)
                         : qkStage == QuestManager.QK_INTERACT_BOX ? Color.white : Color.gray);
-                g2.drawString("- Interact with the Wooden Keepsake Box", LEFT_X, ly);
-                ly += LINE_H;
+                g2.drawString("- Interact with the Keepsake Box", RIGHT_X, ry);
+                ry += LINE_H;
 
-                // Step 2: Find all 9 keepsakes
                 boolean s2active = qkStage == QuestManager.QK_COLLECT;
                 boolean s2done   = qkDone || qkStage > QuestManager.QK_COLLECT;
-                g2.setColor(s2done ? new Color(80, 220, 80)
-                        : s2active ? Color.white : Color.gray);
-                g2.drawString("- Find 9 keepsakes", LEFT_X, ly);
-                ly += LINE_H;
+                g2.setColor(s2done ? new Color(80, 220, 80) : s2active ? Color.white : Color.gray);
+                g2.drawString("- Find 9 keepsakes", RIGHT_X, ry);
+                ry += LINE_H;
 
                 if (s2active || s2done) {
                     String[] keepsakes = {
-                            "Paper Rose", "Invisible Ink",
-                            "Locket", "Abanico",
-                            "Suzui", "Clay Knife",
-                            "Bible", "Belgian Biscuits",
-                            "Lense"
+                            "Paper Rose","Invisible Ink","Locket","Abanico",
+                            "Suzuri","Clay Knife","Bible","Belgian Biscuits","Lense"
                     };
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
                     for (int i = 0; i < 9; i++) {
                         boolean found = qkDone || gp.questManager.keepsakeFound[i];
                         g2.setColor(found ? new Color(80, 220, 80) : Color.white);
-                        g2.drawString((found ? "/ " : "- ") + keepsakes[i], LEFT_X + 10, ly);
-                        ly += LINE_H - 2;
+                        g2.drawString((found ? "/ " : "- ") + keepsakes[i], RIGHT_X + 10, ry);
+                        ry += LINE_H - 2;
                     }
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("  Found: " + gp.questManager.keepsakeCount + "/9", LEFT_X, ly);
-                    ly += HINT_H;
+                    g2.drawString("  Found: " + gp.questManager.keepsakeCount + "/9", RIGHT_X, ry);
+                    ry += HINT_H;
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
                 }
 
-                // Step 3: Return to box
                 boolean s3 = qkDone || qkStage == QuestManager.QK_RETURN_BOX;
-                g2.setColor(qkDone ? new Color(80, 220, 80)
-                        : s3 ? Color.white : Color.gray);
-                g2.drawString("- Return to the Wooden Keepsake Box", LEFT_X, ly);
-
+                g2.setColor(qkDone ? new Color(80, 220, 80) : s3 ? Color.white : Color.gray);
+                g2.drawString("- Return to the Keepsake Box", RIGHT_X, ry);
                 if (qkDone) {
-                    ly += LINE_H;
+                    ry += LINE_H;
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(100, 255, 100));
-                    g2.drawString("Quest complete!", LEFT_X, ly);
+                    g2.drawString("Quest complete!", RIGHT_X, ry);
                 }
             }
+            g2.setClip(null);
         }
 
 
-        // ===== PAGE 5: Quest 8 — La Solidaridad =====
-        else if (questPageNum == 5) {
+        // ===== PAGE 3: Quest 7 (Mga Liham at Sanaysay) LEFT + Quest 8 (Noli Me Tangere) RIGHT =====
+        else if (questPageNum == 3) {
 
             boolean q8done   = gp.questManager.isQuestCompleted(QuestManager.QUEST8);
             boolean q8active = gp.questManager.isQuestActive(QuestManager.QUEST8);
             int     q8stage  = gp.questManager.quest8Stage;
 
+            boolean q5done   = gp.questManager.isQuestCompleted(QuestManager.QUEST5);
+            boolean q5active = gp.questManager.isQuestActive(QuestManager.QUEST5);
+            int     q5stage  = gp.questManager.quest5Stage;
+
             final int PAD        = gp.tileSize;
+            final int MID        = frameX + frameWidth / 2;
             final int LEFT_X     = frameX + PAD;
+            final int RIGHT_X    = MID + PAD / 2;
             final int TITLE_SIZE = 27;
             final int DESC_SIZE  = 27;
             final int BODY_SIZE  = 25;
@@ -1920,23 +1826,22 @@ public class UI {
             final int HINT_H     = 22;
             final int TOP_Y      = frameY + gp.tileSize * 2;
 
+            // ── LEFT: Quest 7 — Mga Liham at Sanaysay ──
             int ly = TOP_Y;
-
+            // clip left column
+            g2.setClip(frameX, frameY, MID - frameX, frameHeight);
             Color q8color = q8done   ? new Color(100, 230, 100)
                     : q8active ? new Color(255, 220, 80)
                     :            Color.gray;
-
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q8color);
             g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST8) + ":", LEFT_X, ly);
             ly += LINE_H - 2;
             g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST8) + "\"" + (q8done ? " COMPLETE" : ""), LEFT_X, ly);
-
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
             g2.setColor(q8active || q8done ? Color.lightGray : Color.gray);
             ly += HINT_H + 2;
             g2.drawString("The press of La Solidaridad is hungry for truth.", LEFT_X, ly);
-
             ly += LINE_H + 2;
 
             if (!q8active && !q8done) {
@@ -1945,237 +1850,136 @@ public class UI {
                 g2.drawString("[Complete Quest 6 to unlock]", LEFT_X, ly);
             } else {
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
-
-                // Step 1: Talk to Marcelo
                 boolean s1 = q8done || q8stage > QuestManager.Q8_TALK_MARCELO;
                 g2.setColor(s1 ? new Color(80, 220, 80) : Color.white);
                 g2.drawString("- Talk to Marcelo H. del Pilar", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 2: Find Letter to Women of Malolos
                 boolean s2 = q8done || gp.questManager.q8MalolosCollected;
-                g2.setColor(s2 ? new Color(80, 220, 80)
-                        : q8stage == QuestManager.Q8_FIND_MALOLOS ? Color.white : Color.gray);
+                g2.setColor(s2 ? new Color(80, 220, 80) : q8stage == QuestManager.Q8_FIND_MALOLOS ? Color.white : Color.gray);
                 g2.drawString("- Find: Letter to the Women of Malolos", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 3: Return to Marcelo
                 boolean s3 = q8done || q8stage > QuestManager.Q8_RETURN_MALOLOS;
-                g2.setColor(s3 ? new Color(80, 220, 80)
-                        : q8stage == QuestManager.Q8_RETURN_MALOLOS ? Color.white : Color.gray);
+                g2.setColor(s3 ? new Color(80, 220, 80) : q8stage == QuestManager.Q8_RETURN_MALOLOS ? Color.white : Color.gray);
                 g2.drawString("- Return to Marcelo del Pilar", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 4: Find Century Hence draft
                 boolean s4 = q8done || gp.questManager.q8CenturyCollected;
-                g2.setColor(s4 ? new Color(80, 220, 80)
-                        : q8stage == QuestManager.Q8_FIND_CENTURY ? Color.white : Color.gray);
+                g2.setColor(s4 ? new Color(80, 220, 80) : q8stage == QuestManager.Q8_FIND_CENTURY ? Color.white : Color.gray);
                 g2.drawString("- Find: The Philippines a Century Hence", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 5: Return to Marcelo
                 boolean s5 = q8done || q8stage > QuestManager.Q8_RETURN_CENTURY;
-                g2.setColor(s5 ? new Color(80, 220, 80)
-                        : q8stage == QuestManager.Q8_RETURN_CENTURY ? Color.white : Color.gray);
+                g2.setColor(s5 ? new Color(80, 220, 80) : q8stage == QuestManager.Q8_RETURN_CENTURY ? Color.white : Color.gray);
                 g2.drawString("- Return to Marcelo del Pilar", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 6: Find Indolence essay
                 boolean s6 = q8done || gp.questManager.q8IndolenceCollected;
-                g2.setColor(s6 ? new Color(80, 220, 80)
-                        : q8stage == QuestManager.Q8_FIND_INDOLENCE ? Color.white : Color.gray);
+                g2.setColor(s6 ? new Color(80, 220, 80) : q8stage == QuestManager.Q8_FIND_INDOLENCE ? Color.white : Color.gray);
                 g2.drawString("- Find: The Indolence of the Filipinos", LEFT_X, ly);
                 ly += LINE_H;
 
-                // Step 7: Final talk with Marcelo
                 boolean s7 = q8done;
                 g2.setColor(s7 ? new Color(80, 220, 80)
-                        : (q8stage == QuestManager.Q8_RETURN_INDOLENCE
-                        || q8stage == QuestManager.Q8_FINAL_TALK) ? Color.white : Color.gray);
+                        : (q8stage == QuestManager.Q8_RETURN_INDOLENCE || q8stage == QuestManager.Q8_FINAL_TALK) ? Color.white : Color.gray);
                 g2.drawString("- Return to Marcelo del Pilar", LEFT_X, ly);
                 ly += LINE_H;
-
                 if (q8done) {
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(100, 255, 100));
                     g2.drawString("Quest complete!", LEFT_X, ly);
                 }
             }
-        }
 
-        // ===== PAGE 6: Chapter 3 (Noli + El Fili) =====
-        else if (questPageNum == 6) {
-
-            boolean q5done   = gp.questManager.isQuestCompleted(QuestManager.QUEST5);
-            boolean q5active = gp.questManager.isQuestActive(QuestManager.QUEST5);
-            int     q5stage  = gp.questManager.quest5Stage;
-
-            boolean q6active = gp.questManager.isQuestActive(QuestManager.QUEST6);
-            boolean q6done   = gp.questManager.isQuestCompleted(QuestManager.QUEST6);
-            int     q6stage  = gp.questManager.quest6Stage;
-
-            final int PAD = gp.tileSize;
-            final int MID = frameX + frameWidth / 2;
-            final int LEFT_X = frameX + PAD;
-            final int RIGHT_X = MID + PAD/2;
-
-            final int TITLE_SIZE = 27;
-            final int DESC_SIZE = 27;
-            final int BODY_SIZE = 25;
-            final int HINT_SIZE = 21;
-            final int LINE_H = 27;
-            final int HINT_H = 22;
-
-            final int TOP_Y = frameY + gp.tileSize * 2;
-            int ly = TOP_Y;
-
+            // ── RIGHT: Quest 8 — Noli Me Tangere ──
+            // switch to right-column clip
+            g2.setClip(MID, frameY, frameX + frameWidth - MID, frameHeight);
+            int ry = TOP_Y;
             Color q5color = q5done   ? new Color(100, 230, 100)
                     : q5active ? new Color(255, 220, 80)
                     :            Color.gray;
-
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q5color);
-            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST5) + ":", LEFT_X, ly);
-            ly += LINE_H - 2;
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST5) + ":", RIGHT_X, ry);
+            ry += LINE_H - 2;
             g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST5) + "\""
-                    + (q5done ? " COMPLETE" : ""), LEFT_X, ly);
-
+                    + (q5done ? " COMPLETE" : ""), RIGHT_X, ry);
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
             g2.setColor(q5active || q5done ? Color.lightGray : Color.gray);
-            ly += HINT_H + 2;
-            g2.drawString("Write the novel that will wake a nation.", LEFT_X, ly);
-
-            ly += LINE_H + 2;
+            ry += HINT_H + 2;
+            g2.drawString("Write the novel that will wake a nation.", RIGHT_X, ry);
+            ry += LINE_H + 2;
 
             if (!q5active && !q5done) {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                 g2.setColor(Color.gray);
-                g2.drawString("[Complete Quest 7 to unlock]", LEFT_X, ly);
+                g2.drawString("[Complete Quest 7 to unlock]", RIGHT_X, ry);
             } else {
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
 
-                boolean s3 = q5done || q5stage > QuestManager.FIND_LETTER;
-                g2.setColor(s3 ? new Color(80, 220, 80)
-                        : q5stage == QuestManager.FIND_LETTER ? Color.white : Color.gray);
-                g2.drawString("- Find the draft of Noli Me Tangere", LEFT_X, ly);
-                ly += LINE_H;
+                boolean r1 = q5done || q5stage > QuestManager.TALK_PEDRO;
+                g2.setColor(r1 ? new Color(80, 220, 80) : Color.white);
+                g2.drawString("- Talk to Pedro.", RIGHT_X, ry);
+                ry += LINE_H;
 
-                boolean s4active = q5stage == QuestManager.COLLECT_OBJECTS;
-                boolean s4done   = q5done || q5stage > QuestManager.COLLECT_OBJECTS;
-                g2.setColor(s4done   ? new Color(80, 220, 80)
-                        : s4active ? Color.white : Color.gray);
-                g2.drawString("- Collect manuscript inspirations", LEFT_X, ly);
-                ly += LINE_H;
+                boolean r2 = q5done || q5stage > QuestManager.TALK_CONSUELO;
+                g2.setColor(r2 ? new Color(80, 220, 80) : q5stage == QuestManager.TALK_CONSUELO ? Color.white : Color.gray);
+                g2.drawString("- Talk to Consuelo Ortiga", RIGHT_X, ry);
+                ry += LINE_H;
 
-                if (s4active || s4done) {
+                boolean r3 = q5done || q5stage > QuestManager.FIND_LETTER;
+                g2.setColor(r3 ? new Color(80, 220, 80) : q5stage == QuestManager.FIND_LETTER ? Color.white : Color.gray);
+                g2.drawString("- Find the draft of Noli Me Tangere", RIGHT_X, ry);
+                ry += LINE_H;
+
+                boolean r4active = q5stage == QuestManager.COLLECT_OBJECTS;
+                boolean r4done   = q5done || q5stage > QuestManager.COLLECT_OBJECTS;
+                g2.setColor(r4done ? new Color(80, 220, 80) : r4active ? Color.white : Color.gray);
+                g2.drawString("- Collect manuscript inspirations", RIGHT_X, ry);
+                ry += LINE_H;
+
+                if (r4active || r4done) {
                     String[] parts = {
-                            "Scalpel (Title)",
-                            "Mirror (Ibarra)",
-                            "Dried Flower (Maria Clara)",
-                            "Rosary (The Friars)",
-                            "Portrait (Sisa)",
-                            "Scrap Metal (Elias)",
-                            "Empty Plate (Berlin)"
+                            "Scalpel (Title)", "Mirror (Ibarra)", "Dried Flower (Maria Clara)",
+                            "Rosary (The Friars)", "Portrait (Sisa)", "Scrap Metal (Elias)", "Empty Plate (Berlin)"
                     };
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
                     for (int i = 0; i < 7; i++) {
                         boolean done = q5done || gp.questManager.manuscriptParts[i];
                         g2.setColor(done ? new Color(80, 220, 80) : Color.white);
-                        g2.drawString((done ? "/ " : "- ") + parts[i], LEFT_X + 10, ly);
-                        ly += LINE_H - 2;
-                    }
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
-                    g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("  Parts: " + gp.questManager.objectsCollected + "/" + gp.questManager.effectiveQuest5Objects(), LEFT_X, ly);
-                    ly += HINT_H;
-                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
-                }
-
-                boolean s5 = q5done || q5stage >= QuestManager.TALK_MAXIMO;
-                g2.setColor(q5done ? new Color(80, 220, 80)
-                        : s5 ? Color.white : Color.gray);
-                g2.drawString("- Talk to Maximo Viola", LEFT_X, ly);
-            }
-
-            int ry = TOP_Y;
-
-            Color q6color = q6done   ? new Color(100, 230, 100)
-                    : q6active ? new Color(255, 220, 80)
-                    :            Color.gray;
-
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
-            g2.setColor(q6color);
-            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST6) + ":", RIGHT_X, ry);
-            ry += LINE_H - 2;
-            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST6) + "\""
-                    + (q6done ? " COMPLETE" : ""), RIGHT_X, ry);
-
-            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
-            g2.setColor(q6active || q6done ? Color.lightGray : Color.gray);
-            ry += HINT_H + 2;
-            g2.drawString("Become finish your sequel novel.", RIGHT_X, ry);
-
-            ry += LINE_H + 2;
-
-            if (!q6active && !q6done) {
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
-                g2.setColor(Color.gray);
-                g2.drawString("[Complete Quest 5 to unlock]", RIGHT_X, ry);
-            } else {
-                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
-
-                boolean s4 = q6done || q6stage > QuestManager.FIND_DRAFT;
-                g2.setColor(s4 ? new Color(80, 220, 80)
-                        : q6stage == QuestManager.FIND_DRAFT ? Color.white : Color.gray);
-                g2.drawString("- Find the draft of El Filibusterismo", RIGHT_X, ry);
-                ry += LINE_H;
-
-                boolean s6active = q6stage == QuestManager.COLLECT_OBJECTS;
-                boolean s6done   = q6done || q6stage > QuestManager.COLLECT_OBJECTS;
-                g2.setColor(s6done   ? new Color(80, 220, 80)
-                        : s6active ? Color.white : Color.gray);
-                g2.drawString("- Collect manuscript inspirations", RIGHT_X, ry);
-                ry += LINE_H;
-
-                if (s6active || s6done) {
-                    String[] parts = {
-                            "Glasses",
-                            "Newspaper",
-                            "Old Letter",
-                            "Worn Letter"
-                    };
-
-                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
-                    for (int i = 0; i < 4; i++) {
-                        boolean done = q6done || gp.questManager.elFiliParts[i];
-                        g2.setColor(done ? new Color(80, 220, 80) : Color.white);
                         g2.drawString((done ? "/ " : "- ") + parts[i], RIGHT_X + 10, ry);
                         ry += LINE_H - 2;
                     }
-
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("  Parts: " + gp.questManager.q6ObjectsCollected + "/" + gp.questManager.effectiveQuest6Objects(), RIGHT_X, ry);
+                    g2.drawString("  Parts: " + gp.questManager.objectsCollected + "/" + gp.questManager.effectiveQuest5Objects(), RIGHT_X, ry);
                     ry += HINT_H;
                     g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
                 }
 
-                boolean s6 = q6done || q6stage >= QuestManager.TALK_PACIANO_Q6;
-                g2.setColor(q6done ? new Color(80, 220, 80)
-                        : s6 ? Color.white : Color.gray);
-                g2.drawString("- Talk to Paciano", RIGHT_X, ry);
+                boolean r5 = q5done || q5stage >= QuestManager.TALK_MAXIMO;
+                g2.setColor(q5done ? new Color(80, 220, 80) : r5 ? Color.white : Color.gray);
+                g2.drawString("- Talk to Maximo Viola", RIGHT_X, ry);
             }
-
+            g2.setClip(null);
         }
 
-        // ===== PAGE 7: Chapter 4 =====
-        else if (questPageNum == 7) {
+        // ===== PAGE 4: Quest 9 (El Filibusterismo) LEFT + Quest 10 (Ang Huling Araw) RIGHT =====
+        else if (questPageNum == 4) {
+
+            boolean q6active = gp.questManager.isQuestActive(QuestManager.QUEST6);
+            boolean q6done   = gp.questManager.isQuestCompleted(QuestManager.QUEST6);
+            int     q6stage  = gp.questManager.quest6Stage;
+
             boolean q7done   = gp.questManager.isQuestCompleted(QuestManager.QUEST7);
             boolean q7active = gp.questManager.isQuestActive(QuestManager.QUEST7);
             int     q7stage  = gp.questManager.quest7Stage;
 
             final int PAD        = gp.tileSize;
+            final int MID        = frameX + frameWidth / 2;
             final int LEFT_X     = frameX + PAD;
+            final int RIGHT_X    = MID + PAD / 2;
             final int TITLE_SIZE = 27;
             final int DESC_SIZE  = 27;
             final int BODY_SIZE  = 25;
@@ -2184,81 +1988,135 @@ public class UI {
             final int HINT_H     = 22;
             final int TOP_Y      = frameY + gp.tileSize * 2;
 
+            // ── LEFT: Quest 9 — El Filibusterismo ──
             int ly = TOP_Y;
+            // clip left column
+            g2.setClip(frameX, frameY, MID - frameX, frameHeight);
+            Color q6color = q6done   ? new Color(100, 230, 100)
+                    : q6active ? new Color(255, 220, 80)
+                    :            Color.gray;
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(q6color);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST6) + ":", LEFT_X, ly);
+            ly += LINE_H - 2;
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST6) + "\""
+                    + (q6done ? " COMPLETE" : ""), LEFT_X, ly);
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(q6active || q6done ? Color.lightGray : Color.gray);
+            ly += HINT_H + 2;
+            g2.drawString("Finish the sequel that will fan the flame.", LEFT_X, ly);
+            ly += LINE_H + 2;
 
+            if (!q6active && !q6done) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Quest 8 to unlock]", LEFT_X, ly);
+            } else {
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                boolean s1 = q6done || q6stage > QuestManager.FIND_DRAFT;
+                g2.setColor(s1 ? new Color(80, 220, 80) : q6stage == QuestManager.FIND_DRAFT ? Color.white : Color.gray);
+                g2.drawString("- Find the draft of El Filibusterismo", LEFT_X, ly);
+                ly += LINE_H;
+
+                boolean s2active = q6stage == QuestManager.COLLECT_OBJECTS_Q6;
+                boolean s2done   = q6done || q6stage > QuestManager.COLLECT_OBJECTS_Q6;
+                g2.setColor(s2done ? new Color(80, 220, 80) : s2active ? Color.white : Color.gray);
+                g2.drawString("- Collect manuscript inspirations", LEFT_X, ly);
+                ly += LINE_H;
+
+                if (s2active || s2done) {
+                    String[] parts = {"Glasses","Newspaper","Old Letter","Worn Letter"};
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
+                    for (int i = 0; i < 4; i++) {
+                        boolean done = q6done || gp.questManager.elFiliParts[i];
+                        g2.setColor(done ? new Color(80, 220, 80) : Color.white);
+                        g2.drawString((done ? "/ " : "- ") + parts[i], LEFT_X + 10, ly);
+                        ly += LINE_H - 2;
+                    }
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("  Parts: " + gp.questManager.q6ObjectsCollected + "/" + gp.questManager.effectiveQuest6Objects(), LEFT_X, ly);
+                    ly += HINT_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+                }
+
+                boolean s3 = q6done || q6stage >= QuestManager.RETURN_PACIANO;
+                g2.setColor(q6done ? new Color(80, 220, 80) : s3 ? Color.white : Color.gray);
+                g2.drawString("- Return to Paciano", LEFT_X, ly);
+                if (q6done) {
+                    ly += LINE_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Quest complete!", LEFT_X, ly);
+                }
+            }
+
+            // ── RIGHT: Quest 10 — Ang Huling Araw ──
+            // switch to right-column clip
+            g2.setClip(MID, frameY, frameX + frameWidth - MID, frameHeight);
+            int ry = TOP_Y;
             Color q7color = q7done   ? new Color(100, 230, 100)
                     : q7active ? new Color(255, 220, 80)
                     :            Color.gray;
-
             g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
             g2.setColor(q7color);
-            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST7) + ":", LEFT_X, ly);
-            ly += LINE_H - 2;
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST7) + ":", RIGHT_X, ry);
+            ry += LINE_H - 2;
             g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST7) + "\""
-                    + (q7done ? " COMPLETE" : ""), LEFT_X, ly);
-
+                    + (q7done ? " COMPLETE" : ""), RIGHT_X, ry);
             g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
             g2.setColor(q7active || q7done ? Color.lightGray : Color.gray);
-            ly += HINT_H + 2;
-            g2.drawString("Face the trial. Write your last words.", LEFT_X, ly);
-
-            ly += LINE_H + 2;
+            ry += HINT_H + 2;
+            g2.drawString("Face the trial. Write your last words.", RIGHT_X, ry);
+            ry += LINE_H + 2;
 
             if (!q7active && !q7done) {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                 g2.setColor(Color.gray);
-                g2.drawString("[Complete Quest 6 to unlock]", LEFT_X, ly);
+                g2.drawString("[Complete Quest 9 to unlock]", RIGHT_X, ry);
             } else {
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
 
-                // Guardia Civil
-                boolean s1 = q7done || q7stage > QuestManager.Q7_TALK_GUARDIA;
-                g2.setColor(s1 ? new Color(80, 220, 80) : Color.white);
-                g2.drawString("- Face the Guardia Civil", LEFT_X, ly);
-                ly += LINE_H;
+                boolean r1 = q7done || q7stage > QuestManager.Q7_TALK_GUARDIA;
+                g2.setColor(r1 ? new Color(80, 220, 80) : q7stage == QuestManager.Q7_TALK_GUARDIA ? Color.white : Color.gray);
+                g2.drawString("- Face the Guardia Civil", RIGHT_X, ry);
+                ry += LINE_H;
 
-                // Judge
-                boolean s2 = q7done || q7stage > QuestManager.Q7_TALK_JUDGE;
-                g2.setColor(s2 ? new Color(80, 220, 80)
-                        : q7stage == QuestManager.Q7_TALK_JUDGE ? Color.white : Color.gray);
-                g2.drawString("- Hear the Judge's verdict", LEFT_X, ly);
-                ly += LINE_H;
+                boolean r2 = q7done || q7stage > QuestManager.Q7_TALK_JUDGE;
+                g2.setColor(r2 ? new Color(80, 220, 80) : q7stage == QuestManager.Q7_TALK_JUDGE ? Color.white : Color.gray);
+                g2.drawString("- Hear the Judge's verdict", RIGHT_X, ry);
+                ry += LINE_H;
 
-                // Josephine
-                boolean s3 = q7done || q7stage > QuestManager.Q7_TALK_JOSEPHINE;
-                g2.setColor(s3 ? new Color(80, 220, 80)
-                        : q7stage == QuestManager.Q7_TALK_JOSEPHINE ? Color.white : Color.gray);
-                g2.drawString("- Talk to Josephine Bracken", LEFT_X, ly);
-                ly += LINE_H;
+                boolean r3 = q7done || q7stage > QuestManager.Q7_TALK_JOSEPHINE;
+                g2.setColor(r3 ? new Color(80, 220, 80) : q7stage == QuestManager.Q7_TALK_JOSEPHINE ? Color.white : Color.gray);
+                g2.drawString("- Talk to Josephine Bracken", RIGHT_X, ry);
+                ry += LINE_H;
 
-                // Final thoughts paper
-                boolean s4 = q7done || q7stage > QuestManager.Q7_INTERACT_PAPER;
-                g2.setColor(s4 ? new Color(80, 220, 80)
-                        : q7stage == QuestManager.Q7_INTERACT_PAPER ? Color.white : Color.gray);
-                g2.drawString("- Write your final thoughts", LEFT_X, ly);
-                ly += LINE_H;
+                boolean r4 = q7done || q7stage > QuestManager.Q7_INTERACT_PAPER;
+                g2.setColor(r4 ? new Color(80, 220, 80) : q7stage == QuestManager.Q7_INTERACT_PAPER ? Color.white : Color.gray);
+                g2.drawString("- Write your final thoughts", RIGHT_X, ry);
+                ry += LINE_H;
 
-                // Alcohol stove
-                boolean s5 = q7done || q7stage > QuestManager.Q7_INTERACT_STOVE;
-                g2.setColor(s5 ? new Color(80, 220, 80)
-                        : q7stage == QuestManager.Q7_INTERACT_STOVE ? Color.white : Color.gray);
-                g2.drawString("- Hide the poem in the stove", LEFT_X, ly);
-                ly += LINE_H;
+                boolean r5 = q7done || q7stage > QuestManager.Q7_INTERACT_STOVE;
+                g2.setColor(r5 ? new Color(80, 220, 80) : q7stage == QuestManager.Q7_INTERACT_STOVE ? Color.white : Color.gray);
+                g2.drawString("- Hide the poem in the stove", RIGHT_X, ry);
+                ry += LINE_H;
 
-                // Trinidad
-                boolean s6 = q7done || q7stage > QuestManager.Q7_TALK_TRINIDAD;
-                g2.setColor(s6 ? new Color(80, 220, 80)
-                        : q7stage == QuestManager.Q7_TALK_TRINIDAD ? Color.white : Color.gray);
-                g2.drawString("- Give the poem to Trinidad", LEFT_X, ly);
-                ly += LINE_H;
+                boolean r6 = q7done || q7stage >= QuestManager.Q7_DONE;
+                g2.setColor(r6 ? new Color(80, 220, 80) : q7stage == QuestManager.Q7_TALK_TRINIDAD ? Color.white : Color.gray);
+                g2.drawString("- Give the poem to Trinidad", RIGHT_X, ry);
+                ry += LINE_H;
 
                 if (q7done) {
                     g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                     g2.setColor(new Color(100, 255, 100));
-                    g2.drawString("Consummatum est.", LEFT_X, ly);
+                    g2.drawString("Consummatum est.", RIGHT_X, ry);
                 }
             }
+            g2.setClip(null);
         }
+
 
         // PREV / NEXT buttons
         int btnY = frameY + frameHeight - 28;
@@ -2269,7 +2127,7 @@ public class UI {
             g2.drawString("< PREV  [A]", frameX + gp.tileSize, btnY);
         }
 
-        if (questPageNum < 7) {
+        if (questPageNum < 4) {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
             g2.setColor(new Color(255, 220, 80));
             String next = "NEXT >  [D]";

@@ -88,6 +88,7 @@ public class SaveManager {
         d.q8CenturyCollected   = qm.q8CenturyCollected;
         d.q8IndolenceCollected = qm.q8IndolenceCollected;
 
+        // Never save a pending cutscene — always resume cleanly
         d.pendingChapter2Cutscene    = false;
         d.pendingQuest4Cutscene      = false;
         d.pendingChapter3Cutscene    = false;
@@ -204,7 +205,24 @@ public class SaveManager {
         qm.q8CenturyCollected   = d.q8CenturyCollected;
         qm.q8IndolenceCollected = d.q8IndolenceCollected;
 
-        // Always clear all pending cutscene flags on load
+        // Guard: ensure currentQuest is marked active if somehow unmarked
+        if (qm.currentQuest >= 0 && qm.currentQuest < qm.questState.length
+                && qm.questState[qm.currentQuest] == QuestManager.STATE_INACTIVE) {
+            qm.questState[qm.currentQuest] = QuestManager.STATE_ACTIVE;
+        }
+
+        // Guard: if QUEST8 was silently skipped on old saves, mark it done
+        if (qm.quest8Stage == QuestManager.Q8_NOT_STARTED
+                && qm.isQuestCompleted(QuestManager.QUEST_KEEPSAKES)
+                && qm.currentQuest != QuestManager.QUEST8) {
+            qm.quest8Stage          = QuestManager.Q8_DONE;
+            qm.questState[QuestManager.QUEST8] = QuestManager.STATE_COMPLETED;
+            qm.q8MalolosCollected   = true;
+            qm.q8CenturyCollected   = true;
+            qm.q8IndolenceCollected = true;
+        }
+
+        // Never resume into a pending cutscene state
         qm.setPendingChapter2Cutscene(false);
         qm.setPendingQuest4Cutscene(false);
         qm.setPendingChapter3Cutscene(false);
@@ -227,7 +245,6 @@ public class SaveManager {
 
         // UI
         gp.ui.questPageNum = d.questPageNum;
-
 
         boolean isCompleted = d.gameCompleted
                 || (d.quest7Stage >= QuestManager.Q7_DONE);
@@ -258,12 +275,11 @@ public class SaveManager {
 
     private void fixQuestProgression(QuestManager qm) {
 
-        // Quest 1 → QUEST_HISTORY
         if (qm.currentQuest == QuestManager.QUEST1
                 && qm.isQuestCompleted(QuestManager.QUEST1)) {
             qm.currentQuest = QuestManager.QUEST2;
             qm.questState[QuestManager.QUEST2] = QuestManager.STATE_ACTIVE;
-            gp.ui.questPageNum = 0;
+            gp.ui.questPageNum = 0;  // page 0: Q1+Q2
 
         } else if (qm.currentQuest == QuestManager.QUEST2
                 && qm.isQuestCompleted(QuestManager.QUEST2)) {
@@ -271,56 +287,56 @@ public class SaveManager {
             qm.questState[QuestManager.QUEST3] = QuestManager.STATE_ACTIVE;
             qm.ferrandoShooed = false;
             qm.quest3Stage = QuestManager.TALK_FERRANDO;
-            gp.ui.questPageNum = 1;
+            gp.ui.questPageNum = 1;  // page 1: Q3+Q4
 
         } else if (qm.currentQuest == QuestManager.QUEST3
                 && qm.isQuestCompleted(QuestManager.QUEST3)) {
             qm.currentQuest = QuestManager.QUEST4;
             qm.questState[QuestManager.QUEST4] = QuestManager.STATE_ACTIVE;
             qm.quest4Stage = QuestManager.TALK_PROFESSOR_Q4;
-            gp.ui.questPageNum = 1;
+            gp.ui.questPageNum = 1;  // page 1: Q3+Q4
 
         } else if (qm.currentQuest == QuestManager.QUEST4
                 && qm.isQuestCompleted(QuestManager.QUEST4)) {
             qm.currentQuest = QuestManager.QUEST_MEMORIES;
             qm.questState[QuestManager.QUEST_MEMORIES] = QuestManager.STATE_ACTIVE;
             qm.questMemStage = QuestManager.QM_TALK_MAXIMO_FIRST;
-            gp.ui.questPageNum = 3;
+            gp.ui.questPageNum = 2;  // page 2: Q5+Q6 (Memories+Keepsakes)
 
         } else if (qm.currentQuest == QuestManager.QUEST_MEMORIES
                 && qm.isQuestCompleted(QuestManager.QUEST_MEMORIES)) {
             qm.currentQuest = QuestManager.QUEST_KEEPSAKES;
             qm.questState[QuestManager.QUEST_KEEPSAKES] = QuestManager.STATE_ACTIVE;
             qm.questKsStage = QuestManager.QK_INTERACT_BOX;
-            gp.ui.questPageNum = 4;
+            gp.ui.questPageNum = 2;  // page 2: Q5+Q6 (Memories+Keepsakes)
 
         } else if (qm.currentQuest == QuestManager.QUEST_KEEPSAKES
                 && qm.isQuestCompleted(QuestManager.QUEST_KEEPSAKES)) {
             qm.currentQuest = QuestManager.QUEST8;
             qm.questState[QuestManager.QUEST8] = QuestManager.STATE_ACTIVE;
             qm.quest8Stage = QuestManager.Q8_TALK_MARCELO;
-            gp.ui.questPageNum = 5;
+            gp.ui.questPageNum = 3;  // page 3: Q7+Q8 (Liham+Noli)
 
         } else if (qm.currentQuest == QuestManager.QUEST8
                 && qm.isQuestCompleted(QuestManager.QUEST8)) {
             qm.currentQuest = QuestManager.QUEST5;
             qm.questState[QuestManager.QUEST5] = QuestManager.STATE_ACTIVE;
             qm.quest5Stage = QuestManager.TALK_PEDRO;
-            gp.ui.questPageNum = 6;
+            gp.ui.questPageNum = 3;  // page 3: Q7+Q8 (Liham+Noli)
 
         } else if (qm.currentQuest == QuestManager.QUEST5
                 && qm.isQuestCompleted(QuestManager.QUEST5)) {
             qm.currentQuest = QuestManager.QUEST6;
             qm.questState[QuestManager.QUEST6] = QuestManager.STATE_ACTIVE;
             qm.quest6Stage = QuestManager.TALK_PACIANO_Q6;
-            gp.ui.questPageNum = 6;
+            gp.ui.questPageNum = 4;  // page 4: Q9+Q10 (ElFili+HulingAraw)
 
         } else if (qm.currentQuest == QuestManager.QUEST6
                 && qm.isQuestCompleted(QuestManager.QUEST6)) {
             qm.currentQuest = QuestManager.QUEST7;
             qm.questState[QuestManager.QUEST7] = QuestManager.STATE_ACTIVE;
             qm.quest7Stage = QuestManager.Q7_TALK_GUARDIA;
-            gp.ui.questPageNum = 7;
+            gp.ui.questPageNum = 4;  // page 4: Q9+Q10 (ElFili+HulingAraw)
         }
     }
 
@@ -331,9 +347,9 @@ public class SaveManager {
 
         int cq = qm.currentQuest;
 
-        // QUEST 7
+        // ── QUEST 7 ──────────────────────────────────────────────────────────
         if (cq == QuestManager.QUEST7) {
-            gp.currentMap = "/maps/Chapter4.txt";
+            gp.currentMap         = "/maps/Chapter4.txt";
             gp.currentSublocation = (qm.quest7Stage >= QuestManager.Q7_TALK_JOSEPHINE)
                     ? "FORT SANTIAGO" : "INTRAMUROS";
             gp.tileM.loadMap("/maps/Chapter4.txt");
@@ -343,7 +359,6 @@ public class SaveManager {
                 placePlayer(51, 36);
                 return true;
             }
-
             if (qm.quest7Stage >= QuestManager.Q7_TALK_JOSEPHINE) {
                 gp.aSetter.activateQuest7FortSantiago();
                 placePlayer(51, 36);
@@ -353,7 +368,7 @@ public class SaveManager {
             }
         }
 
-        // QUEST 6
+        // ── QUEST 6 ──────────────────────────────────────────────────────────
         else if (cq == QuestManager.QUEST6) {
             gp.currentMap         = "/maps/Chapter3.txt";
             gp.currentSublocation = "EUROPE";
@@ -363,7 +378,7 @@ public class SaveManager {
             placePlayer(23, 35);
         }
 
-        // QUEST 5
+        // ── QUEST 5 ──────────────────────────────────────────────────────────
         else if (cq == QuestManager.QUEST5) {
             gp.currentMap         = "/maps/Chapter3.txt";
             gp.currentSublocation = "EUROPE";
@@ -373,8 +388,11 @@ public class SaveManager {
             placePlayer(23, 35);
         }
 
-        // QUEST8
-        if (cq == QuestManager.QUEST8) {
+        // ── QUEST 8 ──────────────────────────────────────────────────────────
+        // FIX: was a bare `if` instead of `else if`, so it ran alongside QUEST5
+        // and QUEST6 blocks, wiping their world setup and always falling through
+        // to the Chapter 1 fallback.  Changed to `else if` so it is exclusive.
+        else if (cq == QuestManager.QUEST8) {
             gp.currentMap         = "/maps/Chapter3.txt";
             gp.currentSublocation = "EUROPE";
             gp.tileM.loadMap("/maps/Chapter3.txt");
@@ -383,7 +401,7 @@ public class SaveManager {
             placePlayer(23, 35);
         }
 
-        // QUEST_KEEPSAKES
+        // ── QUEST_KEEPSAKES ──────────────────────────────────────────────────
         else if (cq == QuestManager.QUEST_KEEPSAKES) {
             gp.currentMap         = "/maps/Chapter3.txt";
             gp.currentSublocation = "EUROPE";
@@ -393,7 +411,7 @@ public class SaveManager {
             placePlayer(23, 35);
         }
 
-        // QUEST_MEMORIES
+        // ── QUEST_MEMORIES ───────────────────────────────────────────────────
         else if (cq == QuestManager.QUEST_MEMORIES) {
             gp.currentMap         = "/maps/Chapter3.txt";
             gp.currentSublocation = "EUROPE";
@@ -401,32 +419,29 @@ public class SaveManager {
             gp.player.loadSprite3("");
             gp.aSetter.activateQuestMemories();
 
-            QuestManager qm2 = gp.questManager;
-            if (qm2.questMemStage >= QuestManager.QM_COLLECT_5) {
-                String[] first6 = {"Medical Books",
-                        "Letters and Postcards",
-                        "Dusty Manuscript",
-                        "Legal Docs",
-                        "Envelope",
-                        "Ophthalmoscope"};
+            // Remove already-collected batch-1 objects
+            if (qm.questMemStage >= QuestManager.QM_COLLECT_5) {
+                String[] first6 = {
+                        "Medical Books", "Letters and Postcards", "Dusty Manuscript",
+                        "Legal Docs", "Envelope", "Ophthalmoscope"
+                };
                 for (int bi = 0; bi < 6; bi++) {
-                    if (qm2.memFirstParts[bi]) {
-                        for (int oi = 0; oi < gp.obj.length; oi++) {
-                            if (gp.obj[oi] != null && gp.obj[oi].name.equals(first6[bi])) {
-                                gp.obj[oi] = null; break;
-                            }
+                    if (!qm.memFirstParts[bi]) continue;
+                    for (int oi = 0; oi < gp.obj.length; oi++) {
+                        if (gp.obj[oi] != null && gp.obj[oi].name.equals(first6[bi])) {
+                            gp.obj[oi] = null; break;
                         }
                     }
                 }
             }
-            if (qm2.questMemStage >= QuestManager.QM_COLLECT_3) {
+            // Remove already-collected batch-2 objects
+            if (qm.questMemStage >= QuestManager.QM_COLLECT_3) {
                 String[] second3 = {"Origami Crane", "Ship Ticket", "Medical Bag"};
                 for (int bi = 0; bi < 3; bi++) {
-                    if (qm2.memSecondParts[bi]) {
-                        for (int oi = 0; oi < gp.obj.length; oi++) {
-                            if (gp.obj[oi] != null && gp.obj[oi].name.equals(second3[bi])) {
-                                gp.obj[oi] = null; break;
-                            }
+                    if (!qm.memSecondParts[bi]) continue;
+                    for (int oi = 0; oi < gp.obj.length; oi++) {
+                        if (gp.obj[oi] != null && gp.obj[oi].name.equals(second3[bi])) {
+                            gp.obj[oi] = null; break;
                         }
                     }
                 }
@@ -434,7 +449,7 @@ public class SaveManager {
             placePlayer(23, 35);
         }
 
-        // QUEST 4
+        // ── QUEST 4 ──────────────────────────────────────────────────────────
         else if (cq == QuestManager.QUEST4) {
             gp.currentMap         = "/maps/Chapter2.txt";
             gp.currentSublocation = "MANILA";
@@ -444,7 +459,7 @@ public class SaveManager {
             placePlayer(46, 47);
         }
 
-        // QUEST 3
+        // ── QUEST 3 ──────────────────────────────────────────────────────────
         else if (cq == QuestManager.QUEST3) {
             gp.currentMap         = "/maps/Chapter2.txt";
             gp.currentSublocation = "MANILA";
@@ -459,7 +474,7 @@ public class SaveManager {
             }
         }
 
-        // QUEST 2
+        // ── QUEST 2 ──────────────────────────────────────────────────────────
         else if (cq == QuestManager.QUEST2) {
             gp.currentMap         = "/maps/Chapter1.txt";
             gp.currentSublocation = "CALAMBA, LAGUNA";
@@ -478,7 +493,7 @@ public class SaveManager {
             placePlayer(64, 18);
         }
 
-        // QUEST 1 (and fallback)
+        // ── QUEST 1 (and fallback) ────────────────────────────────────────────
         else {
             gp.currentMap         = "/maps/Chapter1.txt";
             gp.currentSublocation = "CALAMBA, LAGUNA";
@@ -542,6 +557,25 @@ public class SaveManager {
                 }
             }
 
+            // Quest 8 — remove objects already collected
+            if (qm.currentQuest == QuestManager.QUEST8) {
+                if (qm.q8MalolosCollected) {
+                    for (int i = 0; i < gp.obj.length; i++)
+                        if (gp.obj[i] != null && gp.obj[i].name.equals("Letter to the Women of Malolos"))
+                            gp.obj[i] = null;
+                }
+                if (qm.q8CenturyCollected) {
+                    for (int i = 0; i < gp.obj.length; i++)
+                        if (gp.obj[i] != null && gp.obj[i].name.equals("Draft: The Philippines a Century Hence"))
+                            gp.obj[i] = null;
+                }
+                if (qm.q8IndolenceCollected) {
+                    for (int i = 0; i < gp.obj.length; i++)
+                        if (gp.obj[i] != null && gp.obj[i].name.equals("Draft: The Indolence of the Filipinos"))
+                            gp.obj[i] = null;
+                }
+            }
+
             // Quest 2
             if (qm.currentQuest == QuestManager.QUEST2) {
                 if (qm.quest2Stage == QuestManager.JOSE_WAITING) {
@@ -599,11 +633,11 @@ public class SaveManager {
 
     private int detectSpriteVersion() {
         int q = gp.questManager.currentQuest;
-        if (q >= QuestManager.QUEST5) return 3;
-        if (q == QuestManager.QUEST8) return 3;
-        if (q == QuestManager.QUEST_MEMORIES) return 3;
-        if (q == QuestManager.QUEST_KEEPSAKES) return 3;
-        if (q >= QuestManager.QUEST3) return 2;
+        if (q == QuestManager.QUEST8)           return 3;
+        if (q >= QuestManager.QUEST5)           return 3;
+        if (q == QuestManager.QUEST_MEMORIES)   return 3;
+        if (q == QuestManager.QUEST_KEEPSAKES)  return 3;
+        if (q >= QuestManager.QUEST3)           return 2;
         return 1;
     }
 
@@ -631,9 +665,9 @@ public class SaveManager {
             case "Old Letter":                 return new OBJ_OldLetter(gp);
             case "Worn Letter":                return new OBJ_WornLetter(gp);
             case "Mi Ultimo Adios":            return new OBJ_MiUltimoAdios(gp);
-            case "Letter to the Women of Malolos": return new OBJ_MalolosLetter(gp);
-            case "Draft: The Philippines a Century Hence": return new OBJ_CenturyHence(gp);
-            case "Draft: The Indolence of the Filipinos": return new OBJ_IndolenceEssay(gp);
+            case "Letter to the Women of Malolos":           return new OBJ_MalolosLetter(gp);
+            case "Draft: The Philippines a Century Hence":   return new OBJ_CenturyHence(gp);
+            case "Draft: The Indolence of the Filipinos":    return new OBJ_IndolenceEssay(gp);
             default:
                 System.out.println("SaveManager: unknown item '" + name + "', skipping.");
                 return null;

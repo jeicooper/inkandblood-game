@@ -25,6 +25,9 @@ public class NPC_Marcelo extends Entity {
     }
 
     public void getImage() {
+
+
+
         up1    = setup("/npc/marcelo/marcelo_up");
         up2    = setup("/npc/marcelo/marcelo_up");
         down1  = setup("/npc/marcelo/marcelo_down");
@@ -65,7 +68,8 @@ public class NPC_Marcelo extends Entity {
         } else if (stage == QuestManager.Q8_RETURN_MALOLOS) {
             dialogues[0] = "Rizal, you wrote this Tagalog letter at my request to honor\nthe twenty brave young women of Malolos.";
             dialogues[1] = "You perfectly captured how they courageously sustained their\nagitation to open a night school, triumphing despite Father\nFelipe Garcia's initial objections.";
-            dialogues[2] = "I get you...you want to afford our women the same educational\nopportunities enjoyed by men. You are urging them to liberate\nthemselves, reject the spiritual authority of the friars, and\nprotect their dignity.";
+            dialogues[2] = "I get you... you want to give our women the same education as\nmen urging them to liberate themselves, reject the " +
+                    "friars' spiritual\nauthority, and protect their dignity.";
             dialogues[3] = "It is a bold and necessary move to advise young men to choose\nlifetime partners based on firmness of character";
             dialogues[4] = "Rather than physical beauty, and to counsel our young women\nto seek noble men who are incapable of being slaves.";
             dialogues[5] = null;
@@ -81,9 +85,10 @@ public class NPC_Marcelo extends Entity {
 
         } else if (stage == QuestManager.Q8_RETURN_CENTURY) {
             dialogues[0] = "This is a brilliant piece you've given us for La Solidaridad.";
-            dialogues[1] = "You wrote this to forecast the future of our country a hundred\nyears from now, dissecting the miseries caused by Spain's\nmilitary policies, the deterioration of our indigenous culture,\nand our own passivity.";
+            dialogues[1] = "You wrote this to forecast our country's future a century\nfrom now, dissecting the miseries of Spain's military policies,\nthe decay of our indigenous culture, and our own passivity.";
             dialogues[2] = "You firmly stressed that if the Philippines is to peacefully\nremain under Spanish rule, the government must initiate reforms.";
-            dialogues[3] = "Freedom of the press, representation in the Spanish Cortes,\nand the granting of Spanish citizenship...you made these\ndemands undeniable.";
+            dialogues[3] = "Freedom of the press, representation in the Spanish Cortes, and\nthe granting of Spanish citizenship...you made " +
+                    "these demands\nundeniable.";
             dialogues[4] = null;
             super.speak();
             if (dialogueIndex == 0) {
@@ -97,7 +102,7 @@ public class NPC_Marcelo extends Entity {
 
         } else if (stage == QuestManager.Q8_RETURN_INDOLENCE) {
             dialogues[0] = "This essay defends Filipinos against accusations of laziness,\narguing it isn't inherent but caused by the tropical climate\nand a lack of moral or material incentives.";
-            dialogues[1] = "You correctly noted that Europeans surrounded by servants\nare the truly lazy ones here, while our own industry was\nruined by forced labor, government neglect, and friar-owned\nestates.";
+            dialogues[1] = "You correctly noted that Europeans surrounded by servants are the\ntruly lazy ones here, while our own industry was ruined by\nforced labor, government neglect, and friar-owned estates.";
             dialogues[2] = "Furthermore, a lack of national sentiment and an inferiority\ncomplex have paralyzed our progress, leaving us with little\nresistance against harmful colonial policies.";
             dialogues[3] = null;
             super.speak();

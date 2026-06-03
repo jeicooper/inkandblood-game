@@ -47,19 +47,16 @@ public class MiniMap {
     private static final Color COL_FURNITURE = new Color( 90,  72,  52);
     private static final Color COL_DEFAULT   = new Color( 72,  66,  60);
 
-
     private static final int[] COLOR_INDEX;
     private static final Color[] PALETTE = {
             COL_GRASS, COL_PATHWAY, COL_ROAD, COL_WATER, COL_SAND,
             COL_FLOOR, COL_WALL, COL_TREE, COL_BRIDGE, COL_CARPET,
             COL_FURNITURE, COL_DEFAULT
     };
-    // ordinal constants matching PALETTE above
     private static final int I_GRASS=0,I_PATHWAY=1,I_ROAD=2,I_WATER=3,I_SAND=4,
             I_FLOOR=5,I_WALL=6,I_TREE=7,I_BRIDGE=8,I_CARPET=9,
             I_FURNITURE=10,I_DEFAULT=11;
 
-    // Maximum tile ID we need to handle
     private static final int MAX_TILE_ID = 723;
 
     static {
@@ -91,22 +88,22 @@ public class MiniMap {
         setIds  (COLOR_INDEX, I_FLOOR,   176, 202, 203, 204, 205,
                 250, 251, 254, 255, 264, 265,
                 451, 519, 520, 571);
-        setRange(COLOR_INDEX, I_FLOOR,   414, 439);  // dining / interior floor
-        setRange(COLOR_INDEX, I_FLOOR,   546, 570);  // npc_house interior tiles
+        setRange(COLOR_INDEX, I_FLOOR,   414, 439);
+        setRange(COLOR_INDEX, I_FLOOR,   546, 570);
 
         // ── FURNITURE (solid indoor objects) ──
-        setRange(COLOR_INDEX, I_FURNITURE, 210, 217);   // beds 1-2
+        setRange(COLOR_INDEX, I_FURNITURE, 210, 217);
         setIds  (COLOR_INDEX, I_FURNITURE, 248, 249, 252, 253, 266, 267);
-        setRange(COLOR_INDEX, I_FURNITURE, 268, 283);   // fountain
-        setRange(COLOR_INDEX, I_FURNITURE, 320, 323);   // circ tables
-        setRange(COLOR_INDEX, I_FURNITURE, 393, 413);   // furniture1
-        setRange(COLOR_INDEX, I_FURNITURE, 466, 474);   // bed5
-        setRange(COLOR_INDEX, I_FURNITURE, 478, 485);   // bed6/7
-        setRange(COLOR_INDEX, I_FURNITURE, 495, 511);   // sofa
-        setRange(COLOR_INDEX, I_FURNITURE, 521, 545);   // study_room
-        setIds  (COLOR_INDEX, I_FURNITURE, 614, 615, 616, 617); // ateneo tables
-        setRange(COLOR_INDEX, I_FURNITURE, 674, 677);   // table2
-        setRange(COLOR_INDEX, I_FURNITURE, 712, 722);   // party tables
+        setRange(COLOR_INDEX, I_FURNITURE, 268, 283);
+        setRange(COLOR_INDEX, I_FURNITURE, 320, 323);
+        setRange(COLOR_INDEX, I_FURNITURE, 393, 413);
+        setRange(COLOR_INDEX, I_FURNITURE, 466, 474);
+        setRange(COLOR_INDEX, I_FURNITURE, 478, 485);
+        setRange(COLOR_INDEX, I_FURNITURE, 495, 511);
+        setRange(COLOR_INDEX, I_FURNITURE, 521, 545);
+        setIds  (COLOR_INDEX, I_FURNITURE, 614, 615, 616, 617);
+        setRange(COLOR_INDEX, I_FURNITURE, 674, 677);
+        setRange(COLOR_INDEX, I_FURNITURE, 712, 722);
 
         // ── BRIDGE / DOCK ──
         setRange(COLOR_INDEX, I_BRIDGE,  284, 300);
@@ -124,31 +121,31 @@ public class MiniMap {
         setRange(COLOR_INDEX, I_CARPET,  678, 687);
 
         // ── WALL / SOLID ──
-        setIds  (COLOR_INDEX, I_WALL,    103, 104);             // benches
-        setIds  (COLOR_INDEX, I_WALL,    126, 127, 128);        // bush / log
-        setIds  (COLOR_INDEX, I_WALL,    115, 116, 117);        // stone walls
-        setRange(COLOR_INDEX, I_WALL,    119, 124);             // well
-        setRange(COLOR_INDEX, I_WALL,    136, 148, 2);          // sand collision edges (every other)
+        setIds  (COLOR_INDEX, I_WALL,    103, 104);
+        setIds  (COLOR_INDEX, I_WALL,    126, 127, 128);
+        setIds  (COLOR_INDEX, I_WALL,    115, 116, 117);
+        setRange(COLOR_INDEX, I_WALL,    119, 124);
+        setRange(COLOR_INDEX, I_WALL,    136, 148, 2);
         setIds  (COLOR_INDEX, I_WALL,    137, 139, 141, 143, 144, 146);
-        setRange(COLOR_INDEX, I_WALL,    172, 175);             // statues
-        setRange(COLOR_INDEX, I_WALL,    177, 201);             // pillars
+        setRange(COLOR_INDEX, I_WALL,    172, 175);
+        setRange(COLOR_INDEX, I_WALL,    177, 201);
         setIds  (COLOR_INDEX, I_WALL,    206, 208, 209);
-        setRange(COLOR_INDEX, I_WALL,    218, 223);             // dividers / pillarmiddoor
-        setRange(COLOR_INDEX, I_WALL,    228, 240);             // fences / shelf / dividers
+        setRange(COLOR_INDEX, I_WALL,    218, 223);
+        setRange(COLOR_INDEX, I_WALL,    228, 240);
         setRange(COLOR_INDEX, I_WALL,    256, 262);
         setRange(COLOR_INDEX, I_WALL,    302, 304);
-        setRange(COLOR_INDEX, I_WALL,    306, 319);             // edges
+        setRange(COLOR_INDEX, I_WALL,    306, 319);
         setIds  (COLOR_INDEX, I_WALL,    324);
-        setRange(COLOR_INDEX, I_WALL,    325, 349);             // houses
-        setRange(COLOR_INDEX, I_WALL,    350, 377);             // rocks
+        setRange(COLOR_INDEX, I_WALL,    325, 349);
+        setRange(COLOR_INDEX, I_WALL,    350, 377);
         setIds  (COLOR_INDEX, I_WALL,    446, 447, 448, 449, 450, 452, 453);
-        setIds  (COLOR_INDEX, I_WALL,    475, 476, 477);        // pots
-        setRange(COLOR_INDEX, I_WALL,    572, 583);             // ateneo exterior
-        setIds  (COLOR_INDEX, I_WALL,    601, 602, 603, 604);   // ateneo bookshelf
-        setIds  (COLOR_INDEX, I_WALL,    613);                  // ateneo painting
-        setIds  (COLOR_INDEX, I_WALL,    656, 657);             // windows
-        setRange(COLOR_INDEX, I_WALL,    658, 673);             // prison cells
-        setRange(COLOR_INDEX, I_WALL,    688, 696);             // bagumbayan walls
+        setIds  (COLOR_INDEX, I_WALL,    475, 476, 477);
+        setRange(COLOR_INDEX, I_WALL,    572, 583);
+        setIds  (COLOR_INDEX, I_WALL,    601, 602, 603, 604);
+        setIds  (COLOR_INDEX, I_WALL,    613);
+        setIds  (COLOR_INDEX, I_WALL,    656, 657);
+        setRange(COLOR_INDEX, I_WALL,    658, 673);
+        setRange(COLOR_INDEX, I_WALL,    688, 696);
     }
 
     private static void setRange(int[] arr, int color, int from, int to) {
@@ -161,11 +158,22 @@ public class MiniMap {
         for (int id : ids) if (id >= 0 && id < arr.length) arr[id] = color;
     }
 
-    private final GamePanel gp;
+    private static class TerrainEntry {
+        final BufferedImage image;
+        final int cols;
+        final int rows;
+        TerrainEntry(BufferedImage image, int cols, int rows) {
+            this.image = image;
+            this.cols  = cols;
+            this.rows  = rows;
+        }
+    }
 
-    private final Map<String, BufferedImage> terrainCache = new HashMap<>();
-    private BufferedImage currentTerrain = null;
-    private String        currentMapPath = "";
+    private final Map<String, TerrainEntry> terrainCache = new HashMap<>();
+    private TerrainEntry currentEntry  = null;
+    private String       currentMapPath = "";
+
+    private final GamePanel gp;
 
     private boolean expanded = false;
     private boolean visible  = true;
@@ -175,14 +183,14 @@ public class MiniMap {
     private int   pulseTick = 0;
     private float pulseR    = 0f;
 
-    private static final Color PANEL_BG    = new Color(  0,   0,   0, 210);
-    private static final Color PANEL_BORD  = new Color(255, 215,  60, 190);
-    private static final Color PLAYER_COL  = new Color(255, 220,  60);
-    private static final Color PLAYER_RING = new Color(255, 180,   0, 100);
-    private static final Color NPC_COL     = new Color( 80, 200, 200);
-    private static final Color OBJ_COL     = new Color(200, 200,  80);
-    private static final Color LABEL_COL   = new Color(255, 215,  60);
-    private static final Color COORD_COL   = new Color(180, 180, 180);
+    private static final Color PANEL_BG     = new Color(  0,   0,   0, 210);
+    private static final Color PANEL_BORD   = new Color(255, 215,  60, 190);
+    private static final Color PLAYER_COL   = new Color(255, 220,  60);
+    private static final Color PLAYER_RING  = new Color(255, 180,   0, 100);
+    private static final Color NPC_COL      = new Color( 80, 200, 200);
+    private static final Color OBJ_COL      = new Color(200, 200,  80);
+    private static final Color LABEL_COL    = new Color(255, 215,  60);
+    private static final Color COORD_COL    = new Color(180, 180, 180);
     private static final Color VIEWPORT_COL = new Color(255, 255, 255, 28);
 
     public MiniMap(GamePanel gp) {
@@ -192,7 +200,8 @@ public class MiniMap {
     public void update() {
         if (!gp.currentMap.equals(currentMapPath)) {
             currentMapPath = gp.currentMap;
-            currentTerrain = getOrBuildTerrain(currentMapPath);
+            terrainCache.remove(currentMapPath);
+            currentEntry = getOrBuildTerrain(currentMapPath);
         }
 
         pulseTick++;
@@ -230,7 +239,7 @@ public class MiniMap {
     }
 
     private void drawHUD(Graphics2D g2) {
-        if (currentTerrain == null) return;
+        if (currentEntry == null) return;
 
         int panelX = gp.tileSize / 2 + 10;
         int panelY = gp.tileSize * 2 + 10;
@@ -247,17 +256,12 @@ public class MiniMap {
         g2.setStroke(new BasicStroke(1.6f));
         g2.drawRoundRect(panelX - 5, panelY - 5, HUD_W + 10, HUD_H + 10, 12, 12);
 
-        // ── scrolling terrain viewport centred on player ──
-        int worldCols = gp.maxWorldCol;
-        int worldRows = gp.maxWorldRow;
+        int worldCols = currentEntry.cols;
+        int worldRows = currentEntry.rows;
 
         // pixel size of the full terrain image
         float imgW = worldCols * CELL;
         float imgH = worldRows * CELL;
-
-        // pixel size of one tile in the HUD  (may be fractional)
-        float hudCellW = (float) HUD_W / VIEW_COLS;
-        float hudCellH = (float) HUD_H / VIEW_ROWS;
 
         // player's position in terrain-image pixels
         float pxInImg = (gp.player.worldX / (float) gp.tileSize) * CELL;
@@ -274,7 +278,7 @@ public class MiniMap {
         float srcH = VIEW_ROWS * CELL;
 
         g2.setClip(panelX, panelY, HUD_W, HUD_H);
-        g2.drawImage(currentTerrain,
+        g2.drawImage(currentEntry.image,
                 panelX, panelY, panelX + HUD_W, panelY + HUD_H,
                 (int) srcX, (int) srcY, (int)(srcX + srcW), (int)(srcY + srcH),
                 null);
@@ -299,15 +303,14 @@ public class MiniMap {
             g2.fillRect((int) ox - 1, (int) oy - 1, 3, 3);
         }
 
-        // ── player dot (always centred in the HUD) ──
-        int dotX = panelX + HUD_W / 2;
-        int dotY = panelY + HUD_H / 2;
+        float dotX = panelX + (pxInImg - srcX) * (HUD_W / srcW);
+        float dotY = panelY + (pyInImg - srcY) * (HUD_H / srcH);
 
         int pr = (int)(3 * pulseR);
         g2.setColor(PLAYER_RING);
-        g2.fillOval(dotX - pr, dotY - pr, pr * 2, pr * 2);
+        g2.fillOval((int) dotX - pr, (int) dotY - pr, pr * 2, pr * 2);
         g2.setColor(PLAYER_COL);
-        g2.fillOval(dotX - 3, dotY - 3, 6, 6);
+        g2.fillOval((int) dotX - 3, (int) dotY - 3, 6, 6);
 
         g2.setClip(null);
 
@@ -318,7 +321,7 @@ public class MiniMap {
     }
 
     private void drawFullMap(Graphics2D g2) {
-        if (currentTerrain == null) return;
+        if (currentEntry == null) return;
 
         int sw = gp.screenWidth;
         int sh = gp.screenHeight;
@@ -353,13 +356,12 @@ public class MiniMap {
 
         // ── terrain ──
         g2.setClip(mapX, mapY, mapW, mapH);
-        g2.drawImage(currentTerrain, mapX, mapY, mapW, mapH, null);
+        g2.drawImage(currentEntry.image, mapX, mapY, mapW, mapH, null);
 
-        // ── subtle grid ──
         g2.setColor(new Color(255, 255, 255, 10));
         g2.setStroke(new BasicStroke(0.5f));
-        int worldCols = gp.maxWorldCol;
-        int worldRows = gp.maxWorldRow;
+        int worldCols = currentEntry.cols;
+        int worldRows = currentEntry.rows;
         float tileW = (float) mapW / worldCols;
         float tileH = (float) mapH / worldRows;
         for (int c = 0; c <= worldCols; c += 10) {
@@ -371,7 +373,7 @@ public class MiniMap {
             g2.drawLine(mapX, gy, mapX + mapW, gy);
         }
 
-        // ── viewport rectangle (shows what the HUD shows) ──
+        // ── viewport rectangle ──
         float pxFull = mapX + (gp.player.worldX / (float) gp.tileSize) * tileW;
         float pyFull = mapY + (gp.player.worldY / (float) gp.tileSize) * tileH;
         float vHalfW = (VIEW_COLS / 2f) * tileW;
@@ -426,12 +428,8 @@ public class MiniMap {
 
         g2.setClip(null);
 
-        // ── bottom bar (inside panel) ──
+        // ── bottom bar ──
         int barY = mapY + mapH - 22;
-
-        // coordinate readout — bottom left
-        int tileX = gp.player.worldX / gp.tileSize;
-        int tileY = gp.player.worldY / gp.tileSize;
 
         // close hint — bottom centre
         g2.setFont(gp.ui.maruMonica.deriveFont(Font.BOLD, 14f));
@@ -463,14 +461,15 @@ public class MiniMap {
         }
     }
 
-    private BufferedImage getOrBuildTerrain(String mapPath) {
+    private TerrainEntry getOrBuildTerrain(String mapPath) {
         if (terrainCache.containsKey(mapPath)) return terrainCache.get(mapPath);
-        BufferedImage img = buildTerrain(mapPath);
-        if (img != null) terrainCache.put(mapPath, img);
-        return img;
+        TerrainEntry entry = buildTerrain(mapPath);
+        if (entry != null) terrainCache.put(mapPath, entry);
+        return entry;
     }
 
-    private BufferedImage buildTerrain(String mapPath) {
+    private TerrainEntry buildTerrain(String mapPath) {
+        // Snapshot dimensions NOW, at build time.
         int cols = gp.maxWorldCol;
         int rows = gp.maxWorldRow;
 
@@ -516,7 +515,7 @@ public class MiniMap {
         for (int r = 0; r < rows; r += 10) ig.drawLine(0, r * CELL, imgW, r * CELL);
 
         ig.dispose();
-        return img;
+        return new TerrainEntry(img, cols, rows);
     }
 
     private Color tileColour(int idx) {

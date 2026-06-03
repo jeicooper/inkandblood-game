@@ -509,16 +509,18 @@ public class AssetSetter {
             gp.obj[0].worldX = 14 * gp.tileSize;
             gp.obj[0].worldY = 33 * gp.tileSize;
         }
+    }
 
-        // Philippines a Century Hence
-        if (stage >= QuestManager.Q8_FIND_CENTURY && !gp.questManager.q8CenturyCollected) {
+    public void spawnCenturyHence() {
+        if (!gp.questManager.q8CenturyCollected) {
             gp.obj[1] = new OBJ_CenturyHence(gp);
-            gp.obj[1].worldX = 16 * gp.tileSize;
-            gp.obj[1].worldY = 33 * gp.tileSize;
+            gp.obj[1].worldX = 15 * gp.tileSize;
+            gp.obj[1].worldY = 45 * gp.tileSize;
         }
+    }
 
-        // Indolence of the Filipinos
-        if (stage >= QuestManager.Q8_FIND_INDOLENCE && !gp.questManager.q8IndolenceCollected) {
+    public void spawnIndolenceEssay() {
+        if (!gp.questManager.q8IndolenceCollected) {
             gp.obj[2] = new OBJ_IndolenceEssay(gp);
             gp.obj[2].worldX = 18 * gp.tileSize;
             gp.obj[2].worldY = 33 * gp.tileSize;
