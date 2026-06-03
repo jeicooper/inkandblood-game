@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class SaveData implements Serializable {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 5L;
 
     public int worldX, worldY;
     public int speed;
@@ -27,7 +27,7 @@ public class SaveData implements Serializable {
 
     //PROGRESS
     public int   currentQuest;
-    public int[] questState   = new int[10];
+    public int[] questState   = new int[11];
 
     public int  quest1Stage;
     public int  siblingsFound;
@@ -55,6 +55,10 @@ public class SaveData implements Serializable {
     public int     memSecondCollected   = 0;
     public boolean[] memFirstParts      = new boolean[6];
     public boolean[] memSecondParts     = new boolean[3];
+
+    public int     questKsStage    = 0;
+    public int     keepsakeCount   = 0;
+    public boolean[] keepsakeFound = new boolean[9];
 
     public int  quest5Stage;
     public int  objectsCollected;

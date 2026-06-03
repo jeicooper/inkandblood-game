@@ -287,6 +287,88 @@ public class AssetSetter {
         gp.npc[42].worldY = 55 * gp.tileSize;
     }
 
+    public void activateQuestKeepsakes() {
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        int ksStage = gp.questManager.questKsStage;
+
+        if (ksStage == QuestManager.QK_INTERACT_BOX) {
+            gp.obj[0] = new object.OBJ_KeepsakeBox(gp);
+            gp.obj[0].worldX = 19 * gp.tileSize;
+            gp.obj[0].worldY = 34 * gp.tileSize;
+
+        } else if (ksStage == QuestManager.QK_COLLECT) {
+            spawnKeepsakeObjects();
+            String[] names = keepsakeNames();
+            for (int bi = 0; bi < 9; bi++) {
+                if (gp.questManager.keepsakeFound[bi]) {
+                    for (int oi = 0; oi < gp.obj.length; oi++) {
+                        if (gp.obj[oi] != null && gp.obj[oi].name.equals(names[bi])) {
+                            gp.obj[oi] = null; break;
+                        }
+                    }
+                }
+            }
+
+        } else if (ksStage == QuestManager.QK_RETURN_BOX) {
+            spawnKeepsakeBoxReturn();
+        }
+        // QUEST_KS_DONE: world stays empty
+    }
+
+    private String[] keepsakeNames() {
+        return new String[]{
+                "Paper Rose", "Invisible Ink", "Locket",
+                "Abanicp", "Suzuri", "Clay Knife",
+                "Bible", "Belgian Biscuits", "Lense"
+        };
+    }
+
+    public void spawnKeepsakeObjects() {
+        gp.obj[1] = new object.OBJ_PaperRose(gp);
+        gp.obj[1].worldX = 12 * gp.tileSize;
+        gp.obj[1].worldY = 33 * gp.tileSize;
+
+        gp.obj[2] = new object.OBJ_InvisibleInk(gp);
+        gp.obj[2].worldX = 14 * gp.tileSize;
+        gp.obj[2].worldY = 37 * gp.tileSize;
+
+        gp.obj[3] = new object.OBJ_Locket(gp);
+        gp.obj[3].worldX = 17 * gp.tileSize;
+        gp.obj[3].worldY = 40 * gp.tileSize;
+
+        gp.obj[4] = new object.OBJ_Abanico(gp);
+        gp.obj[4].worldX = 20 * gp.tileSize;
+        gp.obj[4].worldY = 44 * gp.tileSize;
+
+        gp.obj[5] = new object.OBJ_Suzuri(gp);
+        gp.obj[5].worldX = 24 * gp.tileSize;
+        gp.obj[5].worldY = 47 * gp.tileSize;
+
+        gp.obj[6] = new object.OBJ_ClayKnife(gp);
+        gp.obj[6].worldX = 28 * gp.tileSize;
+        gp.obj[6].worldY = 41 * gp.tileSize;
+
+        gp.obj[7] = new object.OBJ_Bible(gp);
+        gp.obj[7].worldX = 30 * gp.tileSize;
+        gp.obj[7].worldY = 36 * gp.tileSize;
+
+        gp.obj[8] = new object.OBJ_BelgianBiscuits(gp);
+        gp.obj[8].worldX = 26 * gp.tileSize;
+        gp.obj[8].worldY = 32 * gp.tileSize;
+
+        gp.obj[9] = new object.OBJ_Lense(gp);
+        gp.obj[9].worldX = 22 * gp.tileSize;
+        gp.obj[9].worldY = 32 * gp.tileSize;
+    }
+
+    public void spawnKeepsakeBoxReturn() {
+        gp.obj[0] = new object.OBJ_KeepsakeBox(gp);
+        gp.obj[0].worldX = 19 * gp.tileSize;
+        gp.obj[0].worldY = 34 * gp.tileSize;
+    }
+
     public void activateQuestMemories() {
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
@@ -296,15 +378,6 @@ public class AssetSetter {
         gp.npc[45].worldX = 32 * gp.tileSize;
         gp.npc[45].worldY = 34 * gp.tileSize;
 
-
-        /*
-        * "Medical Books",
-                        "Letters and Postcards",
-                        "Dusty Manuscript",
-                        "Legal Docs",
-                        "Envelope",
-                        "Ophthalmoscope"
-        * */
         // Batch 1
         gp.obj[0] = new object.OBJ_MedicalBooks(gp);
         gp.obj[0].worldX = 18 * gp.tileSize;

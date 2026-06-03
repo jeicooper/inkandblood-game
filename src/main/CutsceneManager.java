@@ -6,7 +6,7 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST_MEMORIES_INTRO, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
+    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST_MEMORIES_INTRO, QUEST_KEEPSAKES_INTRO, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
         EXECUTION_WALK, ENDING_SCROLL, STATS_SCREEN }
 
     private Scene activeScene = Scene.NONE;
@@ -78,6 +78,17 @@ public class CutsceneManager {
             { "From 1882 to 1892, I became a wanderer." },
             { "But before I can pour my soul into my writing,",
                     "I must organize my mind." }
+    };
+
+    private final String[][] questKeepsakesIntroLines = {
+            //women of rizal
+            {"Behind every great endeavor of a man,",
+            "there is the silent strength or lingering memory of a woman."},
+            {"My heart has been a traveler just as much as my feet."},
+            {"I have loved, I have lost,",
+            "and I have walked away for the sake of duty."},
+            {"In my quietest moments, I open this old wooden box."},
+            {"Inside are the fragile fragments of the romances that shaped my soul."}
     };
 
     // QUEST 6 INTRO
@@ -362,6 +373,9 @@ public class CutsceneManager {
     public void startQuestMemoriesIntro() {
         reset(Scene.QUEST_MEMORIES_INTRO);
     }
+    public void startQuestKeepsakesIntro() {
+        reset(Scene.QUEST_KEEPSAKES_INTRO);
+    }
     public void startQuest6StartCutscene() {
         reset(Scene.QUEST6_INTRO);
     }
@@ -512,6 +526,8 @@ public class CutsceneManager {
                 return chapter3Lines;
             case QUEST_MEMORIES_INTRO:
                 return questMemoriesIntroLines;
+            case QUEST_KEEPSAKES_INTRO:
+                return questKeepsakesIntroLines;
             case QUEST6_INTRO:
                 return quest6IntroLines;
             case CHAPTER4_INTRO:
@@ -556,6 +572,9 @@ public class CutsceneManager {
                 applyQuestMemoriesStart();
                 gp.ui.questPageNum = 3;
                 break;
+            case QUEST_KEEPSAKES_INTRO:
+                gp.ui.questPageNum = 4;
+                break;
             case QUEST6_INTRO:
                 gp.questManager.startQuest6();
                 break;
@@ -563,7 +582,7 @@ public class CutsceneManager {
                 applyChapter4Changes();
                 clearWorld();
                 gp.questManager.startQuest7();
-                gp.ui.questPageNum = 3;
+                gp.ui.questPageNum = 6;
                 break;
             case FORT_SANTIAGO:
                 applyFortSantiagoChanges();

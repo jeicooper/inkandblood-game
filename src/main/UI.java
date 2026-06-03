@@ -1219,7 +1219,7 @@ public class UI {
         // page header
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 39f));
         g2.setColor(Color.white);
-        String header = "Quests: [" + (questPageNum + 1) + "/6]";
+        String header = "Quests: [" + (questPageNum + 1) + "/7]";
         int x = getXforCenter(header);
         int y = frameY + gp.tileSize;
         g2.drawString(header, x, y);
@@ -1878,8 +1878,103 @@ public class UI {
             }
         }
 
-        // ===== PAGE 4: Chapter 3 (Noli + El Fili) =====
         else if (questPageNum == 4) {
+
+            boolean qkDone   = gp.questManager.isQuestCompleted(QuestManager.QUEST_KEEPSAKES);
+            boolean qkActive = gp.questManager.isQuestActive(QuestManager.QUEST_KEEPSAKES);
+            int     qkStage  = gp.questManager.questKsStage;
+
+            final int PAD        = gp.tileSize;
+            final int LEFT_X     = frameX + PAD;
+            final int TITLE_SIZE = 27;
+            final int DESC_SIZE  = 27;
+            final int BODY_SIZE  = 25;
+            final int HINT_SIZE  = 21;
+            final int LINE_H     = 27;
+            final int HINT_H     = 22;
+            final int TOP_Y      = frameY + gp.tileSize * 2;
+
+            int ly = TOP_Y;
+
+            Color qkColor = qkDone   ? new Color(100, 230, 100)
+                    : qkActive ? new Color(255, 220, 80)
+                    :            Color.gray;
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(qkColor);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_KEEPSAKES) + ":", LEFT_X, ly);
+            ly += LINE_H - 2;
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST_KEEPSAKES) + "\""
+                    + (qkDone ? " COMPLETE" : ""), LEFT_X, ly);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(qkActive || qkDone ? Color.lightGray : Color.gray);
+            ly += HINT_H + 2;
+            g2.drawString("Before the novel — revisit the faces that shaped the heart.", LEFT_X, ly);
+
+            ly += LINE_H + 2;
+
+            if (!qkActive && !qkDone) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Quest 6 to unlock]", LEFT_X, ly);
+            } else {
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                // Step 1: Open the box
+                boolean s1done = qkDone || qkStage > QuestManager.QK_INTERACT_BOX;
+                g2.setColor(s1done ? new Color(80, 220, 80)
+                        : qkStage == QuestManager.QK_INTERACT_BOX ? Color.white : Color.gray);
+                g2.drawString("- Interact with the Wooden Keepsake Box", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 2: Find all 9 keepsakes
+                boolean s2active = qkStage == QuestManager.QK_COLLECT;
+                boolean s2done   = qkDone || qkStage > QuestManager.QK_COLLECT;
+                g2.setColor(s2done ? new Color(80, 220, 80)
+                        : s2active ? Color.white : Color.gray);
+                g2.drawString("- Find 9 keepsakes", LEFT_X, ly);
+                ly += LINE_H;
+
+                if (s2active || s2done) {
+                    String[] keepsakes = {
+                            "Paper Rose", "Invisible Ink",
+                            "Locket", "Abanico",
+                            "Suzui", "Clay Knife",
+                            "Bible", "Belgian Biscuits",
+                            "Lense"
+                    };
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) (BODY_SIZE - 2)));
+                    for (int i = 0; i < 9; i++) {
+                        boolean found = qkDone || gp.questManager.keepsakeFound[i];
+                        g2.setColor(found ? new Color(80, 220, 80) : Color.white);
+                        g2.drawString((found ? "/ " : "- ") + keepsakes[i], LEFT_X + 10, ly);
+                        ly += LINE_H - 2;
+                    }
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("  Found: " + gp.questManager.keepsakeCount + "/9", LEFT_X, ly);
+                    ly += HINT_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+                }
+
+                // Step 3: Return to box
+                boolean s3 = qkDone || qkStage == QuestManager.QK_RETURN_BOX;
+                g2.setColor(qkDone ? new Color(80, 220, 80)
+                        : s3 ? Color.white : Color.gray);
+                g2.drawString("- Return to the Wooden Keepsake Box", LEFT_X, ly);
+
+                if (qkDone) {
+                    ly += LINE_H;
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Quest complete!", LEFT_X, ly);
+                }
+            }
+        }
+
+        // ===== PAGE 5: Chapter 3 (Noli + El Fili) =====
+        else if (questPageNum == 5) {
 
             boolean q5done   = gp.questManager.isQuestCompleted(QuestManager.QUEST5);
             boolean q5active = gp.questManager.isQuestActive(QuestManager.QUEST5);
@@ -1925,7 +2020,7 @@ public class UI {
             if (!q5active && !q5done) {
                 g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
                 g2.setColor(Color.gray);
-                g2.drawString("[Complete Quest 6 to unlock]", LEFT_X, ly);
+                g2.drawString("[Complete Quest 7 to unlock]", LEFT_X, ly);
             } else {
                 g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
 
@@ -2043,8 +2138,8 @@ public class UI {
 
         }
 
-        // ===== PAGE 5: Chapter 4 =====
-        else if (questPageNum == 5) {
+        // ===== PAGE 6: Chapter 4 =====
+        else if (questPageNum == 6) {
             boolean q7done   = gp.questManager.isQuestCompleted(QuestManager.QUEST7);
             boolean q7active = gp.questManager.isQuestActive(QuestManager.QUEST7);
             int     q7stage  = gp.questManager.quest7Stage;
@@ -2144,7 +2239,7 @@ public class UI {
             g2.drawString("< PREV  [A]", frameX + gp.tileSize, btnY);
         }
 
-        if (questPageNum < 5) {
+        if (questPageNum < 6) {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
             g2.setColor(new Color(255, 220, 80));
             String next = "NEXT >  [D]";
@@ -2460,6 +2555,37 @@ public class UI {
                 } else if (memStage == QuestManager.QUEST_MEM_DONE) {
                     g2.setColor(new Color(100, 230, 100));
                     g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_MEMORIES) + " Complete!", panelX + 12, panelY + 52);
+                }
+            }
+
+            // ===== QUEST_KEEPSAKES =====
+            else if (currentQ == QuestManager.QUEST_KEEPSAKES && gp.questManager.isQuestActive(QuestManager.QUEST_KEEPSAKES)) {
+
+                g2.setColor(new Color(255, 220, 80));
+                g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_KEEPSAKES) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST_KEEPSAKES), panelX + 12, panelY + 28);
+
+                g2.setColor(Color.white);
+                g2.setFont(g2.getFont().deriveFont(20F));
+
+                int ksStage = gp.questManager.questKsStage;
+
+                if (ksStage == QuestManager.QK_INTERACT_BOX) {
+                    g2.drawString("Interact with the Wooden Keepsake Box.", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("Find it on the desk.", panelX + 12, panelY + 72);
+
+                } else if (ksStage == QuestManager.QK_COLLECT) {
+                    int found = gp.questManager.keepsakeCount;
+                    g2.drawString("Keepsakes: " + found + " / 9", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("Search the room for keepsakes.", panelX + 12, panelY + 72);
+
+                } else if (ksStage == QuestManager.QK_RETURN_BOX) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Return to the Wooden Keepsake Box!", panelX + 12, panelY + 52);
                 }
             }
 

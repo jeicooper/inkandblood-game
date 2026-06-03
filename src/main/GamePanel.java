@@ -570,6 +570,25 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
 
+        // QUEST_KEEPSAKES
+        if (questManager.isQuestActive(QuestManager.QUEST_KEEPSAKES)) {
+            int ksStage = questManager.questKsStage;
+            if (ksStage == QuestManager.QK_INTERACT_BOX
+                    || ksStage == QuestManager.QK_RETURN_BOX) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && obj[i].name.equals("Keepsake Box")) {
+                        targets.add(obj[i]);
+                    }
+                }
+            } else if (ksStage == QuestManager.QK_COLLECT) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && isKeepsakeObject(obj[i].name)) {
+                        targets.add(obj[i]);
+                    }
+                }
+            }
+        }
+
         // QUEST_MEMORIES
         if (questManager.isQuestActive(QuestManager.QUEST_MEMORIES)) {
             int memStage = questManager.questMemStage;
@@ -719,6 +738,23 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    private boolean isKeepsakeObject(String name) {
+        switch (name) {
+            case "Paper Rose":
+            case "Invisible Ink":
+            case "Locket":
+            case "Abanico":
+            case "Suzuri":
+            case "Clay Knife":
+            case "Bible":
+            case "Belgian Biscuits":
+            case "Lense":
+                return true;
+            default:
+                return false;
+        }
+    }
+
     private boolean isMemFirstObject(String name) {
         switch (name) {
             case "Medical Books":
@@ -773,7 +809,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void playMusicForQuest(int quest) {
         stopMusic();
-        if (quest >= QuestManager.QUEST5 || quest == QuestManager.QUEST_MEMORIES) {
+        if (quest >= QuestManager.QUEST5
+                || quest == QuestManager.QUEST_MEMORIES
+                || quest == QuestManager.QUEST_KEEPSAKES) {
             playMusic(4);
         } else {
             playMusic(0);

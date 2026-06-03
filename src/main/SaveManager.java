@@ -73,6 +73,11 @@ public class SaveManager {
         d.memFirstParts      = qm.memFirstParts.clone();
         d.memSecondParts     = qm.memSecondParts.clone();
 
+        // QUEST_KEEPSAKES
+        d.questKsStage  = qm.questKsStage;
+        d.keepsakeCount = qm.keepsakeCount;
+        d.keepsakeFound = qm.keepsakeFound.clone();
+
         d.quest5Stage      = qm.quest5Stage;
         d.objectsCollected = qm.objectsCollected;
         d.manuscriptParts  = qm.manuscriptParts.clone();
@@ -184,6 +189,11 @@ public class SaveManager {
         qm.memFirstParts      = d.memFirstParts.clone();
         qm.memSecondParts     = d.memSecondParts.clone();
 
+        // QUEST_KEEPSAKES
+        qm.questKsStage  = d.questKsStage;
+        qm.keepsakeCount = d.keepsakeCount;
+        qm.keepsakeFound = d.keepsakeFound.clone();
+
         qm.quest5Stage      = d.quest5Stage;
         qm.objectsCollected = d.objectsCollected;
         qm.manuscriptParts  = d.manuscriptParts.clone();
@@ -199,6 +209,7 @@ public class SaveManager {
         qm.setPendingQuest4Cutscene(false);
         qm.setPendingChapter3Cutscene(false);
         qm.setPendingQuestMemoriesCutscene(false);
+        qm.setPendingQuestKeepsakesCutscene(false);
         qm.setPendingQuest6StartCutscene(false);
         qm.setPendingQuest7IntroCutscene(false);
         qm.setPendingQuest7MidCutscene(false);
@@ -284,17 +295,24 @@ public class SaveManager {
 
         } else if (qm.currentQuest == QuestManager.QUEST_MEMORIES
                 && qm.isQuestCompleted(QuestManager.QUEST_MEMORIES)) {
+            qm.currentQuest = QuestManager.QUEST_KEEPSAKES;
+            qm.questState[QuestManager.QUEST_KEEPSAKES] = QuestManager.STATE_ACTIVE;
+            qm.questKsStage = QuestManager.QK_INTERACT_BOX;
+            gp.ui.questPageNum = 4;
+
+        } else if (qm.currentQuest == QuestManager.QUEST_KEEPSAKES
+                && qm.isQuestCompleted(QuestManager.QUEST_KEEPSAKES)) {
             qm.currentQuest = QuestManager.QUEST5;
             qm.questState[QuestManager.QUEST5] = QuestManager.STATE_ACTIVE;
             qm.quest5Stage = QuestManager.TALK_PEDRO;
-            gp.ui.questPageNum = 4;
+            gp.ui.questPageNum = 5;
 
         } else if (qm.currentQuest == QuestManager.QUEST5
                 && qm.isQuestCompleted(QuestManager.QUEST5)) {
             qm.currentQuest = QuestManager.QUEST6;
             qm.questState[QuestManager.QUEST6] = QuestManager.STATE_ACTIVE;
             qm.quest6Stage = QuestManager.TALK_PACIANO_Q6;
-            gp.ui.questPageNum = 4;
+            gp.ui.questPageNum = 5;
 
         } else if (qm.currentQuest == QuestManager.QUEST6
                 && qm.isQuestCompleted(QuestManager.QUEST6)) {
@@ -351,6 +369,16 @@ public class SaveManager {
             gp.tileM.loadMap("/maps/Chapter3.txt");
             gp.player.loadSprite3("");
             gp.aSetter.activateChapter3();
+            placePlayer(23, 35);
+        }
+
+        // QUEST_KEEPSAKES
+        else if (cq == QuestManager.QUEST_KEEPSAKES) {
+            gp.currentMap         = "/maps/Chapter3.txt";
+            gp.currentSublocation = "EUROPE";
+            gp.tileM.loadMap("/maps/Chapter3.txt");
+            gp.player.loadSprite3("");
+            gp.aSetter.activateQuestKeepsakes();
             placePlayer(23, 35);
         }
 
@@ -582,6 +610,7 @@ public class SaveManager {
         int q = gp.questManager.currentQuest;
         if (q >= QuestManager.QUEST5) return 3;
         if (q == QuestManager.QUEST_MEMORIES) return 3;
+        if (q == QuestManager.QUEST_KEEPSAKES) return 3;
         if (q >= QuestManager.QUEST3) return 2;
         return 1;
     }

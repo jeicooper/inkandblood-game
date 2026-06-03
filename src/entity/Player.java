@@ -281,6 +281,8 @@ public class Player extends  Entity{
 
             if (objectName.equals("Final Thoughts"))   return;
             if (objectName.equals("Alcohol Stove"))    return;
+            if (objectName.equals("Wooden Keepsake Box")) return;
+            if (getKeepsakeIndex(objectName) >= 0) return;
             if (getManuscriptIndex(objectName) >= 0) return;
             if (getManuscriptIndexQ6(objectName) >= 0) return;
             if (getMemFirstIndex(objectName) >= 0) return;
@@ -388,7 +390,97 @@ public class Player extends  Entity{
             return;
         }
 
-        // QUEST_MEMORIES — Batch 1 (6 mementos)
+        // QUEST_KEEPSAKES — Step 1: Open the box
+        if (objectName.equals("Wooden Keepsake Box") &&
+                gp.questManager.currentQuest == QuestManager.QUEST_KEEPSAKES) {
+
+            if (gp.questManager.questKsStage == QuestManager.QK_INTERACT_BOX) {
+                gp.ui.currentSpeakerName = "Jose Rizal";
+                gp.ui.currentDialogue =
+                        "Before I face the heavy burdens of my country, I must briefly\n" +
+                                "revisit the faces of those who offered me fleeting solace.\n" +
+                                "Each item here holds a memory, a laugh, or a tear that I can\n" +
+                                "never fully leave behind.";
+                gp.gameState = gp.dialogueState;
+                gp.obj[i] = null;
+                gp.questManager.onKeepsakeBoxOpened();
+
+            } else if (gp.questManager.questKsStage == QuestManager.QK_RETURN_BOX) {
+                // Step 3: Return to box — closing dialogue
+                object.OBJ_KeepsakeBox box = (object.OBJ_KeepsakeBox) gp.obj[i];
+                String[] closingLines = {
+                        "But the greatest romance of my life... the one that demands\n" +
+                                "my ultimate devotion... is my Motherland.",
+
+                        "It is time to lock the box.\n" +
+                                "The chapter of my youth is closed.",
+
+                        "Now, I must return to the manuscript.\n" +
+                                "Paciano is right... El Filibusterismo must be finished."
+                };
+                if (box.lineIndex < closingLines.length) {
+                    gp.ui.currentDialogue = closingLines[box.lineIndex];
+                    gp.ui.currentSpeakerName = "Jose Rizal";
+                    gp.gameState = gp.dialogueState;
+                    box.lineIndex++;
+                    if (box.lineIndex >= closingLines.length) {
+                        gp.obj[i] = null;
+                        gp.questManager.completeQuestKeepsakes();
+                    }
+                }
+            }
+            return;
+        }
+
+        int ksIndex = getKeepsakeIndex(objectName);
+        if (ksIndex >= 0 &&
+                gp.questManager.currentQuest == QuestManager.QUEST_KEEPSAKES &&
+                gp.questManager.questKsStage == QuestManager.QK_COLLECT) {
+            String[] messages = {
+                    "Segunda Katigbak was my puppy love, but our relationship was hopeless\n" +
+                            "right from the very start because she was already set to marry a\n" +
+                            "fellow-townsman in Batangas, Manuel Luz.",
+
+                    "I met my second object of affection, Leonor 'Orang' Valenzuela, who was\n" +
+                            "literally the girl-next-door, when I was a sophomore medical student\n" +
+                            "at the University of Santo Tomas.",
+
+                    "Leonor Rivera was my sweetheart for 11 years, though sadly her mother\n" +
+                            "disapproved of her daughter's relationship with me.",
+
+                    "I probably fell in love with Consuelo Ortiga when she asked me for\n" +
+                            "romantic verses, but I suddenly backed out before it turned into a\n" +
+                            "serious romance because I wanted to remain loyal to Leonor Rivera and\n" +
+                            "did not want to destroy my friendship with Eduardo de Lete,\n" +
+                            "who was madly in love with her.",
+
+                    "O Sei-San, a Japanese samurai's daughter, helped improve my knowledge\n" +
+                            "of the Japanese language and taught me the Japanese art of painting\n" +
+                            "known as su-mie.",
+
+                    "Gertrude Beckett, a blue-eyed and buxom girl who was the oldest of\n" +
+                            "the three Beckett daughters, fell deeply in love with me.",
+
+                    "Antonio Luna, Juan's brother and a frequent visitor of the Bousteads,\n" +
+                            "courted Nellie Bousted, but she was deeply infatuated with me instead.",
+
+                    "Suzanne Jacoby and I fell deeply in love with each other, and cried\n" +
+                            "when I left Brussels, later writing to me when I was in Madrid.",
+
+                    "In the last days of February 1895 while still in Dapitan, I met\n" +
+                            "Josephine Bracken, an 18-year-old petite Irish girl with bold blue eyes,\n" +
+                            "brown hair, and a happy disposition, who stayed with my family in Manila\n" +
+                            "until she returned to Dapitan where I tried to arrange a marriage\n" +
+                            "with Father Antonio Obach."
+            };
+            gp.ui.currentDialogue = messages[ksIndex];
+            gp.ui.currentSpeakerName = "Jose Rizal";
+            gp.gameState = gp.dialogueState;
+            gp.obj[i] = null;
+            gp.questManager.onKeepsakeFound(ksIndex);
+            return;
+        }
+
         int memFirstIndex = getMemFirstIndex(objectName);
         if (memFirstIndex >= 0 &&
                 gp.questManager.currentQuest == QuestManager.QUEST_MEMORIES &&
@@ -532,6 +624,21 @@ public class Player extends  Entity{
                 return 3;
             default:
                 return -1;
+        }
+    }
+
+    private int getKeepsakeIndex(String name) {
+        switch (name) {
+            case "Paper Rose": return 0;
+            case "Invisible Ink": return 1;
+            case "Locket": return 2;
+            case "Abanico": return 3;
+            case "Suzuri": return 4;
+            case "Clay Knife": return 5;
+            case "Bible": return 6;
+            case "Belgian Biscuits": return 7;
+            case "Lense": return 8;
+            default: return -1;
         }
     }
 

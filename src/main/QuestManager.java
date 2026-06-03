@@ -22,9 +22,11 @@ public class QuestManager {
     private boolean pendingChapter2Cutscene = false;
     private boolean pendingQuest4Cutscene = false;
     private boolean pendingQuestMemoriesCutscene = false;
+    private boolean pendingQuestKeepsakesCutscene = false;
     private boolean pendingChapter3Cutscene = false;
     private boolean pendingQuest6StartCutscene = false;
     private int cutsceneDelay3 = 0;
+    private int cutsceneDelay8 = 0;
 
     //STATISTICS
     public long gameStartTime = 0L;
@@ -41,7 +43,8 @@ public class QuestManager {
     public static final int QUEST2         = 2;
     public static final int QUEST3         = 3;
     public static final int QUEST4         = 4;
-    public static final int QUEST_MEMORIES = 8;  // NEW: between Quest4 and Quest5
+    public static final int QUEST_MEMORIES  = 8;
+    public static final int QUEST_KEEPSAKES = 9;
     public static final int QUEST5         = 5;
     public static final int QUEST6         = 6;
     public static final int QUEST7         = 7;
@@ -53,7 +56,7 @@ public class QuestManager {
     public static final int STATE_COMPLETED = 2;
 
     public int currentQuest = QUEST1;
-    public int[] questState = new int[10];
+    public int[] questState = new int[11];
 
     // QUEST 1
     public static final int QUEST1_NOT_STARTED   = 0;
@@ -150,6 +153,52 @@ public class QuestManager {
     public boolean[] memFirstParts  = new boolean[6];
     public boolean[] memSecondParts = new boolean[3];
 
+    // QUEST_KEEPSAKES (between QUEST_MEMORIES and QUEST5)
+    public static final int QK_INTERACT_BOX = 0;
+    public static final int QK_COLLECT      = 1;
+    public static final int QK_RETURN_BOX   = 2;
+    public static final int QUEST_KS_DONE   = 3;
+
+    public int questKsStage     = QK_INTERACT_BOX;
+    public int keepsakeCount    = 0;
+    public boolean[] keepsakeFound = new boolean[9];
+
+    // ===== QUEST_KEEPSAKES =====
+    public void onKeepsakeBoxOpened() {
+        if (questKsStage != QK_INTERACT_BOX) return;
+        questKsStage = QK_COLLECT;
+        gp.aSetter.spawnKeepsakeObjects();
+        gp.ui.showMessage("Find 9 keepsakes scattered around the room.");
+    }
+
+    public void onKeepsakeFound(int index) {
+        if (index < 0 || index >= 9) return;
+        if (keepsakeFound[index]) return;
+        keepsakeFound[index] = true;
+        keepsakeCount++;
+        if (keepsakeCount >= 9) {
+            questKsStage = QK_RETURN_BOX;
+            gp.aSetter.spawnKeepsakeBoxReturn();
+        }
+    }
+
+    public void completeQuestKeepsakes() {
+        if (questKsStage == QUEST_KS_DONE) return;
+        questKsStage = QUEST_KS_DONE;
+        questState[QUEST_KEEPSAKES] = STATE_COMPLETED;
+
+        gp.player.exp += 2;
+        gp.player.age += 1;
+        gp.player.charisma += 3;
+        gp.player.perception += 2;
+
+        gp.ui.showMessage("Quest " + questDisplayNumber(QUEST_KEEPSAKES) + ": Done!");
+
+        pendingQuestKeepsakesCutscene = true;
+        cutsceneDelay8 = 60;
+        gp.saveManager.save();
+    }
+
     // QUEST 5
     public static final int TALK_PEDRO = 0;
     public static final int TALK_CONSUELO = 1;
@@ -202,31 +251,33 @@ public class QuestManager {
 
     public static int questDisplayNumber(int questId) {
         switch (questId) {
-            case QUEST1:          return 1;
-            case QUEST_HISTORY:   return 2;
-            case QUEST2:          return 3;
-            case QUEST3:          return 4;
-            case QUEST4:          return 5;
-            case QUEST_MEMORIES:  return 6;
-            case QUEST5:          return 7;
-            case QUEST6:          return 8;
-            case QUEST7:          return 9;
-            default:              return questId + 1;
+            case QUEST1:           return 1;
+            case QUEST_HISTORY:    return 2;
+            case QUEST2:           return 3;
+            case QUEST3:           return 4;
+            case QUEST4:           return 5;
+            case QUEST_MEMORIES:   return 6;
+            case QUEST_KEEPSAKES:  return 7;
+            case QUEST5:           return 8;
+            case QUEST6:           return 9;
+            case QUEST7:           return 10;
+            default:               return questId + 1;
         }
     }
 
     public static String questDisplayTitle(int questId) {
         switch (questId) {
-            case QUEST1:          return "Familya Rizal";
-            case QUEST_HISTORY:   return "Ang Kasaysayan";
-            case QUEST2:          return "Pangangaral ng mga Tiyo";
-            case QUEST3:          return "Pagpasok sa Ateneo";
-            case QUEST4:          return "Ang Kampeon ng Roma";
-            case QUEST_MEMORIES:  return "Mga Alaala";
-            case QUEST5:          return "Noli Me Tangere";
-            case QUEST6:          return "El Filibusterismo";
-            case QUEST7:          return "Ang Huling Araw";
-            default:              return "Quest " + questDisplayNumber(questId);
+            case QUEST1:           return "Familya Rizal";
+            case QUEST_HISTORY:    return "Ang Kasaysayan";
+            case QUEST2:           return "Pangangaral ng mga Tiyo";
+            case QUEST3:           return "Pagpasok sa Ateneo";
+            case QUEST4:           return "Ang Kampeon ng Roma";
+            case QUEST_MEMORIES:   return "Mga Alaala";
+            case QUEST_KEEPSAKES:  return "Ang Kahon ng mga Alaala";
+            case QUEST5:           return "Noli Me Tangere";
+            case QUEST6:           return "El Filibusterismo";
+            case QUEST7:           return "Ang Huling Araw";
+            default:               return "Quest " + questDisplayNumber(questId);
         }
     }
 
@@ -314,15 +365,30 @@ public class QuestManager {
             }
         }
 
-        // TRANSITION FROM QUEST_MEMORIES TO QUEST5
+        // TRANSITION FROM QUEST_MEMORIES TO QUEST_KEEPSAKES
         if (pendingQuestMemoriesCutscene) {
             cutsceneDelay3--;
             if (cutsceneDelay3 <= 0) {
                 pendingQuestMemoriesCutscene = false;
+                gp.cutsceneManager.startQuestKeepsakesIntro();
+                currentQuest = QUEST_KEEPSAKES;
+                questState[QUEST_KEEPSAKES] = STATE_ACTIVE;
+                questKsStage = QK_INTERACT_BOX;
+                gp.ui.questPageNum = 4;
+                gp.aSetter.activateQuestKeepsakes();
+                gp.saveManager.save();
+            }
+        }
+
+        // TRANSITION FROM QUEST_KEEPSAKES TO QUEST5 (Noli Me Tangere)
+        if (pendingQuestKeepsakesCutscene) {
+            cutsceneDelay8--;
+            if (cutsceneDelay8 <= 0) {
+                pendingQuestKeepsakesCutscene = false;
                 currentQuest = QUEST5;
                 questState[QUEST5] = STATE_ACTIVE;
                 quest5Stage = TALK_PEDRO;
-                gp.ui.questPageNum = 4;
+                gp.ui.questPageNum = 5;
                 gp.aSetter.activateChapter3();
                 gp.saveManager.save();
             }
@@ -770,6 +836,7 @@ public class QuestManager {
         cutsceneDelay3 = 60;
         gp.saveManager.save();
     }
+
     public void onPedroDone() {
         if (quest5Stage == TALK_PEDRO) quest5Stage = TALK_CONSUELO;
     }
@@ -824,7 +891,7 @@ public class QuestManager {
         quest6Stage = TALK_PACIANO_Q6;
         q6ObjectsCollected = 0;
         elFiliParts = new boolean[5];
-        gp.ui.questPageNum = 4;
+        gp.ui.questPageNum = 5;
         gp.aSetter.activateQuest6();
         gp.saveManager.save();
     }
@@ -884,7 +951,7 @@ public class QuestManager {
         gp.ui.showMessage("Quest " + questDisplayNumber(QUEST6) + ": Done!");
 
         pendingQuest7IntroCutscene = true;
-        cutsceneDelay4 = 60;
+        cutsceneDelay5 = 60;
         gp.saveManager.save();
     }
 
@@ -893,7 +960,7 @@ public class QuestManager {
         currentQuest = QUEST7;
         questState[QUEST7] = STATE_ACTIVE;
         quest7Stage = Q7_TALK_GUARDIA;
-        gp.ui.questPageNum = 5;
+        gp.ui.questPageNum = 6;
         gp.aSetter.activateQuest7Intramuros();
         gp.saveManager.save();
     }
@@ -961,6 +1028,8 @@ public class QuestManager {
         pendingChapter3Cutscene = v;    if (v) cutsceneDelay2 = 60; }
     public void setPendingQuestMemoriesCutscene(boolean v) {
         pendingQuestMemoriesCutscene = v; if (v) cutsceneDelay3 = 60; }
+    public void setPendingQuestKeepsakesCutscene(boolean v) {
+        pendingQuestKeepsakesCutscene = v; if (v) cutsceneDelay8 = 60; }
     public void setPendingQuest6StartCutscene(boolean v) {
         pendingQuest6StartCutscene = v; if (v) cutsceneDelay4 = 60; }
     public void setPendingQuest7IntroCutscene(boolean v) {
