@@ -3063,7 +3063,7 @@ public class UI {
         String title = "Republic Act No. 1425  (The Rizal Law)";
         g2.drawString(title, panelX + panelW / 2 - g2.getFontMetrics().stringWidth(title) / 2, panelY + 40);
 
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 18F));
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
         g2.setColor(Color.white);
         int leftX  = panelX + 25;
         int rightX = panelX + panelW / 2 + 10;
@@ -3077,15 +3077,14 @@ public class UI {
                 "anti-church passages in Rizal's novels.",
                 "",
                 "Section 1: All public and private schools, colleges,",
-                "and universities are mandated to teach courses on",
-                "Rizal's life, works, and writings, specifically",
+                "and universities are mandated to teach courses ",
+                "on Rizal's life, works, and writings, specifically",
                 "Noli Me Tangere and El Filibusterismo.",
                 "",
-                "Section 2: All school libraries must keep an adequate",
-                "supply of the original, unexpurgated (uncensored)",
-                "editions of Rizal's novels and other works.",
-                "",
-
+                "Section 2: All school libraries must keep an ",
+                "adequate supply of the original, unexpurgated ",
+                "(uncensored) editions of Rizal's novels and ",
+                "other works.",
         };
         String[] right = {
                 "Section 3: The government must translate Rizal's",

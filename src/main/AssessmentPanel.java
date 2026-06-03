@@ -379,8 +379,8 @@ public class AssessmentPanel {
         g2.drawLine(tx[0], ty[0], tx[2], ty[2]);
         g2.drawLine(tx[1], ty[1], tx[2], ty[2]);
 
-        // text — same call as drawNarrationBubble
-        drawWrapped(g2, text, bx + 20, by + 38, bw - 40, 32, 24f);
+        // text — padding: 30px left/right, 50px from top
+        drawWrapped(g2, text, bx + 30, by + 50, bw - 60, 32, 24f);
 
         // hint — same style as drawNarrationBubble
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 15f));
@@ -427,7 +427,7 @@ public class AssessmentPanel {
         g2.drawLine(tx[0], ty[0], tx[2], ty[2]);
         g2.drawLine(tx[1], ty[1], tx[2], ty[2]);
 
-        drawWrapped(g2, text, bx + 20, by + 38, bw - 40, 32, 24f);
+        drawWrapped(g2, text, bx + 30, by + 50, bw - 60, 32, 24f);
 
         // continue hint
         g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 15f));
