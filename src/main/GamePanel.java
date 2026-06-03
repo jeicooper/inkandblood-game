@@ -418,11 +418,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    // Perception at which the trail reaches full visibility.
-    // Perception actually maxes out near 16 (Q1 +2, Q5 +3, Q6 +6, Q7 +5).
     private static final float PERCEPTION_FULL = 16f;
-    // Alpha bounds (0f..1f). MIN is near-invisible so the trail is barely a whisper
-    // at low perception, then climbs toward MAX as perception grows.
     private static final float TRAIL_MIN_ALPHA = 0.05f;
     private static final float TRAIL_MAX_ALPHA = 0.90f;
 
@@ -436,7 +432,7 @@ public class GamePanel extends JPanel implements Runnable {
         float alpha = TRAIL_MIN_ALPHA + t * (TRAIL_MAX_ALPHA - TRAIL_MIN_ALPHA);
 
         int px = player.screenX + (tileSize / 2);
-        int py = player.screenY + tileSize - 4; // at the feet (just above the sprite's bottom edge)
+        int py = player.screenY + tileSize - 4;
 
         Stroke    oldStroke    = g2.getStroke();
         Composite oldComposite = g2.getComposite();
@@ -479,26 +475,6 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             } else if (questManager.quest1Stage == QuestManager.QUEST1_RETURN_TEODORA) {
                 if (npc[0] != null) targets.add(npc[0]);
-            }
-        }
-
-        // Quest History
-        if (questManager.isQuestActive(QuestManager.QUEST_HISTORY)) {
-            int stage = questManager.questHistoryStage;
-            if (stage == QuestManager.QH_TALK_FRANCISCO
-                    || stage == QuestManager.QH_RETURN_FRANCISCO) {
-                // Francisco is at npc[2]
-                if (npc[2] != null) targets.add(npc[2]);
-            } else if (stage == QuestManager.QH_COLLECT_BOOKS) {
-                // Point to uncollected history books in the world
-                for (int i = 0; i < obj.length; i++) {
-                    if (obj[i] instanceof object.OBJ_HistoryBook) {
-                        object.OBJ_HistoryBook wb = (object.OBJ_HistoryBook) obj[i];
-                        if (wb.inWorld && !questManager.historyBookPicked[wb.bookIndex]) {
-                            targets.add(obj[i]);
-                        }
-                    }
-                }
             }
         }
 

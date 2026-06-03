@@ -4,34 +4,22 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * Initial assessment shown once, right after the player confirms "New Game"
- * and before the intro cutscene. A narrator (elderly mentor) speaks first,
- * instructs the player to take the assessment, reveals a fact after each
- * answer, then delivers closing dialogue before the intro cutscene begins.
- *
- * The score is stored on QuestManager (assessmentScore) and surfaces on the
- * ending stats screen.
- *
- * NOTE: questions are placeholders for now; choice "a" (index 0) is the
- * correct answer for every question until real content is added.
- */
 public class AssessmentPanel {
 
     private final GamePanel gp;
     private final UI ui;
 
     // ---- Phases ----
-    private static final int PHASE_INTRO    = 0; // narrator speaks + instruction
-    private static final int PHASE_QUESTION = 1; // answering / revealing fact
-    private static final int PHASE_OUTRO    = 2; // closing narration
+    private static final int PHASE_INTRO    = 0;
+    private static final int PHASE_QUESTION = 1;
+    private static final int PHASE_OUTRO    = 2;
     private int phase = PHASE_INTRO;
 
     // ---- Narrator dialogue ----
     private final String[] introLines = {
             "Ah... another young mind, eager and unshaped.",
             "Before your story begins, let us see what you already carry.",
-            "I will ask you fifteen questions about our nation's hero.",
+            "I will ask you ten questions about our nation's hero.",
             "Answer honestly. There is no shame in not yet knowing.",
             "Use [ W ] and [ S ] to choose, [ ENTER ] to confirm.",
             "Let us begin."

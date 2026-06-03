@@ -33,10 +33,6 @@ public class SaveData implements Serializable {
     public int  siblingsFound;
     public boolean conchaVisited;
 
-    public int     questHistoryStage  = 0;
-    public int     historyBooksFound  = 0;
-    public boolean[] historyBookPicked = new boolean[3];
-
     public int  quest2Stage;
     public int  checkpointsHit;
     public boolean courseCompleted;

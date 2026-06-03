@@ -39,7 +39,6 @@ public class QuestManager {
 
 
     public static final int QUEST1          = 0;
-    public static final int QUEST_HISTORY  = 1;
     public static final int QUEST2         = 2;
     public static final int QUEST3         = 3;
     public static final int QUEST4         = 4;
@@ -70,17 +69,6 @@ public class QuestManager {
 
     private int debugTimer = 0;
     public boolean quest0JustCompleted = false;
-
-    public static final int QH_TALK_FRANCISCO   = 0;
-    public static final int QH_COLLECT_BOOKS    = 1;
-    public static final int QH_RETURN_FRANCISCO = 2;
-    public static final int QH_DONE             = 3;
-
-    public static final int HISTORY_BOOKS_REQUIRED = 3;
-
-    public int     questHistoryStage  = QH_TALK_FRANCISCO;
-    public int     historyBooksFound  = 0;
-    public boolean[] historyBookPicked = new boolean[HISTORY_BOOKS_REQUIRED];
 
     // QUEST 2
     public static final int JOSE_INACTIVE = 0;
@@ -252,15 +240,14 @@ public class QuestManager {
     public static int questDisplayNumber(int questId) {
         switch (questId) {
             case QUEST1:           return 1;
-            case QUEST_HISTORY:    return 2;
-            case QUEST2:           return 3;
-            case QUEST3:           return 4;
-            case QUEST4:           return 5;
-            case QUEST_MEMORIES:   return 6;
-            case QUEST_KEEPSAKES:  return 7;
-            case QUEST5:           return 8;
-            case QUEST6:           return 9;
-            case QUEST7:           return 10;
+            case QUEST2:           return 2;
+            case QUEST3:           return 3;
+            case QUEST4:           return 4;
+            case QUEST_MEMORIES:   return 5;
+            case QUEST_KEEPSAKES:  return 6;
+            case QUEST5:           return 7;
+            case QUEST6:           return 8;
+            case QUEST7:           return 9;
             default:               return questId + 1;
         }
     }
@@ -268,7 +255,6 @@ public class QuestManager {
     public static String questDisplayTitle(int questId) {
         switch (questId) {
             case QUEST1:           return "Familya Rizal";
-            case QUEST_HISTORY:    return "Ang Kasaysayan";
             case QUEST2:           return "Pangangaral ng mga Tiyo";
             case QUEST3:           return "Pagpasok sa Ateneo";
             case QUEST4:           return "Ang Kampeon ng Roma";
@@ -309,9 +295,6 @@ public class QuestManager {
     public void update() {
         if (currentQuest == QUEST1 && questState[QUEST1] == STATE_ACTIVE) {
             updateQuest1();
-        }
-        if (currentQuest == QUEST_HISTORY && questState[QUEST_HISTORY] == STATE_ACTIVE) {
-            updateQuestHistory();
         }
         if (currentQuest == QUEST2 && questState[QUEST2] == STATE_ACTIVE){
             updateQuest2();
@@ -470,79 +453,11 @@ public class QuestManager {
                 gp.npc[i] = null;
             }
         }
-
-        // ── Transition to QUEST_HISTORY instead of QUEST2 ──
-        currentQuest = QUEST_HISTORY;
-        questState[QUEST_HISTORY] = STATE_ACTIVE;
-        questHistoryStage = QH_TALK_FRANCISCO;
-        historyBooksFound = 0;
-        historyBookPicked = new boolean[HISTORY_BOOKS_REQUIRED];
-
-        gp.aSetter.activateQuestHistory();
-        gp.saveManager.save();
-    }
-
-    // ===== QUEST_HISTORY =====
-    private void updateQuestHistory() {
-    }
-
-    public void onFranciscoHistoryTalked() {
-        if (questHistoryStage == QH_TALK_FRANCISCO) {
-            questHistoryStage = QH_COLLECT_BOOKS;
-        }
-    }
-
-    public void onHistoryBookPickedUp(int bookIndex) {
-        if (historyBookPicked[bookIndex]) return;
-        historyBookPicked[bookIndex] = true;
-        historyBooksFound++;
-
-        // Add permanently to inventory
-        object.OBJ_HistoryBook book = new object.OBJ_HistoryBook(gp, bookIndex, false);
-        gp.player.inventory.add(book);
-
-        gp.ui.showMessage("History " + toRoman(bookIndex + 1)
-                + " collected! (" + historyBooksFound + "/" + HISTORY_BOOKS_REQUIRED + ")");
-
-        // Remove the world object
-        for (int i = 0; i < gp.obj.length; i++) {
-            if (gp.obj[i] instanceof object.OBJ_HistoryBook) {
-                object.OBJ_HistoryBook wb = (object.OBJ_HistoryBook) gp.obj[i];
-                if (wb.bookIndex == bookIndex && wb.inWorld) {
-                    gp.obj[i] = null;
-                    break;
-                }
-            }
-        }
-
-        if (historyBooksFound >= HISTORY_BOOKS_REQUIRED) {
-            questHistoryStage = QH_RETURN_FRANCISCO;
-            gp.ui.showMessage("All 3 books found! Return to Tatay Francisco.");
-        }
-    }
-
-    public void completeQuestHistory() {
-        if (questHistoryStage == QH_DONE) return;
-        questHistoryStage = QH_DONE;
-        questState[QUEST_HISTORY] = STATE_COMPLETED;
-
-        //STATS GAINED
-        gp.player.exp += 2;
-        gp.player.intellect += 3;
-
-        gp.ui.showMessage("Quest " + questDisplayNumber(QUEST_HISTORY) + ": Done!");
-
-        // Transition to QUEST2
         currentQuest = QUEST2;
         questState[QUEST2] = STATE_ACTIVE;
         quest2Stage = JOSE_INACTIVE;
-
         gp.aSetter.activateQuest2();
         gp.saveManager.save();
-    }
-
-    private String toRoman(int n) {
-        switch (n) { case 1: return "I"; case 2: return "II"; case 3: return "III"; default: return String.valueOf(n); }
     }
 
     // ===== QUEST 2 =====

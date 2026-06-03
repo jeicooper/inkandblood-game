@@ -73,28 +73,6 @@ public class AssetSetter {
         return null;
     }
 
-    void activateQuestHistory() {
-
-        gp.npc[2] = new NPC_Francisco(gp);
-        gp.npc[2].worldX = 65 * gp.tileSize;
-        gp.npc[2].worldY = 24 * gp.tileSize;
-
-        // Book 1
-        gp.obj[0] = new OBJ_HistoryBook(gp, 0);
-        gp.obj[0].worldX = 63 * gp.tileSize;
-        gp.obj[0].worldY = 17 * gp.tileSize;
-
-        // Book 2
-        gp.obj[1] = new OBJ_HistoryBook(gp, 1);
-        gp.obj[1].worldX = 65 * gp.tileSize;
-        gp.obj[1].worldY = 19 * gp.tileSize;
-
-        // Book 3
-        gp.obj[2] = new OBJ_HistoryBook(gp, 2);
-        gp.obj[2].worldX = 66 * gp.tileSize;
-        gp.obj[2].worldY = 17 * gp.tileSize;
-    }
-
     public void activateQuest2() {
         // Uncles
         gp.npc[12] = new NPC_Jose(gp);
@@ -295,8 +273,8 @@ public class AssetSetter {
 
         if (ksStage == QuestManager.QK_INTERACT_BOX) {
             gp.obj[0] = new object.OBJ_KeepsakeBox(gp);
-            gp.obj[0].worldX = 19 * gp.tileSize;
-            gp.obj[0].worldY = 34 * gp.tileSize;
+            gp.obj[0].worldX = 14 * gp.tileSize;
+            gp.obj[0].worldY = 33 * gp.tileSize;
 
         } else if (ksStage == QuestManager.QK_COLLECT) {
             spawnKeepsakeObjects();
@@ -365,8 +343,9 @@ public class AssetSetter {
 
     public void spawnKeepsakeBoxReturn() {
         gp.obj[0] = new object.OBJ_KeepsakeBox(gp);
-        gp.obj[0].worldX = 19 * gp.tileSize;
-        gp.obj[0].worldY = 34 * gp.tileSize;
+        gp.obj[0].worldX = 14 * gp.tileSize;
+        gp.obj[0].worldY = 33 * gp.tileSize;
+
     }
 
     public void activateQuestMemories() {

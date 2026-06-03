@@ -281,7 +281,7 @@ public class Player extends  Entity{
 
             if (objectName.equals("Final Thoughts"))   return;
             if (objectName.equals("Alcohol Stove"))    return;
-            if (objectName.equals("Wooden Keepsake Box")) return;
+            if (objectName.equals("Keepsake Box")) return;
             if (getKeepsakeIndex(objectName) >= 0) return;
             if (getManuscriptIndex(objectName) >= 0) return;
             if (getManuscriptIndexQ6(objectName) >= 0) return;
@@ -289,7 +289,6 @@ public class Player extends  Entity{
             if (getMemSecondIndex(objectName) >= 0) return;
             if (objectName.equals("Draft of Noli Me Tangere")) return;
             if (objectName.equals("Draft of El Filibusterismo")) return;
-            if (gp.obj[i] instanceof object.OBJ_HistoryBook) return;
 
             if (inventory.size() != maxInventorySize) {
 
@@ -307,24 +306,6 @@ public class Player extends  Entity{
     public void interactObject(int i) {
         if (i == 999) return;
         String objectName = gp.obj[i].name;
-
-        // HISTORY BOOKS (Quest History)
-        if (gp.obj[i] instanceof object.OBJ_HistoryBook) {
-            object.OBJ_HistoryBook hb = (object.OBJ_HistoryBook) gp.obj[i];
-            if (!gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY)
-                    || gp.questManager.questHistoryStage < QuestManager.QH_COLLECT_BOOKS) {
-                gp.ui.showMessage("Tatay hasn't asked me to read yet.");
-                return;
-            }
-
-            gp.playSE(1);
-
-            gp.questManager.onHistoryBookPickedUp(hb.bookIndex);
-            gp.gameState = gp.playState;
-            gp.ui.activeLetter = objectName;
-            gp.ui.showPoemPanel = true;
-            return;
-        }
 
         // NOLI DRAFT
         if (objectName.equals("Draft of Noli Me Tangere")) {
@@ -391,7 +372,7 @@ public class Player extends  Entity{
         }
 
         // QUEST_KEEPSAKES — Step 1: Open the box
-        if (objectName.equals("Wooden Keepsake Box") &&
+        if (objectName.equals("Keepsake Box") &&
                 gp.questManager.currentQuest == QuestManager.QUEST_KEEPSAKES) {
 
             if (gp.questManager.questKsStage == QuestManager.QK_INTERACT_BOX) {
@@ -437,41 +418,36 @@ public class Player extends  Entity{
                 gp.questManager.currentQuest == QuestManager.QUEST_KEEPSAKES &&
                 gp.questManager.questKsStage == QuestManager.QK_COLLECT) {
             String[] messages = {
-                    "Segunda Katigbak was my puppy love, but our relationship was hopeless\n" +
-                            "right from the very start because she was already set to marry a\n" +
+                    "Segunda Katigbak was my puppy love, but our relationship was\nhopeless" +
+                            "right from the very start because she was already set to\nmarry a" +
                             "fellow-townsman in Batangas, Manuel Luz.",
 
-                    "I met my second object of affection, Leonor 'Orang' Valenzuela, who was\n" +
-                            "literally the girl-next-door, when I was a sophomore medical student\n" +
+                    "I met my second object of affection, Leonor 'Orang' Valenzuela, who\nwas" +
+                            "literally the girl-next-door, when I was a sophomore medical\nstudent" +
                             "at the University of Santo Tomas.",
 
-                    "Leonor Rivera was my sweetheart for 11 years, though sadly her mother\n" +
+                    "Leonor Rivera was my sweetheart for 11 years, though sadly her\nmother" +
                             "disapproved of her daughter's relationship with me.",
 
-                    "I probably fell in love with Consuelo Ortiga when she asked me for\n" +
-                            "romantic verses, but I suddenly backed out before it turned into a\n" +
-                            "serious romance because I wanted to remain loyal to Leonor Rivera and\n" +
-                            "did not want to destroy my friendship with Eduardo de Lete,\n" +
-                            "who was madly in love with her.",
+                    "I likely fell for Consuelo Ortiga when she asked for my poetry\n" +
+                            "but I backed out to stay loyal to Leonor Rivera and avoid hurting\n" +
+                            "my friend Eduardo de Lete, who loved her deeply.",
 
-                    "O Sei-San, a Japanese samurai's daughter, helped improve my knowledge\n" +
-                            "of the Japanese language and taught me the Japanese art of painting\n" +
+                    "O Sei-San, a Japanese samurai's daughter, helped improve my\nknowledge of the Japanese language and taught me the Japanese\nart of painting" +
                             "known as su-mie.",
 
                     "Gertrude Beckett, a blue-eyed and buxom girl who was the oldest of\n" +
                             "the three Beckett daughters, fell deeply in love with me.",
 
                     "Antonio Luna, Juan's brother and a frequent visitor of the Bousteads,\n" +
-                            "courted Nellie Bousted, but she was deeply infatuated with me instead.",
+                            "courted Nellie Bousted, but she was deeply infatuated with me\ninstead.",
 
                     "Suzanne Jacoby and I fell deeply in love with each other, and cried\n" +
                             "when I left Brussels, later writing to me when I was in Madrid.",
 
-                    "In the last days of February 1895 while still in Dapitan, I met\n" +
-                            "Josephine Bracken, an 18-year-old petite Irish girl with bold blue eyes,\n" +
-                            "brown hair, and a happy disposition, who stayed with my family in Manila\n" +
-                            "until she returned to Dapitan where I tried to arrange a marriage\n" +
-                            "with Father Antonio Obach."
+                    "In February 1895, I met 18 year old Irish girl Josephine Bracken in\nDapitan." +
+                            "After she visited my family in Manila, we returned to Dapitan,\n" +
+                            "where I tried to arrange our marriage through Father Antonio Obach."
             };
             gp.ui.currentDialogue = messages[ksIndex];
             gp.ui.currentSpeakerName = "Jose Rizal";

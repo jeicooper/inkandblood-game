@@ -137,11 +137,6 @@ public class UI {
         if (gp.gameState == gp.playState){
 
             drawPlayerExp();
-            if (!gp.questManager.isQuestCompleted(QuestManager.QUEST1)
-                    && !gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY)
-                    && !gp.questManager.isQuestCompleted(QuestManager.QUEST_HISTORY)) {
-                drawHints();
-            }
             drawQuestHUD();
 
             if (messageOn){
@@ -163,10 +158,6 @@ public class UI {
                     drawElFiliPanel();
                 } else if (activeLetter.equals("Mi Ultimo Adios")) {
                     drawMiUltimoAdiosPanel();
-                } else if (activeLetter.equals("History I")
-                        || activeLetter.equals("History II")
-                        || activeLetter.equals("History III")) {
-                    drawHistoryBookPanel();
                 } else {
                     drawPoemPanel();
                 }
@@ -1226,9 +1217,6 @@ public class UI {
 
         if (questPageNum == 0) {
             boolean q1done  = gp.questManager.isQuestCompleted(QuestManager.QUEST1);
-            boolean qhActive = gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY);
-            boolean qhDone   = gp.questManager.isQuestCompleted(QuestManager.QUEST_HISTORY);
-            int     qhStage  = gp.questManager.questHistoryStage;
 
             final int PAD     = gp.tileSize;
             final int MID     = frameX + frameWidth / 2;
@@ -1296,67 +1284,8 @@ public class UI {
                 }
             }
 
-            // ── RIGHT: Quest History ──
-            int ry = TOP_Y;
-            Color qhColor = qhDone   ? new Color(100, 230, 100)
-                    : qhActive ? new Color(255, 220, 80)
-                    :            Color.gray;
-
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
-            g2.setColor(qhColor);
-            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_HISTORY) + ":", RIGHT_X, ry);
-            ry += LINE_H - 2;
-            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST_HISTORY) + "\"" + (qhDone ? " COMPLETE" : ""), RIGHT_X, ry);
-
-            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
-            g2.setColor(qhActive || qhDone ? Color.lightGray : Color.gray);
-            ry += HINT_H + 2;
-            g2.drawString("Read the history books Tatay left.", RIGHT_X, ry);
-            ry += LINE_H + 2;
-
-            if (!qhActive && !qhDone) {
-                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
-                g2.setColor(Color.gray);
-                g2.drawString("[Complete Quest 1 to unlock]", RIGHT_X, ry);
-            } else {
-                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
-
-                // Talk to Francisco
-                boolean talkDone = qhDone || qhStage > QuestManager.QH_TALK_FRANCISCO;
-                g2.setColor(talkDone ? new Color(80, 220, 80) : Color.white);
-                g2.drawString("- Talk to Tatay Francisco", RIGHT_X, ry);
-                ry += LINE_H;
-
-                // Collect books
-                boolean booksDone = qhDone || qhStage > QuestManager.QH_COLLECT_BOOKS;
-                g2.setColor(booksDone ? new Color(80, 220, 80)
-                        : qhStage == QuestManager.QH_COLLECT_BOOKS ? Color.white : Color.gray);
-                g2.drawString("- Collect history books", RIGHT_X, ry);
-                ry += LINE_H - 2;
-                if (qhStage == QuestManager.QH_COLLECT_BOOKS) {
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
-                    g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("  Books: " + gp.questManager.historyBooksFound + "/3", RIGHT_X, ry);
-                    ry += HINT_H;
-                    g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
-                }
-
-                // Return to Francisco
-                boolean retDone = qhDone || qhStage > QuestManager.QH_RETURN_FRANCISCO;
-                g2.setColor(retDone ? new Color(80, 220, 80)
-                        : qhStage == QuestManager.QH_RETURN_FRANCISCO ? Color.white : Color.gray);
-                g2.drawString("- Return to Tatay Francisco", RIGHT_X, ry);
-                ry += LINE_H;
-
-                if (qhDone) {
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
-                    g2.setColor(new Color(100, 255, 100));
-                    g2.drawString("Ang kasaysayan ay natutunan mo na.", RIGHT_X, ry);
-                }
-            }
         }
 
-        // ===== PAGE 1: Chapter 1 Art + Chapter 2 Enrollment (was page 0 right + page 1 left) =====
         else if (questPageNum == 1) {
             boolean q1done    = gp.questManager.isQuestCompleted(QuestManager.QUEST1);
             boolean q2active  = gp.questManager.isQuestActive(QuestManager.QUEST2);
@@ -2313,36 +2242,6 @@ public class UI {
 
             }
 
-            // ===== QUEST_HISTORY =====
-            else if (currentQ == QuestManager.QUEST_HISTORY && gp.questManager.isQuestActive(QuestManager.QUEST_HISTORY)) {
-
-                g2.setColor(new Color(255, 220, 80));
-                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_HISTORY) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST_HISTORY), panelX + 12, panelY + 28);
-                g2.setColor(Color.white);
-                g2.setFont(g2.getFont().deriveFont(20F));
-
-                int qhStage = gp.questManager.questHistoryStage;
-
-                if (qhStage == QuestManager.QH_TALK_FRANCISCO) {
-                    g2.drawString("Talk to Tatay Francisco.", panelX + 12, panelY + 52);
-
-                } else if (qhStage == QuestManager.QH_COLLECT_BOOKS) {
-                    int found = gp.questManager.historyBooksFound;
-                    g2.drawString("History Books: " + found + " / 3", panelX + 12, panelY + 52);
-                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-                    g2.setColor(new Color(200, 200, 100));
-                    g2.drawString("Find the books Tatay left for you.", panelX + 12, panelY + 72);
-
-                } else if (qhStage == QuestManager.QH_RETURN_FRANCISCO) {
-                    g2.setColor(new Color(100, 255, 100));
-                    g2.drawString("Return to Tatay Francisco!", panelX + 12, panelY + 52);
-
-                } else if (qhStage == QuestManager.QH_DONE) {
-                    g2.setColor(new Color(100, 230, 100));
-                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST_HISTORY) + " Complete!", panelX + 12, panelY + 52);
-                }
-            }
-
             // ===== QUEST 2 =====
             else if (currentQ == QuestManager.QUEST2 && gp.questManager.isQuestActive(QuestManager.QUEST2)) {
 
@@ -2736,154 +2635,6 @@ public class UI {
             }
         }
 
-    }
-    /** Renders the readable panel for any of the 3 history book items. */
-    public void drawHistoryBookPanel() {
-        g2.setColor(new Color(0, 0, 0, 180));
-        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-
-        int panelW = gp.tileSize * 15;
-        int panelH = gp.tileSize * 10;
-        int panelX = gp.screenWidth  / 2 - panelW / 2;
-        int panelY = gp.screenHeight / 2 - panelH / 2;
-        drawSubWindow(panelX, panelY, panelW, panelH);
-
-        // Determine which tomo
-        String tomoLabel;
-        String[] leftLines;
-        String[] rightLines;
-
-        if (activeLetter.equals("History I")) {
-            tomoLabel = "History I The Socio-Political Landscape";
-            leftLines = new String[]{
-                    "During the 19th century, the Spanish colonial",
-                    "socio-economic policies heavily burdened native",
-                    "Filipinos. Key systems included Reduccion, Polo y",
-                    "Servicio, and Bandala. The multifaceted taxation",
-                    "system required anyone aged 18 and above to",
-                    "pay the Cedula annually alongside the ",
-                    "Sanctorum (church tax) and the Tribute", "(paid in cash or kind).",
-                    "",
-                    " For 150 years, the economy revolved around the",
-                    "restrictive Galleon Trade between Manila and",
-                    "Acapulco, Mexico. In this highly lucrative",
-                    "network, silver was the primary payment,",
-                    "and trade tickets were called Boletas."
-            };
-            rightLines = new String[]{
-                    "The global landscape shifted when the opening",
-                    "of the Suez Canal created a direct route",
-                    "between Europe and Asia, shortening travel",
-                    "to the Philippines. Spurred by the Industrial",
-                    "Revolution, Spain opened the Philippine economy",
-                    "to world commerce. The archipelago became",
-                    "a supplier of raw materials through cash-crop",
-                    "agriculture. While this generated enough wealth",
-                    "for elite families to send their sons to Europe",
-                    "for education, exposure to Western societies",
-                    "ultimately left these educated Filipinos","disenchanted with Spanish colonial rule."
-
-            };
-        }
-
-        else if (activeLetter.equals("History II")) {
-            tomoLabel = "History II The Socio-Economic Landscape";
-            leftLines = new String[]{
-                    "The society imposed by the Spaniards was",
-                    "rigidly structured and deeply unequal. At the",
-                    "core of social life was a strict racial hierarchy.",
-                    "",
-                    "At the very top were the Peninsulares (Spaniards",
-                    "born in Spain), followed by the Insulares",
-                    "(Spaniards born in the Philippines). Below them",
-                    "were the Mestizos, then the Native Filipinos,",
-                    "and finally, at the bottom of the pyramid, the",
-                    "Indios",
-                    "",
-                    "The political structure was similarly hierarchical.",
-                    "The highest authority in the colony was the",
-                    "Governor-General. Beneath him were the Alcalde",
-                    "Mayor, who governed the Alcaldia (provinces);",
-                    "the Gobernadorcillo, who oversaw the Pueblo",
-                    "(towns)",
-            };
-            rightLines = new String[]{
-                    "and the Cabeza de Barangay, who managed the",
-                    "Barrio (villages). Because the Governor-General",
-                    "and other top officials held an immense",
-                    "amount of power, abuse was common.",
-                    "",
-
-                    "To investigate these abuses and maintain a",
-                    "system of checks and balances, the Spanish",
-                    "Crown created oversight bodies such as the",
-                    "Residencia, the Visitador, and the Royal",
-                    "Audencia"
-            };
-        }
-
-        else {
-            // History III
-            tomoLabel = "History III Socio-Polical Policies by the Spaniards";
-            leftLines = new String[]{
-                    "Education during this era was highly controlled",
-                    "and segregated by gender. For higher education,",
-                    "the University of Santo Tomas (UST) was the",
-                    "existing institution in the Philippines. Secondary",
-                    "education was divided: schools for boys included",
-                    "the Colegio de Santo Tomas, Colegio de San Juan",
-                    "de Letran, and Ateneo Municipal; while schools",
-                    "for girls included Santa Isabel, La Concordia,",
-                    "Santa Rosa, and Santa Catalina.",
-                    "",
-                    "A major turning point was the Educational Decree",
-                    "of 1863. This decree mandated the establishment",
-                    "of at least one primary school for boys and one for",
-                    "girls in every major town. It also ordered the",
-                    "establishment",
-
-            };
-            rightLines = new String[]{
-                    "of a Teacher Training School, placed the public",
-                    "school system under government supervision,",
-                    "and required the use of Spanish as the medium ",
-                    "of instruction in all schools. Despite these ",
-                    "reforms, the educational system during the Spanish",
-                    "period suffered from severe defects. It was",
-                    "characterized by an overemphasis on religion, a ",
-                    "complete absence of academic freedom, pervasive ",
-                    "racial discrimination, and a highly",
-                    "limited curriculum."
-            };
-        }
-
-        // Title
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28F));
-        g2.setColor(new Color(255, 220, 80));
-        int titleX = getXforCenter(tomoLabel);
-        g2.drawString(tomoLabel, titleX, panelY + 44);
-
-        // Body
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
-        g2.setColor(Color.white);
-        int leftX  = panelX + 25;
-        int rightX = panelX + panelW / 2 + 10;
-        int startY = panelY + 82;
-        int lineH  = 23;
-
-        for (String line : leftLines)  { g2.drawString(line, leftX,  startY); startY += lineH; }
-        startY = panelY + 82;
-        for (String line : rightLines) { g2.drawString(line, rightX, startY); startY += lineH; }
-
-        // Close prompt
-        g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
-        g2.setColor(new Color(200, 200, 200));
-        g2.drawString("[ ENTER ] to continue", panelX + panelW - 210, panelY + panelH - 15);
-
-        if (gp.keyP.enterPressed) {
-            gp.keyP.enterPressed = false;
-            showPoemPanel = false;
-        }
     }
 
     public void drawPoemPanel() {
