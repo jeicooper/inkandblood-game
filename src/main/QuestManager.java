@@ -913,6 +913,7 @@ public class QuestManager {
 
     public void giveUltimoAdios() {
         quest7Stage = Q7_DONE;
+        gameEndTime = System.currentTimeMillis();
         gp.player.inventory.add(new object.OBJ_MiUltimoAdios(gp));
         gp.ui.showMessage("You received Mi Ultimo Adios.");
         questState[QUEST7] = STATE_COMPLETED;
