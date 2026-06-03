@@ -292,7 +292,7 @@ public class AssessmentPanel {
 
     private void finish() {
         gp.questManager.assessmentScore = score;
-        gp.cutsceneManager.startIntroCutscene();
+        gp.cutsceneManager.startContextCutscene();
     }
 
     public void draw(Graphics2D g2) {
@@ -354,8 +354,6 @@ public class AssessmentPanel {
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     }
 
-    // Draws the active speaker's bubble using the exact same style as drawNarrationBubble.
-    // Narrator bubble stays on the left (same as always). Renato's is mirrored on the right.
     private void drawDebateBubble(Graphics2D g2, String text, boolean narratorActive) {
         int bx = narratorActive ? bubbleX() : gp.screenWidth - bubbleX() - bubbleW();
         int by = bubbleY();

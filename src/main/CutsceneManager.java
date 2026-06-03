@@ -6,10 +6,23 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST_MEMORIES_INTRO, QUEST_KEEPSAKES_INTRO, QUEST8_INTRO, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
+    private enum Scene { NONE, CONTEXT, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST_MEMORIES_INTRO, QUEST_KEEPSAKES_INTRO, QUEST8_INTRO, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
         EXECUTION_WALK, ENDING_SCROLL, STATS_SCREEN }
 
     private Scene activeScene = Scene.NONE;
+
+    private final String[][] contextLines = {
+            { "In the 19th Century, Spanish rule binds native Filipinos",
+                    "through heavy taxes and forced labor." },
+            { "While the new Suez Canal brings global trade and wealth",
+                    "to a few elite families, a strict racial hierarchy keeps",
+                    "the powerful Peninsulares at the top",
+                    "and the oppressed Indios at the bottom." },
+            { "Faced with absolute colonial power and heavily censored education,",
+                    "a new generation of educated Filipinos begins to awaken",
+                    "and question their reality." },
+            { "Let us journey back to where the fire was first lit." }
+    };
 
     // INTRO
     private final String [][] introLine = {
@@ -365,8 +378,10 @@ public class CutsceneManager {
     private static final Color GUARD_DIALOGUE_COLOR = new Color(220, 60, 60);
     private static final Color RIZAL_DIALOGUE_COLOR = new Color(255, 220, 100);
 
-    // ── core fade state ──────────────────────────────────────────────────────
 
+    public void startContextCutscene() {
+        reset(Scene.CONTEXT);
+    }
     public void startIntroCutscene() {
         reset(Scene.INTRO);
     }
@@ -538,6 +553,8 @@ public class CutsceneManager {
 
     private String[][] activeLines() {
         switch (activeScene) {
+            case CONTEXT:
+                return contextLines;
             case INTRO:
                 return introLine;
             case ENROLLMENT:
@@ -575,6 +592,9 @@ public class CutsceneManager {
 
     private void applyEndOfScene() {
         switch (activeScene) {
+            case CONTEXT:
+                startIntroCutscene();
+                break;
             case INTRO:
                 gp.gameState = gp.playState;
                 gp.playMusic(0);
