@@ -68,6 +68,8 @@ public class NPCDexUI {
                 "/npc/consuelo/consuelo_down_1",
                 "/npc/maximo/maximo_down_1",
                 "/npc/paciano/paciano_down_1",
+                "/npc/gwardya/gwardya_down_1",
+                "/npc/judge/judge_down",
                 "/npc/marcelo/marcelo_down"
         };
 

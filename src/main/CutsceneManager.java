@@ -11,6 +11,7 @@ public class CutsceneManager {
 
     private Scene activeScene = Scene.NONE;
 
+    // CONTEXT (plays before INTRO, after assessment)
     private final String[][] contextLines = {
             { "In the 19th Century, Spanish rule binds native Filipinos",
                     "through heavy taxes and forced labor." },
@@ -348,10 +349,11 @@ public class CutsceneManager {
 
     private int     ewAimFrame  = 0;
 
-    private int   currentLine = 0;
-    private int   fadeState   = 0;
-    private float alpha       = 0f;
-    private float blackAlpha  = 1f;
+    private int   currentLine    = 0;
+    private int   fadeState      = 0;
+    private float alpha          = 0f;
+    private float blackAlpha     = 1f;
+    private boolean pendingAdvance = false;
     private static final float FADE_SPEED       = 0.04f;
     private static final float BLACK_FADE_SPEED = 0.018f;
     private boolean applied = false;
@@ -380,6 +382,7 @@ public class CutsceneManager {
     private static final Color GUARD_DIALOGUE_COLOR = new Color(220, 60, 60);
     private static final Color RIZAL_DIALOGUE_COLOR = new Color(255, 220, 100);
 
+    // ── core fade state ──────────────────────────────────────────────────────
 
     public void startContextCutscene() {
         reset(Scene.CONTEXT);
@@ -473,6 +476,7 @@ public class CutsceneManager {
         }
 
         if (fadeState == 0) {
+            // black screen fades out, then text fades in
             blackAlpha -= BLACK_FADE_SPEED;
             if (blackAlpha <= 0f) {
                 blackAlpha = 0f;
@@ -480,6 +484,7 @@ public class CutsceneManager {
                 if (alpha >= 1f) { alpha = 1f; fadeState = 1; }
             }
         } else if (fadeState == 2) {
+            // text fades out, then black fades in (last slide only)
             alpha -= FADE_SPEED;
             if (alpha <= 0f) {
                 alpha = 0f;
@@ -493,8 +498,6 @@ public class CutsceneManager {
                         if (activeScene == sceneBefore && activeScene != Scene.EXECUTION_WALK) {
                             gp.gameState = gp.playState;
                         }
-                    } else if (activeScene != Scene.EXECUTION_WALK) {
-                        gp.gameState = gp.playState;
                     }
                 }
             }
@@ -504,7 +507,12 @@ public class CutsceneManager {
     public void advance() {
         if (fadeState != 1) return;
         currentLine++;
-        if (currentLine >= activeLines().length) fadeState = 2;
+        if (currentLine >= activeLines().length) {
+            // last slide — trigger dramatic fade out
+            currentLine = activeLines().length - 1;
+            pendingAdvance = true;
+            fadeState = 2;
+        }
     }
 
     public void draw(Graphics2D g2) {
@@ -560,6 +568,7 @@ public class CutsceneManager {
         }
         g2.setComposite(old);
 
+        // black overlay for dramatic fade in/out — drawn last, on top of everything
         if (blackAlpha > 0f) {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, blackAlpha));
             g2.setColor(Color.black);
@@ -1326,12 +1335,13 @@ public class CutsceneManager {
     }
 
     private void reset(Scene scene) {
-        activeScene = scene;
-        currentLine = 0;
-        fadeState   = 0;
-        alpha       = 0f;
-        blackAlpha  = 1f;
-        applied     = false;
-        gp.gameState = gp.cutsceneState;
+        activeScene    = scene;
+        currentLine    = 0;
+        fadeState      = 0;
+        alpha          = 0f;
+        blackAlpha     = 1f;
+        pendingAdvance = false;
+        applied        = false;
+        gp.gameState   = gp.cutsceneState;
     }
 }
