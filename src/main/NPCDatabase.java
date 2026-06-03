@@ -153,22 +153,22 @@ public class NPCDatabase {
 
             { "pedro",
                     "Pedro Paterno",             "Pedro",
-                    "Patron of the Arts",        "Chapter 3", "Quest 5: Noli Me Tangere",
+                    "Patron of the Arts",        "Chapter 3", "Quest 7: Noli Me Tangere",
                     "A wealthy Filipino intellectual and writer in Madrid who provided moral and financial support to Rizal as he worked on his novel. He understood the weight of what Rizal was trying to do. He was a Filipino intellectual who later negotiated with Spanish authorities during Rizal’s time. Though controversial, he was part of the political environment surrounding Rizal." },
 
             { "consuelo",
                     "Consuelo Ortiga",           "Consuelo",
-                    "Friend in Madrid",          "Chapter 3", "Quest 5: Noli Me Tangere",
+                    "Friend in Madrid",          "Chapter 3", "Quest 7: Noli Me Tangere",
                     "A charming and intelligent woman in Madrid's Filipino expatriate circle. Her friendship helped sustain Rizal during the lonely, grueling months of writing Noli Me Tangere. Their connection reflects Rizal’s romantic side, though it did not develop into a serious relationship." },
 
             { "maximo",
                     "Maximo Viola",              "Maximo",
-                    "Financier of the Noli Me Tangere",     "Chapter 3", "Quest 5: Noli Me Tangere",
+                    "Financier of the Noli Me Tangere",     "Chapter 3", "Quest 5: Mga Alaala",
                     "Maximo Viola was the man who made the Noli Me Tangere possible. When Rizal had no money left to print his novel, Viola provided the funds. He received the first signed copy in return. He was one of Rizal’s closest friends and financial supporter. He helped fund the publication of Noli Me Tangere. His loyalty and belief in Rizal’s work were crucial to its success." },
 
             { "guardiacivil",
                     "Guardia Civil",                     "Guardia",
-                    "Colonial Officer",          "Chapter 4", "Quest 7: Consummatum Est",
+                    "Colonial Officer",          "Chapter 4", "Quest 9: Consummatum Est",
                     "A soldier of the Spanish colonial authority stationed at Cuartel de España. " +
                             "He presented the evidence gathered against Rizal — letters found among rebels, " +
                             "photographs displayed as war banners — and insisted that Rizal's pen was the spark " +
@@ -176,7 +176,7 @@ public class NPCDatabase {
 
             { "judge",
                     "The Judge of Cuartel de España",    "The Judge",
-                    "Military Judge",            "Chapter 4", "Quest 7: Consummatum Est",
+                    "Military Judge",            "Chapter 4", "Quest 9: Consummatum Est",
                     "The presiding officer of the military council that tried José Rizal in December 1896. " +
                             "He found Rizal guilty of illegal association, rebellion, and sedition, and signed " +
                             "the death warrant ordering him to be shot at Bagumbayan on the morning of " +
@@ -185,8 +185,12 @@ public class NPCDatabase {
 
             { "josephine",
                     "Marie Bernadette Josephine Bracken",                 "Dulce Extranjera",
-                    "Common-law Wife",           "Chapter 4", "Quest 7: Consummatum Est",
+                    "Common-law Wife",           "Chapter 4", "Quest 9: Consummatum Est",
                     "Born in Hong Kong to Irish parents, Josephine arrived in the remote town of Dapitan accompanying her blind adoptive father. She soon fell in love with Rizal, becoming his constant companion and domestic partner during his final years of exile. Despite the lack of a formal church wedding and the initial suspicion of Rizal's family, she remained fiercely loyal. She lived with him in Fort Santiago during his final days and, following his execution, she bravely joined the revolutionary forces in Cavite, even participating in field operations against the Spanish" },
+            { "marcelo",
+                    "Marcelo H. del Pilar",        "Plaridel",
+                    "Propagandist & Editor",        "Chapter 3", "Quest 7: Ang Panulat at ang Pahayagan",
+                    "Marcelo Hilario del Pilar y Gatmaitan, known as Plaridel, was a Filipino writer, lawyer, and leading propagandist of the Reform Movement. As editor of La Solidaridad, he worked alongside Rizal to expose colonial abuses through the press. He championed freedom of speech, representation in the Spanish Cortes, and secularisation of Philippine parishes. Del Pilar died in poverty in Barcelona in 1896, never seeing the independence he fought for — but his pen helped light the fire of revolution." }
     };
 
     public Set<String> unlockedNPCs = new HashSet<>();

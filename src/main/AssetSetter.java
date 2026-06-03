@@ -492,6 +492,39 @@ public class AssetSetter {
         gp.npc[49].worldY = 28 * gp.tileSize;
     }
 
+    public void activateQuest8() {
+        for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
+        for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;
+
+        // Marcelo
+        gp.npc[52] = new NPC_Marcelo(gp);
+        gp.npc[52].worldX = 20 * gp.tileSize;
+        gp.npc[52].worldY = 34 * gp.tileSize;
+
+        int stage = gp.questManager.quest8Stage;
+
+        // Letter to the Women of Malolos
+        if (!gp.questManager.q8MalolosCollected) {
+            gp.obj[0] = new OBJ_MalolosLetter(gp);
+            gp.obj[0].worldX = 14 * gp.tileSize;
+            gp.obj[0].worldY = 33 * gp.tileSize;
+        }
+
+        // Philippines a Century Hence
+        if (stage >= QuestManager.Q8_FIND_CENTURY && !gp.questManager.q8CenturyCollected) {
+            gp.obj[1] = new OBJ_CenturyHence(gp);
+            gp.obj[1].worldX = 16 * gp.tileSize;
+            gp.obj[1].worldY = 33 * gp.tileSize;
+        }
+
+        // Indolence of the Filipinos
+        if (stage >= QuestManager.Q8_FIND_INDOLENCE && !gp.questManager.q8IndolenceCollected) {
+            gp.obj[2] = new OBJ_IndolenceEssay(gp);
+            gp.obj[2].worldX = 18 * gp.tileSize;
+            gp.obj[2].worldY = 33 * gp.tileSize;
+        }
+    }
+
     public void activateQuest7FortSantiago() {
         for (int i = 0; i < gp.npc.length; i++) gp.npc[i] = null;
         for (int i = 0; i < gp.obj.length; i++) gp.obj[i] = null;

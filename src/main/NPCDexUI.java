@@ -68,6 +68,7 @@ public class NPCDexUI {
                 "/npc/consuelo/consuelo_down_1",
                 "/npc/maximo/maximo_down_1",
                 "/npc/paciano/paciano_down_1",
+                "/npc/marcelo/marcelo_down"
         };
 
         dexPortraits = new BufferedImage[portraitPaths.length];

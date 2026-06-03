@@ -6,7 +6,7 @@ public class CutsceneManager {
 
     GamePanel gp;
 
-    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST_MEMORIES_INTRO, QUEST_KEEPSAKES_INTRO, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
+    private enum Scene { NONE, INTRO, CHAPTER2, ENROLLMENT, QUEST4, CHAPTER3, QUEST_MEMORIES_INTRO, QUEST_KEEPSAKES_INTRO, QUEST8_INTRO, QUEST6_INTRO, CHAPTER4_INTRO, FORT_SANTIAGO, EXECUTION,
         EXECUTION_WALK, ENDING_SCROLL, STATS_SCREEN }
 
     private Scene activeScene = Scene.NONE;
@@ -74,7 +74,7 @@ public class CutsceneManager {
     private final String[][] questMemoriesIntroLines = {
             { "The shores of Manila faded into the horizon long ago." },
             { "I left my homeland not just to study, but to observe...",
-              "to gather the knowledge of the world." },
+                    "to gather the knowledge of the world." },
             { "From 1882 to 1892, I became a wanderer." },
             { "But before I can pour my soul into my writing,",
                     "I must organize my mind." }
@@ -83,12 +83,24 @@ public class CutsceneManager {
     private final String[][] questKeepsakesIntroLines = {
             //women of rizal
             {"Behind every great endeavor of a man,",
-            "there is the silent strength or lingering memory of a woman."},
+                    "there is the silent strength or lingering memory of a woman."},
             {"My heart has been a traveler just as much as my feet."},
             {"I have loved, I have lost,",
-            "and I have walked away for the sake of duty."},
+                    "and I have walked away for the sake of duty."},
             {"In my quietest moments, I open this old wooden box."},
             {"Inside are the fragile fragments of the romances that shaped my soul."}
+    };
+
+
+    private final String[][] quest8IntroLines = {
+            { "While my novels painted the cancer of our society,",
+                    "my essays aimed to diagnose the root of the disease." },
+            { "From my desk in Europe, the battle was not fought",
+                    "with swords, but with ink." },
+            { "I sought to defend our dignity, predict our future,",
+                    "and empower the women who will raise our next generation." },
+            { "The printing press of La Solidaridad is hungry for truth." },
+            { "I must finalize my drafts before the courier arrives." }
     };
 
     // QUEST 6 INTRO
@@ -376,6 +388,9 @@ public class CutsceneManager {
     public void startQuestKeepsakesIntro() {
         reset(Scene.QUEST_KEEPSAKES_INTRO);
     }
+    public void startQuest8Intro() {
+        reset(Scene.QUEST8_INTRO);
+    }
     public void startQuest6StartCutscene() {
         reset(Scene.QUEST6_INTRO);
     }
@@ -528,6 +543,8 @@ public class CutsceneManager {
                 return questMemoriesIntroLines;
             case QUEST_KEEPSAKES_INTRO:
                 return questKeepsakesIntroLines;
+            case QUEST8_INTRO:
+                return quest8IntroLines;
             case QUEST6_INTRO:
                 return quest6IntroLines;
             case CHAPTER4_INTRO:
@@ -575,6 +592,9 @@ public class CutsceneManager {
             case QUEST_KEEPSAKES_INTRO:
                 gp.ui.questPageNum = 4;
                 break;
+            case QUEST8_INTRO:
+                gp.questManager.onQuest8CutsceneDone();
+                break;
             case QUEST6_INTRO:
                 gp.questManager.startQuest6();
                 break;
@@ -582,7 +602,7 @@ public class CutsceneManager {
                 applyChapter4Changes();
                 clearWorld();
                 gp.questManager.startQuest7();
-                gp.ui.questPageNum = 6;
+                gp.ui.questPageNum = 7;
                 break;
             case FORT_SANTIAGO:
                 applyFortSantiagoChanges();

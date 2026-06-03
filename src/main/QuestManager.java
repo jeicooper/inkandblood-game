@@ -151,6 +151,29 @@ public class QuestManager {
     public int keepsakeCount    = 0;
     public boolean[] keepsakeFound = new boolean[9];
 
+    public static final int QUEST8 = 10;
+
+    public static final int Q8_NOT_STARTED     = 0;
+    public static final int Q8_CUTSCENE        = 1;
+    public static final int Q8_TALK_MARCELO    = 2;
+    public static final int Q8_FIND_MALOLOS    = 3;
+    public static final int Q8_RETURN_MALOLOS  = 4;
+    public static final int Q8_FIND_CENTURY    = 5;
+    public static final int Q8_RETURN_CENTURY  = 6;
+    public static final int Q8_FIND_INDOLENCE  = 7;
+    public static final int Q8_RETURN_INDOLENCE = 8;
+    public static final int Q8_FINAL_TALK      = 9;
+    public static final int Q8_DONE            = 10;
+
+    public int quest8Stage = Q8_NOT_STARTED;
+    public boolean q8MalolosCollected   = false;
+    public boolean q8CenturyCollected   = false;
+    public boolean q8IndolenceCollected = false;
+
+    private boolean pendingQuest8Cutscene = false;
+    private int cutsceneDelay9 = 0;
+
+
     // ===== QUEST_KEEPSAKES =====
     public void onKeepsakeBoxOpened() {
         if (questKsStage != QK_INTERACT_BOX) return;
@@ -245,9 +268,10 @@ public class QuestManager {
             case QUEST4:           return 4;
             case QUEST_MEMORIES:   return 5;
             case QUEST_KEEPSAKES:  return 6;
-            case QUEST5:           return 7;
-            case QUEST6:           return 8;
-            case QUEST7:           return 9;
+            case QUEST8:           return 7;
+            case QUEST5:           return 8;
+            case QUEST6:           return 9;
+            case QUEST7:           return 10;
             default:               return questId + 1;
         }
     }
@@ -259,9 +283,10 @@ public class QuestManager {
             case QUEST3:           return "Pagpasok sa Ateneo";
             case QUEST4:           return "Ang Kampeon ng Roma";
             case QUEST_MEMORIES:   return "Mga Alaala";
-            case QUEST_KEEPSAKES:  return "Ang Kahon ng mga Alaala";
+            case QUEST_KEEPSAKES:  return "Mga Lihim ng Puso";
             case QUEST5:           return "Noli Me Tangere";
             case QUEST6:           return "El Filibusterismo";
+            case QUEST8:           return "Mga Liham at Sanaysay";
             case QUEST7:           return "Ang Huling Araw";
             default:               return "Quest " + questDisplayNumber(questId);
         }
@@ -344,7 +369,6 @@ public class QuestManager {
                 questState[QUEST_MEMORIES] = STATE_ACTIVE;
                 questMemStage = QM_TALK_MAXIMO_FIRST;
                 gp.ui.questPageNum = 3;
-                // Assets placed at end of QUEST_MEMORIES_INTRO cutscene chain
             }
         }
 
@@ -363,17 +387,12 @@ public class QuestManager {
             }
         }
 
-        // TRANSITION FROM QUEST_KEEPSAKES TO QUEST5 (Noli Me Tangere)
+        // TRANSITION FROM QUEST_KEEPSAKES TO QUEST8 (La Solidaridad)
         if (pendingQuestKeepsakesCutscene) {
             cutsceneDelay8--;
             if (cutsceneDelay8 <= 0) {
                 pendingQuestKeepsakesCutscene = false;
-                currentQuest = QUEST5;
-                questState[QUEST5] = STATE_ACTIVE;
-                quest5Stage = TALK_PEDRO;
-                gp.ui.questPageNum = 5;
-                gp.aSetter.activateChapter3();
-                gp.saveManager.save();
+                startQuest8();
             }
         }
 
@@ -410,6 +429,15 @@ public class QuestManager {
             if (cutsceneDelay7 <= 0) {
                 pendingQuest7EndCutscene = false;
                 gp.cutsceneManager.startQuest7EndCutscene();
+            }
+        }
+
+        // QUEST 8 INTRO cutscene
+        if (pendingQuest8Cutscene) {
+            cutsceneDelay9--;
+            if (cutsceneDelay9 <= 0) {
+                pendingQuest8Cutscene = false;
+                gp.cutsceneManager.startQuest8Intro();
             }
         }
     }
@@ -806,7 +834,7 @@ public class QuestManager {
         quest6Stage = TALK_PACIANO_Q6;
         q6ObjectsCollected = 0;
         elFiliParts = new boolean[5];
-        gp.ui.questPageNum = 5;
+        gp.ui.questPageNum = 6;
         gp.aSetter.activateQuest6();
         gp.saveManager.save();
     }
@@ -875,7 +903,7 @@ public class QuestManager {
         currentQuest = QUEST7;
         questState[QUEST7] = STATE_ACTIVE;
         quest7Stage = Q7_TALK_GUARDIA;
-        gp.ui.questPageNum = 6;
+        gp.ui.questPageNum = 7;
         gp.aSetter.activateQuest7Intramuros();
         gp.saveManager.save();
     }
@@ -928,6 +956,80 @@ public class QuestManager {
         gp.saveManager.save();
     }
 
+    // QUEST 8
+    public void startQuest8() {
+        currentQuest = QUEST8;
+        questState[QUEST8] = STATE_ACTIVE;
+        quest8Stage  = Q8_CUTSCENE;
+        gp.ui.questPageNum = 5;
+        gp.aSetter.activateQuest8();
+        pendingQuest8Cutscene = true;
+        cutsceneDelay9 = 60;
+        gp.saveManager.save();
+    }
+
+    public void onQuest8CutsceneDone() {
+        quest8Stage = Q8_TALK_MARCELO;
+    }
+
+    public void onMarceloInitialTalk() {
+        quest8Stage = Q8_FIND_MALOLOS;
+    }
+
+    public void onMalolosPickup() {
+        if (quest8Stage == Q8_FIND_MALOLOS) {
+            q8MalolosCollected = true;
+            quest8Stage        = Q8_RETURN_MALOLOS;
+        }
+    }
+
+    public void onMarceloMalolosDone() {
+        // Marcelo finishes talking about the letter
+        quest8Stage = Q8_FIND_CENTURY;
+    }
+
+    public void onCenturyPickup() {
+        if (quest8Stage == Q8_FIND_CENTURY) {
+            q8CenturyCollected = true;
+            quest8Stage        = Q8_RETURN_CENTURY;
+        }
+    }
+
+    public void onMarceloCenturyDone() {
+        quest8Stage = Q8_FIND_INDOLENCE;
+    }
+
+    public void onIndolencePickup() {
+        if (quest8Stage == Q8_FIND_INDOLENCE) {
+            q8IndolenceCollected = true;
+            quest8Stage          = Q8_RETURN_INDOLENCE;
+        }
+    }
+
+    public void onMarceloIndolenceDone() {
+        quest8Stage = Q8_FINAL_TALK;
+    }
+
+    public void completeQuest8() {
+        quest8Stage  = Q8_DONE;
+        questState[QUEST8] = STATE_COMPLETED;
+
+        gp.player.exp += 3;
+        gp.player.intellect += 4;
+        gp.player.creativity += 3;
+        gp.player.perception += 2;
+
+        gp.ui.showMessage("Quest " + questDisplayNumber(QUEST8) + ": Done!");
+
+        // Transition to Noli Me Tangere
+        currentQuest = QUEST5;
+        questState[QUEST5] = STATE_ACTIVE;
+        quest5Stage = TALK_PEDRO;
+        gp.ui.questPageNum = 6;
+        gp.aSetter.activateChapter3();
+        gp.saveManager.save();
+    }
+
     public boolean isQuestActive(int quest) {
         return questState[quest] == STATE_ACTIVE;
     }
@@ -954,4 +1056,6 @@ public class QuestManager {
         pendingQuest7MidCutscene = v;   if (v) cutsceneDelay6 = 60; }
     public void setPendingQuest7EndCutscene(boolean v) {
         pendingQuest7EndCutscene = v;   if (v) cutsceneDelay7 = 60; }
+    public void setPendingQuest8Cutscene(boolean v) {
+        pendingQuest8Cutscene = v;      if (v) cutsceneDelay9 = 60; }
 }

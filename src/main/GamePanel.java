@@ -673,6 +673,38 @@ public class GamePanel extends JPanel implements Runnable {
                 if (npc[51] != null) targets.add(npc[51]);
             }
         }
+
+        // QUEST 8
+        if (questManager.isQuestActive(QuestManager.QUEST8)) {
+            int stage = questManager.quest8Stage;
+
+            if (stage == QuestManager.Q8_TALK_MARCELO
+                    || stage == QuestManager.Q8_RETURN_MALOLOS
+                    || stage == QuestManager.Q8_RETURN_CENTURY
+                    || stage == QuestManager.Q8_RETURN_INDOLENCE
+                    || stage == QuestManager.Q8_FINAL_TALK) {
+                if (npc[52] != null) targets.add(npc[52]);
+
+            } else if (stage == QuestManager.Q8_FIND_MALOLOS) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && obj[i].name.equals("Letter to the Women of Malolos"))
+                        targets.add(obj[i]);
+                }
+
+            } else if (stage == QuestManager.Q8_FIND_CENTURY) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && obj[i].name.equals("Draft: The Philippines a Century Hence"))
+                        targets.add(obj[i]);
+                }
+
+            } else if (stage == QuestManager.Q8_FIND_INDOLENCE) {
+                for (int i = 0; i < obj.length; i++) {
+                    if (obj[i] != null && obj[i].name.equals("Draft: The Indolence of the Filipinos"))
+                        targets.add(obj[i]);
+                }
+            }
+        }
+
         return targets;
     }
 
@@ -786,6 +818,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void playMusicForQuest(int quest) {
         stopMusic();
         if (quest >= QuestManager.QUEST5
+                || quest == QuestManager.QUEST8
                 || quest == QuestManager.QUEST_MEMORIES
                 || quest == QuestManager.QUEST_KEEPSAKES) {
             playMusic(4);

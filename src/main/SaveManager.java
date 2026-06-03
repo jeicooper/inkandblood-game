@@ -83,6 +83,11 @@ public class SaveManager {
 
         d.quest7Stage = qm.quest7Stage;
 
+        d.quest8Stage          = qm.quest8Stage;
+        d.q8MalolosCollected   = qm.q8MalolosCollected;
+        d.q8CenturyCollected   = qm.q8CenturyCollected;
+        d.q8IndolenceCollected = qm.q8IndolenceCollected;
+
         d.pendingChapter2Cutscene    = false;
         d.pendingQuest4Cutscene      = false;
         d.pendingChapter3Cutscene    = false;
@@ -194,6 +199,11 @@ public class SaveManager {
 
         qm.quest7Stage = d.quest7Stage;
 
+        qm.quest8Stage          = d.quest8Stage;
+        qm.q8MalolosCollected   = d.q8MalolosCollected;
+        qm.q8CenturyCollected   = d.q8CenturyCollected;
+        qm.q8IndolenceCollected = d.q8IndolenceCollected;
+
         // Always clear all pending cutscene flags on load
         qm.setPendingChapter2Cutscene(false);
         qm.setPendingQuest4Cutscene(false);
@@ -204,6 +214,7 @@ public class SaveManager {
         qm.setPendingQuest7IntroCutscene(false);
         qm.setPendingQuest7MidCutscene(false);
         qm.setPendingQuest7EndCutscene(false);
+        qm.setPendingQuest8Cutscene(false);
 
         // Statistics
         qm.gameStartTime  = d.gameStartTime;
@@ -285,24 +296,31 @@ public class SaveManager {
 
         } else if (qm.currentQuest == QuestManager.QUEST_KEEPSAKES
                 && qm.isQuestCompleted(QuestManager.QUEST_KEEPSAKES)) {
+            qm.currentQuest = QuestManager.QUEST8;
+            qm.questState[QuestManager.QUEST8] = QuestManager.STATE_ACTIVE;
+            qm.quest8Stage = QuestManager.Q8_TALK_MARCELO;
+            gp.ui.questPageNum = 5;
+
+        } else if (qm.currentQuest == QuestManager.QUEST8
+                && qm.isQuestCompleted(QuestManager.QUEST8)) {
             qm.currentQuest = QuestManager.QUEST5;
             qm.questState[QuestManager.QUEST5] = QuestManager.STATE_ACTIVE;
             qm.quest5Stage = QuestManager.TALK_PEDRO;
-            gp.ui.questPageNum = 5;
+            gp.ui.questPageNum = 6;
 
         } else if (qm.currentQuest == QuestManager.QUEST5
                 && qm.isQuestCompleted(QuestManager.QUEST5)) {
             qm.currentQuest = QuestManager.QUEST6;
             qm.questState[QuestManager.QUEST6] = QuestManager.STATE_ACTIVE;
             qm.quest6Stage = QuestManager.TALK_PACIANO_Q6;
-            gp.ui.questPageNum = 5;
+            gp.ui.questPageNum = 6;
 
         } else if (qm.currentQuest == QuestManager.QUEST6
                 && qm.isQuestCompleted(QuestManager.QUEST6)) {
             qm.currentQuest = QuestManager.QUEST7;
             qm.questState[QuestManager.QUEST7] = QuestManager.STATE_ACTIVE;
             qm.quest7Stage = QuestManager.Q7_TALK_GUARDIA;
-            gp.ui.questPageNum = 5;
+            gp.ui.questPageNum = 7;
         }
     }
 
@@ -352,6 +370,16 @@ public class SaveManager {
             gp.tileM.loadMap("/maps/Chapter3.txt");
             gp.player.loadSprite3("");
             gp.aSetter.activateChapter3();
+            placePlayer(23, 35);
+        }
+
+        // QUEST8
+        if (cq == QuestManager.QUEST8) {
+            gp.currentMap         = "/maps/Chapter3.txt";
+            gp.currentSublocation = "EUROPE";
+            gp.tileM.loadMap("/maps/Chapter3.txt");
+            gp.player.loadSprite3("");
+            gp.aSetter.activateQuest8();
             placePlayer(23, 35);
         }
 
@@ -572,6 +600,7 @@ public class SaveManager {
     private int detectSpriteVersion() {
         int q = gp.questManager.currentQuest;
         if (q >= QuestManager.QUEST5) return 3;
+        if (q == QuestManager.QUEST8) return 3;
         if (q == QuestManager.QUEST_MEMORIES) return 3;
         if (q == QuestManager.QUEST_KEEPSAKES) return 3;
         if (q >= QuestManager.QUEST3) return 2;
@@ -602,6 +631,9 @@ public class SaveManager {
             case "Old Letter":                 return new OBJ_OldLetter(gp);
             case "Worn Letter":                return new OBJ_WornLetter(gp);
             case "Mi Ultimo Adios":            return new OBJ_MiUltimoAdios(gp);
+            case "Letter to the Women of Malolos": return new OBJ_MalolosLetter(gp);
+            case "Draft: The Philippines a Century Hence": return new OBJ_CenturyHence(gp);
+            case "Draft: The Indolence of the Filipinos": return new OBJ_IndolenceEssay(gp);
             default:
                 System.out.println("SaveManager: unknown item '" + name + "', skipping.");
                 return null;

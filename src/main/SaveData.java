@@ -66,6 +66,11 @@ public class SaveData implements Serializable {
 
     public int  quest7Stage;
 
+    public int     quest8Stage          = 0;
+    public boolean q8MalolosCollected   = false;
+    public boolean q8CenturyCollected   = false;
+    public boolean q8IndolenceCollected = false;
+
     public String[] inventoryItemNames = new String[0];
 
     public String currentMap;

@@ -289,6 +289,9 @@ public class Player extends  Entity{
             if (getMemSecondIndex(objectName) >= 0) return;
             if (objectName.equals("Draft of Noli Me Tangere")) return;
             if (objectName.equals("Draft of El Filibusterismo")) return;
+            if (objectName.equals("Letter to the Women of Malolos")) return;
+            if (objectName.equals("Draft: The Philippines a Century Hence")) return;
+            if (objectName.equals("Draft: The Indolence of the Filipinos")) return;
 
             if (inventory.size() != maxInventorySize) {
 
@@ -393,11 +396,9 @@ public class Player extends  Entity{
                         "But the greatest romance of my life... the one that demands\n" +
                                 "my ultimate devotion... is my Motherland.",
 
-                        "It is time to lock the box.\n" +
-                                "The chapter of my youth is closed.",
+                        "It is time to lock the box. The chapter of my youth is closed.",
 
-                        "Now, I must return to the manuscript.\n" +
-                                "Paciano is right... El Filibusterismo must be finished."
+                        "Now, I must return to the manuscript. Paciano is right...\nNoli Me Tangere must be finished."
                 };
                 if (box.lineIndex < closingLines.length) {
                     gp.ui.currentDialogue = closingLines[box.lineIndex];
@@ -464,32 +465,32 @@ public class Player extends  Entity{
             String[] messages = {
                     //Medical Books
                     "During my time in Spain from 1882 to 1885, I observed life and culture,\n" +
-                    "joined the Circulo Hispano Filipino, and enrolled at the Universidad\n" +
-                    "Central de Madrid to study medicine and Philosophy and Letters.",
+                            "joined the Circulo Hispano Filipino, and enrolled at the Universidad\n" +
+                            "Central de Madrid to study medicine and Philosophy and Letters.",
 
                     //Letters and Postcards
                     "While on the Grand Tour of Europe in 1887, I toured around different\n" +
-                    "places and  sceneries, but the most profound moment was finally\n " +
-                    "meeting my true brother of the soul, Ferdinand Blumentritt.",
+                            "places and  sceneries, but the most profound moment was finally\n " +
+                            "meeting my true brother of the soul, Ferdinand Blumentritt.",
 
                     //Dusty Manuscript
                     "In London from 1888 to 1889, I worked to improve in the English\n" +
-                    "Language and labored to annotate Morga's work, the Sucesos de las\n" +
-                    "Islas Filipinas, to prove the richness of our history.",
+                            "Language and labored to annotate Morga's work, the Sucesos de las\n" +
+                            "Islas Filipinas, to prove the richness of our history.",
 
                     //Legal Docs
                     "Starting in Brussels in 1890 where I received bad news about my\nfamily, I" +
-                    "rushed to Madrid from 1890 to 1891 to seek legal means\n" +
-                    " for them and the Calamba Tenants.",
+                            "rushed to Madrid from 1890 to 1891 to seek legal means\n" +
+                            " for them and the Calamba Tenants.",
 
                     //Envelope
                     "It was also during my stay in Madrid from 1890 to 1891 that I suffered\n" +
-                    "the heartbreaking blow of discovering that my Leonor Rivera had\n" +
-                    "gotten married to a British Engineer.",
+                            "the heartbreaking blow of discovering that my Leonor Rivera had\n" +
+                            "gotten married to a British Engineer.",
 
                     //Ophthalmoscope
                     "From 1885 to 1887, traveling from Paris to Berlin, I worked as an\n" +
-                    "assistant to Dr. Louis de Wrecker to improve my knowledge in\n" +
+                            "assistant to Dr. Louis de Wrecker to improve my knowledge in\n" +
                             "ophthalmology so I could cure my mother's failing eyesight."
             };
             gp.ui.currentDialogue = messages[memFirstIndex];
@@ -519,6 +520,48 @@ public class Player extends  Entity{
             gp.questManager.onMemSecondPartCollected(memSecondIndex);
             return;
         }
+
+        if (objectName.equals("Letter to the Women of Malolos")) {
+            if (gp.questManager.currentQuest != QuestManager.QUEST8
+                    || gp.questManager.quest8Stage != QuestManager.Q8_FIND_MALOLOS) {
+                gp.ui.showMessage("I am not ready for this yet.");
+                return;
+            }
+            gp.obj[i] = null;
+            gp.playSE(1);
+            gp.ui.showPickup("Letter to the Women of Malolos");
+            gp.questManager.onMalolosPickup();
+            return;
+        }
+
+        // QUEST 8 - The Philippines a Century Hence
+        if (objectName.equals("Draft: The Philippines a Century Hence")) {
+            if (gp.questManager.currentQuest != QuestManager.QUEST8
+                    || gp.questManager.quest8Stage != QuestManager.Q8_FIND_CENTURY) {
+                gp.ui.showMessage("I am not ready for this yet.");
+                return;
+            }
+            gp.obj[i] = null;
+            gp.playSE(1);
+            gp.ui.showPickup("Draft: The Philippines a Century Hence");
+            gp.questManager.onCenturyPickup();
+            return;
+        }
+
+        // QUEST 8 - The Indolence of the Filipinos
+        if (objectName.equals("Draft: The Indolence of the Filipinos")) {
+            if (gp.questManager.currentQuest != QuestManager.QUEST8
+                    || gp.questManager.quest8Stage != QuestManager.Q8_FIND_INDOLENCE) {
+                gp.ui.showMessage("I am not ready for this yet.");
+                return;
+            }
+            gp.obj[i] = null;
+            gp.playSE(1);
+            gp.ui.showPickup("Draft: The Indolence of the Filipinos");
+            gp.questManager.onIndolencePickup();
+            return;
+        }
+
         int manuscriptIndex = getManuscriptIndex(objectName);
         if (manuscriptIndex >= 0 &&
                 gp.questManager.quest5Stage == QuestManager.COLLECT_OBJECTS) {

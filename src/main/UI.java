@@ -1208,9 +1208,9 @@ public class UI {
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
         // page header
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 39f));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 24f));
         g2.setColor(Color.white);
-        String header = "Quests: [" + (questPageNum + 1) + "/7]";
+        String header = "Page: [" + (questPageNum + 1) + "/8]";
         int x = getXforCenter(header);
         int y = frameY + gp.tileSize;
         g2.drawString(header, x, y);
@@ -1902,8 +1902,109 @@ public class UI {
             }
         }
 
-        // ===== PAGE 5: Chapter 3 (Noli + El Fili) =====
+
+        // ===== PAGE 5: Quest 8 — La Solidaridad =====
         else if (questPageNum == 5) {
+
+            boolean q8done   = gp.questManager.isQuestCompleted(QuestManager.QUEST8);
+            boolean q8active = gp.questManager.isQuestActive(QuestManager.QUEST8);
+            int     q8stage  = gp.questManager.quest8Stage;
+
+            final int PAD        = gp.tileSize;
+            final int LEFT_X     = frameX + PAD;
+            final int TITLE_SIZE = 27;
+            final int DESC_SIZE  = 27;
+            final int BODY_SIZE  = 25;
+            final int HINT_SIZE  = 21;
+            final int LINE_H     = 27;
+            final int HINT_H     = 22;
+            final int TOP_Y      = frameY + gp.tileSize * 2;
+
+            int ly = TOP_Y;
+
+            Color q8color = q8done   ? new Color(100, 230, 100)
+                    : q8active ? new Color(255, 220, 80)
+                    :            Color.gray;
+
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD | Font.ITALIC, (float) TITLE_SIZE));
+            g2.setColor(q8color);
+            g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST8) + ":", LEFT_X, ly);
+            ly += LINE_H - 2;
+            g2.drawString("\"" + QuestManager.questDisplayTitle(QuestManager.QUEST8) + "\"" + (q8done ? " COMPLETE" : ""), LEFT_X, ly);
+
+            g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) DESC_SIZE));
+            g2.setColor(q8active || q8done ? Color.lightGray : Color.gray);
+            ly += HINT_H + 2;
+            g2.drawString("The press of La Solidaridad is hungry for truth.", LEFT_X, ly);
+
+            ly += LINE_H + 2;
+
+            if (!q8active && !q8done) {
+                g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                g2.setColor(Color.gray);
+                g2.drawString("[Complete Quest 6 to unlock]", LEFT_X, ly);
+            } else {
+                g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) BODY_SIZE));
+
+                // Step 1: Talk to Marcelo
+                boolean s1 = q8done || q8stage > QuestManager.Q8_TALK_MARCELO;
+                g2.setColor(s1 ? new Color(80, 220, 80) : Color.white);
+                g2.drawString("- Talk to Marcelo H. del Pilar", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 2: Find Letter to Women of Malolos
+                boolean s2 = q8done || gp.questManager.q8MalolosCollected;
+                g2.setColor(s2 ? new Color(80, 220, 80)
+                        : q8stage == QuestManager.Q8_FIND_MALOLOS ? Color.white : Color.gray);
+                g2.drawString("- Find: Letter to the Women of Malolos", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 3: Return to Marcelo
+                boolean s3 = q8done || q8stage > QuestManager.Q8_RETURN_MALOLOS;
+                g2.setColor(s3 ? new Color(80, 220, 80)
+                        : q8stage == QuestManager.Q8_RETURN_MALOLOS ? Color.white : Color.gray);
+                g2.drawString("- Return to Marcelo del Pilar", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 4: Find Century Hence draft
+                boolean s4 = q8done || gp.questManager.q8CenturyCollected;
+                g2.setColor(s4 ? new Color(80, 220, 80)
+                        : q8stage == QuestManager.Q8_FIND_CENTURY ? Color.white : Color.gray);
+                g2.drawString("- Find: The Philippines a Century Hence", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 5: Return to Marcelo
+                boolean s5 = q8done || q8stage > QuestManager.Q8_RETURN_CENTURY;
+                g2.setColor(s5 ? new Color(80, 220, 80)
+                        : q8stage == QuestManager.Q8_RETURN_CENTURY ? Color.white : Color.gray);
+                g2.drawString("- Return to Marcelo del Pilar", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 6: Find Indolence essay
+                boolean s6 = q8done || gp.questManager.q8IndolenceCollected;
+                g2.setColor(s6 ? new Color(80, 220, 80)
+                        : q8stage == QuestManager.Q8_FIND_INDOLENCE ? Color.white : Color.gray);
+                g2.drawString("- Find: The Indolence of the Filipinos", LEFT_X, ly);
+                ly += LINE_H;
+
+                // Step 7: Final talk with Marcelo
+                boolean s7 = q8done;
+                g2.setColor(s7 ? new Color(80, 220, 80)
+                        : (q8stage == QuestManager.Q8_RETURN_INDOLENCE
+                        || q8stage == QuestManager.Q8_FINAL_TALK) ? Color.white : Color.gray);
+                g2.drawString("- Return to Marcelo del Pilar", LEFT_X, ly);
+                ly += LINE_H;
+
+                if (q8done) {
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, (float) HINT_SIZE));
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Quest complete!", LEFT_X, ly);
+                }
+            }
+        }
+
+        // ===== PAGE 6: Chapter 3 (Noli + El Fili) =====
+        else if (questPageNum == 6) {
 
             boolean q5done   = gp.questManager.isQuestCompleted(QuestManager.QUEST5);
             boolean q5active = gp.questManager.isQuestActive(QuestManager.QUEST5);
@@ -2067,8 +2168,8 @@ public class UI {
 
         }
 
-        // ===== PAGE 6: Chapter 4 =====
-        else if (questPageNum == 6) {
+        // ===== PAGE 7: Chapter 4 =====
+        else if (questPageNum == 7) {
             boolean q7done   = gp.questManager.isQuestCompleted(QuestManager.QUEST7);
             boolean q7active = gp.questManager.isQuestActive(QuestManager.QUEST7);
             int     q7stage  = gp.questManager.quest7Stage;
@@ -2168,7 +2269,7 @@ public class UI {
             g2.drawString("< PREV  [A]", frameX + gp.tileSize, btnY);
         }
 
-        if (questPageNum < 6) {
+        if (questPageNum < 7) {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22f));
             g2.setColor(new Color(255, 220, 80));
             String next = "NEXT >  [D]";
@@ -2485,6 +2586,59 @@ public class UI {
                 } else if (ksStage == QuestManager.QK_RETURN_BOX) {
                     g2.setColor(new Color(100, 255, 100));
                     g2.drawString("Return to the Wooden Keepsake Box!", panelX + 12, panelY + 52);
+                }
+            }
+
+
+            // ===== QUEST 8 =====
+            else if (currentQ == QuestManager.QUEST8 && gp.questManager.isQuestActive(QuestManager.QUEST8)) {
+
+                g2.setColor(new Color(255, 220, 80));
+                g2.setFont(g2.getFont().deriveFont(Font.BOLD, 22F));
+                g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST8) + " — " + QuestManager.questDisplayTitle(QuestManager.QUEST8), panelX + 12, panelY + 28);
+
+                g2.setColor(Color.white);
+                g2.setFont(g2.getFont().deriveFont(20F));
+
+                int stage = gp.questManager.quest8Stage;
+
+                if (stage == QuestManager.Q8_TALK_MARCELO) {
+                    g2.drawString("Talk to Marcelo H. del Pilar.", panelX + 12, panelY + 52);
+
+                } else if (stage == QuestManager.Q8_FIND_MALOLOS) {
+                    g2.drawString("Find: Letter to the Women of Malolos", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("It should be on the desk.", panelX + 12, panelY + 72);
+
+                } else if (stage == QuestManager.Q8_RETURN_MALOLOS) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Return to Marcelo del Pilar!", panelX + 12, panelY + 52);
+
+                } else if (stage == QuestManager.Q8_FIND_CENTURY) {
+                    g2.drawString("Find: The Philippines a Century Hence", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("Check the desk for the draft.", panelX + 12, panelY + 72);
+
+                } else if (stage == QuestManager.Q8_RETURN_CENTURY) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Return to Marcelo del Pilar!", panelX + 12, panelY + 52);
+
+                } else if (stage == QuestManager.Q8_FIND_INDOLENCE) {
+                    g2.drawString("Find: The Indolence of the Filipinos", panelX + 12, panelY + 52);
+                    g2.setFont(g2.getFont().deriveFont(Font.ITALIC, 18F));
+                    g2.setColor(new Color(200, 200, 100));
+                    g2.drawString("Look for it near the desk.", panelX + 12, panelY + 72);
+
+                } else if (stage == QuestManager.Q8_RETURN_INDOLENCE
+                        || stage == QuestManager.Q8_FINAL_TALK) {
+                    g2.setColor(new Color(100, 255, 100));
+                    g2.drawString("Return to Marcelo del Pilar!", panelX + 12, panelY + 52);
+
+                } else if (stage == QuestManager.Q8_DONE) {
+                    g2.setColor(new Color(100, 230, 100));
+                    g2.drawString("Quest " + QuestManager.questDisplayNumber(QuestManager.QUEST8) + " Complete!", panelX + 12, panelY + 52);
                 }
             }
 
