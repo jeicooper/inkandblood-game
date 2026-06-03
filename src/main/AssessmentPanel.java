@@ -10,10 +10,55 @@ public class AssessmentPanel {
     private final UI ui;
 
     // ---- Phases ----
+    private static final int PHASE_DEBATE   = -1;
     private static final int PHASE_INTRO    = 0;
     private static final int PHASE_QUESTION = 1;
     private static final int PHASE_OUTRO    = 2;
-    private int phase = PHASE_INTRO;
+    private int phase = PHASE_DEBATE;
+
+    // ---- Debate dialogue ----
+    private static final int NARRATOR = 0;
+    private static final int RENATO   = 1;
+    private final int[] debateSpeaker = {
+            NARRATOR, NARRATOR, NARRATOR,
+            RENATO,
+            NARRATOR,
+            RENATO, RENATO,
+            NARRATOR,
+            RENATO,
+            NARRATOR,
+            RENATO, RENATO, RENATO,
+            NARRATOR,
+            RENATO,
+            NARRATOR, NARRATOR, NARRATOR, NARRATOR, NARRATOR
+    };
+    private final String[] debateLines = {
+            "Ah... another young mind, eager and unshaped.",
+            "Before your story begins, let us see what you already carry.",
+            "I will ask you TEN different questions about our nation's hero.",
+            "Unshaped? Or simply conditioned to practice veneration without understanding? You prepare to quiz them on a flawless deity, Narrator," +
+                    " rather than a historical figure who openly rejected our own Revolution!",
+            "Professor Constantino! This is just a basic quiz to see what the player knows before the game starts.",
+            "A basic quiz heavily skewed by historical amnesia!",
+            "I pointed out that other national heroes led their revolutions, but Rizal openly condemned Bonifacio and the Katipunan!",
+            "But his writings and his tragic death inspired the entire country to fight.",
+            "He wanted peaceful reforms, not violence. As a wealthy ilustraso, he feared the raw power of the masses.",
+            "We don't erase them, Professor. We respect all our heroes.",
+            "No, you push them into the background! Governor Taft and the Americans pushed Rizal in 1901 because he was safely dead and didn't " +
+                    "preach armed rebellion.",
+            "Why? Because he was safely dead and never preached rebellion. The Americans chose him over leaders who actually threatened their rule.",
+            "Andres Bonifacio was too radical, Emilio Aguinaldo was too militant, and Apolinario Mabini completely refused to surrender to " +
+                    "American rule!",
+            "Rizal still died for our country, Professor. That sacrifice cannot be ignored.",
+            "Of course not, and he deserves his place. But he doesn't own patriotism! Ordinary citizens built this nation too, and we shouldn't be" +
+                    " afraid to look at his weaknesses.",
+            "You give us a lot to think about, Professor. But the baseline evaluation must still proceed so the player can begin.",
+            "Let us see what you already carry.",
+            "Answer honestly. There is no shame in not yet knowing.",
+            "Use [ W ] and [ S ] to choose, [ ENTER ] to confirm.",
+            "Let us begin."
+    };
+    private int debateIndex = 0;
 
     // ---- Narrator dialogue ----
     private final String[] introLines = {
@@ -50,12 +95,14 @@ public class AssessmentPanel {
 
     // ---- Narrator sprite ----
     private BufferedImage narratorImg;
+    private BufferedImage renatoImg;
 
     public AssessmentPanel(GamePanel gp, UI ui) {
         this.gp = gp;
         this.ui = ui;
         buildQuestionContent();
         loadNarratorImage();
+        loadRenatoImage();
     }
 
     private void buildQuestionContent() {
@@ -140,8 +187,18 @@ public class AssessmentPanel {
         }
     }
 
+    private void loadRenatoImage() {
+        try {
+            var stream = getClass().getResourceAsStream("/npc/renato.png");
+            if (stream != null) renatoImg = ImageIO.read(stream);
+        } catch (Exception e) {
+            renatoImg = null;
+        }
+    }
+
     public void start() {
-        phase = PHASE_INTRO;
+        phase = PHASE_DEBATE;
+        debateIndex = 0;
         narrationIndex = 0;
         currentQuestion = 0;
         selectedChoice = 0;
@@ -171,9 +228,20 @@ public class AssessmentPanel {
         if (gp.inputDelay > 0) return;
 
         switch (phase) {
+            case PHASE_DEBATE:   handleDebate(code);           break;
             case PHASE_INTRO:   handleNarration(code, true);  break;
             case PHASE_QUESTION:handleQuestion(code);         break;
             case PHASE_OUTRO:   handleNarration(code, false); break;
+        }
+    }
+
+    private void handleDebate(int code) {
+        if (code == java.awt.event.KeyEvent.VK_ENTER || code == java.awt.event.KeyEvent.VK_SPACE) {
+            debateIndex++;
+            if (debateIndex >= debateLines.length) {
+                phase = PHASE_QUESTION;
+            }
+            gp.inputDelay = 8;
         }
     }
 
@@ -231,6 +299,14 @@ public class AssessmentPanel {
         g2.setColor(new Color(15, 12, 20));
         g2.fillRect(0, 0, sw, sh);
 
+        if (phase == PHASE_DEBATE) {
+            int safeIndex = Math.min(debateIndex, debateLines.length - 1);
+            boolean narratorActive = (debateSpeaker[safeIndex] == NARRATOR);
+            drawDebateSprites(g2, narratorActive);
+            drawDebateBubble(g2, debateLines[safeIndex], narratorActive);
+            return;
+        }
+
         drawNarrator(g2);
 
         if (phase == PHASE_INTRO) {
@@ -242,6 +318,70 @@ public class AssessmentPanel {
                     : "Take your time. Choose your answer.");
             drawQuizPanel(g2);
         }
+    }
+
+    // Draws both sprites; dims whichever one is not speaking
+    private void drawDebateSprites(Graphics2D g2, boolean narratorActive) {
+        int sz = gp.tileSize * 3;
+        int ny = bubbleBottomY() + 40;
+
+        // Narrator — left, same position as always
+        int nx = 20;
+        float narratorAlpha = narratorActive ? 1.0f : 0.3f;
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, narratorAlpha));
+        if (narratorImg != null) {
+            g2.drawImage(narratorImg, nx, ny, sz, sz, null);
+        } else {
+            g2.setColor(new Color(60, 50, 70));
+            g2.fillRoundRect(nx, ny, sz, sz, 16, 16);
+        }
+
+        // Renato — right side, mirrored
+        int rx = gp.screenWidth - 20 - sz;
+        float renatoAlpha = narratorActive ? 0.3f : 1.0f;
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, renatoAlpha));
+        if (renatoImg != null) {
+            g2.drawImage(renatoImg, rx + sz, ny, -sz, sz, null);
+        } else {
+            g2.setColor(new Color(50, 60, 80));
+            g2.fillRoundRect(rx, ny, sz, sz, 16, 16);
+        }
+
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+    }
+
+    // Draws the active speaker's bubble using the exact same style as drawNarrationBubble.
+    // Narrator bubble stays on the left (same as always). Renato's is mirrored on the right.
+    private void drawDebateBubble(Graphics2D g2, String text, boolean narratorActive) {
+        int bx = narratorActive ? bubbleX() : gp.screenWidth - bubbleX() - bubbleW();
+        int by = bubbleY();
+        int bw = bubbleW();
+        int bh = bubbleH();
+
+        // box — identical fill/border to drawNarrationBubble
+        g2.setColor(new Color(0, 0, 0, 210));
+        g2.fillRoundRect(bx, by, bw, bh, 22, 22);
+        g2.setColor(Color.white);
+        g2.setStroke(new BasicStroke(3f));
+        g2.drawRoundRect(bx, by, bw, bh, 22, 22);
+
+        // tail — points toward the sprite below it
+        int tailInset = narratorActive ? 50 : bw - 86;
+        int[] tx = { bx + tailInset, bx + tailInset + 36, bx + tailInset + 8 };
+        int[] ty = { by + bh, by + bh, by + bh + 26 };
+        g2.setColor(new Color(0, 0, 0, 210));
+        g2.fillPolygon(tx, ty, 3);
+        g2.setColor(Color.white);
+        g2.drawLine(tx[0], ty[0], tx[2], ty[2]);
+        g2.drawLine(tx[1], ty[1], tx[2], ty[2]);
+
+        // text — same call as drawNarrationBubble
+        drawWrapped(g2, text, bx + 20, by + 38, bw - 40, 32, 24f);
+
+        // hint — same style as drawNarrationBubble
+        g2.setFont(ui.maruMonica.deriveFont(Font.ITALIC, 15f));
+        g2.setColor(new Color(170, 170, 170));
+        g2.drawString("[ ENTER ]", bx + bw - 86, by + bh - 16);
     }
 
     private void drawNarrator(Graphics2D g2) {
